@@ -12,15 +12,15 @@ const puppeteer = require('puppeteer');
   await page.goto('https://www.liligo.fr/')
 
   // When I set departure
-  await page.waitForSelector('.hp-searcharea > .hp-searcharea-form > #hp-searchform-air > .field > #air-from')
-  await page.click('.hp-searcharea > .hp-searcharea-form > #hp-searchform-air > .field > #air-from')
+  await page.waitForSelector('#air-from')
+  await page.click('#air-from')
   await page.keyboard.type('SFO');
   await page.waitForSelector('#liligo_cl2_item_0');
   await page.click('#liligo_cl2_item_0');
 
   // And I set arrival
-  await page.waitForSelector('.hp-searcharea > .hp-searcharea-form > #hp-searchform-air > .field > #air-to')
-  await page.click('.hp-searcharea > .hp-searcharea-form > #hp-searchform-air > .field > #air-to')
+  await page.waitForSelector('#air-to')
+  await page.click('#air-to')
   await page.keyboard.type('PAR');
   await page.waitForSelector('#liligo_cl2_item_1');
   await page.click('#liligo_cl2_item_1');
@@ -36,12 +36,12 @@ const puppeteer = require('puppeteer');
 */
   // Then popup checkboxes appear below
   // And I disable popup checkboxes
-  await page.waitForSelector('#hp-searchform-air > #air-more > .hp-searchform-comparesite > .hp-searchform-comparesite-selectbuttons > .hp-searchform-comparesite-selectnone')
-  await page.click('#hp-searchform-air > #air-more > .hp-searchform-comparesite > .hp-searchform-comparesite-selectbuttons > .hp-searchform-comparesite-selectnone')
+  await page.waitForSelector('.hp-searchform-comparesite-selectnone')
+  await page.click('.hp-searchform-comparesite-selectnone')
 
   // When I launch search
-  await page.waitForSelector('.hp-searcharea > .hp-searcharea-form > #hp-searchform-air > .hp-searchform-submit > #air-submit')
-  await page.click('.hp-searcharea > .hp-searcharea-form > #hp-searchform-air > .hp-searchform-submit > #air-submit')
+  await page.waitForSelector('#air-submit')
+  await page.click('#air-submit')
 
   // Then result page appears
   // And results appear
