@@ -9,7 +9,10 @@ const puppeteer = require('puppeteer');
   await page.setViewport({ width: 1366, height: 768});
 
   // Given I am on the homepage
-  await page.goto('https://www.liligo.fr/')
+  await page.goto('https://www.liligo.fr/', {
+        waitUntil: 'networkidle2'
+    });
+    console.log('page is loaded successfully');
 
   // When I set departure
   await page.waitForSelector('#air-from')
