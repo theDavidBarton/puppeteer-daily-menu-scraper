@@ -1,30 +1,29 @@
 const puppeteer = require('puppeteer');
 (async () => {
-  const browser = await puppeteer.launch({
-    headless: false,
-    slowMo: 150
-  })
+  const browser = await puppeteer.launch({ headless: false, slowMo: 150 })
   const page = await browser.newPage()
   const navigationPromise = page.waitForNavigation()
-  await page.setViewport({ width: 1366, height: 768});
+
+  await page.setViewport({ width: 1024, height: 768 });
 
   // Given I am on the homepage
-  await page.goto('https://www.liligo.fr/', {
-        waitUntil: 'networkidle2'
-    });
+  await page.goto('https://www.liligo.fr/', { waitUntil: 'networkidle2' });
     console.log('page is loaded successfully');
 
   // When I set departure
   await page.waitForSelector('#air-from')
   await page.click('#air-from')
-  await page.keyboard.type('SFO');
+  await page.keyboard.type('San f');
   await page.waitForSelector('#liligo_cl2_item_0');
   await page.click('#liligo_cl2_item_0');
+  //const airFrom = page.waitForSelector('#air-from');
+  //  console.log(airFrom);
+  //expect(await airFrom.value).toBe('San Francisco');
 
   // And I set arrival
   await page.waitForSelector('#air-to')
   await page.click('#air-to')
-  await page.keyboard.type('PAR');
+  await page.keyboard.type('Par');
   await page.waitForSelector('#liligo_cl2_item_1');
   await page.click('#liligo_cl2_item_1');
 
