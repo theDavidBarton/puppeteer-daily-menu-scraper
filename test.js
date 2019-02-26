@@ -3,12 +3,12 @@ const puppeteer = require('puppeteer');
 (async () => {
   const browser = await puppeteer.launch({ headless: false, slowMo: 50 })
   const page = await browser.newPage()
-  const navigationPromise = page.waitForNavigation()
+  const navigationPromise = page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 0 })
 
   await page.setViewport({ width: 1024, height: 768 })
 
   // Given I am on the homepage
-  await page.goto('https://www.liligo.fr/', { waitUntil: 'networkidle2' })
+  await page.goto('https://www.liligo.fr/', { waitUntil: 'networkidle2', timeout: 0 })
     console.log('page is loaded successfully')
 
   // When I set departure
