@@ -1,6 +1,7 @@
 // scraping with Puppeteer example
 const puppeteer = require('puppeteer');
 const expect = require('expect');
+
 (async () => {
   const browser = await puppeteer.launch()
   const page = await browser.newPage()
