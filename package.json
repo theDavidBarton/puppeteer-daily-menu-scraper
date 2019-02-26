@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "expect": "^24.1.0",
     "puppeteer": "^1.12.2"
   }
 }
