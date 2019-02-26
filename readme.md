@@ -9,25 +9,40 @@ The current version is v1.12.2.
 - automate user flows (e2e testing);
 - automate script creation (puppeteer recorder project).
 
-### Install puppeteer
+### Install packages
+
 via Yarn:
-```
+```shell_session
 yarn add puppeteer
-```
-via NPM:
-```
-npm install puppeteer
+yarn add expect
 ```
 
-Description to be extended soon.
+via NPM:
+
+```shell_session
+npm install puppeteer
+npm install expect
+```
+
+### Run script
+
+```shell_session
+node test.js
+node scrape.js
+```
 
 ### Links
+
 [The home of Puppeteer](https://pptr.dev)
+
 [GitHub Puppeteer](https://github.com/GoogleChrome/puppeteer)
+
 [Slightly better examples than mine](https://github.com/GoogleChromeLabs/puppeteer-examples)
+
 [Keep this file fancy (Markdown Cheatsheet)](https://help.github.com/en/articles/basic-writing-and-formatting-syntax)
+
 [StackOverFlow](https://stackoverflow.com/questions/tagged/puppeteer)
 
 ---
 
-First commits: *24th February 2019*
+Last edit: *26th February 2019*

@@ -1,5 +1,7 @@
 // scraping with Puppeteer example
 const puppeteer = require('puppeteer');
+const expect = require('expect');
+
 (async () => {
   const browser = await puppeteer.launch()
   const page = await browser.newPage()
@@ -10,8 +12,10 @@ const puppeteer = require('puppeteer');
   await page.goto('https://www.liligo.fr/', { waitUntil: 'networkidle2' })
   let linkText = await page.evaluate(el => el.innerHTML, await page.$('body > header > h1 > span > a'))
     console.log(linkText)
+    expect(linkText).toBe('vol pas cher')
+      console.log("it's a match")
   let bodyHTML = await page.evaluate(() => document.body.innerHTML)
-    console.log(bodyHTML)
+  //  console.log(bodyHTML)
 
   await page.pdf({ path: './tmp/lilihome.pdf' })
     console.log('pdf is created')
