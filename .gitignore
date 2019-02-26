@@ -1,3 +1,6 @@
-/node_modules/
-
-/.local-chromium/
+node_modules/
+.local-chromium/
+tmp/
+*.png
+*.pdf
+!tmp/.gitkeep
