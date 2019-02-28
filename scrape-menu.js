@@ -70,7 +70,7 @@ console.log('*Mozsár menu:*')
   // *****************
 
   console.log('*Kamra menu:*')
-  await page.goto('http://www.kamraetelbar.hu/kamra_etelbar_mai_menu.html', { waitUntil: 'networkidle2'})
+  await page.goto('http://www.kamraetelbar.hu/kamra_etelbar_mai_menu.html', { waitUntil: 'networkidle2' })
   let dayKamra = await page.evaluate(el => el.innerHTML, await page.$('#by_one_table > tbody > tr:nth-child(3) > td > div.shop_today_1'))
   let dailyKamra = await page.evaluate(el => el.innerHTML, await page.$('#by_one_table > tbody > tr:nth-child(3) > td > div:nth-child(3)'))
     console.log('• Kamra daily menu ' + dayKamra + ': ' + dailyKamra)
@@ -80,10 +80,24 @@ console.log('*Mozsár menu:*')
   // ****************
 
   console.log('*Karcsi menu:*')
+  await page.goto('http://karcsibacsivendeglo.com/letoltes/napi_menu.pdf', { waitUntil: 'networkidle2' })
   let weeklyKarcsi = 'http://karcsibacsivendeglo.com/letoltes/napi_menu.pdf'
     console.log('• Karcsi weekly menu:' + weeklyKarcsi)
 
+  // Korhely menu
+  //
+  // ****************
+/*
+  console.log('Korhely menu:')
+  await page.goto('http://www.korhelyfaloda.hu/menu', { waitUntil: 'networkidle2' })
 
+  const iframe = page.frames()[1]
+  const body = await iframe.$('body');
+  await page.iframe.waitForSelector('#mainDiv > div > div:nth-child(1) > section > div > div.MenusNavigation_items > a:nth-child(2)')
+  await page.iframe.click('#mainDiv > div > div:nth-child(1) > section > div > div.MenusNavigation_items > a:nth-child(2)')
+  let weeklySummaryKorhely = await page.evaluate(el => el.innerHTML, await page.$('#mainDiv > div > div:nth-child(2) > section > div > div.MenusNavigation_description'))
+    console.log(weeklySummaryKorhely)
+*/
   //let bodyHTML = await page.evaluate(() => document.body.innerHTML)
   //  console.log(bodyHTML)
 
