@@ -42,46 +42,46 @@ console.log('*Chagall menu:*')
 //
 // *****************
 
-    console.log('*Mozsár menu:*')
-      await page.goto('http://mozsarbisztro.hu/index.php?p=3', { waitUntil: 'networkidle2' })
-      // Monday
-      let mondayMozsar1 = await page.evaluate(el => el.innerHTML, await page.$('#etlapresult > section:nth-child(1) > ul > li:nth-child(1) > label'))
-      let mondayMozsar2 = await page.evaluate(el => el.innerHTML, await page.$('#etlapresult > section:nth-child(1) > ul > li:nth-child(2) > label'))
-        console.log('• Mozsár Monday menu: ' + mondayMozsar1 + ', ' + mondayMozsar2)
-      // Tuesday
-      let tuesdayMozsar1 = await page.evaluate(el => el.innerHTML, await page.$('#etlapresult > section:nth-child(2) > ul > li:nth-child(1) > label'))
-      let tuesdayMozsar2 = await page.evaluate(el => el.innerHTML, await page.$('#etlapresult > section:nth-child(2) > ul > li:nth-child(2) > label'))
-        console.log('• Mozsár Tuesday menu: ' + tuesdayMozsar1 + ', ' + tuesdayMozsar2)
-      // Wednesday
-      let wednesdayMozsar1 = await page.evaluate(el => el.innerHTML, await page.$('#etlapresult > section:nth-child(3) > ul > li:nth-child(1) > label'))
-      let wednesdayMozsar2 = await page.evaluate(el => el.innerHTML, await page.$('#etlapresult > section:nth-child(3) > ul > li:nth-child(2) > label'))
-        console.log('• Mozsár Wednesday menu: ' + wednesdayMozsar1 + ', ' + wednesdayMozsar2)
-      // Thursday
-      let thursdayMozsar1 = await page.evaluate(el => el.innerHTML, await page.$('#etlapresult > section:nth-child(4) > ul > li:nth-child(1) > label'))
-      let thursdayMozsar2 = await page.evaluate(el => el.innerHTML, await page.$('#etlapresult > section:nth-child(4) > ul > li:nth-child(2) > label'))
-        console.log('• Mozsár Thursday menu: ' + thursdayMozsar1 + ', ' + thursdayMozsar2)
-      // Friday
-      let fridayMozsar1 = await page.evaluate(el => el.innerHTML, await page.$('#etlapresult > section:nth-child(5) > ul > li:nth-child(1) > label'))
-      let fridayMozsar2 = await page.evaluate(el => el.innerHTML, await page.$('#etlapresult > section:nth-child(5) > ul > li:nth-child(2) > label'))
-        console.log('• Mozsár Friday menu: ' + fridayMozsar1 + ', ' + fridayMozsar2)
+console.log('*Mozsár menu:*')
+  await page.goto('http://mozsarbisztro.hu/index.php?p=3', { waitUntil: 'networkidle2' })
+  // Monday
+  let mondayMozsar1 = await page.evaluate(el => el.innerHTML, await page.$('#etlapresult > section:nth-child(1) > ul > li:nth-child(1) > label'))
+  let mondayMozsar2 = await page.evaluate(el => el.innerHTML, await page.$('#etlapresult > section:nth-child(1) > ul > li:nth-child(2) > label'))
+    console.log('• Mozsár Monday menu: ' + mondayMozsar1 + ', ' + mondayMozsar2)
+  // Tuesday
+  let tuesdayMozsar1 = await page.evaluate(el => el.innerHTML, await page.$('#etlapresult > section:nth-child(2) > ul > li:nth-child(1) > label'))
+  let tuesdayMozsar2 = await page.evaluate(el => el.innerHTML, await page.$('#etlapresult > section:nth-child(2) > ul > li:nth-child(2) > label'))
+    console.log('• Mozsár Tuesday menu: ' + tuesdayMozsar1 + ', ' + tuesdayMozsar2)
+  // Wednesday
+  let wednesdayMozsar1 = await page.evaluate(el => el.innerHTML, await page.$('#etlapresult > section:nth-child(3) > ul > li:nth-child(1) > label'))
+  let wednesdayMozsar2 = await page.evaluate(el => el.innerHTML, await page.$('#etlapresult > section:nth-child(3) > ul > li:nth-child(2) > label'))
+    console.log('• Mozsár Wednesday menu: ' + wednesdayMozsar1 + ', ' + wednesdayMozsar2)
+  // Thursday
+  let thursdayMozsar1 = await page.evaluate(el => el.innerHTML, await page.$('#etlapresult > section:nth-child(4) > ul > li:nth-child(1) > label'))
+  let thursdayMozsar2 = await page.evaluate(el => el.innerHTML, await page.$('#etlapresult > section:nth-child(4) > ul > li:nth-child(2) > label'))
+    console.log('• Mozsár Thursday menu: ' + thursdayMozsar1 + ', ' + thursdayMozsar2)
+  // Friday
+  let fridayMozsar1 = await page.evaluate(el => el.innerHTML, await page.$('#etlapresult > section:nth-child(5) > ul > li:nth-child(1) > label'))
+  let fridayMozsar2 = await page.evaluate(el => el.innerHTML, await page.$('#etlapresult > section:nth-child(5) > ul > li:nth-child(2) > label'))
+    console.log('• Mozsár Friday menu: ' + fridayMozsar1 + ', ' + fridayMozsar2)
 
-        // Kamra menu
-        //
-        // *****************
+  // Kamra menu
+  //
+  // *****************
 
-        console.log('*Kamra menu:*')
-        await page.goto('http://www.kamraetelbar.hu/kamra_etelbar_mai_menu.html', { waitUntil: 'networkidle2'})
-        let dayKamra = await page.evaluate(el => el.innerHTML, await page.$('#by_one_table > tbody > tr:nth-child(3) > td > div.shop_today_1'))
-        let dailyKamra = await page.evaluate(el => el.innerHTML, await page.$('#by_one_table > tbody > tr:nth-child(3) > td > div:nth-child(3)'))
-          console.log('• Kamra daily menu ' + dayKamra + ': ' + dailyKamra)
+  console.log('*Kamra menu:*')
+  await page.goto('http://www.kamraetelbar.hu/kamra_etelbar_mai_menu.html', { waitUntil: 'networkidle2'})
+  let dayKamra = await page.evaluate(el => el.innerHTML, await page.$('#by_one_table > tbody > tr:nth-child(3) > td > div.shop_today_1'))
+  let dailyKamra = await page.evaluate(el => el.innerHTML, await page.$('#by_one_table > tbody > tr:nth-child(3) > td > div:nth-child(3)'))
+    console.log('• Kamra daily menu ' + dayKamra + ': ' + dailyKamra)
 
-          // Karcsi menu
-          //
-          // ****************
+  // Karcsi menu
+  //
+  // ****************
 
-          console.log('*Karcsi menu:*')
-          let weeklyKarcsi = 'http://karcsibacsivendeglo.com/letoltes/napi_menu.pdf'
-            console.log('• Karcsi weekly menu:' + weeklyKarcsi)
+  console.log('*Karcsi menu:*')
+  let weeklyKarcsi = 'http://karcsibacsivendeglo.com/letoltes/napi_menu.pdf'
+    console.log('• Karcsi weekly menu:' + weeklyKarcsi)
 
 
   //let bodyHTML = await page.evaluate(() => document.body.innerHTML)
