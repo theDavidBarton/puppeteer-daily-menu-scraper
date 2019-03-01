@@ -16,6 +16,20 @@ const expect = require('expect');
           request.continue()
         })
 
+  // Kamra menu
+  //
+  // *****************
+
+  console.log('*Kamra menu:*')
+  await page.goto('http://www.kamraetelbar.hu/kamra_etelbar_mai_menu.html', { waitUntil: 'networkidle2' })
+  let dayKamra = await page.evaluate(el => el.innerText, await page.$('.shop_today_1'))
+
+  // stores all elements with same ID, source: https://stackoverflow.com/questions/54677126/how-to-select-all-child-div-with-same-class-using-puppeteer
+  const dailyKamra = await page.$$eval('.shop_today_title',
+    divs => divs.map(({ innerText }) => innerText));
+
+    console.log('• Kamra daily menu ' + dayKamra + ': ' + dailyKamra)
+
   // Roza menu
   //
   // ****************
@@ -73,22 +87,11 @@ console.log('*Mozsár menu:*')
   let fridayMozsar2 = await page.evaluate(el => el.innerHTML, await page.$('#etlapresult > section:nth-child(5) > ul > li:nth-child(2) > label'))
     console.log('• Mozsár Friday menu: ' + fridayMozsar1 + ', ' + fridayMozsar2)
 
-  // Kamra menu
-  //
-  // *****************
-
-  console.log('*Kamra menu:*')
-  await page.goto('http://www.kamraetelbar.hu/kamra_etelbar_mai_menu.html', { waitUntil: 'networkidle2' })
-  let dayKamra = await page.evaluate(el => el.innerText, await page.$('#by_one_table > tbody > tr:nth-child(3) > td > div.shop_today_1'))
-  let dailyKamra = await page.evaluate(el => el.innerText, await page.$('#by_one_table > tbody > tr:nth-child(3) > td > div:nth-child(3)'))
-    console.log('• Kamra daily menu ' + dayKamra + ': ' + dailyKamra)
-
   // Karcsi menu
   //
   // ****************
 
   console.log('*Karcsi menu:*')
-  await page.goto('http://karcsibacsivendeglo.com/letoltes/napi_menu.pdf', { waitUntil: 'networkidle2' })
   let weeklyKarcsi = 'http://karcsibacsivendeglo.com/letoltes/napi_menu.pdf'
     console.log('• Karcsi weekly menu:' + weeklyKarcsi)
 
