@@ -1,5 +1,7 @@
 // testing with Puppeteer example
 const puppeteer = require('puppeteer');
+const expect = require('expect');
+
 (async () => {
   const browser = await puppeteer.launch({ headless: false, slowMo: 50 })
   const page = await browser.newPage()
