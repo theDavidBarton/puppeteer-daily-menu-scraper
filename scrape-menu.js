@@ -3,7 +3,7 @@ const puppeteer = require('puppeteer');
 const expect = require('expect');
 
 (async () => {
-  const browser = await puppeteer.launch( {headless: false} )
+  const browser = await puppeteer.launch({ headless: true })
   const page = await browser.newPage()
   await page.setViewport({ width: 1024, height: 768 })
 
@@ -15,6 +15,14 @@ const expect = require('expect');
         else
           request.continue()
         })
+
+  // Roza menu
+  //
+  // ****************
+  console.log('*Roza menu:*')
+  await page.goto('https://www.facebook.com/pg/rozafinomitt/posts/?ref=page_internal', { waitUntil: 'networkidle2' })
+  let dailyRoza = await page.evaluate(el => el.innerText, await page.$('.text_exposed_show'))
+    console.log('• Roza daily menu: ' + dailyRoza)
 
 // Chagall Cafe menu
 //
@@ -71,8 +79,8 @@ console.log('*Mozsár menu:*')
 
   console.log('*Kamra menu:*')
   await page.goto('http://www.kamraetelbar.hu/kamra_etelbar_mai_menu.html', { waitUntil: 'networkidle2' })
-  let dayKamra = await page.evaluate(el => el.innerHTML, await page.$('#by_one_table > tbody > tr:nth-child(3) > td > div.shop_today_1'))
-  let dailyKamra = await page.evaluate(el => el.innerHTML, await page.$('#by_one_table > tbody > tr:nth-child(3) > td > div:nth-child(3)'))
+  let dayKamra = await page.evaluate(el => el.innerText, await page.$('#by_one_table > tbody > tr:nth-child(3) > td > div.shop_today_1'))
+  let dailyKamra = await page.evaluate(el => el.innerText, await page.$('#by_one_table > tbody > tr:nth-child(3) > td > div:nth-child(3)'))
     console.log('• Kamra daily menu ' + dayKamra + ': ' + dailyKamra)
 
   // Karcsi menu
