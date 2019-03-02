@@ -76,7 +76,7 @@ const expect = require('expect');
   // stores src of given selector, source: https://stackoverflow.com/questions/52542149/how-can-i-download-images-on-a-page-using-puppeteer
   let imageSelector = '.aligncenter'
   const weeklyNokedly = await page.evaluate((sel) => {
-      return document.querySelector(sel).getAttribute('src').replace('/', '')
+      return document.querySelector(sel).getAttribute('src').replace('-300x212', '')
   }, imageSelector)
     console.log('• Nokedli weekly menu: ' + weeklyNokedly + '\n')
 
