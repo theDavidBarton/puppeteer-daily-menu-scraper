@@ -16,6 +16,16 @@ const expect = require('expect');
           request.continue()
         })
 
+  // Fruccola (Arany Janos utca) menu
+  //
+  // ****************
+
+  console.log('*Fruccola (Arany Janos utca) menu:*')
+  await page.goto('http://fruccola.hu/hu', { waitUntil : 'networkidle2' })
+  const dailySoupFruccola = await page.evaluate(el => el.innerText, await page.$('#dailymenu-holder > li.arany.today > div.soup > p.description'))
+  const dailyMainFruccola = await page.evaluate(el => el.innerText, await page.$('#dailymenu-holder > li.arany.today > div.main-dish > p.description'))
+  console.log('• Fruccola daily menu:' + dailySoupFruccola + ', ' + dailyMainFruccola)
+
   // Nokedli menu
   //
   // ****************
