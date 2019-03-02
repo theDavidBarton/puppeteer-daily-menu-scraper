@@ -3,7 +3,7 @@ const puppeteer = require('puppeteer');
 const expect = require('expect');
 
 (async () => {
-  const browser = await puppeteer.launch({ headless: false })
+  const browser = await puppeteer.launch({ headless: true })
   const page = await browser.newPage()
   await page.setViewport({ width: 1024, height: 768 })
 
@@ -113,10 +113,10 @@ const expect = require('expect');
 
   /*
   |------------------------------------------
-  |            Roza menu
+  |           Chagall Cafe menu
   |------------------------------------------
-  |  Address: Budapest, Jókai u. 22, 1066
-  |  Phone: (30) 611 4396
+  |  Address: Budapest, Hajós u. 27, 1065
+  |  Phone: (1) 302 4614
   |
   */
   console.log('*Chagall menu:* \n----------------')
