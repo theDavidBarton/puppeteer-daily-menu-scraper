@@ -3,7 +3,7 @@ const puppeteer = require('puppeteer');
 const expect = require('expect');
 
 (async () => {
-  const browser = await puppeteer.launch({ headless: true })
+  const browser = await puppeteer.launch({ headless: false })
   const page = await browser.newPage()
   await page.setViewport({ width: 1024, height: 768 })
 
@@ -26,8 +26,28 @@ const expect = require('expect');
   */
   console.log('*Ketszerecsen Bisztro menu:* \n----------------')
   await page.goto('https://ketszerecsen.hu/#daily', { waitUntil: 'networkidle2' })
-  //const mondayKetszerecsen = await page.evaluate(el => el.innerHTML, await page.$x('//html/body/div[2]/section[4]/div[2]/div/div/div[2]/div/p[4]/b'))
-    console.log('mondayKetszerecsen \n')
+  // Monday
+  const mondayKetszerecsen1 = await page.evaluate(el => el.innerHTML, await page.$('p:nth-child(5)'))
+  const mondayKetszerecsen2 = await page.evaluate(el => el.innerHTML, await page.$('p:nth-child(6)'))
+  // Tuesday
+  const tuesdayKetszerecsen1 = await page.evaluate(el => el.innerHTML, await page.$('p:nth-child(8)'))
+  const tuesdayKetszerecsen2 = await page.evaluate(el => el.innerHTML, await page.$('p:nth-child(9)'))
+  // Wednesday
+  const wednesdayKetszerecsen1 = await page.evaluate(el => el.innerHTML, await page.$('p:nth-child(11)'))
+  const wednesdayKetszerecsen2 = await page.evaluate(el => el.innerHTML, await page.$('p:nth-child(12)'))
+  // Thursday
+  const thursdayKetszerecsen1 = await page.evaluate(el => el.innerHTML, await page.$('p:nth-child(14)'))
+  const thursdayKetszerecsen2 = await page.evaluate(el => el.innerHTML, await page.$('p:nth-child(15)'))
+  // Friday
+  const fridayKetszerecsen1 = await page.evaluate(el => el.innerHTML, await page.$('p:nth-child(17)'))
+  const fridayKetszerecsen2 = await page.evaluate(el => el.innerHTML, await page.$('p:nth-child(18)'))
+    console.log(
+      '• Ketszerecsen Monday menu: ' + mondayKetszerecsen1 + ', ' + mondayKetszerecsen2 + '\n' +
+      '• Ketszerecsen Tuesday menu: ' + tuesdayKetszerecsen1 + ', ' + tuesdayKetszerecsen2 + '\n' +
+      '• Ketszerecsen Wednesday menu: ' + wednesdayKetszerecsen1 + ', ' + wednesdayKetszerecsen2 + '\n' +
+      '• Ketszerecsen Thursday menu: ' + thursdayKetszerecsen1 + ', ' + thursdayKetszerecsen2 + '\n' +
+      '• Ketszerecsen Friday menu: ' + fridayKetszerecsen1 + ', ' + fridayKetszerecsen2 + '\n'
+    )
 
   /*
   |------------------------------------------
