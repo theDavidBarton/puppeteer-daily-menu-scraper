@@ -26,22 +26,19 @@ const expect = require('expect');
   */
   console.log('*Korhely menu:* \n----------------')
   await page.goto('http://www.korhelyfaloda.hu/menu', { waitUntil: 'networkidle2', timeout: 0 })
-  const iframeSource = await page.evaluate(el => el.innerText, await page.$('#TPASection_ije2yufiiframe'))
-    console.log(iframeSource)
-  await page.goto('https://apps.wixrestaurants.com/?cacheKiller=1551526629242&compId=TPASection_ije2yufi&currency=HUF&deviceType=desktop&height=15000&instance=moYFbjjAeDwaSlUSDkJMIGrupKZ4AJrdA-Ru2sYGFow.eyJpbnN0YW5jZUlkIjoiNTliZGVjZTYtYzBmNS00YzUwLWJiNGItMjhmOGM4NWJmMWY3IiwiYXBwRGVmSWQiOiIxM2MxNDAyYy0yN2YyLWQ0YWItNzQ2My1lZTdjODllMDc1NzgiLCJtZXRhU2l0ZUlkIjoiZmQ2Y2FmNjAtZjY0My00Yzg3LTllYmEtMGViNjQ3ODJkMDI0Iiwic2lnbkRhdGUiOiIyMDE5LTAzLTAyVDIwOjQxOjE5Ljc4MVoiLCJ1aWQiOm51bGwsImlwQW5kUG9ydCI6Ijg3Ljk3LjQyLjExNC81MDQwNCIsInZlbmRvclByb2R1Y3RJZCI6bnVsbCwiZGVtb01vZGUiOmZhbHNlLCJvcmlnaW5JbnN0YW5jZUlkIjoiZDNkYWFjNjMtMjc2ZS00Yjk1LTlkZGUtMzhlYWNkOWE2NjIzIiwiYWlkIjoiMWI2MDZhOWEtOTNlNS00MzBlLTk1ZWEtOGU4YWNmYjE5MzRlIiwiYmlUb2tlbiI6ImE0ZDE0Mzg2LTM2YjYtMDBkNy0yNWYxLTI2NGU4ZmQ5MjFkMyIsInNpdGVPd25lcklkIjoiNDQyNWI0YmUtZmUyYi00YjU5LWIwMjAtZjM4Mzg2MTM4OTVmIn0&locale=hu&pageId=lhq2p&section-url=http%3A%2F%2Fwww.korhelyfaloda.hu%2Fmenu%2F&target=_top&type=wixmenus.client&tz=Europe%2FBudapest&viewMode=site&width=980#', { waitUntil: 'networkidle2', timeout: 0 })
+  // stores src of given selector, source: https://stackoverflow.com/questions/52542149/how-can-i-download-images-on-a-page-using-puppeteer
+  let linkSelector = '#TPASection_ije2yufiiframe'
+  const linkKorhely = await page.evaluate((sel) => {
+      return document.querySelector(sel).getAttribute('src')
+  }, linkSelector)
+
+  await page.goto(linkKorhely, { waitUntil: 'networkidle2', timeout: 0 })
    const weeklySummaryKorhely = await page.evaluate(el => el.innerText, await page.$('#mainDiv > div > div:nth-child(2) > section > div > div.MenusNavigation_description'))
    const weeklySoupKorhely = await page.evaluate(el => el.innerText, await page.$('#mainDiv > div > div:nth-child(2) > section > ul > li:nth-child(1)'))
    const weeklyMainKorhely = await page.evaluate(el => el.innerText, await page.$('#mainDiv > div > div:nth-child(2) > section > ul > li:nth-child(2)'))
    const weeklyDessertKorhely = await page.evaluate(el => el.innerText, await page.$('#mainDiv > div > div:nth-child(2) > section > ul > li:nth-child(3)'))
 
-  //await page.waitFor(9000)
-  //const frame = page.frames().find(f => f.name() === 'TPASection_ije2yufiiframe')
-  //const weeklySummaryKorhely = await page.evaluate(el => el.innerText, await frame.$('#mainDiv > div > div:nth-child(2) > section > div > div.MenusNavigation_description'))
-
-
-
     console.log(
-      '• Korhely weekly menu: ' /*+ weeklySummaryKorhely*/ + '\n' +
       '• Soups: ' + weeklySoupKorhely + '\n' +
       '• Main courses: ' + weeklyMainKorhely + '\n' +
       '• Desserts: ' + weeklyDessertKorhely + '\n'
@@ -72,6 +69,7 @@ const expect = require('expect');
   // Friday
   const fridayKetszerecsen1 = await page.evaluate(el => el.innerHTML, await page.$('p:nth-child(17)'))
   const fridayKetszerecsen2 = await page.evaluate(el => el.innerHTML, await page.$('p:nth-child(18)'))
+
     console.log(
       '• Ketszerecsen Monday menu: ' + mondayKetszerecsen1 + ', ' + mondayKetszerecsen2 + '\n' +
       '• Ketszerecsen Tuesday menu: ' + tuesdayKetszerecsen1 + ', ' + tuesdayKetszerecsen2 + '\n' +
@@ -92,7 +90,8 @@ const expect = require('expect');
   await page.goto('http://fruccola.hu/hu', { waitUntil : 'networkidle2' })
   const dailyFruccola1 = await page.evaluate(el => el.innerText, await page.$('#dailymenu-holder > li.arany.today > div.soup > p.description'))
   const dailyFruccola2 = await page.evaluate(el => el.innerText, await page.$('#dailymenu-holder > li.arany.today > div.main-dish > p.description'))
-  console.log('• Fruccola daily menu: ' + dailyFruccola1 + ', ' + dailyFruccola2 + '\n')
+
+    console.log('• Fruccola daily menu: ' + dailyFruccola1 + ', ' + dailyFruccola2 + '\n')
 
   /*
   |------------------------------------------
@@ -109,6 +108,7 @@ const expect = require('expect');
   const weeklyNokedly = await page.evaluate((sel) => {
       return document.querySelector(sel).getAttribute('src').replace('-300x212', '')
   }, imageSelector)
+
     console.log('• Nokedli weekly menu: ' + weeklyNokedly + '\n')
 
   /*
@@ -140,6 +140,7 @@ const expect = require('expect');
   console.log('*Roza menu:* \n----------------')
   await page.goto('https://www.facebook.com/pg/rozafinomitt/posts/?ref=page_internal', { waitUntil: 'networkidle2' })
   const dailyRoza = await page.evaluate(el => el.innerText, await page.$('.text_exposed_show'))
+
     console.log('• Roza daily menu: ' + dailyRoza + '\n')
 
   /*
@@ -162,13 +163,14 @@ const expect = require('expect');
   const thursdayChagall = await page.evaluate(el => el.innerHTML, await page.$('#post-396 > section > div > section > div:nth-child(6) > div:nth-child(4) > div > ul > li > div > h4 > span.item_title'))
   // Friday
   const fridayChagall = await page.evaluate(el => el.innerHTML, await page.$('#post-396 > section > div > section > div:nth-child(6) > div:nth-child(5) > div > ul > li > div > h4 > span.item_title'))
-  console.log(
-    '• Chagall Monday menu: ' + mondayChagall + '\n' +
-    '• Chagall Tuesday menu: ' + tuesdayChagall + '\n' +
-    '• Chagall Wednesday menu: ' + wednesdayChagall + '\n' +
-    '• Chagall Thursday menu: ' + thursdayChagall + '\n' +
-    '• Chagall Friday menu: ' + fridayChagall + '\n'
-  )
+
+    console.log(
+      '• Chagall Monday menu: ' + mondayChagall + '\n' +
+      '• Chagall Tuesday menu: ' + tuesdayChagall + '\n' +
+      '• Chagall Wednesday menu: ' + wednesdayChagall + '\n' +
+      '• Chagall Thursday menu: ' + thursdayChagall + '\n' +
+      '• Chagall Friday menu: ' + fridayChagall + '\n'
+    )
 
   /*
   |------------------------------------------
@@ -195,13 +197,14 @@ const expect = require('expect');
   // Friday
   const fridayMozsar1 = await page.evaluate(el => el.innerHTML, await page.$('#etlapresult > section:nth-child(5) > ul > li:nth-child(1) > label'))
   const fridayMozsar2 = await page.evaluate(el => el.innerHTML, await page.$('#etlapresult > section:nth-child(5) > ul > li:nth-child(2) > label'))
-  console.log(
-    '• Mozsár Monday menu: ' + mondayMozsar1 + ', ' + mondayMozsar2 + '\n' +
-    '• Mozsár Tuesday menu: ' + tuesdayMozsar1 + ', ' + tuesdayMozsar2 + '\n' +
-    '• Mozsár Wednesday menu: ' + wednesdayMozsar1 + ', ' + wednesdayMozsar2 + '\n' +
-    '• Mozsár Thursday menu: ' + thursdayMozsar1 + ', ' + thursdayMozsar2 + '\n' +
-    '• Mozsár Friday menu: ' + fridayMozsar1 + ', ' + fridayMozsar2 + '\n'
-  )
+
+    console.log(
+      '• Mozsár Monday menu: ' + mondayMozsar1 + ', ' + mondayMozsar2 + '\n' +
+      '• Mozsár Tuesday menu: ' + tuesdayMozsar1 + ', ' + tuesdayMozsar2 + '\n' +
+      '• Mozsár Wednesday menu: ' + wednesdayMozsar1 + ', ' + wednesdayMozsar2 + '\n' +
+      '• Mozsár Thursday menu: ' + thursdayMozsar1 + ', ' + thursdayMozsar2 + '\n' +
+      '• Mozsár Friday menu: ' + fridayMozsar1 + ', ' + fridayMozsar2 + '\n'
+    )
 
   /*
   |------------------------------------------
@@ -213,10 +216,8 @@ const expect = require('expect');
   */
   console.log('*Karcsi menu:* \n----------------')
   const weeklyKarcsi = 'http://karcsibacsivendeglo.com/letoltes/napi_menu.pdf'
-    console.log('• Karcsi weekly menu: ' + weeklyKarcsi + '\n')
 
-  //const bodyHTML = await page.evaluate(() => document.body.innerHTML)
-  //  console.log(bodyHTML + '\n')
+    console.log('• Karcsi weekly menu: ' + weeklyKarcsi + '\n')
 
   await browser.close()
 })()
