@@ -18,6 +18,37 @@ const expect = require('expect');
 
   /*
   |------------------------------------------
+  |               Korhely menu
+  |------------------------------------------
+  |  Address: Budapest, Liszt Ferenc tér 7, 1061
+  |  Phone: (1) 321 0280
+  |
+  */
+  console.log('*Korhely menu:* \n----------------')
+  await page.goto('http://www.korhelyfaloda.hu/menu', { waitUntil: 'networkidle2', timeout: 0 })
+  const iframeSource = await page.evaluate(el => el.innerText, await page.$('#TPASection_ije2yufiiframe'))
+    console.log(iframeSource)
+  await page.goto('https://apps.wixrestaurants.com/?cacheKiller=1551526629242&compId=TPASection_ije2yufi&currency=HUF&deviceType=desktop&height=15000&instance=moYFbjjAeDwaSlUSDkJMIGrupKZ4AJrdA-Ru2sYGFow.eyJpbnN0YW5jZUlkIjoiNTliZGVjZTYtYzBmNS00YzUwLWJiNGItMjhmOGM4NWJmMWY3IiwiYXBwRGVmSWQiOiIxM2MxNDAyYy0yN2YyLWQ0YWItNzQ2My1lZTdjODllMDc1NzgiLCJtZXRhU2l0ZUlkIjoiZmQ2Y2FmNjAtZjY0My00Yzg3LTllYmEtMGViNjQ3ODJkMDI0Iiwic2lnbkRhdGUiOiIyMDE5LTAzLTAyVDIwOjQxOjE5Ljc4MVoiLCJ1aWQiOm51bGwsImlwQW5kUG9ydCI6Ijg3Ljk3LjQyLjExNC81MDQwNCIsInZlbmRvclByb2R1Y3RJZCI6bnVsbCwiZGVtb01vZGUiOmZhbHNlLCJvcmlnaW5JbnN0YW5jZUlkIjoiZDNkYWFjNjMtMjc2ZS00Yjk1LTlkZGUtMzhlYWNkOWE2NjIzIiwiYWlkIjoiMWI2MDZhOWEtOTNlNS00MzBlLTk1ZWEtOGU4YWNmYjE5MzRlIiwiYmlUb2tlbiI6ImE0ZDE0Mzg2LTM2YjYtMDBkNy0yNWYxLTI2NGU4ZmQ5MjFkMyIsInNpdGVPd25lcklkIjoiNDQyNWI0YmUtZmUyYi00YjU5LWIwMjAtZjM4Mzg2MTM4OTVmIn0&locale=hu&pageId=lhq2p&section-url=http%3A%2F%2Fwww.korhelyfaloda.hu%2Fmenu%2F&target=_top&type=wixmenus.client&tz=Europe%2FBudapest&viewMode=site&width=980#', { waitUntil: 'networkidle2', timeout: 0 })
+   const weeklySummaryKorhely = await page.evaluate(el => el.innerText, await page.$('#mainDiv > div > div:nth-child(2) > section > div > div.MenusNavigation_description'))
+   const weeklySoupKorhely = await page.evaluate(el => el.innerText, await page.$('#mainDiv > div > div:nth-child(2) > section > ul > li:nth-child(1)'))
+   const weeklyMainKorhely = await page.evaluate(el => el.innerText, await page.$('#mainDiv > div > div:nth-child(2) > section > ul > li:nth-child(2)'))
+   const weeklyDessertKorhely = await page.evaluate(el => el.innerText, await page.$('#mainDiv > div > div:nth-child(2) > section > ul > li:nth-child(3)'))
+
+  //await page.waitFor(9000)
+  //const frame = page.frames().find(f => f.name() === 'TPASection_ije2yufiiframe')
+  //const weeklySummaryKorhely = await page.evaluate(el => el.innerText, await frame.$('#mainDiv > div > div:nth-child(2) > section > div > div.MenusNavigation_description'))
+
+
+
+    console.log(
+      '• Korhely weekly menu: ' /*+ weeklySummaryKorhely*/ + '\n' +
+      '• Soups: ' + weeklySoupKorhely + '\n' +
+      '• Main courses: ' + weeklyMainKorhely + '\n' +
+      '• Desserts: ' + weeklyDessertKorhely + '\n'
+    )
+
+  /*
+  |------------------------------------------
   |        Ketszerecsen bisztro menu
   |------------------------------------------
   |  Address: Budapest, Nagymező u. 14, 1065
@@ -76,7 +107,7 @@ const expect = require('expect');
   // stores src of given selector, source: https://stackoverflow.com/questions/52542149/how-can-i-download-images-on-a-page-using-puppeteer
   let imageSelector = '.aligncenter'
   const weeklyNokedly = await page.evaluate((sel) => {
-      return document.querySelector(sel).getAttribute('src').replace('/', '')
+      return document.querySelector(sel).getAttribute('src').replace('-300x212', '')
   }, imageSelector)
     console.log('• Nokedli weekly menu: ' + weeklyNokedly + '\n')
 
@@ -184,25 +215,6 @@ const expect = require('expect');
   const weeklyKarcsi = 'http://karcsibacsivendeglo.com/letoltes/napi_menu.pdf'
     console.log('• Karcsi weekly menu: ' + weeklyKarcsi + '\n')
 
-  /*
-  |------------------------------------------
-  |               Korhely menu
-  |------------------------------------------
-  |  Address: Budapest, Liszt Ferenc tér 7, 1061
-  |  Phone: (1) 321 0280
-  |
-  */
-/*
-  console.log('Korhely menu: \n----------------')
-  await page.goto('http://www.korhelyfaloda.hu/menu', { waitUntil: 'networkidle2' })
-
-  const iframe = page.frames()[1]
-  const body = await iframe.$('body');
-  await page.iframe.waitForSelector('#mainDiv > div > div:nth-child(1) > section > div > div.MenusNavigation_items > a:nth-child(2)')
-  await page.iframe.click('#mainDiv > div > div:nth-child(1) > section > div > div.MenusNavigation_items > a:nth-child(2)')
-  const weeklySummaryKorhely = await page.evaluate(el => el.innerHTML, await page.$('#mainDiv > div > div:nth-child(2) > section > div > div.MenusNavigation_description'))
-    console.log(weeklySummaryKorhely + '\n')
-*/
   //const bodyHTML = await page.evaluate(() => document.body.innerHTML)
   //  console.log(bodyHTML + '\n')
 
