@@ -24,7 +24,7 @@ const expect = require('expect');
   |  Phone: (1) 268 1154
   |
   */
-  console.log('*Cafe Vian menu:*')
+  console.log('*Cafe Vian menu:* \n----------------')
   await page.goto('http://www.cafevian.com/ebedmenue', { waitUntil: 'networkidle2', timeout: 0 })
   // stores src of given selector, source: https://stackoverflow.com/questions/52542149/how-can-i-download-images-on-a-page-using-puppeteer
   let linkSelectorVian = '#TPASection_jkic76naiframe'
@@ -33,18 +33,29 @@ const expect = require('expect');
   }, linkSelectorVian)
 
   await page.goto(linkVian, { waitUntil: 'networkidle2', timeout: 0 })
-  const mondayVian = await page.evaluate(elefant => elefant.innerText, await page.$('#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(1)'))
-  const tuesdayVian = await page.evaluate(elefant => elefant.innerText, await page.$('#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(2)'))
-  const wednesdayVian = await page.evaluate(elefant => elefant.innerText, await page.$('#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(3)'))
-  const thursdayVian = await page.evaluate(elefant => elefant.innerText, await page.$('#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(4)'))
-  const fridayVian = await page.evaluate(elefant => elefant.innerText, await page.$('#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(5)'))
+  // Monday
+  const mondayVian1 = await page.evaluate(elefant => elefant.innerText, await page.$('#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(1) > div:nth-child(1) > div.heartyQ2riU'))
+  const mondayVian2 = await page.evaluate(elefant => elefant.innerText, await page.$('#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(1) > div.hearty2QDOd > div > div > div.heartyQogjj > span'))
+  // Tuesday
+  const tuesdayVian1 = await page.evaluate(elefant => elefant.innerText, await page.$('#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(2) > div:nth-child(1) > div.heartyQ2riU'))
+  const tuesdayVian2 = await page.evaluate(elefant => elefant.innerText, await page.$('#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(2) > div.hearty2QDOd > div > div > div.heartyQogjj > span'))
+  // Wednesday
+  const wednesdayVian1 = await page.evaluate(elefant => elefant.innerText, await page.$('#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(3) > div:nth-child(1) > div.heartyQ2riU'))
+  const wednesdayVian2 = await page.evaluate(elefant => elefant.innerText, await page.$('#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(3) > div.hearty2QDOd > div > div > div.heartyQogjj > span'))
+  // Thursday
+  const thursdayVian1 = await page.evaluate(elefant => elefant.innerText, await page.$('#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(4) > div:nth-child(1) > div.heartyQ2riU'))
+  const thursdayVian2 = await page.evaluate(elefant => elefant.innerText, await page.$('#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(4) > div.hearty2QDOd > div > div > div.heartyQogjj > span'))
+  // Friday
+  const fridayVian1 = await page.evaluate(elefant => elefant.innerText, await page.$('#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(5) > div:nth-child(1) > div.heartyQ2riU'))
+  const fridayVian2 = await page.evaluate(elefant => elefant.innerText, await page.$('#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(5) > div.hearty2QDOd > div > div > div.heartyQogjj > span'))
+
 
   console.log(
-    '• Vian Monday menu: ' + mondayVian + '\n' +
-    '• Vian Tuesday menu: ' + tuesdayVian + '\n' +
-    '• Vian Wednesday menu: ' + wednesdayVian + '\n' +
-    '• Vian Thursday menu: ' + thursdayVian + '\n' +
-    '• Vian Friday menu: ' + fridayVian + '\n'
+    '• Vian Monday menu: ' + mondayVian1 + ', ' + mondayVian2 + '\n' +
+    '• Vian Tuesday menu: ' + tuesdayVian1 + ', ' + tuesdayVian2 + '\n' +
+    '• Vian Wednesday menu: ' + wednesdayVian1 + ', ' + wednesdayVian2 + '\n' +
+    '• Vian Thursday menu: ' + thursdayVian1 + ', ' + thursdayVian2 + '\n' +
+    '• Vian Friday menu: ' + fridayVian1 + ', ' + fridayVian2 + '\n'
   )
 
   /*
