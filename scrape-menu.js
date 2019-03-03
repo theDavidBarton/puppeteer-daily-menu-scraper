@@ -18,6 +18,37 @@ const expect = require('expect');
 
   /*
   |------------------------------------------
+  |               Cafe Vian menu
+  |------------------------------------------
+  |  Address: Budapest, Liszt Ferenc tér 9, 1061
+  |  Phone: (1) 268 1154
+  |
+  */
+  console.log('*Cafe Vian menu:*')
+  await page.goto('http://www.cafevian.com/ebedmenue', { waitUntil: 'networkidle2', timeout: 0 })
+  // stores src of given selector, source: https://stackoverflow.com/questions/52542149/how-can-i-download-images-on-a-page-using-puppeteer
+  let linkSelectorVian = '#TPASection_jkic76naiframe'
+  const linkVian = await page.evaluate((sel) => {
+      return document.querySelector(sel).getAttribute('src')
+  }, linkSelectorVian)
+
+  await page.goto(linkVian, { waitUntil: 'networkidle2', timeout: 0 })
+  const mondayVian = await page.evaluate(elefant => elefant.innerText, await page.$('#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(1)'))
+  const tuesdayVian = await page.evaluate(elefant => elefant.innerText, await page.$('#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(2)'))
+  const wednesdayVian = await page.evaluate(elefant => elefant.innerText, await page.$('#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(3)'))
+  const thursdayVian = await page.evaluate(elefant => elefant.innerText, await page.$('#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(4)'))
+  const fridayVian = await page.evaluate(elefant => elefant.innerText, await page.$('#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(5)'))
+
+  console.log(
+    '• Vian Monday menu: ' + mondayVian + '\n' +
+    '• Vian Tuesday menu: ' + tuesdayVian + '\n' +
+    '• Vian Wednesday menu: ' + wednesdayVian + '\n' +
+    '• Vian Thursday menu: ' + thursdayVian + '\n' +
+    '• Vian Friday menu: ' + fridayVian + '\n'
+  )
+
+  /*
+  |------------------------------------------
   |               Korhely menu
   |------------------------------------------
   |  Address: Budapest, Liszt Ferenc tér 7, 1061
@@ -27,10 +58,10 @@ const expect = require('expect');
   console.log('*Korhely menu:* \n----------------')
   await page.goto('http://www.korhelyfaloda.hu/menu', { waitUntil: 'networkidle2', timeout: 0 })
   // stores src of given selector, source: https://stackoverflow.com/questions/52542149/how-can-i-download-images-on-a-page-using-puppeteer
-  let linkSelector = '#TPASection_ije2yufiiframe'
+  let linkSelectorKorhely = '#TPASection_ije2yufiiframe'
   const linkKorhely = await page.evaluate((sel) => {
       return document.querySelector(sel).getAttribute('src')
-  }, linkSelector)
+  }, linkSelectorKorhely)
 
   await page.goto(linkKorhely, { waitUntil: 'networkidle2', timeout: 0 })
    const weeklySummaryKorhely = await page.evaluate(el => el.innerText, await page.$('#mainDiv > div > div:nth-child(2) > section > div > div.MenusNavigation_description'))
