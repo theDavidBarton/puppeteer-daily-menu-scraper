@@ -21,22 +21,34 @@ const expect = require('expect');
         var nameOfDay = today
           switch (nameOfDay) {
             case 1:
-              console.log('*MONDAY* \n=======')
-              break;
+              let monday = 'MONDAY'
+              let mLength = monday.length
+              console.log('*' + monday + '* \n' + "=".repeat(mLength))
+              break
               case 2:
-                console.log('*TUESDAY* \n========')
-                break;
+                let tuesday = 'TUESDAY'
+                let tuLength = tuesday.length
+                console.log('*' + tuesday + '* \n' + "=".repeat(tuLength))
+                break
                 case 3:
-                  console.log('*WEDNESDAY* \n==========')
-                  break;
+                  let wednesday = 'WEDNESDAY'
+                  let wLength = wednesday.length
+                  console.log('*' + wednesday + '* \n' + "=".repeat(wLength))
+                  break
                   case 4:
-                    console.log('*THURSDAY* \n========')
-                    break;
+                    let thursday = 'THURSDAY'
+                    let thLength = thursday.length
+                    console.log('*' + thursday + '* \n' + "=".repeat(thLength))
+                    break
                     case 5:
-                      console.log('*FRIDAY* \n=======')
-                      break;
+                      let friday = 'FRIDAY'
+                      let fLength = friday.length
+                      console.log('*' + friday + '* \n' + "=".repeat(fLength))
+                      break
             default:
-              console.log('WHY ARE YOU WORKING TODAY?')
+              let dflt = 'WHY ARE YOU WORKING TODAY?'
+              let dfltLength = dflt.length
+              console.log('*' + dflt + '* \n' + "=".repeat(dfltLength))
             }
 
 
@@ -49,7 +61,9 @@ const expect = require('expect');
   |  Phone: (1) 268 1154
   |
   */
-  console.log('*Cafe Vian menu:* \n----------------')
+  let vianName = 'Cafe vian menu:'
+  let vianLength = vianName.length
+  console.log('*' + vianName + '* \n' + "-".repeat(vianLength))
   await page.goto('http://www.cafevian.com/ebedmenue', { waitUntil: 'networkidle2', timeout: 0 })
   // stores src of given selector, source: https://stackoverflow.com/questions/52542149/how-can-i-download-images-on-a-page-using-puppeteer
   let linkSelectorVian = '#TPASection_jkic76naiframe'
@@ -79,19 +93,19 @@ const expect = require('expect');
     switch (nameOfDayVian) {
       case 1:
         console.log('• Vian Monday menu: ' + mondayVian1 + ', ' + mondayVian2 + '\n')
-        break;
+        break
         case 2:
           console.log('• Vian Tuesday menu: ' + tuesdayVian1 + ', ' + tuesdayVian2 + '\n')
-          break;
+          break
           case 3:
             console.log('• Vian Wednesday menu: ' + wednesdayVian1 + ', ' + wednesdayVian2 + '\n')
-            break;
+            break
             case 4:
               console.log('• Vian Thursday menu: ' + thursdayVian1 + ', ' + thursdayVian2 + '\n')
-              break;
+              break
               case 5:
                 console.log('• Vian Friday menu: ' + fridayVian1 + ', ' + fridayVian2 + '\n')
-                break;
+                break
       default:
       console.log(
         '• Vian Monday menu: ' + mondayVian1 + ', ' + mondayVian2 + '\n' +
@@ -112,7 +126,9 @@ const expect = require('expect');
   |  Phone: (1) 321 0280
   |
   */
-  console.log('*Korhely menu:* \n----------------')
+  let korhelyName = 'Korhely menu:'
+  let korhelyLength = korhelyName.length
+  console.log('*' + korhelyName + '* \n' + "-".repeat(korhelyLength))
   await page.goto('http://www.korhelyfaloda.hu/menu', { waitUntil: 'networkidle2', timeout: 0 })
   // stores src of given selector, source: https://stackoverflow.com/questions/52542149/how-can-i-download-images-on-a-page-using-puppeteer
   let linkSelectorKorhely = '#TPASection_ije2yufiiframe'
@@ -143,7 +159,9 @@ const expect = require('expect');
   |  Phone: (1) 343 1984
   |
   */
-  console.log('*Ketszerecsen Bisztro menu:* \n----------------')
+  let ketszerecsenName = 'Ketszerecsen Bisztro menu:'
+  let ketszerecsenLength = ketszerecsenName.length
+  console.log('*' + ketszerecsenName + '* \n' + "-".repeat(ketszerecsenLength))
   await page.goto('https://ketszerecsen.hu/#daily', { waitUntil: 'networkidle2' })
   // Monday
   const mondayKetszerecsen1 = await page.evaluate(el => el.innerHTML, await page.$('p:nth-child(5)'))
@@ -166,19 +184,19 @@ const expect = require('expect');
     switch (nameOfDayKetszerecsen) {
       case 1:
         console.log('• Ketszerecsen Monday menu: ' + mondayKetszerecsen1 + ', ' + mondayKetszerecsen2 + '\n')
-        break;
+        break
         case 2:
           console.log('• Ketszerecsen Tuesday menu: ' + tuesdayKetszerecsen1 + ', ' + tuesdayKetszerecsen2 + '\n')
-          break;
+          break
           case 3:
             console.log('• Ketszerecsen Wednesday menu: ' + wednesdayKetszerecsen1 + ', ' + wednesdayKetszerecsen2 + '\n')
-            break;
+            break
             case 4:
               console.log('• Ketszerecsen Thursday menu: ' + thursdayKetszerecsen1 + ', ' + thursdayKetszerecsen2 + '\n')
-              break;
+              break
               case 5:
                 console.log('• Ketszerecsen Friday menu: ' + fridayKetszerecsen1 + ', ' + fridayKetszerecsen2 + '\n')
-                break;
+                break
       default:
       console.log(
         '• Ketszerecsen Monday menu: ' + mondayKetszerecsen1 + ', ' + mondayKetszerecsen2 + '\n' +
@@ -199,7 +217,9 @@ const expect = require('expect');
   |  Phone: (1) 430 6125
   |
   */
-  console.log('*Fruccola (Arany Janos utca) menu:* \n----------------')
+  let fruccolaName = 'Fruccola (Arany Janos utca) menu:'
+  let fruccolaLength = fruccolaName.length
+  console.log('*' + fruccolaName + '* \n' + "-".repeat(fruccolaLength))
   await page.goto('http://fruccola.hu/hu', { waitUntil : 'networkidle2' })
   const dailyFruccola1 = await page.evaluate(el => el.innerText, await page.$('#dailymenu-holder > li.arany.today > div.soup > p.description'))
   const dailyFruccola2 = await page.evaluate(el => el.innerText, await page.$('#dailymenu-holder > li.arany.today > div.main-dish > p.description'))
@@ -217,7 +237,9 @@ const expect = require('expect');
   |  Phone: (20) 436 9968
   |
   */
-  console.log('*Kamra menu:* \n----------------')
+  let kamraName = 'Kamra menu:'
+  let kamraLength = kamraName.length
+  console.log('*' + kamraName + '* \n' + "-".repeat(kamraLength))
   await page.goto('http://www.kamraetelbar.hu/kamra_etelbar_mai_menu.html', { waitUntil: 'networkidle2' })
   const dayKamra = await page.evaluate(el => el.innerText, await page.$('.shop_today_1'))
 
@@ -238,7 +260,9 @@ const expect = require('expect');
   |  Phone: (30) 611 4396
   |
   */
-  console.log('*Roza menu:* \n----------------')
+  let rozaName = 'Roza menu:'
+  let rozaLength = rozaName.length
+  console.log('*' + rozaName + '* \n' + "-".repeat(rozaLength))
   await page.goto('https://www.facebook.com/pg/rozafinomitt/posts/?ref=page_internal', { waitUntil: 'networkidle2' })
   const dailyRoza = await page.evaluate(el => el.innerText, await page.$('.text_exposed_show'))
 
@@ -255,7 +279,9 @@ const expect = require('expect');
   |  Phone: (1) 302 4614
   |
   */
-  console.log('*Chagall menu:* \n----------------')
+  let chagallName = 'Chagall menu:'
+  let chagallLength = chagallName.length
+  console.log('*' + chagallName + '* \n' + "-".repeat(chagallLength))
   await page.goto('http://chagallcafe.hu/?page_id=396', { waitUntil: 'networkidle2' })
   // Monday
   const mondayChagall = await page.evaluate(el => el.innerHTML, await page.$('#post-396 > section > div > section > div:nth-child(6) > div:nth-child(1) > div > ul > li > div > h4 > span.item_title'))
@@ -273,19 +299,19 @@ const expect = require('expect');
     switch (nameOfDayChagall) {
       case 1:
         console.log('• Chagall Monday menu: ' + mondayChagall + '\n')
-        break;
+        break
         case 2:
           console.log('• Chagall Tuesday menu: ' + tuesdayChagall + '\n')
-          break;
+          break
           case 3:
             console.log('• Chagall Wednesday menu: ' + wednesdayChagall + '\n')
-            break;
+            break
             case 4:
               console.log('• Chagall Thursday menu: ' + thursdayChagall + '\n')
-              break;
+              break
               case 5:
                 console.log('• Chagall Friday menu: ' + fridayChagall + '\n')
-                break;
+                break
       default:
       console.log(
         '• Chagall Monday menu: ' + mondayChagall + '\n' +
@@ -306,7 +332,9 @@ const expect = require('expect');
   |  Phone: (70) 426 8199
   |
   */
-  console.log('*Mozsár menu:* \n----------------')
+  let mozsarName = 'Mozsar menu:'
+  let mozsarLength = mozsarName.length
+  console.log('*' + mozsarName + '* \n' + "-".repeat(mozsarLength))
   await page.goto('http://mozsarbisztro.hu/index.php?p=3', { waitUntil: 'networkidle2' })
   // Monday
   const mondayMozsar1 = await page.evaluate(el => el.innerHTML, await page.$('#etlapresult > section:nth-child(1) > ul > li:nth-child(1) > label'))
@@ -329,19 +357,19 @@ const expect = require('expect');
     switch (nameOfDayMozsar) {
       case 1:
         console.log('• Mozsár Monday menu: ' + mondayMozsar1 + ', ' + mondayMozsar2 + '\n')
-        break;
+        break
         case 2:
           console.log('• Mozsár Tuesday menu: ' + tuesdayMozsar1 + ', ' + tuesdayMozsar2 + '\n')
-          break;
+          break
           case 3:
             console.log('• Mozsár Wednesday menu: ' + wednesdayMozsar1 + ', ' + wednesdayMozsar2 + '\n')
-            break;
+            break
             case 4:
               console.log('• Mozsár Thursday menu: ' + thursdayMozsar1 + ', ' + thursdayMozsar2 + '\n')
-              break;
+              break
               case 5:
                 console.log('• Mozsár Friday menu: ' + fridayMozsar1 + ', ' + fridayMozsar2 + '\n')
-                break;
+                break
       default:
       console.log(
         '• Mozsár Monday menu: ' + mondayMozsar1 + ', ' + mondayMozsar2 + '\n' +
@@ -362,7 +390,9 @@ const expect = require('expect');
   |  Phone: (1) 312 0557
   |
   */
-  console.log('*Karcsi menu:* \n----------------')
+  let karcsiName = 'Karcsi menu:'
+  let karcsiLength = karcsiName.length
+  console.log('*' + karcsiName + '* \n' + "-".repeat(karcsiLength))
   const weeklyKarcsi = 'http://karcsibacsivendeglo.com/letoltes/napi_menu.pdf'
 
 
@@ -378,7 +408,9 @@ const expect = require('expect');
   |  Phone: (20) 499 5832
   |
   */
-  console.log('*Nokedli menu:* \n----------------')
+  let nokedliName = 'Nokedli menu:'
+  let nokedliLength = nokedliName.length
+  console.log('*' + nokedliName + '* \n' + "-".repeat(nokedliLength))
   await page.goto('http://nokedlikifozde.hu/', { waitUntil: 'networkidle2' })
   // stores src of given selector, source: https://stackoverflow.com/questions/52542149/how-can-i-download-images-on-a-page-using-puppeteer
   let imageSelector = '.aligncenter'
