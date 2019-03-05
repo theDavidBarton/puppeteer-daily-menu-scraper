@@ -6,10 +6,11 @@ The current version is v1.12.2.
 
 ### Fields to be covered
 - scraping web with pptr;
-- automate user flows (e2e testing);
-- automate script creation (puppeteer recorder project).
+- automate user flows (e2e testing) with pptr.
 
 ### Install packages
+
+You will need Node v7.6.0 or greater to run the scripts in this repo.
 
 via Yarn:
 ```shell_session
@@ -28,7 +29,7 @@ npm install expect
 
 ```shell_session
 node test.js
-node scrape.js
+node scrape-menu.js
 ```
 
 ### Links
@@ -45,4 +46,4 @@ node scrape.js
 
 ---
 
-Last edit: *26th February 2019*
+Last edit: *5th March 2019*
