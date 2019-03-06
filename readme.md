@@ -32,6 +32,12 @@ node test.js
 node scrape-menu.js
 ```
 
+If you'd want the scraper's console output save for later then run:
+
+```shell_session
+node scrape-menu.js > tmp/output.txt
+```
+
 ### Links
 
 [The home of Puppeteer](https://pptr.dev)
@@ -46,4 +52,4 @@ node scrape-menu.js
 
 ---
 
-Last edit: *5th March 2019*
+Last edit: *6th March 2019*
