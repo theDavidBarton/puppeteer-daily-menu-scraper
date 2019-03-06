@@ -52,6 +52,56 @@ const expect = require('expect');
             }
 
 
+  /*
+  |------------------------------------------
+  |              Yamato menu
+  |------------------------------------------
+  |  Address: Budapest, 1066, JÓKAI U. 30.
+  |  Phone: +36(70)681-75-44
+  |
+  */
+  let yamatoName = 'Yamato menu:'
+  let yamatoLength = yamatoName.length
+  console.log('*' + yamatoName + '* \n' + "-".repeat(yamatoLength))
+  await page.goto('https://www.wasabi.hu/napimenu.php?source=yamato&lang=hu', { waitUntil: 'networkidle2', timout: 0 })
+  // Monday
+  const mondayYamato = await page.evaluate(el => el.innerText, await page.$('body > div > h6:nth-child(3)'))
+  // Tuesday
+  const tuesdayYamato = await page.evaluate(el => el.innerText, await page.$('body > div > h6:nth-child(5)'))
+  // Wednesday
+  const wednesdayYamato = await page.evaluate(el => el.innerText, await page.$('body > div > h6:nth-child(7)'))
+  // Thursday
+  const thursdayYamato = await page.evaluate(el => el.innerText, await page.$('body > div > h6:nth-child(9)'))
+  // Friday
+  const fridayYamato = await page.evaluate(el => el.innerText, await page.$('body > div > h6:nth-child(11)'))
+
+  var nameOfDayYamato = today
+  switch (nameOfDayYamato) {
+    case 1:
+      console.log('• Yamato Monday menu: ' + mondayYamato + '\n')
+      break
+      case  2:
+        console.log('• Yamato Tuesday menu:' + tuesdayYamato + '\n')
+        break
+        case 3:
+          console.log('• Yamato Wednesday menu:' + wednesdayYamato + '\n')
+          break
+          case 4:
+            console.log('• Yamato Thursday menu:' + thursdayYamato + '\n')
+            break
+            case 5:
+              console.log('• Yamato Friday menu:' + fridayYamato + '\n')
+              break
+    default:
+    console.log(
+      '• Yamato Monday menu: ' + mondayYamato + '\n' +
+      '• Yamato Tuesday menu:' + tuesdayYamato + '\n' +
+      '• Yamato Wednesday menu:' + wednesdayYamato + '\n' +
+      '• Yamato Thursday menu:' + thursdayYamato + '\n' +
+      '• Yamato Friday menu:' + fridayYamato + '\n'
+    )
+  }
+
 
   /*
   |------------------------------------------
