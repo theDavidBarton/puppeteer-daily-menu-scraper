@@ -65,15 +65,20 @@ const expect = require('expect');
   console.log('*' + yamatoName + '* \n' + "-".repeat(yamatoLength))
   await page.goto('https://www.wasabi.hu/napimenu.php?source=yamato&lang=hu', { waitUntil: 'networkidle2', timout: 0 })
   // Monday
-  const mondayYamato = await page.evaluate(el => el.innerText, await page.$('body > div > h6:nth-child(3)'))
+  let mondayYamato = await page.evaluate(el => el.innerText, await page.$('body > div > h6:nth-child(3)'))
+  mondayYamato = mondayYamato.replace(/(\n)/gm, ', ') // removal of line breaks from string, source: https://www.textfixer.com/tutorials/javascript-line-breaks.php
   // Tuesday
-  const tuesdayYamato = await page.evaluate(el => el.innerText, await page.$('body > div > h6:nth-child(5)'))
+  let tuesdayYamato = await page.evaluate(el => el.innerText, await page.$('body > div > h6:nth-child(5)'))
+  tuesdayYamato = tuesdayYamato.replace(/(\n)/gm, ', ')
   // Wednesday
-  const wednesdayYamato = await page.evaluate(el => el.innerText, await page.$('body > div > h6:nth-child(7)'))
+  let wednesdayYamato = await page.evaluate(el => el.innerText, await page.$('body > div > h6:nth-child(7)'))
+  wednesdayYamato = wednesdayYamato.replace(/(\n)/gm, ', ')
   // Thursday
-  const thursdayYamato = await page.evaluate(el => el.innerText, await page.$('body > div > h6:nth-child(9)'))
+  let thursdayYamato = await page.evaluate(el => el.innerText, await page.$('body > div > h6:nth-child(9)'))
+  thursdayYamato = thursdayYamato.replace(/(\n)/gm, ', ')
   // Friday
-  const fridayYamato = await page.evaluate(el => el.innerText, await page.$('body > div > h6:nth-child(11)'))
+  let fridayYamato = await page.evaluate(el => el.innerText, await page.$('body > div > h6:nth-child(11)'))
+  fridayYamato = fridayYamato.replace(/(\n)/gm, ', ')
 
   var nameOfDayYamato = today
   switch (nameOfDayYamato) {
