@@ -66,7 +66,10 @@ const expect = require('expect');
   await page.goto('http://www.napimenu.hu/budapest/adatlap/a-pecsenyes', { waitUntil: 'networkidle2' })
   let dailyPecsenyes = await page.evaluate(el => el.innerText, await page.$('#tabsContent1 > div'))
   dailyPecsenyes = dailyPecsenyes.replace(/(\n)/gm, ', ') // removal of line breaks from string, source: https://www.textfixer.com/tutorials/javascript-line-breaks.php
-  console.log(dailyPecsenyes + '\n')
+
+    console.log('• ' + dailyPecsenyes + '\n')
+
+
 
   /*
   |------------------------------------------
