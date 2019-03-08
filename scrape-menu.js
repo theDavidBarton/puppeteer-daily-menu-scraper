@@ -54,6 +54,25 @@ const expect = require('expect');
 
   /*
   |------------------------------------------
+  |           A-Pecsenyés menu
+  |------------------------------------------
+  |  Address: 1051 Budapest, Sas utca 25.
+  |  Phone: 36-1-610-0645
+  |
+  */
+  let pecsenyesName = 'A-Pecsenyés menu:'
+  let pecsenyesLength = pecsenyesName.length
+  console.log('*' + pecsenyesName + '* \n' + "-".repeat(pecsenyesLength))
+  await page.goto('http://www.napimenu.hu/budapest/adatlap/a-pecsenyes', { waitUntil: 'networkidle2' })
+  let dailyPecsenyes = await page.evaluate(el => el.innerText, await page.$('#tabsContent1 > div'))
+  dailyPecsenyes = dailyPecsenyes.replace(/(\n)/gm, ', ') // removal of line breaks from string, source: https://www.textfixer.com/tutorials/javascript-line-breaks.php
+
+    console.log('• ' + dailyPecsenyes + '\n')
+
+
+
+  /*
+  |------------------------------------------
   |              Yamato menu
   |------------------------------------------
   |  Address: Budapest, 1066, JÓKAI U. 30.
@@ -66,7 +85,7 @@ const expect = require('expect');
   await page.goto('https://www.wasabi.hu/napimenu.php?source=yamato&lang=hu', { waitUntil: 'networkidle2', timout: 0 })
   // Monday
   let mondayYamato = await page.evaluate(el => el.innerText, await page.$('body > div > h6:nth-child(3)'))
-  mondayYamato = mondayYamato.replace(/(\n)/gm, ', ') // removal of line breaks from string, source: https://www.textfixer.com/tutorials/javascript-line-breaks.php
+  mondayYamato = mondayYamato.replace(/(\n)/gm, ', ')
   // Tuesday
   let tuesdayYamato = await page.evaluate(el => el.innerText, await page.$('body > div > h6:nth-child(5)'))
   tuesdayYamato = tuesdayYamato.replace(/(\n)/gm, ', ')
