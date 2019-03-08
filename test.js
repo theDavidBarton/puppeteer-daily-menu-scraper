@@ -3,31 +3,41 @@ const puppeteer = require('puppeteer');
 const expect = require('expect');
 
 (async () => {
-  const browser = await puppeteer.launch({ headless: false, slowMo: 50 })
+  const browser = await puppeteer.launch({ headless: false, slowMo: 25 })
   const page = await browser.newPage()
   const navigationPromise = page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 0 })
 
   await page.setViewport({ width: 1024, height: 768 })
+  // selector collection
+      const airFrom = '#air-from'
+      const airTo = '#air-to'
+      const complocFirst = '#liligo_cl2_item_0'
+      const complocSecond = '#liligo_cl2_item_1'
+      const deselectComparesite = '.hp-searchform-comparesite-selectnone'
+      const airSubmit = '#air-submit'
+
+
 
   // Given I am on the homepage
   await page.goto('https://www.liligo.fr/', { waitUntil: 'networkidle2', timeout: 0 })
-    console.log('page is loaded successfully')
+    console.log('✔ page is loaded successfully')
 
   // When I set departure
-  await page.waitForSelector('#air-from')
-  await page.click('#air-from')
+  await page.waitForSelector(airFrom)
+  await page.click(airFrom)
   await page.keyboard.type('San f')
-  await page.waitForSelector('#liligo_cl2_item_0')
-  await page.click('#liligo_cl2_item_0')
-    const airFrom = '#air-from'
-    console.log(airFrom)
+  await page.waitForSelector(complocFirst)
+  await page.click(complocFirst)
+  let airFromContent = await page.evaluate(el => el.value, await page.$(airFrom))
+    console.log('✔ departure is set' + airFromContent)
+
 
   // And I set arrival
-  await page.waitForSelector('#air-to')
-  await page.click('#air-to')
   await page.keyboard.type('Par')
-  await page.waitForSelector('#liligo_cl2_item_1')
-  await page.click('#liligo_cl2_item_1')
+  await page.waitForSelector(complocSecond)
+  await page.click(complocSecond)
+  let airToContent = await page.evaluate(el => el.value, await page.$(airTo))
+    console.log('✔ arrival is set ' + airToContent)
 
   // And I set date
 /* await page.waitForSelector('.field > #air-out-date > div > #air-out-date-value > span')
@@ -40,12 +50,18 @@ const expect = require('expect');
 */
   // Then popup checkboxes appear below
   // And I disable popup checkboxes
-  await page.waitForSelector('.hp-searchform-comparesite-selectnone')
-  await page.click('.hp-searchform-comparesite-selectnone')
+  await page.waitForSelector(deselectComparesite)
+  await page.click(deselectComparesite)
+    console.log('✔ checkboxes are deselected')
 
   // When I launch search
-  await page.waitForSelector('#air-submit')
-  await page.click('#air-submit')
+  await page.waitForSelector(airSubmit)
+  await page.click(airSubmit)
+    console.log('✔ search is launched')
+
+
+
+
 
   // Then result page appears
   // And results appear
