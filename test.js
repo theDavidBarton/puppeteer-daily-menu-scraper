@@ -52,6 +52,7 @@ const expect = require('expect');
 */
   // Then popup checkboxes appear below
   // And I disable popup checkboxes
+  
   await page.waitForSelector(deselectComparesite)
   await page.click(deselectComparesite)
     console.log('√ checkboxes are deselected')
