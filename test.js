@@ -3,12 +3,13 @@ const puppeteer = require('puppeteer');
 const expect = require('expect');
 
 (async () => {
-  const browser = await puppeteer.launch({ headless: false, slowMo: 40 })
+  const browser = await puppeteer.launch({ headless: false, slowMo: 20 })
   const page = await browser.newPage()
   const navigationPromise = page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 0 })
 
   await page.setViewport({ width: 1024, height: 768 })
     console.log('√ puppeteer has launched')
+
 
     /*
     | -----------------------------------
@@ -44,6 +45,7 @@ const expect = require('expect');
   await page.waitForSelector(airFrom)
   await page.click(airFrom)
   await page.keyboard.type('San f')
+  await page.waitFor(1000)        // make sure dropdown opens
   await page.waitForSelector(complocFirst)
   await page.click(complocFirst)
   let airFromContent = await page.evaluate(el => el.value, await page.$(airFrom))
@@ -52,6 +54,7 @@ const expect = require('expect');
 
 
   await page.keyboard.type('Par')
+  await page.waitFor(1000)
   await page.waitForSelector(complocSecond)
   await page.click(complocSecond)
   let airToContent = await page.evaluate(el => el.value, await page.$(airTo))
@@ -114,29 +117,22 @@ const expect = require('expect');
   await page.click(deselectComparesite)
     console.log('√ checkboxes are deselected')
 
-  // When I launch search
+  // WhHEN I launch search
   await page.waitForSelector(airSubmit)
   await page.click(airSubmit)
     console.log('√ search is launched')
 
 
-
-
-
-  // Then result page appears
-  // And results appear
-  await page.waitForSelector('div:nth-child(5) > div:nth-child(1) > div > div > travel-result-item-desktop > .travel-result-item > .desktop > .travel-details-button')
-  await page.click('div:nth-child(5) > div:nth-child(1) > div > div > travel-result-item-desktop > .travel-result-item > .desktop > .travel-details-button')
-  await page.click('div:nth-child(5) > div:nth-child(1) > div > div > travel-result-item-desktop > .travel-result-item > .desktop > .travel-details-button')
-
-  // And I pause the search
-  // await page.waitForSelector('.results-header-container-inner > div > .results-header-action > .results-header-action-stop > .results-header-action-button-label')
-  // await page.click('.results-header-container-inner > div > .results-header-action > .results-header-action-stop > .results-header-action-button-label')
+  // ThHEN result page appears
+  // AND results appear
+  await page.waitForSelector('.travel-details-button')
+  await page.click('.travel-details-button')
+  await page.click('.travel-details-button')
 
   await navigationPromise
 
-  await page.waitForSelector('travel-result-item-desktop > .travel-result-item > .details-opened > .booking > .cta')
-  await page.click('travel-result-item-desktop > .travel-result-item > .details-opened > .booking > .cta')
+  await page.waitForSelector('.cta')
+  await page.click('.cta')
 
   await navigationPromise
 
