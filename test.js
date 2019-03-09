@@ -3,13 +3,20 @@ const puppeteer = require('puppeteer');
 const expect = require('expect');
 
 (async () => {
-  const browser = await puppeteer.launch({ headless: false, slowMo: 30 })
+  const browser = await puppeteer.launch({ headless: false, slowMo: 40 })
   const page = await browser.newPage()
   const navigationPromise = page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 0 })
 
   await page.setViewport({ width: 1024, height: 768 })
     console.log('√ puppeteer has launched')
-  // selector collection
+
+    /*
+    | -----------------------------------
+    | SELECTORS
+    | -----------------------------------
+    | selector collection
+    */
+
       const airFrom             = '#air-from'
       const airTo               = '#air-to'
       const complocFirst        = '#liligo_cl2_item_0'
@@ -24,6 +31,12 @@ const expect = require('expect');
   // Given I am on the homepage
   await page.goto('https://www.liligo.fr/', { waitUntil: 'networkidle2', timeout: 0 })
     console.log('√ page is loaded successfully with all its assets')
+
+    /*
+    | -----------------------------------
+    | LOCATIONS
+    | -----------------------------------
+    */
 
   // When I set departure
   await page.waitForSelector(airFrom)
@@ -46,12 +59,19 @@ const expect = require('expect');
 
 
   // And I set date
-  // selector collection for datePicker
-      const nowDate = '.now'
-      const actualDate = '.actual'
-      const datePickerArrowLeft = '.dpPrev'
+  /*
+  | -----------------------------------
+  | DATE PICKER
+  | -----------------------------------
+  | selector collection for datePicker
+  */
+      const nowDate              = '.now'
+      const actualDate           = '.actual'
+      const datePickerMonth1     = 'div.dpMonth.dpMonth1 .dpMonthHeader'
+      const datePickerMonth2     = 'div.dpMonth.dpMonth2 .dpMonthHeader'
+      const datePickerArrowLeft  = '.dpPrev'
       const datePickerArrowRight = '.dpNext'
-      const randomFutureDate = 'tr:nth-child(3) > td:nth-child(4)'
+      const randomFutureDate     = 'tr:nth-child(3) > td:nth-child(4)'
 
   await page.waitForSelector(airFromDate)
   let airFromDateContent = await page.evaluate(el => el.innerText, await page.$(airFromDate))
@@ -63,10 +83,23 @@ const expect = require('expect');
       await page.waitForSelector(datePickerArrowRight)
       await page.click(datePickerArrowRight)
       await page.click(randomFutureDate)
-      airFromDateContent = await page.evaluate(el => el.innerText, await page.$(airFromDate))
-      airToDateContent = await page.evaluate(el => el.innerText, await page.$(airToDate))
-        console.log('√ selected departure date is: ' + airFromDateContent)
-        console.log('√ defaulted arrival date is: ' + airToDateContent)
+        airFromDateContent = await page.evaluate(el => el.innerText, await page.$(airFromDate))
+        airToDateContent = await page.evaluate(el => el.innerText, await page.$(airToDate))
+          console.log('√ selected departure date is: ' + airFromDateContent) // format: 18 Avr. 2019 (jeudi)
+          console.log('√ selected arrival date is: ' + airToDateContent)     // format: see above
+            // validate date selection
+            await page.click(airFromDate)
+            let airFromDateSelectedMonth = await page.evaluate(el => el.innerText, await page.$(datePickerMonth1))
+            let airFromDateSelectedDay = await page.evaluate(el => el.innerText, await page.$(actualDate))
+              let airFromDateSelected = airFromDateSelectedDay + ' ' + airFromDateSelectedMonth
+            console.log('----> departure day selected: ' + airFromDateSelected) // format: 18 Avril, 2019
+              expect('Christoph').toMatch(/stop/)
+              console.log('+ toMatch works, wow! :o \n')
+            await page.click(airToDate)
+            let airToDateSelectedMonth = await page.evaluate(el => el.innerText, await page.$(datePickerMonth1))
+            let airToDateSelectedDay = await page.evaluate(el => el.innerText, await page.$(actualDate))
+              let airToDateSelected = airToDateSelectedDay + ' ' + airToDateSelectedMonth
+            console.log('----> arrival day selected: ' + airToDateSelected)   // format: see above
 
 /* await page.waitForSelector('.field > #air-out-date > div > #air-out-date-value > span')
   await page.click('.field > #air-out-date > div > #air-out-date-value > span')
