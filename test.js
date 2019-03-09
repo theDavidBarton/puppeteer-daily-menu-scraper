@@ -13,6 +13,7 @@ const expect = require('expect');
       const airTo               = '#air-to'
       const complocFirst        = '#liligo_cl2_item_0'
       const complocSecond       = '#liligo_cl2_item_1'
+      const airfromDate         = '#air-out-date-value'
       const deselectComparesite = '.hp-searchform-comparesite-selectnone'
       const airSubmit           = '#air-submit'
 
@@ -42,6 +43,9 @@ const expect = require('expect');
     console.log('√ arrival is set ' + airToContent)
 
   // And I set date
+  await page.waitForSelector(airfromDate)
+  let airFromDateContent = await page.evaluate(el => el.innerText, await page.$(airfromDate))
+    console.log('√ default departure date is: ' + airFromDateContent)
 /* await page.waitForSelector('.field > #air-out-date > div > #air-out-date-value > span')
   await page.click('.field > #air-out-date > div > #air-out-date-value > span')
   await page.waitForSelector('.datepicker > .dpBody > .dpMonth > .dpMonthHeader > .dpNext')
@@ -52,7 +56,7 @@ const expect = require('expect');
 */
   // Then popup checkboxes appear below
   // And I disable popup checkboxes
-  
+
   await page.waitForSelector(deselectComparesite)
   await page.click(deselectComparesite)
     console.log('√ checkboxes are deselected')
