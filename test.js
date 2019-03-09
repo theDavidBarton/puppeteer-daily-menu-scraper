@@ -3,17 +3,19 @@ const puppeteer = require('puppeteer');
 const expect = require('expect');
 
 (async () => {
-  const browser = await puppeteer.launch({ headless: false, slowMo: 25 })
+  const browser = await puppeteer.launch({ headless: false, slowMo: 30 })
   const page = await browser.newPage()
   const navigationPromise = page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 0 })
 
   await page.setViewport({ width: 1024, height: 768 })
+    console.log('√ puppeteer has launched')
   // selector collection
       const airFrom             = '#air-from'
       const airTo               = '#air-to'
       const complocFirst        = '#liligo_cl2_item_0'
       const complocSecond       = '#liligo_cl2_item_1'
-      const airfromDate         = '#air-out-date-value'
+      const airFromDate         = '#air-out-date-value'
+      const airToDate           = '#air-ret-date-value'
       const deselectComparesite = '.hp-searchform-comparesite-selectnone'
       const airSubmit           = '#air-submit'
 
@@ -21,7 +23,7 @@ const expect = require('expect');
 
   // Given I am on the homepage
   await page.goto('https://www.liligo.fr/', { waitUntil: 'networkidle2', timeout: 0 })
-    console.log('√ page is loaded successfully')
+    console.log('√ page is loaded successfully with all its assets')
 
   // When I set departure
   await page.waitForSelector(airFrom)
@@ -42,10 +44,28 @@ const expect = require('expect');
   expect(airToContent).toBe('Paris, France (CDG)')
     console.log('√ arrival is set ' + airToContent)
 
+
   // And I set date
-  await page.waitForSelector(airfromDate)
-  let airFromDateContent = await page.evaluate(el => el.innerText, await page.$(airfromDate))
+  // selector collection for datePicker
+      const nowDate = '.now'
+      const actualDate = '.actual'
+      const datePickerArrowLeft = '.dpArrow dpArrowLeft'
+      const datePickerArrowRight = '.dpArrow dpArrowRight'
+      const randomFutureDate = 'tr:nth-child(3) > td:nth-child(4)'
+
+  await page.waitForSelector(airFromDate)
+  let airFromDateContent = await page.evaluate(el => el.innerText, await page.$(airFromDate))
+  await page.waitForSelector(airToDate)
+  let airToDateContent = await page.evaluate(el => el.innerText, await page.$(airToDate))
     console.log('√ default departure date is: ' + airFromDateContent)
+    console.log('√ default arrival date is: ' + airToDateContent)
+      await page.click(airFromDate)
+      await page.waitForSelector(datePickerArrowRight)
+      await page.click(datePickerArrowRight)
+      await page.click(randomFutureDate)
+        console.log('√ selected departure date is: ' + airFromDateContent)
+        console.log('√ defaultet arrival date is: ' + airToDateContent)
+
 /* await page.waitForSelector('.field > #air-out-date > div > #air-out-date-value > span')
   await page.click('.field > #air-out-date > div > #air-out-date-value > span')
   await page.waitForSelector('.datepicker > .dpBody > .dpMonth > .dpMonthHeader > .dpNext')
