@@ -26,9 +26,10 @@ const expect = require('expect');
       const deselectComparesite = '.hp-searchform-comparesite-selectnone'
       const airSubmit           = '#air-submit'
 
+  /*
+  | GIVEN I am on the homepage
+  */
 
-
-  // Given I am on the homepage
   await page.goto('https://www.liligo.fr/', { waitUntil: 'networkidle2', timeout: 0 })
     console.log('√ page is loaded successfully with all its assets')
 
@@ -36,9 +37,10 @@ const expect = require('expect');
     | -----------------------------------
     | LOCATIONS
     | -----------------------------------
+    | WHEN I set departure
+    | AND I set arrival
     */
 
-  // When I set departure
   await page.waitForSelector(airFrom)
   await page.click(airFrom)
   await page.keyboard.type('San f')
@@ -49,7 +51,6 @@ const expect = require('expect');
     console.log('√ departure is set ' + airFromContent)
 
 
-  // And I set arrival
   await page.keyboard.type('Par')
   await page.waitForSelector(complocSecond)
   await page.click(complocSecond)
@@ -58,13 +59,13 @@ const expect = require('expect');
     console.log('√ arrival is set ' + airToContent)
 
 
-  // And I set date
   /*
   | -----------------------------------
   | DATE PICKER
   | -----------------------------------
-  | selector collection for datePicker
+  | AND I set a new date
   */
+
       const nowDate              = '.now'
       const actualDate           = '.actual'
       const datePickerMonth1     = 'div.dpMonth.dpMonth1 .dpMonthHeader'
@@ -83,34 +84,31 @@ const expect = require('expect');
       await page.waitForSelector(datePickerArrowRight)
       await page.click(datePickerArrowRight)
       await page.click(randomFutureDate)
-        airFromDateContent = await page.evaluate(el => el.innerText, await page.$(airFromDate))
-        airToDateContent = await page.evaluate(el => el.innerText, await page.$(airToDate))
-          console.log('√ selected departure date is: ' + airFromDateContent) // format: 18 Avr. 2019 (jeudi)
-          console.log('√ selected arrival date is: ' + airToDateContent)     // format: see above
-            // validate date selection
+        airFromDateContent = await page.evaluate(el => el.innerText, await page.$(airFromDate)) // format: 18 Avr. 2019 (jeudi)
+        airToDateContent = await page.evaluate(el => el.innerText, await page.$(airToDate))     // format: 25 Avr. 2019 (jeudi)
+          console.log('√ selected departure date is: ' + airFromDateContent)
+          console.log('√ selected arrival date is: ' + airToDateContent)
+            // validates date selection
             await page.click(airFromDate)
             let airFromDateSelectedMonth = await page.evaluate(el => el.innerText, await page.$(datePickerMonth1))
             let airFromDateSelectedDay = await page.evaluate(el => el.innerText, await page.$(actualDate))
-              let airFromDateSelected = airFromDateSelectedDay + ' ' + airFromDateSelectedMonth
-            console.log('----> departure day selected: ' + airFromDateSelected) // format: 18 Avril, 2019
-              expect('Christoph').toMatch(/stop/)
-              console.log('+ toMatch works, wow! :o \n')
+              let airFromDateSelected = airFromDateSelectedDay + ' ' + airFromDateSelectedMonth // format: 18 Avril, 2019
+            console.log('----> departure day selected: ' + airFromDateSelected)
+              expect(airFromDateContent).toMatch(/19/)
+              console.log('√ airFrom contains "19" \n')
             await page.click(airToDate)
             let airToDateSelectedMonth = await page.evaluate(el => el.innerText, await page.$(datePickerMonth1))
             let airToDateSelectedDay = await page.evaluate(el => el.innerText, await page.$(actualDate))
-              let airToDateSelected = airToDateSelectedDay + ' ' + airToDateSelectedMonth
-            console.log('----> arrival day selected: ' + airToDateSelected)   // format: see above
+              let airToDateSelected = airToDateSelectedDay + ' ' + airToDateSelectedMonth     // format: 25 Avril, 2019
+            console.log('----> arrival day selected: ' + airToDateSelected)
+              expect(airToDateContent).toMatch(/19/)
+              console.log('√ airTo contains "19" \n')
 
-/* await page.waitForSelector('.field > #air-out-date > div > #air-out-date-value > span')
-  await page.click('.field > #air-out-date > div > #air-out-date-value > span')
-  await page.waitForSelector('.datepicker > .dpBody > .dpMonth > .dpMonthHeader > .dpNext')
-  await page.click('.datepicker > .dpBody > .dpMonth > .dpMonthHeader > .dpNext')
+            // clickouts from datePicker
+            await page.click('.hp-searcharea') // the searchform's background
 
-  await page.waitForSelector('table > tbody > tr > .hover > a')
-  await page.click('table > tbody > tr > .hover > a')
-*/
-  // Then popup checkboxes appear below
-  // And I disable popup checkboxes
+  // THEN popup checkboxes appear below
+  // AND I disable popup checkboxes
 
   await page.waitForSelector(deselectComparesite)
   await page.click(deselectComparesite)
