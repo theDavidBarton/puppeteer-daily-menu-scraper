@@ -49,8 +49,8 @@ const expect = require('expect');
   // selector collection for datePicker
       const nowDate = '.now'
       const actualDate = '.actual'
-      const datePickerArrowLeft = '.dpArrow dpArrowLeft'
-      const datePickerArrowRight = '.dpArrow dpArrowRight'
+      const datePickerArrowLeft = '.dpPrev'
+      const datePickerArrowRight = '.dpNext'
       const randomFutureDate = 'tr:nth-child(3) > td:nth-child(4)'
 
   await page.waitForSelector(airFromDate)
@@ -63,8 +63,10 @@ const expect = require('expect');
       await page.waitForSelector(datePickerArrowRight)
       await page.click(datePickerArrowRight)
       await page.click(randomFutureDate)
+      airFromDateContent = await page.evaluate(el => el.innerText, await page.$(airFromDate))
+      airToDateContent = await page.evaluate(el => el.innerText, await page.$(airToDate))
         console.log('√ selected departure date is: ' + airFromDateContent)
-        console.log('√ defaultet arrival date is: ' + airToDateContent)
+        console.log('√ defaulted arrival date is: ' + airToDateContent)
 
 /* await page.waitForSelector('.field > #air-out-date > div > #air-out-date-value > span')
   await page.click('.field > #air-out-date > div > #air-out-date-value > span')
