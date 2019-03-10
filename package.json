@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "expect": "^24.1.0",
-    "puppeteer": "^1.12.2"
+    "expect": "^24.3.1",
+    "puppeteer": "^1.13.0"
   }
 }

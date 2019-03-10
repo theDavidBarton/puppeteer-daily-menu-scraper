@@ -2,7 +2,7 @@
 
 A playground repository for the well known Node library **Puppeteer** (pptr) made by GoogleChromeLabs team. See below the covered areas. The aim is to experiment with its possibilities for a bigger project.
 
-The current version is v1.12.2.
+The current version of pptr is v1.13.0
 
 ### Fields to be covered
 - scraping web with pptr;
