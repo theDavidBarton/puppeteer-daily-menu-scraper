@@ -72,6 +72,7 @@ const puppeteer = require('puppeteer');
   let yamatoLength = yamatoName.length
   console.log('*' + yamatoName + '* \n' + "-".repeat(yamatoLength))
   await page.goto('https://www.wasabi.hu/napimenu.php?source=yamato&lang=hu', { waitUntil: 'networkidle2', timout: 0 })
+
   // Monday
   let mondayYamato
   if (await page.$(mondayYamatoSelector) !== null) {
@@ -80,6 +81,7 @@ const puppeteer = require('puppeteer');
     }
   else { mondayYamato = '♪"No Milk Today"♫'
   }
+
   // Tuesday
   let tuesdayYamato
   if (await page.$(tuesdayYamatoSelector) !== null) {
@@ -88,6 +90,7 @@ const puppeteer = require('puppeteer');
     }
   else { tuesdayYamato = '♪"No Milk Today"♫'
   }
+
   // Wednesday
   let wednesdayYamato
   if (await page.$(wednesdayYamatoSelector) !== null) {
@@ -96,6 +99,7 @@ const puppeteer = require('puppeteer');
     }
   else { wednesdayYamato = '♪"No Milk Today"♫'
   }
+
   // Thursday
   let thursdayYamato
   if (await page.$(thursdayYamatoSelector) !== null) {
@@ -104,6 +108,7 @@ const puppeteer = require('puppeteer');
     }
   else { thursdayYamato = '♪"No Milk Today"♫'
   }
+
   // Friday
   let fridayYamato
   if (await page.$(fridayYamatoSelector) !== null) {
@@ -174,6 +179,7 @@ const puppeteer = require('puppeteer');
   }, linkSelectorVian)
 
   await page.goto(linkVian, { waitUntil: 'networkidle2', timeout: 0 })
+
   // Monday
   let mondayVian1
   let mondayVian2
@@ -184,6 +190,7 @@ const puppeteer = require('puppeteer');
   else { mondayVian1 = '♪"No Milk Today"♫'
          mondayVian2 = ''
   }
+
   // Tuesday
   let tuesdayVian1
   let tuesdayVian2
@@ -194,6 +201,7 @@ const puppeteer = require('puppeteer');
   else { tuesdayVian1 = '♪"No Milk Today"♫'
          tuesdayVian2 = ''
   }
+
   // Wednesday
   let wednesdayVian1
   let wednesdayVian2
@@ -204,6 +212,7 @@ const puppeteer = require('puppeteer');
   else { wednesdayVian1 = '♪"No Milk Today"♫'
          wednesdayVian1 = ''
   }
+
   // Thursday
   let thursdayVian1
   let thursdayVian2
@@ -214,6 +223,7 @@ const puppeteer = require('puppeteer');
   else { thursdayVian1 = '♪"No Milk Today"♫'
          thursdayVian2 = ''
   }
+
   // Friday
   let fridayVian1
   let fridayVian2
@@ -255,23 +265,23 @@ const puppeteer = require('puppeteer');
 
 
 
-      /*
-      |------------------------------------------
-      |           A-Pecsenyés menu
-      |------------------------------------------
-      |  Address: 1051 Budapest, Sas utca 25.
-      |  Phone: 36-1-610-0645
-      |
-      */
-      let pecsenyesName = 'A-Pecsenyés menu:'
-      let pecsenyesLength = pecsenyesName.length
-      console.log('*' + pecsenyesName + '* \n' + "-".repeat(pecsenyesLength))
-      await page.goto('http://www.napimenu.hu/budapest/adatlap/a-pecsenyes', { waitUntil: 'networkidle2' })
-      let dailyPecsenyes = await page.evaluate(el => el.innerText, await page.$('#tabsContent1 > div'))
-      dailyPecsenyes = dailyPecsenyes.replace(/(\n)/gm, ', ') // removal of line breaks from string, source: https://www.textfixer.com/tutorials/javascript-line-breaks.php
+  /*
+  |------------------------------------------
+  |           A-Pecsenyés menu
+  |------------------------------------------
+  |  Address: 1051 Budapest, Sas utca 25.
+  |  Phone: 36-1-610-0645
+  |
+  */
+  let pecsenyesName = 'A-Pecsenyés menu:'
+  let pecsenyesLength = pecsenyesName.length
+    console.log('*' + pecsenyesName + '* \n' + "-".repeat(pecsenyesLength))
+  await page.goto('http://www.napimenu.hu/budapest/adatlap/a-pecsenyes', { waitUntil: 'networkidle2' })
+  let dailyPecsenyes = await page.evaluate(el => el.innerText, await page.$('#tabsContent1 > div'))
+  dailyPecsenyes = dailyPecsenyes.replace(/(\n)/gm, ', ') // removal of line breaks from string, source: https://www.textfixer.com/tutorials/javascript-line-breaks.php
 
 
-        console.log('• ' + dailyPecsenyes + '\n')
+    console.log('• ' + dailyPecsenyes + '\n')
 
 
 
@@ -332,6 +342,7 @@ const puppeteer = require('puppeteer');
   let ketszerecsenLength = ketszerecsenName.length
   console.log('*' + ketszerecsenName + '* \n' + "-".repeat(ketszerecsenLength))
   await page.goto('https://ketszerecsen.hu/#daily', { waitUntil: 'networkidle2' })
+
   // Monday
   let mondayKetszerecsen1
   let mondayKetszerecsen2
@@ -342,6 +353,7 @@ const puppeteer = require('puppeteer');
   else { mondayKetszerecsen1 = '♪"No Milk Today"♫'
          mondayKetszerecsen2 = ''
   }
+
   // Tuesday
   let tuesdayKetszerecsen1
   let tuesdayKetszerecsen2
@@ -352,6 +364,7 @@ const puppeteer = require('puppeteer');
   else { tuesdayKetszerecsen1 = '♪"No Milk Today"♫'
          tuesdayKetszerecsen2 = ''
   }
+
   // Wednesday
   let wednesdayKetszerecsen1
   let wednesdayKetszerecsen2
@@ -362,6 +375,7 @@ const puppeteer = require('puppeteer');
   else { wednesdayKetszerecsen1 = '♪"No Milk Today"♫'
          wednesdayKetszerecsen2 = ''
   }
+
   // Thursday
   let thursdayKetszerecsen1
   let thursdayKetszerecsen2
@@ -372,6 +386,7 @@ const puppeteer = require('puppeteer');
   else { thursdayKetszerecsen1 = '♪"No Milk Today"♫'
          thursdayKetszerecsen2 = ''
   }
+
   // Friday
   let fridayKetszerecsen1
   let fridayKetszerecsen2
@@ -483,20 +498,57 @@ const puppeteer = require('puppeteer');
   |  Phone: (1) 302 4614
   |
   */
+
+      const mondayChagallSelector = '#post-396 > section > div > section > div:nth-child(6) > div:nth-child(1) > div > ul > li > div > h4 > span.item_title'
+      const tuesdayChagallSelector = '#post-396 > section > div > section > div:nth-child(6) > div:nth-child(2) > div > ul > li > div > h4 > span.item_title'
+      const wednesdayChagallSelector = '#post-396 > section > div > section > div:nth-child(6) > div:nth-child(3) > div > ul > li > div > h4 > span.item_title'
+      const thursdayChagallSelector = '#post-396 > section > div > section > div:nth-child(6) > div:nth-child(4) > div > ul > li > div > h4 > span.item_title'
+      const fridayChagallSelector = '#post-396 > section > div > section > div:nth-child(6) > div:nth-child(5) > div > ul > li > div > h4 > span.item_title'
+
   let chagallName = 'Chagall menu:'
   let chagallLength = chagallName.length
   console.log('*' + chagallName + '* \n' + "-".repeat(chagallLength))
   await page.goto('http://chagallcafe.hu/?page_id=396', { waitUntil: 'networkidle2' })
+
   // Monday
-  const mondayChagall = await page.evaluate(el => el.innerHTML, await page.$('#post-396 > section > div > section > div:nth-child(6) > div:nth-child(1) > div > ul > li > div > h4 > span.item_title'))
+  let mondayChagall
+  if (await page.$(mondayChagallSelector) !== null) {
+      mondayChagall = await page.evaluate(el => el.innerHTML, await page.$(mondayChagallSelector))
+    }
+  else { mondayChagall = '♪"No Milk Today"♫'
+  }
+
   // Tuesday
-  const tuesdayChagall = await page.evaluate(el => el.innerHTML, await page.$('#post-396 > section > div > section > div:nth-child(6) > div:nth-child(2) > div > ul > li > div > h4 > span.item_title'))
+  let tuesdayChagall
+  if (await page.$(tuesdayChagallSelector) !== null) {
+      tuesdayChagall = await page.evaluate(el => el.innerHTML, await page.$(tuesdayChagallSelector))
+    }
+  else { tuesdayChagall = '♪"No Milk Today"♫'
+  }
+
   // Wednesday
-  const wednesdayChagall = await page.evaluate(el => el.innerHTML, await page.$('#post-396 > section > div > section > div:nth-child(6) > div:nth-child(3) > div > ul > li > div > h4 > span.item_title'))
+  let wednesdayChagall
+  if (await page.$(wednesdayChagallSelector) !== null) {
+      wednesdayChagall = await page.evaluate(el => el.innerHTML, await page.$(wednesdayChagallSelector))
+    }
+  else { wednesdayChagall = '♪"No Milk Today"♫'
+  }
+
   // Thursday
-  const thursdayChagall = await page.evaluate(el => el.innerHTML, await page.$('#post-396 > section > div > section > div:nth-child(6) > div:nth-child(4) > div > ul > li > div > h4 > span.item_title'))
+  let thursdayChagall
+  if (await page.$(thursdayChagallSelector) !== null) {
+      thursdayChagall = await page.evaluate(el => el.innerHTML, await page.$(thursdayChagallSelector))
+    }
+  else { thursdayChagall = '♪"No Milk Today"♫'
+  }
+
   // Friday
-  const fridayChagall = await page.evaluate(el => el.innerHTML, await page.$('#post-396 > section > div > section > div:nth-child(6) > div:nth-child(5) > div > ul > li > div > h4 > span.item_title'))
+  let fridayChagall
+  if (await page.$(fridayChagallSelector) !== null) {
+      fridayChagall = await page.evaluate(el => el.innerHTML, await page.$(fridayChagallSelector))
+    }
+  else { fridayChagall = '♪"No Milk Today"♫'
+  }
 
 
   var nameOfDayChagall = today
@@ -504,26 +556,26 @@ const puppeteer = require('puppeteer');
       case 1:
         console.log('• Chagall Monday menu: ' + mondayChagall + '\n')
         break
-        case 2:
-          console.log('• Chagall Tuesday menu: ' + tuesdayChagall + '\n')
-          break
-          case 3:
-            console.log('• Chagall Wednesday menu: ' + wednesdayChagall + '\n')
-            break
-            case 4:
-              console.log('• Chagall Thursday menu: ' + thursdayChagall + '\n')
-              break
-              case 5:
-                console.log('• Chagall Friday menu: ' + fridayChagall + '\n')
-                break
+      case 2:
+        console.log('• Chagall Tuesday menu: ' + tuesdayChagall + '\n')
+        break
+      case 3:
+        console.log('• Chagall Wednesday menu: ' + wednesdayChagall + '\n')
+        break
+      case 4:
+        console.log('• Chagall Thursday menu: ' + thursdayChagall + '\n')
+        break
+      case 5:
+        console.log('• Chagall Friday menu: ' + fridayChagall + '\n')
+        break
       default:
-      console.log(
-        '• Chagall Monday menu: ' + mondayChagall + '\n' +
-        '• Chagall Tuesday menu: ' + tuesdayChagall + '\n' +
-        '• Chagall Wednesday menu: ' + wednesdayChagall + '\n' +
-        '• Chagall Thursday menu: ' + thursdayChagall + '\n' +
-        '• Chagall Friday menu: ' + fridayChagall + '\n'
-      )
+        console.log(
+          '• Chagall Monday menu: ' + mondayChagall + '\n' +
+          '• Chagall Tuesday menu: ' + tuesdayChagall + '\n' +
+          '• Chagall Wednesday menu: ' + wednesdayChagall + '\n' +
+          '• Chagall Thursday menu: ' + thursdayChagall + '\n' +
+          '• Chagall Friday menu: ' + fridayChagall + '\n'
+        )
       }
 
 
