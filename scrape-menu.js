@@ -151,6 +151,18 @@ const expect = require('expect');
   |  Phone: (1) 268 1154
   |
   */
+
+      const mondayVianSelector1 = '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(1) > div:nth-child(1) > div.heartyQ2riU'
+      const mondayVianSelector2 = '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(1) > div.hearty2QDOd > div > div > div.heartyQogjj > span'
+      const tuesdayVianSelector1 = '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(2) > div:nth-child(1) > div.heartyQ2riU'
+      const tuesdayVianSelector2 = '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(2) > div.hearty2QDOd > div > div > div.heartyQogjj > span'
+      const wednesdayVianSelector1 = '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(3) > div:nth-child(1) > div.heartyQ2riU'
+      const wednesdayVianSelector2 = '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(3) > div.hearty2QDOd > div > div > div.heartyQogjj > span'
+      const thursdayVianSelector1 = '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(4) > div:nth-child(1) > div.heartyQ2riU'
+      const thursdayVianSelector2 = '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(4) > div.hearty2QDOd > div > div > div.heartyQogjj > span'
+      const fridayVianSelector1 = '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(5) > div:nth-child(1) > div.heartyQ2riU'
+      const fridayVianSelector2 = '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(5) > div.hearty2QDOd > div > div > div.heartyQogjj > span'
+
   let vianName = 'Cafe vian menu:'
   let vianLength = vianName.length
   console.log('*' + vianName + '* \n' + "-".repeat(vianLength))
@@ -163,20 +175,55 @@ const expect = require('expect');
 
   await page.goto(linkVian, { waitUntil: 'networkidle2', timeout: 0 })
   // Monday
-  const mondayVian1 = await page.evaluate(elefant => elefant.innerText, await page.$('#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(1) > div:nth-child(1) > div.heartyQ2riU'))
-  const mondayVian2 = await page.evaluate(elefant => elefant.innerText, await page.$('#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(1) > div.hearty2QDOd > div > div > div.heartyQogjj > span'))
+  let mondayVian1
+  let mondayVian2
+  if (await page.$(mondayVianSelector1) !== null) {
+      mondayVian1 = await page.evaluate(elefant => elefant.innerText, await page.$(mondayVianSelector1))
+      mondayVian2 = await page.evaluate(elefant => elefant.innerText, await page.$(mondayVianSelector2))
+    }
+  else { mondayVian1 = '♪"No Milk Today"♫'
+         mondayVian2 = ''
+  }
   // Tuesday
-  const tuesdayVian1 = await page.evaluate(elefant => elefant.innerText, await page.$('#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(2) > div:nth-child(1) > div.heartyQ2riU'))
-  const tuesdayVian2 = await page.evaluate(elefant => elefant.innerText, await page.$('#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(2) > div.hearty2QDOd > div > div > div.heartyQogjj > span'))
+  let tuesdayVian1
+  let tuesdayVian2
+  if (await page.$(tuesdayVianSelector1) !== null) {
+      tuesdayVian1 = await page.evaluate(elefant => elefant.innerText, await page.$(tuesdayVianSelector1))
+      tuesdayVian2 = await page.evaluate(elefant => elefant.innerText, await page.$(tuesdayVianSelector2))
+    }
+  else { tuesdayVian1 = '♪"No Milk Today"♫'
+         tuesdayVian2 = ''
+  }
   // Wednesday
-  const wednesdayVian1 = await page.evaluate(elefant => elefant.innerText, await page.$('#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(3) > div:nth-child(1) > div.heartyQ2riU'))
-  const wednesdayVian2 = await page.evaluate(elefant => elefant.innerText, await page.$('#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(3) > div.hearty2QDOd > div > div > div.heartyQogjj > span'))
+  let wednesdayVian1
+  let wednesdayVian2
+  if (await page.$(wednesdayVianSelector1) !== null) {
+      wednesdayVian1 = await page.evaluate(elefant => elefant.innerText, await page.$(wednesdayVianSelector1))
+      wednesdayVian2 = await page.evaluate(elefant => elefant.innerText, await page.$(wednesdayVianSelector2))
+    }
+  else { wednesdayVian1 = '♪"No Milk Today"♫'
+         wednesdayVian1 = ''
+  }
   // Thursday
-  const thursdayVian1 = await page.evaluate(elefant => elefant.innerText, await page.$('#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(4) > div:nth-child(1) > div.heartyQ2riU'))
-  const thursdayVian2 = await page.evaluate(elefant => elefant.innerText, await page.$('#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(4) > div.hearty2QDOd > div > div > div.heartyQogjj > span'))
+  let thursdayVian1
+  let thursdayVian2
+  if (await page.$(thursdayVianSelector1) !== null) {
+      thursdayVian1 = await page.evaluate(elefant => elefant.innerText, await page.$(thursdayVianSelector1))
+      thursdayVian2 = await page.evaluate(elefant => elefant.innerText, await page.$(thursdayVianSelector2))
+    }
+  else { thursdayVian1 = '♪"No Milk Today"♫'
+         thursdayVian2 = ''
+  }
   // Friday
-  const fridayVian1 = await page.evaluate(elefant => elefant.innerText, await page.$('#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(5) > div:nth-child(1) > div.heartyQ2riU'))
-  const fridayVian2 = await page.evaluate(elefant => elefant.innerText, await page.$('#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(5) > div.hearty2QDOd > div > div > div.heartyQogjj > span'))
+  let fridayVian1
+  let fridayVian2
+  if (await page.$(fridayVianSelector1) !== null) {
+      fridayVian1 = await page.evaluate(elefant => elefant.innerText, await page.$(fridayVianSelector1))
+      fridayVian2 = await page.evaluate(elefant => elefant.innerText, await page.$(fridayVianSelector2))
+  }
+  else { fridayVian1 = '♪"No Milk Today"♫'
+         fridayVian2 = ''
+  }
 
 
   var nameOfDayVian = today
@@ -184,26 +231,26 @@ const expect = require('expect');
       case 1:
         console.log('• Vian Monday menu: ' + mondayVian1 + ', ' + mondayVian2 + '\n')
         break
-        case 2:
-          console.log('• Vian Tuesday menu: ' + tuesdayVian1 + ', ' + tuesdayVian2 + '\n')
-          break
-          case 3:
-            console.log('• Vian Wednesday menu: ' + wednesdayVian1 + ', ' + wednesdayVian2 + '\n')
-            break
-            case 4:
-              console.log('• Vian Thursday menu: ' + thursdayVian1 + ', ' + thursdayVian2 + '\n')
-              break
-              case 5:
-                console.log('• Vian Friday menu: ' + fridayVian1 + ', ' + fridayVian2 + '\n')
-                break
+      case 2:
+        console.log('• Vian Tuesday menu: ' + tuesdayVian1 + ', ' + tuesdayVian2 + '\n')
+        break
+      case 3:
+        console.log('• Vian Wednesday menu: ' + wednesdayVian1 + ', ' + wednesdayVian2 + '\n')
+        break
+      case 4:
+        console.log('• Vian Thursday menu: ' + thursdayVian1 + ', ' + thursdayVian2 + '\n')
+        break
+      case 5:
+        console.log('• Vian Friday menu: ' + fridayVian1 + ', ' + fridayVian2 + '\n')
+        break
       default:
-      console.log(
-        '• Vian Monday menu: ' + mondayVian1 + ', ' + mondayVian2 + '\n' +
-        '• Vian Tuesday menu: ' + tuesdayVian1 + ', ' + tuesdayVian2 + '\n' +
-        '• Vian Wednesday menu: ' + wednesdayVian1 + ', ' + wednesdayVian2 + '\n' +
-        '• Vian Thursday menu: ' + thursdayVian1 + ', ' + thursdayVian2 + '\n' +
-        '• Vian Friday menu: ' + fridayVian1 + ', ' + fridayVian2 + '\n'
-      )
+        console.log(
+          '• Vian Monday menu: ' + mondayVian1 + ', ' + mondayVian2 + '\n' +
+          '• Vian Tuesday menu: ' + tuesdayVian1 + ', ' + tuesdayVian2 + '\n' +
+          '• Vian Wednesday menu: ' + wednesdayVian1 + ', ' + wednesdayVian2 + '\n' +
+          '• Vian Thursday menu: ' + thursdayVian1 + ', ' + thursdayVian2 + '\n' +
+          '• Vian Friday menu: ' + fridayVian1 + ', ' + fridayVian2 + '\n'
+        )
       }
 
 
