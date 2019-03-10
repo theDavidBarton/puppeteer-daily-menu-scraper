@@ -181,18 +181,17 @@ expected output:
   AND results appear
 */
 
-    const departureHeader = '#liligo_content > flight-results > div > div > div > div.results-header.results-header-finished > div.results-header-container > result-header-wrapper > div > div.results-header-cities > div:nth-child(1) > span'
-    const arrivalHeader   = '#liligo_content > flight-results > div > div > div > div.results-header.results-header-finished > div.results-header-container > result-header-wrapper > div > div.results-header-cities > div:nth-child(4) > span'
-    
-    await page.waitForSelector(departureHeader)
+    const departureArrivalHeader = '.results-header-city'
+
+    await page.waitForSelector(departureArrivalHeader)
 
 
-    let departureHeaderContent = await page.evaluate(el => el.value, await page.$(departureHeader))
+    let departureHeaderContent = await page.evaluate(el => el.textContent, await page.$$(departureArrivalHeader)[0])
     expect(departureHeaderContent).toBe(airFromContentArray[0])
 
       console.log('√ ' + departureHeaderContent + 'matches ' + airFromContentArray[0])
 
-    let arrivalHeaderContent = await page.evaluate(el => el.value, await page.$(arrivalHeader))
+    let arrivalHeaderContent = await page.evaluate(el => el.textContent, await page.$$(departureArrivalHeader)[1])
     expect(arrivalHeaderContent).toBe(airToContentArray[0])
 
       console.log('√ ' + arrivalHeaderContent + 'matches ' + airToContentArray[0])
