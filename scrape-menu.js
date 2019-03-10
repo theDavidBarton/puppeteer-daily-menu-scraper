@@ -160,7 +160,6 @@ yamatoName, yamatoLength
         '• Friday: ' + fridayYamato + '\n'
       )
   }
-//@ YAMATO ends here
 
 
 
@@ -266,7 +265,6 @@ ChagallName, ChagallLength
           '• Friday: ' + fridayChagall + '\n'
         )
       }
-//@ CHAGALL ends here
 
 
 
@@ -394,7 +392,6 @@ MozsarName, MozsarLength
           '• Friday: ' + fridayMozsar1 + ', ' + fridayMozsar2 + '\n'
         )
       }
-//@ MOZSAR ends here
 
 
 
@@ -530,7 +527,6 @@ VianName, VianLength
           '• Friday: ' + fridayVian1 + ', ' + fridayVian2 + '\n'
         )
       }
-//@ VIAN ends here
 
 
 
@@ -553,27 +549,30 @@ PecsenyesName, PecsenyesLength
 
 */
 
+    //@ A-PECSENYES selectors
+      const dailyPecsenyesSelector = '#tabsContent1 > div'
+
   let pecsenyesName = 'A-Pecsenyés menu:'
   let pecsenyesLength = pecsenyesName.length
     console.log('*' + pecsenyesName + '* \n' + "-".repeat(pecsenyesLength))
   await page.goto('http://www.napimenu.hu/budapest/adatlap/a-pecsenyes', { waitUntil: 'networkidle2' })
-  let dailyPecsenyes = await page.evaluate(el => el.innerText, await page.$('#tabsContent1 > div'))
+  let dailyPecsenyes = await page.evaluate(el => el.innerText, await page.$(dailyPecsenyesSelector))
   dailyPecsenyes = dailyPecsenyes.replace(/(\n)/gm, ', ') // removal of line breaks from string, source: https://www.textfixer.com/tutorials/javascript-line-breaks.php
   dailyPecsenyes = dailyPecsenyes.replace('Napi ebéd menü A-Pecsenyés, ', '')
 
   //@ A-PECSENYES print menu
     console.log('• Daily menu: ' + dailyPecsenyes + '\n')
-//@ A-PECSENYES ends here
+
 
 
 /*
 
 @ KORHELY
-------------------------------------------
+---------------------------------------------
 contact info:
 * Address: Budapest, Liszt Ferenc tér 7, 1061
 * Phone: (1) 321 0280
------------------------------------------
+---------------------------------------------
 
 korhelyName, korhelyLength
 * the restaurant title
@@ -581,6 +580,13 @@ korhelyName, korhelyLength
 * underlined in length of title
 
 */
+
+    //@ KORHELY selectors
+      const weeklySummaryKorhelySelector = '#mainDiv > div > div:nth-child(2) > section > div > div.MenusNavigation_description'
+      const weeklySoupKorhelySelector = '#mainDiv > div > div:nth-child(2) > section > ul > li:nth-child(1)'
+      const weeklyMainKorhelySelector = '#mainDiv > div > div:nth-child(2) > section > ul > li:nth-child(2)'
+      const weeklyDessertKorhelySelector = '#mainDiv > div > div:nth-child(2) > section > ul > li:nth-child(3)'
+
   let korhelyName = 'Korhely menu:'
   let korhelyLength = korhelyName.length
   console.log('*' + korhelyName + '* \n' + "-".repeat(korhelyLength))
@@ -592,12 +598,12 @@ korhelyName, korhelyLength
   }, linkSelectorKorhely)
 
   await page.goto(linkKorhely, { waitUntil: 'networkidle2', timeout: 0 })
-   let weeklySummaryKorhely = await page.evaluate(el => el.innerText, await page.$('#mainDiv > div > div:nth-child(2) > section > div > div.MenusNavigation_description'))
-   let weeklySoupKorhely = await page.evaluate(el => el.innerText, await page.$('#mainDiv > div > div:nth-child(2) > section > ul > li:nth-child(1)'))
+   let weeklySummaryKorhely = await page.evaluate(el => el.innerText, await page.$(weeklySummaryKorhelySelector))
+   let weeklySoupKorhely = await page.evaluate(el => el.innerText, await page.$(weeklySoupKorhelySelector))
    weeklySoupKorhely = weeklySoupKorhely.replace('LEVESEK', '')
-   let weeklyMainKorhely = await page.evaluate(el => el.innerText, await page.$('#mainDiv > div > div:nth-child(2) > section > ul > li:nth-child(2)'))
+   let weeklyMainKorhely = await page.evaluate(el => el.innerText, await page.$(weeklyMainKorhelySelector))
    weeklyMainKorhely = weeklyMainKorhely.replace('FŐÉTELEK', '')
-   let weeklyDessertKorhely = await page.evaluate(el => el.innerText, await page.$('#mainDiv > div > div:nth-child(2) > section > ul > li:nth-child(3)'))
+   let weeklyDessertKorhely = await page.evaluate(el => el.innerText, await page.$(weeklyDessertKorhelySelector))
    weeklyDessertKorhely = weeklyDessertKorhely.replace('DESSZERTEK', '')
 
    //@ KORHELY print menu
@@ -606,7 +612,6 @@ korhelyName, korhelyLength
       '• Main courses: ' + weeklyMainKorhely + '\n' +
       '• Desserts: ' + weeklyDessertKorhely + '\n'
     )
-//@ KORHELY ends here
 
 
 
@@ -735,109 +740,176 @@ KetszerecsenName, KetszerecsenLength
           '• Friday: ' + fridayKetszerecsen1 + ', ' + fridayKetszerecsen2 + '\n'
         )
       }
-//@ KETSZERECSEN ends here 
 
 
-  /*
-  |------------------------------------------
-  |     Fruccola (Arany Janos utca) menu
-  |------------------------------------------
-  |  Address: Budapest, Arany János u. 32, 1051
-  |  Phone: (1) 430 6125
-  |
-  */
+
+/*
+
+@ FRUCCOLA
+----------------------------------------------
+contact info:
+* Address: Budapest, Arany János u. 32, 1051
+* Phone: (1) 430 6125
+----------------------------------------------
+
+fruccolaName, fruccolaLength
+* the restaurant title
+* the calculated length of title string
+* underlined in length of title
+
+*/
+
+    //@ FRUCCOLA selectors
+      const dailyFruccolaSelector1 = '#dailymenu-holder > li.arany.today > div.soup > p.description'
+      const dailyFruccolaSelector2 = '#dailymenu-holder > li.arany.today > div.main-dish > p.description'
+
   let fruccolaName = 'Fruccola (Arany Janos utca) menu:'
   let fruccolaLength = fruccolaName.length
   console.log('*' + fruccolaName + '* \n' + "-".repeat(fruccolaLength))
   await page.goto('http://fruccola.hu/hu', { waitUntil : 'networkidle2' })
-  const dailyFruccola1 = await page.evaluate(el => el.innerText, await page.$('#dailymenu-holder > li.arany.today > div.soup > p.description'))
-  const dailyFruccola2 = await page.evaluate(el => el.innerText, await page.$('#dailymenu-holder > li.arany.today > div.main-dish > p.description'))
+  const dailyFruccola1 = await page.evaluate(el => el.innerText, await page.$(dailyFruccolaSelector1))
+  const dailyFruccola2 = await page.evaluate(el => el.innerText, await page.$(dailyFruccolaSelector2))
 
-
+  //@ FRUCCOLA print menu
     console.log('• Daily menu: ' + dailyFruccola1 + ', ' + dailyFruccola2 + '\n')
 
 
 
-  /*
-  |------------------------------------------
-  |            Kamra Etelbar menu
-  |------------------------------------------
-  |  Address: Budapest, Hercegprímás u. 19, 1051
-  |  Phone: (20) 436 9968
-  |
-  */
+/*
+
+@ KAMRA
+------------------------------------------
+contact info:
+* Address: Budapest, Hercegprímás u. 19, 1051
+* Phone: (20) 436 9968
+-----------------------------------------
+
+kamraName, kamraLength
+* the restaurant title
+* the calculated length of title string
+* underlined in length of title
+
+dayKamraSelector
+dayKamra
+* the daily menu' date
+
+dailyKamraSelector
+* exact selector for the daily menu's content
+
+dailyKamra
+* menu content
+
+*/
+
+    //@ KAMRA selectors
+      const dayKamraSelector = '.shop_today_1'
+      const dailyKamraSelector = '.shop_today_title'
+
   let kamraName = 'Kamra menu:'
   let kamraLength = kamraName.length
   console.log('*' + kamraName + '* \n' + "-".repeat(kamraLength))
   await page.goto('http://www.kamraetelbar.hu/kamra_etelbar_mai_menu.html', { waitUntil: 'networkidle2' })
-  const dayKamra = await page.evaluate(el => el.innerText, await page.$('.shop_today_1'))
-
+  const dayKamra = await page.evaluate(el => el.innerText, await page.$(dayKamraSelector))
   // stores all elements with same ID, source: https://stackoverflow.com/questions/54677126/how-to-select-all-child-div-with-same-class-using-puppeteer
-  const dailyKamra = await page.$$eval('.shop_today_title',
+  const dailyKamra = await page.$$eval(dailyKamraSelector,
     divs => divs.map(({ innerText }) => innerText));
 
-
+    //@ KAMRA print menu
     console.log('• ' + dayKamra + ' daily menu: ' + dailyKamra + '\n')
 
 
 
-  /*
-  |------------------------------------------
-  |            Roza menu
-  |------------------------------------------
-  |  Address: Budapest, Jókai u. 22, 1066
-  |  Phone: (30) 611 4396
-  |
-  */
+/*
+
+@ ROZA
+------------------------------------------
+contact info:
+* Address: Budapest, Jókai u. 22, 1066
+* Phone: (30) 611 4396
+-----------------------------------------
+
+rozaName, rozaLength
+* the restaurant title
+* the calculated length of title string
+* underlined in length of title
+
+*/
+
+    //@ ROZA selectors
+      const dailyRozaSelector = '.text_exposed_show'
+
   let rozaName = 'Roza menu:'
   let rozaLength = rozaName.length
   console.log('*' + rozaName + '* \n' + "-".repeat(rozaLength))
   await page.goto('https://www.facebook.com/pg/rozafinomitt/posts/?ref=page_internal', { waitUntil: 'networkidle2' })
-  let dailyRoza = await page.evaluate(el => el.innerText, await page.$('.text_exposed_show'))
+  let dailyRoza = await page.evaluate(el => el.innerText, await page.$(dailyRozaSelector))
   dailyRoza = dailyRoza.replace(/🍲|🥪|🥧|❤️/g, '')
 
-
+  //@ ROZA print menu
     console.log('• Daily menu: ' + dailyRoza + '\n')
 
 
 
-  /*
-  |------------------------------------------
-  |         Karcsi vendeglo menu
-  |------------------------------------------
-  |  Address: Budapest, Jókai u. 20, 1066
-  |  Phone: (1) 312 0557
-  |
-  */
+
+/*
+
+@ KARCSI
+------------------------------------------
+contact info:
+* Address: Budapest, Jókai u. 20, 1066
+* Phone: (1) 312 0557
+-----------------------------------------
+
+karcsiName, karcsiLength
+* the restaurant title
+* the calculated length of title string
+* underlined in length of title
+
+*/
+
   let karcsiName = 'Karcsi menu:'
   let karcsiLength = karcsiName.length
   console.log('*' + karcsiName + '* \n' + "-".repeat(karcsiLength))
   const weeklyKarcsi = 'http://karcsibacsivendeglo.com/letoltes/napi_menu.pdf'
 
-
+//@ KARCSI print menu
   console.log('• Weekly menu: ' + weeklyKarcsi + '\n')
 
 
 
-  /*
-  |------------------------------------------
-  |               Nokedli menu
-  |------------------------------------------
-  |  Address: Budapest, Weiner Leó u. 17, 1065
-  |  Phone: (20) 499 5832
-  |
-  */
+/*
+
+@ NOKEDLI
+------------------------------------------
+contact info:
+* Address: Budapest, Weiner Leó u. 17, 1065
+* Phone: (20) 499 5832
+-----------------------------------------
+
+nokedliName, nokedliLength
+* the restaurant title
+* the calculated length of title string
+* underlined in length of title
+
+imageSelector --> imageNokedliSelector
+* store src
+* trim thumbnail sub for normal sized image 
+
+*/
+
+      const imageNokedliSelector = '.aligncenter'
+
   let nokedliName = 'Nokedli menu:'
   let nokedliLength = nokedliName.length
   console.log('*' + nokedliName + '* \n' + "-".repeat(nokedliLength))
   await page.goto('http://nokedlikifozde.hu/', { waitUntil: 'networkidle2' })
   // stores src of given selector, source: https://stackoverflow.com/questions/52542149/how-can-i-download-images-on-a-page-using-puppeteer
-  let imageSelector = '.aligncenter'
+  let imageSelector = imageNokedliSelector
   const weeklyNokedly = await page.evaluate((sel) => {
       return document.querySelector(sel).getAttribute('src').replace('-300x212', '')
   }, imageSelector)
 
-
+  //@ NOKEDLI print menu
     console.log('• Weekly menu: ' + weeklyNokedly + '\n')
 
 
