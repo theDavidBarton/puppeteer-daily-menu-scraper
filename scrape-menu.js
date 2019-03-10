@@ -122,27 +122,27 @@ const puppeteer = require('puppeteer');
   var nameOfDayYamato = today
   switch (nameOfDayYamato) {
     case 1:
-      console.log('• Yamato Monday menu: ' + mondayYamato + '\n')
+      console.log('• Monday: ' + mondayYamato + '\n')
       break
     case  2:
-      console.log('• Yamato Tuesday menu: ' + tuesdayYamato + '\n')
+      console.log('• Tuesday: ' + tuesdayYamato + '\n')
       break
     case 3:
-      console.log('• Yamato Wednesday menu: ' + wednesdayYamato + '\n')
+      console.log('• Wednesday: ' + wednesdayYamato + '\n')
       break
     case 4:
-      console.log('• Yamato Thursday menu: ' + thursdayYamato + '\n')
+      console.log('• Thursday: ' + thursdayYamato + '\n')
       break
     case 5:
-      console.log('• Yamato Friday menu: ' + fridayYamato + '\n')
+      console.log('• Friday: ' + fridayYamato + '\n')
       break
     default:
       console.log(
-        '• Yamato Monday menu: ' + mondayYamato + '\n' +
-        '• Yamato Tuesday menu: ' + tuesdayYamato + '\n' +
-        '• Yamato Wednesday menu: ' + wednesdayYamato + '\n' +
-        '• Yamato Thursday menu: ' + thursdayYamato + '\n' +
-        '• Yamato Friday menu: ' + fridayYamato + '\n'
+        '• Monday: ' + mondayYamato + '\n' +
+        '• Tuesday: ' + tuesdayYamato + '\n' +
+        '• Wednesday: ' + wednesdayYamato + '\n' +
+        '• Thursday: ' + thursdayYamato + '\n' +
+        '• Friday: ' + fridayYamato + '\n'
       )
   }
 
@@ -212,27 +212,27 @@ const puppeteer = require('puppeteer');
   var nameOfDayChagall = today
     switch (nameOfDayChagall) {
       case 1:
-        console.log('• Chagall Monday menu: ' + mondayChagall + '\n')
+        console.log('• Monday: ' + mondayChagall + '\n')
         break
       case 2:
-        console.log('• Chagall Tuesday menu: ' + tuesdayChagall + '\n')
+        console.log('• Tuesday: ' + tuesdayChagall + '\n')
         break
       case 3:
-        console.log('• Chagall Wednesday menu: ' + wednesdayChagall + '\n')
+        console.log('• Wednesday: ' + wednesdayChagall + '\n')
         break
       case 4:
-        console.log('• Chagall Thursday menu: ' + thursdayChagall + '\n')
+        console.log('• Thursday: ' + thursdayChagall + '\n')
         break
       case 5:
-        console.log('• Chagall Friday menu: ' + fridayChagall + '\n')
+        console.log('• Friday: ' + fridayChagall + '\n')
         break
       default:
         console.log(
-          '• Chagall Monday menu: ' + mondayChagall + '\n' +
-          '• Chagall Tuesday menu: ' + tuesdayChagall + '\n' +
-          '• Chagall Wednesday menu: ' + wednesdayChagall + '\n' +
-          '• Chagall Thursday menu: ' + thursdayChagall + '\n' +
-          '• Chagall Friday menu: ' + fridayChagall + '\n'
+          '• Monday: ' + mondayChagall + '\n' +
+          '• Tuesday: ' + tuesdayChagall + '\n' +
+          '• Wednesday: ' + wednesdayChagall + '\n' +
+          '• Thursday: ' + thursdayChagall + '\n' +
+          '• Friday: ' + fridayChagall + '\n'
         )
       }
 
@@ -320,27 +320,27 @@ const puppeteer = require('puppeteer');
   var nameOfDayMozsar = today
     switch (nameOfDayMozsar) {
       case 1:
-        console.log('• Mozsár Monday menu: ' + mondayMozsar1 + ', ' + mondayMozsar2 + '\n')
+        console.log('• Monday: ' + mondayMozsar1 + ', ' + mondayMozsar2 + '\n')
         break
       case 2:
-        console.log('• Mozsár Tuesday menu: ' + tuesdayMozsar1 + ', ' + tuesdayMozsar2 + '\n')
+        console.log('• Tuesday: ' + tuesdayMozsar1 + ', ' + tuesdayMozsar2 + '\n')
         break
       case 3:
-        console.log('• Mozsár Wednesday menu: ' + wednesdayMozsar1 + ', ' + wednesdayMozsar2 + '\n')
+        console.log('• Wednesday: ' + wednesdayMozsar1 + ', ' + wednesdayMozsar2 + '\n')
         break
       case 4:
-        console.log('• Mozsár Thursday menu: ' + thursdayMozsar1 + ', ' + thursdayMozsar2 + '\n')
+        console.log('• Thursday: ' + thursdayMozsar1 + ', ' + thursdayMozsar2 + '\n')
         break
       case 5:
-        console.log('• Mozsár Friday menu: ' + fridayMozsar1 + ', ' + fridayMozsar2 + '\n')
+        console.log('• Friday: ' + fridayMozsar1 + ', ' + fridayMozsar2 + '\n')
         break
       default:
         console.log(
-          '• Mozsár Monday menu: ' + mondayMozsar1 + ', ' + mondayMozsar2 + '\n' +
-          '• Mozsár Tuesday menu: ' + tuesdayMozsar1 + ', ' + tuesdayMozsar2 + '\n' +
-          '• Mozsár Wednesday menu: ' + wednesdayMozsar1 + ', ' + wednesdayMozsar2 + '\n' +
-          '• Mozsár Thursday menu: ' + thursdayMozsar1 + ', ' + thursdayMozsar2 + '\n' +
-          '• Mozsár Friday menu: ' + fridayMozsar1 + ', ' + fridayMozsar2 + '\n'
+          '• Monday: ' + mondayMozsar1 + ', ' + mondayMozsar2 + '\n' +
+          '• Tuesday: ' + tuesdayMozsar1 + ', ' + tuesdayMozsar2 + '\n' +
+          '• Wednesday: ' + wednesdayMozsar1 + ', ' + wednesdayMozsar2 + '\n' +
+          '• Thursday: ' + thursdayMozsar1 + ', ' + thursdayMozsar2 + '\n' +
+          '• Friday: ' + fridayMozsar1 + ', ' + fridayMozsar2 + '\n'
         )
       }
 
@@ -437,27 +437,27 @@ const puppeteer = require('puppeteer');
   var nameOfDayVian = today
     switch (nameOfDayVian) {
       case 1:
-        console.log('• Vian Monday menu: ' + mondayVian1 + ', ' + mondayVian2 + '\n')
+        console.log('• Monday: ' + mondayVian1 + ', ' + mondayVian2 + '\n')
         break
       case 2:
-        console.log('• Vian Tuesday menu: ' + tuesdayVian1 + ', ' + tuesdayVian2 + '\n')
+        console.log('• Tuesday: ' + tuesdayVian1 + ', ' + tuesdayVian2 + '\n')
         break
       case 3:
-        console.log('• Vian Wednesday menu: ' + wednesdayVian1 + ', ' + wednesdayVian2 + '\n')
+        console.log('• Wednesday: ' + wednesdayVian1 + ', ' + wednesdayVian2 + '\n')
         break
       case 4:
-        console.log('• Vian Thursday menu: ' + thursdayVian1 + ', ' + thursdayVian2 + '\n')
+        console.log('• Thursday: ' + thursdayVian1 + ', ' + thursdayVian2 + '\n')
         break
       case 5:
-        console.log('• Vian Friday menu: ' + fridayVian1 + ', ' + fridayVian2 + '\n')
+        console.log('• Friday: ' + fridayVian1 + ', ' + fridayVian2 + '\n')
         break
       default:
         console.log(
-          '• Vian Monday menu: ' + mondayVian1 + ', ' + mondayVian2 + '\n' +
-          '• Vian Tuesday menu: ' + tuesdayVian1 + ', ' + tuesdayVian2 + '\n' +
-          '• Vian Wednesday menu: ' + wednesdayVian1 + ', ' + wednesdayVian2 + '\n' +
-          '• Vian Thursday menu: ' + thursdayVian1 + ', ' + thursdayVian2 + '\n' +
-          '• Vian Friday menu: ' + fridayVian1 + ', ' + fridayVian2 + '\n'
+          '• Monday: ' + mondayVian1 + ', ' + mondayVian2 + '\n' +
+          '• Tuesday: ' + tuesdayVian1 + ', ' + tuesdayVian2 + '\n' +
+          '• Wednesday: ' + wednesdayVian1 + ', ' + wednesdayVian2 + '\n' +
+          '• Thursday: ' + thursdayVian1 + ', ' + thursdayVian2 + '\n' +
+          '• Friday: ' + fridayVian1 + ', ' + fridayVian2 + '\n'
         )
       }
 
@@ -503,10 +503,13 @@ const puppeteer = require('puppeteer');
   }, linkSelectorKorhely)
 
   await page.goto(linkKorhely, { waitUntil: 'networkidle2', timeout: 0 })
-   const weeklySummaryKorhely = await page.evaluate(el => el.innerText, await page.$('#mainDiv > div > div:nth-child(2) > section > div > div.MenusNavigation_description'))
-   const weeklySoupKorhely = await page.evaluate(el => el.innerText, await page.$('#mainDiv > div > div:nth-child(2) > section > ul > li:nth-child(1)'))
-   const weeklyMainKorhely = await page.evaluate(el => el.innerText, await page.$('#mainDiv > div > div:nth-child(2) > section > ul > li:nth-child(2)'))
-   const weeklyDessertKorhely = await page.evaluate(el => el.innerText, await page.$('#mainDiv > div > div:nth-child(2) > section > ul > li:nth-child(3)'))
+   let weeklySummaryKorhely = await page.evaluate(el => el.innerText, await page.$('#mainDiv > div > div:nth-child(2) > section > div > div.MenusNavigation_description'))
+   let weeklySoupKorhely = await page.evaluate(el => el.innerText, await page.$('#mainDiv > div > div:nth-child(2) > section > ul > li:nth-child(1)'))
+   weeklySoupKorhely = weeklySoupKorhely.replace('LEVESEK', '')
+   let weeklyMainKorhely = await page.evaluate(el => el.innerText, await page.$('#mainDiv > div > div:nth-child(2) > section > ul > li:nth-child(2)'))
+   weeklyMainKorhely = weeklyMainKorhely.replace('FŐÉTELEK', '')
+   let weeklyDessertKorhely = await page.evaluate(el => el.innerText, await page.$('#mainDiv > div > div:nth-child(2) > section > ul > li:nth-child(3)'))
+   weeklyDessertKorhely = weeklyDessertKorhely.replace('DESSZERTEK', '')
 
 
     console.log(
@@ -601,27 +604,27 @@ const puppeteer = require('puppeteer');
   var nameOfDayKetszerecsen = today
     switch (nameOfDayKetszerecsen) {
       case 1:
-        console.log('• Ketszerecsen Monday menu: ' + mondayKetszerecsen1 + ', ' + mondayKetszerecsen2 + '\n')
+        console.log('• Monday: ' + mondayKetszerecsen1 + ', ' + mondayKetszerecsen2 + '\n')
         break
       case 2:
-        console.log('• Ketszerecsen Tuesday menu: ' + tuesdayKetszerecsen1 + ', ' + tuesdayKetszerecsen2 + '\n')
+        console.log('• Tuesday: ' + tuesdayKetszerecsen1 + ', ' + tuesdayKetszerecsen2 + '\n')
         break
       case 3:
-        console.log('• Ketszerecsen Wednesday menu: ' + wednesdayKetszerecsen1 + ', ' + wednesdayKetszerecsen2 + '\n')
+        console.log('• Wednesday: ' + wednesdayKetszerecsen1 + ', ' + wednesdayKetszerecsen2 + '\n')
         break
       case 4:
-        console.log('• Ketszerecsen Thursday menu: ' + thursdayKetszerecsen1 + ', ' + thursdayKetszerecsen2 + '\n')
+        console.log('• Thursday: ' + thursdayKetszerecsen1 + ', ' + thursdayKetszerecsen2 + '\n')
         break
       case 5:
-        console.log('• Ketszerecsen Friday menu: ' + fridayKetszerecsen1 + ', ' + fridayKetszerecsen2 + '\n')
+        console.log('• Friday: ' + fridayKetszerecsen1 + ', ' + fridayKetszerecsen2 + '\n')
         break
       default:
         console.log(
-          '• Ketszerecsen Monday menu: ' + mondayKetszerecsen1 + ', ' + mondayKetszerecsen2 + '\n' +
-          '• Ketszerecsen Tuesday menu: ' + tuesdayKetszerecsen1 + ', ' + tuesdayKetszerecsen2 + '\n' +
-          '• Ketszerecsen Wednesday menu: ' + wednesdayKetszerecsen1 + ', ' + wednesdayKetszerecsen2 + '\n' +
-          '• Ketszerecsen Thursday menu: ' + thursdayKetszerecsen1 + ', ' + thursdayKetszerecsen2 + '\n' +
-          '• Ketszerecsen Friday menu: ' + fridayKetszerecsen1 + ', ' + fridayKetszerecsen2 + '\n'
+          '• Monday: ' + mondayKetszerecsen1 + ', ' + mondayKetszerecsen2 + '\n' +
+          '• Tuesday: ' + tuesdayKetszerecsen1 + ', ' + tuesdayKetszerecsen2 + '\n' +
+          '• Wednesday: ' + wednesdayKetszerecsen1 + ', ' + wednesdayKetszerecsen2 + '\n' +
+          '• Thursday: ' + thursdayKetszerecsen1 + ', ' + thursdayKetszerecsen2 + '\n' +
+          '• Friday: ' + fridayKetszerecsen1 + ', ' + fridayKetszerecsen2 + '\n'
         )
       }
 
@@ -643,7 +646,7 @@ const puppeteer = require('puppeteer');
   const dailyFruccola2 = await page.evaluate(el => el.innerText, await page.$('#dailymenu-holder > li.arany.today > div.main-dish > p.description'))
 
 
-    console.log('• Fruccola daily menu: ' + dailyFruccola1 + ', ' + dailyFruccola2 + '\n')
+    console.log('• Daily menu: ' + dailyFruccola1 + ', ' + dailyFruccola2 + '\n')
 
 
 
@@ -666,7 +669,7 @@ const puppeteer = require('puppeteer');
     divs => divs.map(({ innerText }) => innerText));
 
 
-    console.log('• Kamra ' + dayKamra + ' daily menu: ' + dailyKamra + '\n')
+    console.log('• ' + dayKamra + ' daily menu: ' + dailyKamra + '\n')
 
 
 
@@ -682,10 +685,11 @@ const puppeteer = require('puppeteer');
   let rozaLength = rozaName.length
   console.log('*' + rozaName + '* \n' + "-".repeat(rozaLength))
   await page.goto('https://www.facebook.com/pg/rozafinomitt/posts/?ref=page_internal', { waitUntil: 'networkidle2' })
-  const dailyRoza = await page.evaluate(el => el.innerText, await page.$('.text_exposed_show'))
+  let dailyRoza = await page.evaluate(el => el.innerText, await page.$('.text_exposed_show'))
+  dailyRoza = dailyRoza.replace(/🍲|🥪|🥧|❤️/g, '')
 
 
-    console.log('• Roza daily menu: ' + dailyRoza + '\n')
+    console.log('• Daily menu: ' + dailyRoza + '\n')
 
 
 
@@ -703,7 +707,7 @@ const puppeteer = require('puppeteer');
   const weeklyKarcsi = 'http://karcsibacsivendeglo.com/letoltes/napi_menu.pdf'
 
 
-  console.log('• Karcsi weekly menu: ' + weeklyKarcsi + '\n')
+  console.log('• Weekly menu: ' + weeklyKarcsi + '\n')
 
 
 
@@ -726,7 +730,7 @@ const puppeteer = require('puppeteer');
   }, imageSelector)
 
 
-    console.log('• Nokedli weekly menu: ' + weeklyNokedly + '\n')
+    console.log('• Weekly menu: ' + weeklyNokedly + '\n')
 
 
 
