@@ -1,6 +1,6 @@
-// scraping with Puppeteer example
+// scraping daily menus with Puppeteer
 const puppeteer = require('puppeteer');
-const expect = require('expect');
+
 
 (async () => {
   const browser = await puppeteer.launch({ headless: true })
@@ -25,26 +25,26 @@ const expect = require('expect');
               let mLength = monday.length
               console.log('*' + monday + '* \n' + "=".repeat(mLength))
               break
-              case 2:
-                let tuesday = 'TUESDAY'
-                let tuLength = tuesday.length
-                console.log('*' + tuesday + '* \n' + "=".repeat(tuLength))
-                break
-                case 3:
-                  let wednesday = 'WEDNESDAY'
-                  let wLength = wednesday.length
-                  console.log('*' + wednesday + '* \n' + "=".repeat(wLength))
-                  break
-                  case 4:
-                    let thursday = 'THURSDAY'
-                    let thLength = thursday.length
-                    console.log('*' + thursday + '* \n' + "=".repeat(thLength))
-                    break
-                    case 5:
-                      let friday = 'FRIDAY'
-                      let fLength = friday.length
-                      console.log('*' + friday + '* \n' + "=".repeat(fLength))
-                      break
+            case 2:
+              let tuesday = 'TUESDAY'
+              let tuLength = tuesday.length
+              console.log('*' + tuesday + '* \n' + "=".repeat(tuLength))
+              break
+            case 3:
+              let wednesday = 'WEDNESDAY'
+              let wLength = wednesday.length
+              console.log('*' + wednesday + '* \n' + "=".repeat(wLength))
+              break
+            case 4:
+              let thursday = 'THURSDAY'
+              let thLength = thursday.length
+              console.log('*' + thursday + '* \n' + "=".repeat(thLength))
+              break
+            case 5:
+              let friday = 'FRIDAY'
+              let fLength = friday.length
+              console.log('*' + friday + '* \n' + "=".repeat(fLength))
+              break
             default:
               let dflt = 'WHY ARE YOU WORKING TODAY?'
               let dfltLength = dflt.length
@@ -316,25 +316,72 @@ const expect = require('expect');
   |  Phone: (1) 343 1984
   |
   */
+
+      const mondayKetszerecsenSelector1 = 'p:nth-child(5)'
+      const mondayKetszerecsenSelector2 = 'p:nth-child(6)'
+      const tuesdayKetszerecsenSelector1 = 'p:nth-child(8)'
+      const tuesdayKetszerecsenSelector2 = 'p:nth-child(9)'
+      const wednesdayKetszerecsenSelector1 = 'p:nth-child(11)'
+      const wednesdayKetszerecsenSelector2 = 'p:nth-child(12)'
+      const thursdayKetszerecsenSelector1 = 'p:nth-child(14)'
+      const thursdayKetszerecsenSelector2 = 'p:nth-child(15)'
+      const fridayKetszerecsenSelector1 = 'p:nth-child(17)'
+      const fridayKetszerecsenSelector2 = 'p:nth-child(18)'
+
   let ketszerecsenName = 'Ketszerecsen Bisztro menu:'
   let ketszerecsenLength = ketszerecsenName.length
   console.log('*' + ketszerecsenName + '* \n' + "-".repeat(ketszerecsenLength))
   await page.goto('https://ketszerecsen.hu/#daily', { waitUntil: 'networkidle2' })
   // Monday
-  const mondayKetszerecsen1 = await page.evaluate(el => el.innerHTML, await page.$('p:nth-child(5)'))
-  const mondayKetszerecsen2 = await page.evaluate(el => el.innerHTML, await page.$('p:nth-child(6)'))
+  let mondayKetszerecsen1
+  let mondayKetszerecsen2
+  if (await page.$(mondayKetszerecsenSelector1) !== null) {
+      mondayKetszerecsen1 = await page.evaluate(el => el.innerHTML, await page.$(mondayKetszerecsenSelector1))
+      mondayKetszerecsen2 = await page.evaluate(el => el.innerHTML, await page.$(mondayKetszerecsenSelector2))
+  }
+  else { mondayKetszerecsen1 = '♪"No Milk Today"♫'
+         mondayKetszerecsen2 = ''
+  }
   // Tuesday
-  const tuesdayKetszerecsen1 = await page.evaluate(el => el.innerHTML, await page.$('p:nth-child(8)'))
-  const tuesdayKetszerecsen2 = await page.evaluate(el => el.innerHTML, await page.$('p:nth-child(9)'))
+  let tuesdayKetszerecsen1
+  let tuesdayKetszerecsen2
+  if (await page.$(tuesdayKetszerecsenSelector1) !== null) {
+      tuesdayKetszerecsen1 = await page.evaluate(el => el.innerHTML, await page.$(tuesdayKetszerecsenSelector1))
+      tuesdayKetszerecsen2 = await page.evaluate(el => el.innerHTML, await page.$(tuesdayKetszerecsenSelector2))
+  }
+  else { tuesdayKetszerecsen1 = '♪"No Milk Today"♫'
+         tuesdayKetszerecsen2 = ''
+  }
   // Wednesday
-  const wednesdayKetszerecsen1 = await page.evaluate(el => el.innerHTML, await page.$('p:nth-child(11)'))
-  const wednesdayKetszerecsen2 = await page.evaluate(el => el.innerHTML, await page.$('p:nth-child(12)'))
+  let wednesdayKetszerecsen1
+  let wednesdayKetszerecsen2
+  if (await page.$(wednesdayKetszerecsenSelector1) !== null) {
+      wednesdayKetszerecsen1 = await page.evaluate(el => el.innerHTML, await page.$(wednesdayKetszerecsenSelector1))
+      wednesdayKetszerecsen2 = await page.evaluate(el => el.innerHTML, await page.$(wednesdayKetszerecsenSelector2))
+  }
+  else { wednesdayKetszerecsen1 = '♪"No Milk Today"♫'
+         wednesdayKetszerecsen2 = ''
+  }
   // Thursday
-  const thursdayKetszerecsen1 = await page.evaluate(el => el.innerHTML, await page.$('p:nth-child(14)'))
-  const thursdayKetszerecsen2 = await page.evaluate(el => el.innerHTML, await page.$('p:nth-child(15)'))
+  let thursdayKetszerecsen1
+  let thursdayKetszerecsen2
+  if (await page.$(thursdayKetszerecsenSelector1) !== null) {
+      thursdayKetszerecsen1 = await page.evaluate(el => el.innerHTML, await page.$(thursdayKetszerecsenSelector1))
+      thursdayKetszerecsen2 = await page.evaluate(el => el.innerHTML, await page.$(thursdayKetszerecsenSelector2))
+  }
+  else { thursdayKetszerecsen1 = '♪"No Milk Today"♫'
+         thursdayKetszerecsen2 = ''
+  }
   // Friday
-  const fridayKetszerecsen1 = await page.evaluate(el => el.innerHTML, await page.$('p:nth-child(17)'))
-  const fridayKetszerecsen2 = await page.evaluate(el => el.innerHTML, await page.$('p:nth-child(18)'))
+  let fridayKetszerecsen1
+  let fridayKetszerecsen2
+  if (await page.$(fridayKetszerecsenSelector1) !== null) {
+      fridayKetszerecsen1 = await page.evaluate(el => el.innerHTML, await page.$(fridayKetszerecsenSelector1))
+      fridayKetszerecsen2 = await page.evaluate(el => el.innerHTML, await page.$(fridayKetszerecsenSelector2))
+  }
+  else { fridayKetszerecsen1 = '♪"No Milk Today"♫'
+         fridayKetszerecsen2 = ''
+  }
 
 
   var nameOfDayKetszerecsen = today
@@ -342,26 +389,26 @@ const expect = require('expect');
       case 1:
         console.log('• Ketszerecsen Monday menu: ' + mondayKetszerecsen1 + ', ' + mondayKetszerecsen2 + '\n')
         break
-        case 2:
-          console.log('• Ketszerecsen Tuesday menu: ' + tuesdayKetszerecsen1 + ', ' + tuesdayKetszerecsen2 + '\n')
-          break
-          case 3:
-            console.log('• Ketszerecsen Wednesday menu: ' + wednesdayKetszerecsen1 + ', ' + wednesdayKetszerecsen2 + '\n')
-            break
-            case 4:
-              console.log('• Ketszerecsen Thursday menu: ' + thursdayKetszerecsen1 + ', ' + thursdayKetszerecsen2 + '\n')
-              break
-              case 5:
-                console.log('• Ketszerecsen Friday menu: ' + fridayKetszerecsen1 + ', ' + fridayKetszerecsen2 + '\n')
-                break
+      case 2:
+        console.log('• Ketszerecsen Tuesday menu: ' + tuesdayKetszerecsen1 + ', ' + tuesdayKetszerecsen2 + '\n')
+        break
+      case 3:
+        console.log('• Ketszerecsen Wednesday menu: ' + wednesdayKetszerecsen1 + ', ' + wednesdayKetszerecsen2 + '\n')
+        break
+      case 4:
+        console.log('• Ketszerecsen Thursday menu: ' + thursdayKetszerecsen1 + ', ' + thursdayKetszerecsen2 + '\n')
+        break
+      case 5:
+        console.log('• Ketszerecsen Friday menu: ' + fridayKetszerecsen1 + ', ' + fridayKetszerecsen2 + '\n')
+        break
       default:
-      console.log(
-        '• Ketszerecsen Monday menu: ' + mondayKetszerecsen1 + ', ' + mondayKetszerecsen2 + '\n' +
-        '• Ketszerecsen Tuesday menu: ' + tuesdayKetszerecsen1 + ', ' + tuesdayKetszerecsen2 + '\n' +
-        '• Ketszerecsen Wednesday menu: ' + wednesdayKetszerecsen1 + ', ' + wednesdayKetszerecsen2 + '\n' +
-        '• Ketszerecsen Thursday menu: ' + thursdayKetszerecsen1 + ', ' + thursdayKetszerecsen2 + '\n' +
-        '• Ketszerecsen Friday menu: ' + fridayKetszerecsen1 + ', ' + fridayKetszerecsen2 + '\n'
-      )
+        console.log(
+          '• Ketszerecsen Monday menu: ' + mondayKetszerecsen1 + ', ' + mondayKetszerecsen2 + '\n' +
+          '• Ketszerecsen Tuesday menu: ' + tuesdayKetszerecsen1 + ', ' + tuesdayKetszerecsen2 + '\n' +
+          '• Ketszerecsen Wednesday menu: ' + wednesdayKetszerecsen1 + ', ' + wednesdayKetszerecsen2 + '\n' +
+          '• Ketszerecsen Thursday menu: ' + thursdayKetszerecsen1 + ', ' + thursdayKetszerecsen2 + '\n' +
+          '• Ketszerecsen Friday menu: ' + fridayKetszerecsen1 + ', ' + fridayKetszerecsen2 + '\n'
+        )
       }
 
 
