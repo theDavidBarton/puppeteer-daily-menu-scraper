@@ -52,24 +52,6 @@ const expect = require('expect');
             }
 
 
-  /*
-  |------------------------------------------
-  |           A-Pecsenyés menu
-  |------------------------------------------
-  |  Address: 1051 Budapest, Sas utca 25.
-  |  Phone: 36-1-610-0645
-  |
-  */
-  let pecsenyesName = 'A-Pecsenyés menu:'
-  let pecsenyesLength = pecsenyesName.length
-  console.log('*' + pecsenyesName + '* \n' + "-".repeat(pecsenyesLength))
-  await page.goto('http://www.napimenu.hu/budapest/adatlap/a-pecsenyes', { waitUntil: 'networkidle2' })
-  let dailyPecsenyes = await page.evaluate(el => el.innerText, await page.$('#tabsContent1 > div'))
-  dailyPecsenyes = dailyPecsenyes.replace(/(\n)/gm, ', ') // removal of line breaks from string, source: https://www.textfixer.com/tutorials/javascript-line-breaks.php
-
-    console.log('• ' + dailyPecsenyes + '\n')
-
-
 
   /*
   |------------------------------------------
@@ -79,52 +61,86 @@ const expect = require('expect');
   |  Phone: +36(70)681-75-44
   |
   */
+
+      const mondayYamatoSelector = 'body > div > h6:nth-child(3)'
+      const tuesdayYamatoSelector = 'body > div > h6:nth-child(5)'
+      const wednesdayYamatoSelector = 'body > div > h6:nth-child(7)'
+      const thursdayYamatoSelector = 'body > div > h6:nth-child(9)'
+      const fridayYamatoSelector = 'body > div > h6:nth-child(11)'
+
   let yamatoName = 'Yamato menu:'
   let yamatoLength = yamatoName.length
   console.log('*' + yamatoName + '* \n' + "-".repeat(yamatoLength))
   await page.goto('https://www.wasabi.hu/napimenu.php?source=yamato&lang=hu', { waitUntil: 'networkidle2', timout: 0 })
   // Monday
-  let mondayYamato = await page.evaluate(el => el.innerText, await page.$('body > div > h6:nth-child(3)'))
-  mondayYamato = mondayYamato.replace(/(\n)/gm, ', ')
+  let mondayYamato
+  if (await page.$(mondayYamatoSelector) !== null) {
+      let mondayYamatoRaw = await page.evaluate(el => el.innerText, await page.$(mondayYamatoSelector))
+      mondayYamato = mondayYamatoRaw.replace(/(\n)/gm, ', ')
+    }
+  else { mondayYamato = '♪"No Milk Today"♫'
+  }
   // Tuesday
-  let tuesdayYamato = await page.evaluate(el => el.innerText, await page.$('body > div > h6:nth-child(5)'))
-  tuesdayYamato = tuesdayYamato.replace(/(\n)/gm, ', ')
+  let tuesdayYamato
+  if (await page.$(tuesdayYamatoSelector) !== null) {
+      let tuesdayYamatoRaw = await page.evaluate(el => el.innerText, await page.$(tuesdayYamatoSelector))
+      tuesdayYamato = tuesdayYamatoRaw.replace(/(\n)/gm, ', ')
+    }
+  else { tuesdayYamato = '♪"No Milk Today"♫'
+  }
   // Wednesday
-  let wednesdayYamato = await page.evaluate(el => el.innerText, await page.$('body > div > h6:nth-child(7)'))
-  wednesdayYamato = wednesdayYamato.replace(/(\n)/gm, ', ')
+  let wednesdayYamato
+  if (await page.$(wednesdayYamatoSelector) !== null) {
+      let wednesdayYamatoRaw = await page.evaluate(el => el.innerText, await page.$(wednesdayYamatoSelector))
+      wednesdayYamato = wednesdayYamatoRaw.replace(/(\n)/gm, ', ')
+    }
+  else { wednesdayYamato = '♪"No Milk Today"♫'
+  }
   // Thursday
-  let thursdayYamato = await page.evaluate(el => el.innerText, await page.$('body > div > h6:nth-child(9)'))
-  thursdayYamato = thursdayYamato.replace(/(\n)/gm, ', ')
+  let thursdayYamato
+  if (await page.$(thursdayYamatoSelector) !== null) {
+      let thursdayYamatoRaw = await page.evaluate(el => el.innerText, await page.$(thursdayYamatoSelector))
+      thursdayYamato = thursdayYamatoRaw.replace(/(\n)/gm, ', ')
+    }
+  else { thursdayYamato = '♪"No Milk Today"♫'
+  }
   // Friday
-  let fridayYamato = await page.evaluate(el => el.innerText, await page.$('body > div > h6:nth-child(11)'))
-  fridayYamato = fridayYamato.replace(/(\n)/gm, ', ')
+  let fridayYamato
+  if (await page.$(fridayYamatoSelector) !== null) {
+      let fridayYamatoRaw = await page.evaluate(el => el.innerText, await page.$(fridayYamatoSelector))
+      fridayYamato = fridayYamatoRaw.replace(/(\n)/gm, ', ')
+    }
+  else { fridayYamato = '♪"No Milk Today"♫'
+  }
+
 
   var nameOfDayYamato = today
   switch (nameOfDayYamato) {
     case 1:
       console.log('• Yamato Monday menu: ' + mondayYamato + '\n')
       break
-      case  2:
-        console.log('• Yamato Tuesday menu:' + tuesdayYamato + '\n')
-        break
-        case 3:
-          console.log('• Yamato Wednesday menu:' + wednesdayYamato + '\n')
-          break
-          case 4:
-            console.log('• Yamato Thursday menu:' + thursdayYamato + '\n')
-            break
-            case 5:
-              console.log('• Yamato Friday menu:' + fridayYamato + '\n')
-              break
+    case  2:
+      console.log('• Yamato Tuesday menu: ' + tuesdayYamato + '\n')
+      break
+    case 3:
+      console.log('• Yamato Wednesday menu: ' + wednesdayYamato + '\n')
+      break
+    case 4:
+      console.log('• Yamato Thursday menu: ' + thursdayYamato + '\n')
+      break
+    case 5:
+      console.log('• Yamato Friday menu: ' + fridayYamato + '\n')
+      break
     default:
-    console.log(
-      '• Yamato Monday menu: ' + mondayYamato + '\n' +
-      '• Yamato Tuesday menu:' + tuesdayYamato + '\n' +
-      '• Yamato Wednesday menu:' + wednesdayYamato + '\n' +
-      '• Yamato Thursday menu:' + thursdayYamato + '\n' +
-      '• Yamato Friday menu:' + fridayYamato + '\n'
-    )
+      console.log(
+        '• Yamato Monday menu: ' + mondayYamato + '\n' +
+        '• Yamato Tuesday menu: ' + tuesdayYamato + '\n' +
+        '• Yamato Wednesday menu: ' + wednesdayYamato + '\n' +
+        '• Yamato Thursday menu: ' + thursdayYamato + '\n' +
+        '• Yamato Friday menu: ' + fridayYamato + '\n'
+      )
   }
+
 
 
   /*
@@ -189,6 +205,26 @@ const expect = require('expect');
         '• Vian Friday menu: ' + fridayVian1 + ', ' + fridayVian2 + '\n'
       )
       }
+
+
+
+      /*
+      |------------------------------------------
+      |           A-Pecsenyés menu
+      |------------------------------------------
+      |  Address: 1051 Budapest, Sas utca 25.
+      |  Phone: 36-1-610-0645
+      |
+      */
+      let pecsenyesName = 'A-Pecsenyés menu:'
+      let pecsenyesLength = pecsenyesName.length
+      console.log('*' + pecsenyesName + '* \n' + "-".repeat(pecsenyesLength))
+      await page.goto('http://www.napimenu.hu/budapest/adatlap/a-pecsenyes', { waitUntil: 'networkidle2' })
+      let dailyPecsenyes = await page.evaluate(el => el.innerText, await page.$('#tabsContent1 > div'))
+      dailyPecsenyes = dailyPecsenyes.replace(/(\n)/gm, ', ') // removal of line breaks from string, source: https://www.textfixer.com/tutorials/javascript-line-breaks.php
+
+
+        console.log('• ' + dailyPecsenyes + '\n')
 
 
 
