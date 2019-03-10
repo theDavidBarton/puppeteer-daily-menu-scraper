@@ -150,6 +150,204 @@ const puppeteer = require('puppeteer');
 
   /*
   |------------------------------------------
+  |           Chagall Cafe menu
+  |------------------------------------------
+  |  Address: Budapest, Hajós u. 27, 1065
+  |  Phone: (1) 302 4614
+  |
+  */
+
+      const mondayChagallSelector = '#post-396 > section > div > section > div:nth-child(6) > div:nth-child(1) > div > ul > li > div > h4 > span.item_title'
+      const tuesdayChagallSelector = '#post-396 > section > div > section > div:nth-child(6) > div:nth-child(2) > div > ul > li > div > h4 > span.item_title'
+      const wednesdayChagallSelector = '#post-396 > section > div > section > div:nth-child(6) > div:nth-child(3) > div > ul > li > div > h4 > span.item_title'
+      const thursdayChagallSelector = '#post-396 > section > div > section > div:nth-child(6) > div:nth-child(4) > div > ul > li > div > h4 > span.item_title'
+      const fridayChagallSelector = '#post-396 > section > div > section > div:nth-child(6) > div:nth-child(5) > div > ul > li > div > h4 > span.item_title'
+
+  let chagallName = 'Chagall menu:'
+  let chagallLength = chagallName.length
+  console.log('*' + chagallName + '* \n' + "-".repeat(chagallLength))
+  await page.goto('http://chagallcafe.hu/?page_id=396', { waitUntil: 'networkidle2' })
+
+  // Monday
+  let mondayChagall
+  if (await page.$(mondayChagallSelector) !== null) {
+      mondayChagall = await page.evaluate(el => el.innerHTML, await page.$(mondayChagallSelector))
+    }
+  else { mondayChagall = '♪"No Milk Today"♫'
+  }
+
+  // Tuesday
+  let tuesdayChagall
+  if (await page.$(tuesdayChagallSelector) !== null) {
+      tuesdayChagall = await page.evaluate(el => el.innerHTML, await page.$(tuesdayChagallSelector))
+    }
+  else { tuesdayChagall = '♪"No Milk Today"♫'
+  }
+
+  // Wednesday
+  let wednesdayChagall
+  if (await page.$(wednesdayChagallSelector) !== null) {
+      wednesdayChagall = await page.evaluate(el => el.innerHTML, await page.$(wednesdayChagallSelector))
+    }
+  else { wednesdayChagall = '♪"No Milk Today"♫'
+  }
+
+  // Thursday
+  let thursdayChagall
+  if (await page.$(thursdayChagallSelector) !== null) {
+      thursdayChagall = await page.evaluate(el => el.innerHTML, await page.$(thursdayChagallSelector))
+    }
+  else { thursdayChagall = '♪"No Milk Today"♫'
+  }
+
+  // Friday
+  let fridayChagall
+  if (await page.$(fridayChagallSelector) !== null) {
+      fridayChagall = await page.evaluate(el => el.innerHTML, await page.$(fridayChagallSelector))
+    }
+  else { fridayChagall = '♪"No Milk Today"♫'
+  }
+
+
+  var nameOfDayChagall = today
+    switch (nameOfDayChagall) {
+      case 1:
+        console.log('• Chagall Monday menu: ' + mondayChagall + '\n')
+        break
+      case 2:
+        console.log('• Chagall Tuesday menu: ' + tuesdayChagall + '\n')
+        break
+      case 3:
+        console.log('• Chagall Wednesday menu: ' + wednesdayChagall + '\n')
+        break
+      case 4:
+        console.log('• Chagall Thursday menu: ' + thursdayChagall + '\n')
+        break
+      case 5:
+        console.log('• Chagall Friday menu: ' + fridayChagall + '\n')
+        break
+      default:
+        console.log(
+          '• Chagall Monday menu: ' + mondayChagall + '\n' +
+          '• Chagall Tuesday menu: ' + tuesdayChagall + '\n' +
+          '• Chagall Wednesday menu: ' + wednesdayChagall + '\n' +
+          '• Chagall Thursday menu: ' + thursdayChagall + '\n' +
+          '• Chagall Friday menu: ' + fridayChagall + '\n'
+        )
+      }
+
+
+
+  /*
+  |------------------------------------------
+  |            Mozsar menu
+  |------------------------------------------
+  |  Address: Budapest, Nagymező u. 21, 1065
+  |  Phone: (70) 426 8199
+  |
+  */
+
+      const mondayMozsarSelector1 = '#etlapresult > section:nth-child(1) > ul > li:nth-child(1) > label'
+      const mondayMozsarSelector2 = '#etlapresult > section:nth-child(1) > ul > li:nth-child(2) > label'
+      const tuesdayMozsarSelector1 = '#etlapresult > section:nth-child(2) > ul > li:nth-child(1) > label'
+      const tuesdayMozsarSelector2 = '#etlapresult > section:nth-child(2) > ul > li:nth-child(2) > label'
+      const wednesdayMozsarSelector1 = '#etlapresult > section:nth-child(3) > ul > li:nth-child(1) > label'
+      const wednesdayMozsarSelector2 = '#etlapresult > section:nth-child(3) > ul > li:nth-child(2) > label'
+      const thursdayMozsarSelector1 = '#etlapresult > section:nth-child(4) > ul > li:nth-child(1) > label'
+      const thursdayMozsarSelector2 = '#etlapresult > section:nth-child(4) > ul > li:nth-child(2) > label'
+      const fridayMozsarSelector1 = '#etlapresult > section:nth-child(5) > ul > li:nth-child(1) > label'
+      const fridayMozsarSelector2 = '#etlapresult > section:nth-child(5) > ul > li:nth-child(2) > label'
+
+  let mozsarName = 'Mozsar menu:'
+  let mozsarLength = mozsarName.length
+  console.log('*' + mozsarName + '* \n' + "-".repeat(mozsarLength))
+  await page.goto('http://mozsarbisztro.hu/index.php?p=3', { waitUntil: 'networkidle2' })
+
+  // Monday
+  let mondayMozsar1
+  let mondayMozsar2
+  if (await page.$(mondayMozsarSelector1) !== null) {
+      mondayMozsar1 = await page.evaluate(el => el.innerHTML, await page.$(mondayMozsarSelector1))
+      mondayMozsar2 = await page.evaluate(el => el.innerHTML, await page.$(mondayMozsarSelector2))
+    }
+  else { mondayMozsar1 = '♪"No Milk Today"♫'
+         mondayMozsar2 = ''
+  }
+  // Tuesday
+  let tuesdayMozsar1
+  let tuesdayMozsar2
+  if (await page.$(tuesdayMozsarSelector1) !== null) {
+      tuesdayMozsar1 = await page.evaluate(el => el.innerHTML, await page.$(tuesdayMozsarSelector1))
+      tuesdayMozsar2 = await page.evaluate(el => el.innerHTML, await page.$(tuesdayMozsarSelector2))
+    }
+  else { tuesdayMozsar1 = '♪"No Milk Today"♫'
+         tuesdayMozsar2 = ''
+  }
+
+  // Wednesday
+  let wednesdayMozsar1
+  let wednesdayMozsar2
+  if (await page.$(wednesdayMozsarSelector1) !== null) {
+      wednesdayMozsar1 = await page.evaluate(el => el.innerHTML, await page.$(wednesdayMozsarSelector1))
+      wednesdayMozsar2 = await page.evaluate(el => el.innerHTML, await page.$(wednesdayMozsarSelector2))
+    }
+  else { wednesdayMozsar1 = '♪"No Milk Today"♫'
+         wednesdayMozsar2 = ''
+  }
+
+  // Thursday
+  let thursdayMozsar1
+  let thursdayMozsar2
+  if (await page.$(thursdayMozsarSelector1) !== null) {
+      thursdayMozsar1 = await page.evaluate(el => el.innerHTML, await page.$(thursdayMozsarSelector1))
+      thursdayMozsar2 = await page.evaluate(el => el.innerHTML, await page.$(thursdayMozsarSelector2))
+    }
+  else { thursdayMozsar1 = '♪"No Milk Today"♫'
+         thursdayMozsar2 = ''
+  }
+
+  // Friday
+  let fridayMozsar1
+  let fridayMozsar2
+  if (await page.$(fridayMozsarSelector1) !== null) {
+      fridayMozsar1 = await page.evaluate(el => el.innerHTML, await page.$(fridayMozsarSelector1))
+      fridayMozsar2 = await page.evaluate(el => el.innerHTML, await page.$(fridayMozsarSelector2))
+    }
+  else { fridayMozsar1 = '♪"No Milk Today"♫'
+         fridayMozsar2 = ''
+  }
+
+  var nameOfDayMozsar = today
+    switch (nameOfDayMozsar) {
+      case 1:
+        console.log('• Mozsár Monday menu: ' + mondayMozsar1 + ', ' + mondayMozsar2 + '\n')
+        break
+      case 2:
+        console.log('• Mozsár Tuesday menu: ' + tuesdayMozsar1 + ', ' + tuesdayMozsar2 + '\n')
+        break
+      case 3:
+        console.log('• Mozsár Wednesday menu: ' + wednesdayMozsar1 + ', ' + wednesdayMozsar2 + '\n')
+        break
+      case 4:
+        console.log('• Mozsár Thursday menu: ' + thursdayMozsar1 + ', ' + thursdayMozsar2 + '\n')
+        break
+      case 5:
+        console.log('• Mozsár Friday menu: ' + fridayMozsar1 + ', ' + fridayMozsar2 + '\n')
+        break
+      default:
+        console.log(
+          '• Mozsár Monday menu: ' + mondayMozsar1 + ', ' + mondayMozsar2 + '\n' +
+          '• Mozsár Tuesday menu: ' + tuesdayMozsar1 + ', ' + tuesdayMozsar2 + '\n' +
+          '• Mozsár Wednesday menu: ' + wednesdayMozsar1 + ', ' + wednesdayMozsar2 + '\n' +
+          '• Mozsár Thursday menu: ' + thursdayMozsar1 + ', ' + thursdayMozsar2 + '\n' +
+          '• Mozsár Friday menu: ' + fridayMozsar1 + ', ' + fridayMozsar2 + '\n'
+        )
+      }
+
+
+
+  /*
+  |------------------------------------------
   |               Cafe Vian menu
   |------------------------------------------
   |  Address: Budapest, Liszt Ferenc tér 9, 1061
@@ -184,8 +382,8 @@ const puppeteer = require('puppeteer');
   let mondayVian1
   let mondayVian2
   if (await page.$(mondayVianSelector1) !== null) {
-      mondayVian1 = await page.evaluate(elefant => elefant.innerText, await page.$(mondayVianSelector1))
-      mondayVian2 = await page.evaluate(elefant => elefant.innerText, await page.$(mondayVianSelector2))
+      mondayVian1 = await page.evaluate(el => el.innerText, await page.$(mondayVianSelector1))
+      mondayVian2 = await page.evaluate(el => el.innerText, await page.$(mondayVianSelector2))
     }
   else { mondayVian1 = '♪"No Milk Today"♫'
          mondayVian2 = ''
@@ -195,8 +393,8 @@ const puppeteer = require('puppeteer');
   let tuesdayVian1
   let tuesdayVian2
   if (await page.$(tuesdayVianSelector1) !== null) {
-      tuesdayVian1 = await page.evaluate(elefant => elefant.innerText, await page.$(tuesdayVianSelector1))
-      tuesdayVian2 = await page.evaluate(elefant => elefant.innerText, await page.$(tuesdayVianSelector2))
+      tuesdayVian1 = await page.evaluate(el => el.innerText, await page.$(tuesdayVianSelector1))
+      tuesdayVian2 = await page.evaluate(el => el.innerText, await page.$(tuesdayVianSelector2))
     }
   else { tuesdayVian1 = '♪"No Milk Today"♫'
          tuesdayVian2 = ''
@@ -206,8 +404,8 @@ const puppeteer = require('puppeteer');
   let wednesdayVian1
   let wednesdayVian2
   if (await page.$(wednesdayVianSelector1) !== null) {
-      wednesdayVian1 = await page.evaluate(elefant => elefant.innerText, await page.$(wednesdayVianSelector1))
-      wednesdayVian2 = await page.evaluate(elefant => elefant.innerText, await page.$(wednesdayVianSelector2))
+      wednesdayVian1 = await page.evaluate(el => el.innerText, await page.$(wednesdayVianSelector1))
+      wednesdayVian2 = await page.evaluate(el => el.innerText, await page.$(wednesdayVianSelector2))
     }
   else { wednesdayVian1 = '♪"No Milk Today"♫'
          wednesdayVian1 = ''
@@ -217,8 +415,8 @@ const puppeteer = require('puppeteer');
   let thursdayVian1
   let thursdayVian2
   if (await page.$(thursdayVianSelector1) !== null) {
-      thursdayVian1 = await page.evaluate(elefant => elefant.innerText, await page.$(thursdayVianSelector1))
-      thursdayVian2 = await page.evaluate(elefant => elefant.innerText, await page.$(thursdayVianSelector2))
+      thursdayVian1 = await page.evaluate(el => el.innerText, await page.$(thursdayVianSelector1))
+      thursdayVian2 = await page.evaluate(el => el.innerText, await page.$(thursdayVianSelector2))
     }
   else { thursdayVian1 = '♪"No Milk Today"♫'
          thursdayVian2 = ''
@@ -228,8 +426,8 @@ const puppeteer = require('puppeteer');
   let fridayVian1
   let fridayVian2
   if (await page.$(fridayVianSelector1) !== null) {
-      fridayVian1 = await page.evaluate(elefant => elefant.innerText, await page.$(fridayVianSelector1))
-      fridayVian2 = await page.evaluate(elefant => elefant.innerText, await page.$(fridayVianSelector2))
+      fridayVian1 = await page.evaluate(el => el.innerText, await page.$(fridayVianSelector1))
+      fridayVian2 = await page.evaluate(el => el.innerText, await page.$(fridayVianSelector2))
   }
   else { fridayVian1 = '♪"No Milk Today"♫'
          fridayVian2 = ''
@@ -279,9 +477,10 @@ const puppeteer = require('puppeteer');
   await page.goto('http://www.napimenu.hu/budapest/adatlap/a-pecsenyes', { waitUntil: 'networkidle2' })
   let dailyPecsenyes = await page.evaluate(el => el.innerText, await page.$('#tabsContent1 > div'))
   dailyPecsenyes = dailyPecsenyes.replace(/(\n)/gm, ', ') // removal of line breaks from string, source: https://www.textfixer.com/tutorials/javascript-line-breaks.php
+  dailyPecsenyes = dailyPecsenyes.replace('Napi ebéd menü A-Pecsenyés, ', '')
 
 
-    console.log('• ' + dailyPecsenyes + '\n')
+    console.log('• Daily menu: ' + dailyPecsenyes + '\n')
 
 
 
@@ -487,154 +686,6 @@ const puppeteer = require('puppeteer');
 
 
     console.log('• Roza daily menu: ' + dailyRoza + '\n')
-
-
-
-  /*
-  |------------------------------------------
-  |           Chagall Cafe menu
-  |------------------------------------------
-  |  Address: Budapest, Hajós u. 27, 1065
-  |  Phone: (1) 302 4614
-  |
-  */
-
-      const mondayChagallSelector = '#post-396 > section > div > section > div:nth-child(6) > div:nth-child(1) > div > ul > li > div > h4 > span.item_title'
-      const tuesdayChagallSelector = '#post-396 > section > div > section > div:nth-child(6) > div:nth-child(2) > div > ul > li > div > h4 > span.item_title'
-      const wednesdayChagallSelector = '#post-396 > section > div > section > div:nth-child(6) > div:nth-child(3) > div > ul > li > div > h4 > span.item_title'
-      const thursdayChagallSelector = '#post-396 > section > div > section > div:nth-child(6) > div:nth-child(4) > div > ul > li > div > h4 > span.item_title'
-      const fridayChagallSelector = '#post-396 > section > div > section > div:nth-child(6) > div:nth-child(5) > div > ul > li > div > h4 > span.item_title'
-
-  let chagallName = 'Chagall menu:'
-  let chagallLength = chagallName.length
-  console.log('*' + chagallName + '* \n' + "-".repeat(chagallLength))
-  await page.goto('http://chagallcafe.hu/?page_id=396', { waitUntil: 'networkidle2' })
-
-  // Monday
-  let mondayChagall
-  if (await page.$(mondayChagallSelector) !== null) {
-      mondayChagall = await page.evaluate(el => el.innerHTML, await page.$(mondayChagallSelector))
-    }
-  else { mondayChagall = '♪"No Milk Today"♫'
-  }
-
-  // Tuesday
-  let tuesdayChagall
-  if (await page.$(tuesdayChagallSelector) !== null) {
-      tuesdayChagall = await page.evaluate(el => el.innerHTML, await page.$(tuesdayChagallSelector))
-    }
-  else { tuesdayChagall = '♪"No Milk Today"♫'
-  }
-
-  // Wednesday
-  let wednesdayChagall
-  if (await page.$(wednesdayChagallSelector) !== null) {
-      wednesdayChagall = await page.evaluate(el => el.innerHTML, await page.$(wednesdayChagallSelector))
-    }
-  else { wednesdayChagall = '♪"No Milk Today"♫'
-  }
-
-  // Thursday
-  let thursdayChagall
-  if (await page.$(thursdayChagallSelector) !== null) {
-      thursdayChagall = await page.evaluate(el => el.innerHTML, await page.$(thursdayChagallSelector))
-    }
-  else { thursdayChagall = '♪"No Milk Today"♫'
-  }
-
-  // Friday
-  let fridayChagall
-  if (await page.$(fridayChagallSelector) !== null) {
-      fridayChagall = await page.evaluate(el => el.innerHTML, await page.$(fridayChagallSelector))
-    }
-  else { fridayChagall = '♪"No Milk Today"♫'
-  }
-
-
-  var nameOfDayChagall = today
-    switch (nameOfDayChagall) {
-      case 1:
-        console.log('• Chagall Monday menu: ' + mondayChagall + '\n')
-        break
-      case 2:
-        console.log('• Chagall Tuesday menu: ' + tuesdayChagall + '\n')
-        break
-      case 3:
-        console.log('• Chagall Wednesday menu: ' + wednesdayChagall + '\n')
-        break
-      case 4:
-        console.log('• Chagall Thursday menu: ' + thursdayChagall + '\n')
-        break
-      case 5:
-        console.log('• Chagall Friday menu: ' + fridayChagall + '\n')
-        break
-      default:
-        console.log(
-          '• Chagall Monday menu: ' + mondayChagall + '\n' +
-          '• Chagall Tuesday menu: ' + tuesdayChagall + '\n' +
-          '• Chagall Wednesday menu: ' + wednesdayChagall + '\n' +
-          '• Chagall Thursday menu: ' + thursdayChagall + '\n' +
-          '• Chagall Friday menu: ' + fridayChagall + '\n'
-        )
-      }
-
-
-
-  /*
-  |------------------------------------------
-  |            Mozsar menu
-  |------------------------------------------
-  |  Address: Budapest, Nagymező u. 21, 1065
-  |  Phone: (70) 426 8199
-  |
-  */
-  let mozsarName = 'Mozsar menu:'
-  let mozsarLength = mozsarName.length
-  console.log('*' + mozsarName + '* \n' + "-".repeat(mozsarLength))
-  await page.goto('http://mozsarbisztro.hu/index.php?p=3', { waitUntil: 'networkidle2' })
-  // Monday
-  const mondayMozsar1 = await page.evaluate(el => el.innerHTML, await page.$('#etlapresult > section:nth-child(1) > ul > li:nth-child(1) > label'))
-  const mondayMozsar2 = await page.evaluate(el => el.innerHTML, await page.$('#etlapresult > section:nth-child(1) > ul > li:nth-child(2) > label'))
-  // Tuesday
-  const tuesdayMozsar1 = await page.evaluate(el => el.innerHTML, await page.$('#etlapresult > section:nth-child(2) > ul > li:nth-child(1) > label'))
-  const tuesdayMozsar2 = await page.evaluate(el => el.innerHTML, await page.$('#etlapresult > section:nth-child(2) > ul > li:nth-child(2) > label'))
-  // Wednesday
-  const wednesdayMozsar1 = await page.evaluate(el => el.innerHTML, await page.$('#etlapresult > section:nth-child(3) > ul > li:nth-child(1) > label'))
-  const wednesdayMozsar2 = await page.evaluate(el => el.innerHTML, await page.$('#etlapresult > section:nth-child(3) > ul > li:nth-child(2) > label'))
-  // Thursday
-  const thursdayMozsar1 = await page.evaluate(el => el.innerHTML, await page.$('#etlapresult > section:nth-child(4) > ul > li:nth-child(1) > label'))
-  const thursdayMozsar2 = await page.evaluate(el => el.innerHTML, await page.$('#etlapresult > section:nth-child(4) > ul > li:nth-child(2) > label'))
-  // Friday
-  const fridayMozsar1 = await page.evaluate(el => el.innerHTML, await page.$('#etlapresult > section:nth-child(5) > ul > li:nth-child(1) > label'))
-  const fridayMozsar2 = await page.evaluate(el => el.innerHTML, await page.$('#etlapresult > section:nth-child(5) > ul > li:nth-child(2) > label'))
-
-
-  var nameOfDayMozsar = today
-    switch (nameOfDayMozsar) {
-      case 1:
-        console.log('• Mozsár Monday menu: ' + mondayMozsar1 + ', ' + mondayMozsar2 + '\n')
-        break
-        case 2:
-          console.log('• Mozsár Tuesday menu: ' + tuesdayMozsar1 + ', ' + tuesdayMozsar2 + '\n')
-          break
-          case 3:
-            console.log('• Mozsár Wednesday menu: ' + wednesdayMozsar1 + ', ' + wednesdayMozsar2 + '\n')
-            break
-            case 4:
-              console.log('• Mozsár Thursday menu: ' + thursdayMozsar1 + ', ' + thursdayMozsar2 + '\n')
-              break
-              case 5:
-                console.log('• Mozsár Friday menu: ' + fridayMozsar1 + ', ' + fridayMozsar2 + '\n')
-                break
-      default:
-      console.log(
-        '• Mozsár Monday menu: ' + mondayMozsar1 + ', ' + mondayMozsar2 + '\n' +
-        '• Mozsár Tuesday menu: ' + tuesdayMozsar1 + ', ' + tuesdayMozsar2 + '\n' +
-        '• Mozsár Wednesday menu: ' + wednesdayMozsar1 + ', ' + wednesdayMozsar2 + '\n' +
-        '• Mozsár Thursday menu: ' + thursdayMozsar1 + ', ' + thursdayMozsar2 + '\n' +
-        '• Mozsár Friday menu: ' + fridayMozsar1 + ', ' + fridayMozsar2 + '\n'
-      )
-      }
 
 
 
