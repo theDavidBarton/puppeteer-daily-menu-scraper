@@ -7,7 +7,7 @@ const puppeteer = require('puppeteer');
   const page = await browser.newPage()
   await page.setViewport({ width: 1024, height: 768 })
 
-  // abort all images, source: https://github.com/GoogleChrome/puppeteer/blob/master/examples/block-images.js
+      // abort all images, source: https://github.com/GoogleChrome/puppeteer/blob/master/examples/block-images.js
       await page.setRequestInterception(true)
       page.on('request', request => {
         if (request.resourceType() === 'image')
@@ -53,15 +53,29 @@ const puppeteer = require('puppeteer');
 
 
 
-  /*
-  |------------------------------------------
-  |              Yamato menu
-  |------------------------------------------
-  |  Address: Budapest, 1066, JÓKAI U. 30.
-  |  Phone: +36(70)681-75-44
-  |
-  */
+/*
 
+@ YAMATO
+---------------------------------------
+contact info:
+* Address: Budapest, 1066, JÓKAI U. 30.
+* Phone: +36(70)681-75-44
+---------------------------------------
+<dayname>YamatoSelector(const)
+* exact selector for <dayname> menu
+
+<dayname>YamatoRaw, <dayname>Yamato(let)
+* raw content of <dayname>YamatoSelector
+* content of <dayname>YamatoSelector
+
+yamatoName, yamatoLength
+* the restaurant title
+* the calculated length of title string
+* underlined in length of title
+
+*/
+
+  //@ YAMATO selectors
       const mondayYamatoSelector = 'body > div > h6:nth-child(3)'
       const tuesdayYamatoSelector = 'body > div > h6:nth-child(5)'
       const wednesdayYamatoSelector = 'body > div > h6:nth-child(7)'
@@ -73,7 +87,7 @@ const puppeteer = require('puppeteer');
   console.log('*' + yamatoName + '* \n' + "-".repeat(yamatoLength))
   await page.goto('https://www.wasabi.hu/napimenu.php?source=yamato&lang=hu', { waitUntil: 'networkidle2', timout: 0 })
 
-  // Monday
+  //@ YAMATO Monday
   let mondayYamato
   if (await page.$(mondayYamatoSelector) !== null) {
       let mondayYamatoRaw = await page.evaluate(el => el.innerText, await page.$(mondayYamatoSelector))
@@ -82,7 +96,7 @@ const puppeteer = require('puppeteer');
   else { mondayYamato = '♪"No Milk Today"♫'
   }
 
-  // Tuesday
+  //@ YAMATO Tuesday
   let tuesdayYamato
   if (await page.$(tuesdayYamatoSelector) !== null) {
       let tuesdayYamatoRaw = await page.evaluate(el => el.innerText, await page.$(tuesdayYamatoSelector))
@@ -91,7 +105,7 @@ const puppeteer = require('puppeteer');
   else { tuesdayYamato = '♪"No Milk Today"♫'
   }
 
-  // Wednesday
+  //@ YAMATO Wednesday
   let wednesdayYamato
   if (await page.$(wednesdayYamatoSelector) !== null) {
       let wednesdayYamatoRaw = await page.evaluate(el => el.innerText, await page.$(wednesdayYamatoSelector))
@@ -100,7 +114,7 @@ const puppeteer = require('puppeteer');
   else { wednesdayYamato = '♪"No Milk Today"♫'
   }
 
-  // Thursday
+  //@ YAMATO Thursday
   let thursdayYamato
   if (await page.$(thursdayYamatoSelector) !== null) {
       let thursdayYamatoRaw = await page.evaluate(el => el.innerText, await page.$(thursdayYamatoSelector))
@@ -109,7 +123,7 @@ const puppeteer = require('puppeteer');
   else { thursdayYamato = '♪"No Milk Today"♫'
   }
 
-  // Friday
+  //@ YAMATO Friday
   let fridayYamato
   if (await page.$(fridayYamatoSelector) !== null) {
       let fridayYamatoRaw = await page.evaluate(el => el.innerText, await page.$(fridayYamatoSelector))
@@ -119,6 +133,7 @@ const puppeteer = require('puppeteer');
   }
 
 
+  //@ YAMATO print menu
   var nameOfDayYamato = today
   switch (nameOfDayYamato) {
     case 1:
@@ -145,18 +160,33 @@ const puppeteer = require('puppeteer');
         '• Friday: ' + fridayYamato + '\n'
       )
   }
+//@ YAMATO ends here
 
 
 
-  /*
-  |------------------------------------------
-  |           Chagall Cafe menu
-  |------------------------------------------
-  |  Address: Budapest, Hajós u. 27, 1065
-  |  Phone: (1) 302 4614
-  |
-  */
+/*
 
+@ CHAGALL
+------------------------------------------
+contact info:
+* Address: Budapest, Hajós u. 27, 1065
+* Phone: (1) 302 4614
+-----------------------------------------
+
+<dayname>ChagallSelector(const)
+* exact selector for <dayname> menu
+
+<dayname>Chagall(let)
+* content of <dayname>ChagallSelector
+
+ChagallName, ChagallLength
+* the restaurant title
+* the calculated length of title string
+* underlined in length of title
+
+*/
+
+  //@ CHAGALL selectors
       const mondayChagallSelector = '#post-396 > section > div > section > div:nth-child(6) > div:nth-child(1) > div > ul > li > div > h4 > span.item_title'
       const tuesdayChagallSelector = '#post-396 > section > div > section > div:nth-child(6) > div:nth-child(2) > div > ul > li > div > h4 > span.item_title'
       const wednesdayChagallSelector = '#post-396 > section > div > section > div:nth-child(6) > div:nth-child(3) > div > ul > li > div > h4 > span.item_title'
@@ -168,7 +198,7 @@ const puppeteer = require('puppeteer');
   console.log('*' + chagallName + '* \n' + "-".repeat(chagallLength))
   await page.goto('http://chagallcafe.hu/?page_id=396', { waitUntil: 'networkidle2' })
 
-  // Monday
+  //@ CHAGALL Monday
   let mondayChagall
   if (await page.$(mondayChagallSelector) !== null) {
       mondayChagall = await page.evaluate(el => el.innerHTML, await page.$(mondayChagallSelector))
@@ -176,7 +206,7 @@ const puppeteer = require('puppeteer');
   else { mondayChagall = '♪"No Milk Today"♫'
   }
 
-  // Tuesday
+  //@ CHAGALL Tuesday
   let tuesdayChagall
   if (await page.$(tuesdayChagallSelector) !== null) {
       tuesdayChagall = await page.evaluate(el => el.innerHTML, await page.$(tuesdayChagallSelector))
@@ -184,7 +214,7 @@ const puppeteer = require('puppeteer');
   else { tuesdayChagall = '♪"No Milk Today"♫'
   }
 
-  // Wednesday
+  //@ CHAGALL Wednesday
   let wednesdayChagall
   if (await page.$(wednesdayChagallSelector) !== null) {
       wednesdayChagall = await page.evaluate(el => el.innerHTML, await page.$(wednesdayChagallSelector))
@@ -192,7 +222,7 @@ const puppeteer = require('puppeteer');
   else { wednesdayChagall = '♪"No Milk Today"♫'
   }
 
-  // Thursday
+  //@ CHAGALL Thursday
   let thursdayChagall
   if (await page.$(thursdayChagallSelector) !== null) {
       thursdayChagall = await page.evaluate(el => el.innerHTML, await page.$(thursdayChagallSelector))
@@ -200,7 +230,7 @@ const puppeteer = require('puppeteer');
   else { thursdayChagall = '♪"No Milk Today"♫'
   }
 
-  // Friday
+  //@ CHAGALL Friday
   let fridayChagall
   if (await page.$(fridayChagallSelector) !== null) {
       fridayChagall = await page.evaluate(el => el.innerHTML, await page.$(fridayChagallSelector))
@@ -209,6 +239,7 @@ const puppeteer = require('puppeteer');
   }
 
 
+  //@ CHAGALL print menu
   var nameOfDayChagall = today
     switch (nameOfDayChagall) {
       case 1:
@@ -235,18 +266,37 @@ const puppeteer = require('puppeteer');
           '• Friday: ' + fridayChagall + '\n'
         )
       }
+//@ CHAGALL ends here
 
 
 
-  /*
-  |------------------------------------------
-  |            Mozsar menu
-  |------------------------------------------
-  |  Address: Budapest, Nagymező u. 21, 1065
-  |  Phone: (70) 426 8199
-  |
-  */
+/*
 
+@ MOZSAR
+------------------------------------------
+contact info:
+* Address: Budapest, Nagymező u. 21, 1065
+* Phone: (70) 426 8199
+-----------------------------------------
+
+<dayname>MozsarSelector1-2(const)
+* exact selector for <dayname> menu
+* courses are scraped
+  from different selectors [1-2]
+
+<dayname>Mozsar1-2(let)
+* content of <dayname>MozsarSelector
+* courses are scraped
+  from different selectors [1-2]
+
+MozsarName, MozsarLength
+* the restaurant title
+* the calculated length of title string
+* underlined in length of title
+
+*/
+
+  //@ MOZSAR selectors
       const mondayMozsarSelector1 = '#etlapresult > section:nth-child(1) > ul > li:nth-child(1) > label'
       const mondayMozsarSelector2 = '#etlapresult > section:nth-child(1) > ul > li:nth-child(2) > label'
       const tuesdayMozsarSelector1 = '#etlapresult > section:nth-child(2) > ul > li:nth-child(1) > label'
@@ -263,7 +313,7 @@ const puppeteer = require('puppeteer');
   console.log('*' + mozsarName + '* \n' + "-".repeat(mozsarLength))
   await page.goto('http://mozsarbisztro.hu/index.php?p=3', { waitUntil: 'networkidle2' })
 
-  // Monday
+  //@ MOZSAR Monday
   let mondayMozsar1
   let mondayMozsar2
   if (await page.$(mondayMozsarSelector1) !== null) {
@@ -273,7 +323,7 @@ const puppeteer = require('puppeteer');
   else { mondayMozsar1 = '♪"No Milk Today"♫'
          mondayMozsar2 = ''
   }
-  // Tuesday
+  //@ MOZSAR Tuesday
   let tuesdayMozsar1
   let tuesdayMozsar2
   if (await page.$(tuesdayMozsarSelector1) !== null) {
@@ -284,7 +334,7 @@ const puppeteer = require('puppeteer');
          tuesdayMozsar2 = ''
   }
 
-  // Wednesday
+  //@ MOZSAR Wednesday
   let wednesdayMozsar1
   let wednesdayMozsar2
   if (await page.$(wednesdayMozsarSelector1) !== null) {
@@ -295,7 +345,7 @@ const puppeteer = require('puppeteer');
          wednesdayMozsar2 = ''
   }
 
-  // Thursday
+  //@ MOZSAR Thursday
   let thursdayMozsar1
   let thursdayMozsar2
   if (await page.$(thursdayMozsarSelector1) !== null) {
@@ -306,7 +356,7 @@ const puppeteer = require('puppeteer');
          thursdayMozsar2 = ''
   }
 
-  // Friday
+  //@ MOZSAR Friday
   let fridayMozsar1
   let fridayMozsar2
   if (await page.$(fridayMozsarSelector1) !== null) {
@@ -317,6 +367,7 @@ const puppeteer = require('puppeteer');
          fridayMozsar2 = ''
   }
 
+  //@ MOZSAR print menu
   var nameOfDayMozsar = today
     switch (nameOfDayMozsar) {
       case 1:
@@ -343,18 +394,37 @@ const puppeteer = require('puppeteer');
           '• Friday: ' + fridayMozsar1 + ', ' + fridayMozsar2 + '\n'
         )
       }
+//@ MOZSAR ends here
 
 
 
-  /*
-  |------------------------------------------
-  |               Cafe Vian menu
-  |------------------------------------------
-  |  Address: Budapest, Liszt Ferenc tér 9, 1061
-  |  Phone: (1) 268 1154
-  |
-  */
+/*
 
+@ VIAN
+------------------------------------------
+contact info:
+* Address: Budapest, Liszt Ferenc tér 9, 1061
+* Phone: (1) 268 1154
+-----------------------------------------
+
+<dayname>VianSelector1-2(const)
+* exact selector for <dayname> menu
+* main courses and desserts are scraped
+  from different selectors [1-2]
+
+<dayname>Vian1-2(let)
+* content of <dayname>VianSelector
+* main courses and desserts are scraped
+  from different selectors [1-2]
+
+VianName, VianLength
+* the restaurant title
+* the calculated length of title string
+* underlined in length of title
+
+*/
+
+  //@ VIAN selectors
       const mondayVianSelector1 = '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(1) > div:nth-child(1) > div.heartyQ2riU'
       const mondayVianSelector2 = '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(1) > div.hearty2QDOd > div > div > div.heartyQogjj > span'
       const tuesdayVianSelector1 = '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(2) > div:nth-child(1) > div.heartyQ2riU'
@@ -378,7 +448,7 @@ const puppeteer = require('puppeteer');
 
   await page.goto(linkVian, { waitUntil: 'networkidle2', timeout: 0 })
 
-  // Monday
+  //@ VIAN Monday
   let mondayVian1
   let mondayVian2
   if (await page.$(mondayVianSelector1) !== null) {
@@ -389,7 +459,7 @@ const puppeteer = require('puppeteer');
          mondayVian2 = ''
   }
 
-  // Tuesday
+  //@ VIAN Tuesday
   let tuesdayVian1
   let tuesdayVian2
   if (await page.$(tuesdayVianSelector1) !== null) {
@@ -400,7 +470,7 @@ const puppeteer = require('puppeteer');
          tuesdayVian2 = ''
   }
 
-  // Wednesday
+  //@ VIAN Wednesday
   let wednesdayVian1
   let wednesdayVian2
   if (await page.$(wednesdayVianSelector1) !== null) {
@@ -411,7 +481,7 @@ const puppeteer = require('puppeteer');
          wednesdayVian1 = ''
   }
 
-  // Thursday
+  //@ VIAN Thursday
   let thursdayVian1
   let thursdayVian2
   if (await page.$(thursdayVianSelector1) !== null) {
@@ -422,7 +492,7 @@ const puppeteer = require('puppeteer');
          thursdayVian2 = ''
   }
 
-  // Friday
+  //@ VIAN Friday
   let fridayVian1
   let fridayVian2
   if (await page.$(fridayVianSelector1) !== null) {
@@ -433,7 +503,7 @@ const puppeteer = require('puppeteer');
          fridayVian2 = ''
   }
 
-
+  //@ VIAN print menu
   var nameOfDayVian = today
     switch (nameOfDayVian) {
       case 1:
@@ -460,17 +530,29 @@ const puppeteer = require('puppeteer');
           '• Friday: ' + fridayVian1 + ', ' + fridayVian2 + '\n'
         )
       }
+//@ VIAN ends here
 
 
 
-  /*
-  |------------------------------------------
-  |           A-Pecsenyés menu
-  |------------------------------------------
-  |  Address: 1051 Budapest, Sas utca 25.
-  |  Phone: 36-1-610-0645
-  |
-  */
+/*
+
+@ A-PECSENYES
+------------------------------------------
+contact info:
+* Address: 1051 Budapest, Sas utca 25.
+* Phone: 36-1-610-0645
+-----------------------------------------
+
+<dayname>Pecsenyes(let)
+* content of menu
+
+PecsenyesName, PecsenyesLength
+* the restaurant title
+* the calculated length of title string
+* underlined in length of title
+
+*/
+
   let pecsenyesName = 'A-Pecsenyés menu:'
   let pecsenyesLength = pecsenyesName.length
     console.log('*' + pecsenyesName + '* \n' + "-".repeat(pecsenyesLength))
@@ -479,19 +561,26 @@ const puppeteer = require('puppeteer');
   dailyPecsenyes = dailyPecsenyes.replace(/(\n)/gm, ', ') // removal of line breaks from string, source: https://www.textfixer.com/tutorials/javascript-line-breaks.php
   dailyPecsenyes = dailyPecsenyes.replace('Napi ebéd menü A-Pecsenyés, ', '')
 
-
+  //@ A-PECSENYES print menu
     console.log('• Daily menu: ' + dailyPecsenyes + '\n')
+//@ A-PECSENYES ends here
 
 
+/*
 
-  /*
-  |------------------------------------------
-  |               Korhely menu
-  |------------------------------------------
-  |  Address: Budapest, Liszt Ferenc tér 7, 1061
-  |  Phone: (1) 321 0280
-  |
-  */
+@ KORHELY
+------------------------------------------
+contact info:
+* Address: Budapest, Liszt Ferenc tér 7, 1061
+* Phone: (1) 321 0280
+-----------------------------------------
+
+korhelyName, korhelyLength
+* the restaurant title
+* the calculated length of title string
+* underlined in length of title
+
+*/
   let korhelyName = 'Korhely menu:'
   let korhelyLength = korhelyName.length
   console.log('*' + korhelyName + '* \n' + "-".repeat(korhelyLength))
@@ -511,24 +600,43 @@ const puppeteer = require('puppeteer');
    let weeklyDessertKorhely = await page.evaluate(el => el.innerText, await page.$('#mainDiv > div > div:nth-child(2) > section > ul > li:nth-child(3)'))
    weeklyDessertKorhely = weeklyDessertKorhely.replace('DESSZERTEK', '')
 
-
+   //@ KORHELY print menu
     console.log(
       '• Soups: ' + weeklySoupKorhely + '\n' +
       '• Main courses: ' + weeklyMainKorhely + '\n' +
       '• Desserts: ' + weeklyDessertKorhely + '\n'
     )
+//@ KORHELY ends here
 
 
 
-  /*
-  |------------------------------------------
-  |        Ketszerecsen bisztro menu
-  |------------------------------------------
-  |  Address: Budapest, Nagymező u. 14, 1065
-  |  Phone: (1) 343 1984
-  |
-  */
+/*
 
+@ KETSZERECSEN
+------------------------------------------
+contact info:
+* Address: Budapest, Nagymező u. 14, 1065
+* Phone: (1) 343 1984
+-----------------------------------------
+
+<dayname>KetszerecsenSelector1-2(const)
+* exact selector for <dayname> menu
+* main courses and desserts are scraped
+  from different selectors [1-2]
+
+<dayname>Ketszerecsen1-2(let)
+* content of <dayname>KetszerecsenSelector
+* main courses and desserts are scraped
+  from different selectors [1-2]
+
+KetszerecsenName, KetszerecsenLength
+* the restaurant title
+* the calculated length of title string
+* underlined in length of title
+
+*/
+
+  //@ KETSZERECSEN selectors
       const mondayKetszerecsenSelector1 = 'p:nth-child(5)'
       const mondayKetszerecsenSelector2 = 'p:nth-child(6)'
       const tuesdayKetszerecsenSelector1 = 'p:nth-child(8)'
@@ -545,7 +653,7 @@ const puppeteer = require('puppeteer');
   console.log('*' + ketszerecsenName + '* \n' + "-".repeat(ketszerecsenLength))
   await page.goto('https://ketszerecsen.hu/#daily', { waitUntil: 'networkidle2' })
 
-  // Monday
+  //@ KETSZERECSEN Monday
   let mondayKetszerecsen1
   let mondayKetszerecsen2
   if (await page.$(mondayKetszerecsenSelector1) !== null) {
@@ -556,7 +664,7 @@ const puppeteer = require('puppeteer');
          mondayKetszerecsen2 = ''
   }
 
-  // Tuesday
+  //@ KETSZERECSEN Tuesday
   let tuesdayKetszerecsen1
   let tuesdayKetszerecsen2
   if (await page.$(tuesdayKetszerecsenSelector1) !== null) {
@@ -567,7 +675,7 @@ const puppeteer = require('puppeteer');
          tuesdayKetszerecsen2 = ''
   }
 
-  // Wednesday
+  //@ KETSZERECSEN Wednesday
   let wednesdayKetszerecsen1
   let wednesdayKetszerecsen2
   if (await page.$(wednesdayKetszerecsenSelector1) !== null) {
@@ -578,7 +686,7 @@ const puppeteer = require('puppeteer');
          wednesdayKetszerecsen2 = ''
   }
 
-  // Thursday
+  //@ KETSZERECSEN Thursday
   let thursdayKetszerecsen1
   let thursdayKetszerecsen2
   if (await page.$(thursdayKetszerecsenSelector1) !== null) {
@@ -589,7 +697,7 @@ const puppeteer = require('puppeteer');
          thursdayKetszerecsen2 = ''
   }
 
-  // Friday
+  //@ KETSZERECSEN Friday
   let fridayKetszerecsen1
   let fridayKetszerecsen2
   if (await page.$(fridayKetszerecsenSelector1) !== null) {
@@ -600,7 +708,7 @@ const puppeteer = require('puppeteer');
          fridayKetszerecsen2 = ''
   }
 
-
+  //@ KETSZERECSEN print menu
   var nameOfDayKetszerecsen = today
     switch (nameOfDayKetszerecsen) {
       case 1:
@@ -627,7 +735,7 @@ const puppeteer = require('puppeteer');
           '• Friday: ' + fridayKetszerecsen1 + ', ' + fridayKetszerecsen2 + '\n'
         )
       }
-
+//@ KETSZERECSEN ends here 
 
 
   /*
