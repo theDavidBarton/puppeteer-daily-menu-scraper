@@ -109,7 +109,7 @@ const expect = require('expect');
 
               expect(airFromDateContent).toMatch(/19/)
 
-              console.log('√ airFrom contains "19" \n')
+              console.log('√ airFrom contains "19"')
 
             await page.click(airToDate)
             let airToDateSelectedMonth = await page.evaluate(el => el.innerText, await page.$(datePickerMonth1))
@@ -120,19 +120,16 @@ const expect = require('expect');
 
               expect(airToDateContent).toMatch(/19/)
 
-              console.log('√ airTo contains "19" \n')
+              console.log('√ airTo contains "19"')
 
-// prepare arrays from route location eleemnts for result page validation
+// prepare arrays from route location elements for result page validation
 let airFromContentArray = airFromContent.split(', ')
-console.log( airFromContentArray )
 let airToContentArray = airToContent.split(', ')
-console.log( airToContentArray )
+
 /*
 expected output format:
-
 [ 'San Francisco', ' CA', 'Etats-Unis (SFO)' ]
 [ 'Paris', 'France (CDG)' ]
-
 */
 
 /*
@@ -153,10 +150,10 @@ expected output format:
 
                 if (await page.$(clickoutHome) !== null) {
                     await page.click(clickoutHome)
-                    console.log('"Wendy. I am home.""')
+                    //console.log('"Wendy. I am home."')
                   }
                 else { await page.click(clickoutSeo)
-                  console.log('"Wendy. I am SEO.""')
+                  //console.log('"Wendy. I am SEO."')
                 }
 
   // THEN popup checkboxes appear below
@@ -167,7 +164,7 @@ expected output format:
 
     console.log('√ checkboxes are deselected')
 
-  // WhHEN I launch search
+  // WHEN I launch search
   await page.waitForSelector(airSubmit)
   await page.click(airSubmit)
 
@@ -181,24 +178,20 @@ expected output format:
   AND results appear
 */
 
+await page.waitFor(8000)
+        // source: https://github.com/GoogleChrome/puppeteer/issues/2859
+        const departureHeaderSelector = (await page.$$('.results-header-city'))[0]
+        const arrivalHeaderSelector = (await page.$$('.results-header-city'))[1]
+        let departureHeaderContent = await page.evaluate(el => el.textContent, departureHeaderSelector)
+        let arrivalHeaderContent = await page.evaluate(el => el.textContent, arrivalHeaderSelector)
 
-// !!! possible solution, source: https://medium.com/@_edhuang/web-scraping-node-js-chrome-puppeteer-90b4d1a1d816 !!!
+      expect(departureHeaderContent).toBe(airFromContentArray[0])
 
-    const arrowHeader = '.results-header-arrow'
+        console.log('√ ' + departureHeaderContent + ' from result header matches ' + airFromContentArray[0] + ' from homepage')
 
-    await page.waitForSelector(arrowHeader)
+      expect(arrivalHeaderContent).toBe(airToContentArray[0])
 
-
-    // !!! $$('.results-header-city')[0].textContent !!! "San Francisco"
-    let departureHeaderContent = await page.evaluate(el => el.textContent, await page.$$('.results-header-city'))
-    expect(departureHeaderContent).toBe(airFromContentArray[0])
-
-      console.log('√ ' + departureHeaderContent + 'matches ' + airFromContentArray[0])
-
-    let arrivalHeaderContent = await page.evaluate(el => el.textContent, await page.$$('.results-header-city'))
-    expect(arrivalHeaderContent).toBe(airToContentArray[0])
-
-      console.log('√ ' + arrivalHeaderContent + 'matches ' + airToContentArray[0])
+        console.log('√ ' + arrivalHeaderContent + ' from result header matches ' + airToContentArray[0] + ' from homepage')
 
 
   await page.waitForSelector('.travel-details-button')
