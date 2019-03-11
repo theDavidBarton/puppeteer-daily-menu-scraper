@@ -128,7 +128,7 @@ console.log( airFromContentArray )
 let airToContentArray = airToContent.split(', ')
 console.log( airToContentArray )
 /*
-expected output:
+expected output format:
 
 [ 'San Francisco', ' CA', 'Etats-Unis (SFO)' ]
 [ 'Paris', 'France (CDG)' ]
@@ -177,21 +177,25 @@ expected output:
  -----------------------------------
  RESULT PAGE
  -----------------------------------
-  ThHEN result page appears
+  THEN result page appears
   AND results appear
 */
 
-    const departureArrivalHeader = '.results-header-city'
 
-    await page.waitForSelector(departureArrivalHeader)
+// !!! possible solution, source: https://medium.com/@_edhuang/web-scraping-node-js-chrome-puppeteer-90b4d1a1d816 !!!
+
+    const arrowHeader = '.results-header-arrow'
+
+    await page.waitForSelector(arrowHeader)
 
 
-    let departureHeaderContent = await page.evaluate(el => el.textContent, await page.$$(departureArrivalHeader)[0])
+    // !!! $$('.results-header-city')[0].textContent !!! "San Francisco"
+    let departureHeaderContent = await page.evaluate(el => el.textContent, await page.$$('.results-header-city'))
     expect(departureHeaderContent).toBe(airFromContentArray[0])
 
       console.log('√ ' + departureHeaderContent + 'matches ' + airFromContentArray[0])
 
-    let arrivalHeaderContent = await page.evaluate(el => el.textContent, await page.$$(departureArrivalHeader)[1])
+    let arrivalHeaderContent = await page.evaluate(el => el.textContent, await page.$$('.results-header-city'))
     expect(arrivalHeaderContent).toBe(airToContentArray[0])
 
       console.log('√ ' + arrivalHeaderContent + 'matches ' + airToContentArray[0])
