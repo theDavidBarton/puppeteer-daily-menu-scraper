@@ -80,6 +80,10 @@
 // @ @ @ GHERKIN
     console.log('√ AND I set destination to ' + airToContent)
 
+  // prepare arrays from route location elements for result page validation
+  // expected format: [ 'San Francisco', ' CA', 'Etats-Unis (SFO)' ]
+  let airFromContentArray = airFromContent.split(', ')
+  let airToContentArray = airToContent.split(', ')
 /*
  -----------------------------------
  DATE PICKER
@@ -109,28 +113,30 @@
             let airFromDateSelectedMonth = await page.evaluate(el => el.innerText, await page.$(datePickerMonth1))
             let airFromDateSelectedDay = await page.evaluate(el => el.innerText, await page.$(actualDate))
               let airFromDateSelected = airFromDateSelectedDay + ' ' + airFromDateSelectedMonth // format: 18 Avril, 2019
-// @ @ @ GHERKIN
-            console.log('----> departure day selected: ' + airFromDateSelected)
 
-              expect(airFromDateContent).toMatch(/2019/)
+                let airFromDateContentArray = airFromDateSelected.split(' ')
+                  console.log(airFromDateContentArray)
 // @ @ @ GHERKIN
-              console.log('√ airFrom contains "2019"')
+            console.log('   ----> departure day selected by me: ' + airFromDateSelected)
+
+              expect(airFromDateContentArray).toContain(airFromDateSelectedDay)
+// @ @ @ GHERKIN
+              console.log('        √ departure field contains the selected day: ' + airFromDateSelectedDay)
+
 
             await page.click(airToDate)
             let airToDateSelectedMonth = await page.evaluate(el => el.innerText, await page.$(datePickerMonth1))
             let airToDateSelectedDay = await page.evaluate(el => el.innerText, await page.$(actualDate))
               let airToDateSelected = airToDateSelectedDay + ' ' + airToDateSelectedMonth     // format: 25 Avril, 2019
-// @ @ @ GHERKIN
-            console.log('----> return day selected: ' + airToDateSelected)
 
-              expect(airToDateContent).toMatch(/2019/)
+                let airToDateContentArray = airToDateSelected.split(' ')
+                  console.log(airToDateContentArray)
 // @ @ @ GHERKIN
-              console.log('√ airTo contains "2019"')
+            console.log('    ----> return day selected by me: ' + airToDateSelected)
 
-// prepare arrays from route location elements for result page validation
-// expected format: [ 'San Francisco', ' CA', 'Etats-Unis (SFO)' ]
-let airFromContentArray = airFromContent.split(', ')
-let airToContentArray = airToContent.split(', ')
+              expect(airToDateContentArray).toContain(airToDateSelectedDay)
+// @ @ @ GHERKIN
+              console.log('        √ destination field contains the selected day: ' + airToDateSelectedDay)
 
 /*
  -----------------------------------
@@ -153,21 +159,15 @@ let airToContentArray = airToContent.split(', ')
                     console.log('√ AND I clickout from seo searchform')
                 }
 
-
-
-  // THEN popup checkboxes appear below
-  // AND I disable popup checkboxes
-
   await page.waitForSelector(deselectComparesite)
   await page.click(deselectComparesite)
 // @ @ @ GHERKIN
-    console.log('√ WHEN checkboxes are deselected')
+    console.log('√ WHEN I deselect comparesites')
 
-  // WHEN I launch search
   await page.waitForSelector(airSubmit)
   await page.click(airSubmit)
 // @ @ @ GHERKIN
-    console.log('√ AND search is launched')
+    console.log('√ AND I launch search')
 
 /*
  -----------------------------------
