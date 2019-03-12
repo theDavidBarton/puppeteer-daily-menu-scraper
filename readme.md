@@ -17,6 +17,7 @@ You will need Node v7.6.0 or greater to run the scripts in this repo.
 via Yarn:
 ```shell_session
 yarn add puppeteer
+yarn add puppeteer-firefox
 yarn add expect
 ```
 
@@ -24,6 +25,7 @@ via NPM:
 
 ```shell_session
 npm install puppeteer
+npm install puppeteer-firefox
 npm install expect
 ```
 
@@ -54,4 +56,4 @@ node scrape-menu.js > tmp/output.txt
 
 ---
 
-Last edit: *7th March 2019*
+Last edit: *12th March 2019*
