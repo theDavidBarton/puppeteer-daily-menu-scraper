@@ -1,11 +1,12 @@
 // testing with Puppeteer example
 const puppeteer = require('puppeteer');
+const puppeteerFirefox = require('puppeteer-firefox');
 const expect = require('expect');
 
 (async () => {
   const browser = await puppeteer.launch({ headless: false, slowMo: 20 })
   const page = await browser.newPage()
-  const navigationPromise = page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 0 })
+  const navigationPromise = page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 0 }) // Firefox: remove "{ waitUntil: 'networkidle2', timeout: 0 }"
 
   await page.setViewport({ width: 1024, height: 768 })
 
@@ -32,7 +33,7 @@ const expect = require('expect');
  GIVEN I am on the homepage
 */
 
-  await page.goto('https://www.liligo.fr/', { waitUntil: 'networkidle2', timeout: 0 })
+  await page.goto('https://www.liligo.fr/', { waitUntil: 'networkidle2', timeout: 0 }) // Firefox: remove "{ waitUntil: 'networkidle2', timeout: 0 }"
 
     console.log('√ page is loaded successfully with all its assets')
 
