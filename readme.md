@@ -12,7 +12,7 @@ The current version of pptr is v1.13.0
 
 ### Install packages
 
-You will need Node v7.6.0 or greater to run the scripts in this repo.
+You will need Node v7.6.0 or greater to run the scripts in this repo. And v8.9.4 or greater to run puppeteer with Firefox.
 
 via Yarn:
 ```shell_session
