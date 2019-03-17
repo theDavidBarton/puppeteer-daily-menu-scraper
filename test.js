@@ -158,7 +158,7 @@ async function run() {
                 await Promise.race([
                   page.waitForSelector(clickoutHome),
                   page.waitForSelector(clickoutSeo)
-                ]);
+                ])
 
                 if (await page.$(clickoutHome) !== null) {
                     await page.click(clickoutHome)
