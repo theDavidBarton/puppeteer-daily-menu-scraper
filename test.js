@@ -3,7 +3,7 @@
     const expect             = require('expect')
 
 
-async function run() {
+async function testFlight() {
   const browser = await puppeteer.launch({ headless: false, slowMo: 20 })
   const page = await browser.newPage()
   const navigationPromise = page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 0 }) // Firefox: remove "{ waitUntil: 'networkidle2', timeout: 0 }"
@@ -233,4 +233,4 @@ await navigationPromise
 // @ @ @ GHERKIN
       console.log('√ THEN I see a redirection to partner\'s site')
   await browser.close()
-} run()
+} testFlight()
