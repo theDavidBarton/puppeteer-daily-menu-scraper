@@ -80,16 +80,18 @@ async function testFlight() {
   let airFromContent = await page.evaluate(el => el.value, await page.$(airFrom))
   expect(airFromContent).toBe(airFromContentToBe)
 // @ @ @ GHERKIN
-    console.log('√ WHEN I set departure to ' + airFromContent)
+    console.log('√ WHEN I set departure with mouse to ' + airFromContent)
 
   await page.keyboard.type(airToTypeLetters)
   await page.waitFor(1000)
   await page.waitForSelector(complocSecond)
-  await page.click(complocSecond)
+  await page.keyboard.press('ArrowDown')
+  await page.keyboard.press('Enter')
+  //await page.click(complocSecond)
   let airToContent = await page.evaluate(el => el.value, await page.$(airTo))
   expect(airToContent).toBe(airToContentToBe)
 // @ @ @ GHERKIN
-    console.log('√ AND I set destination to ' + airToContent)
+    console.log('√ AND I set destination by keyboard to ' + airToContent)
 
   // prepare arrays from route location elements for result page validation
   // expected format: [ 'San Francisco', ' CA', 'Etats-Unis (SFO)' ]
