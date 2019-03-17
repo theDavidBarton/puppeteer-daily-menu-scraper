@@ -1,9 +1,9 @@
-    const puppeteer          = require('puppeteer');
-    const puppeteerFirefox   = require('puppeteer-firefox');
-    const expect             = require('expect');
+    const puppeteer          = require('puppeteer')
+    const puppeteerFirefox   = require('puppeteer-firefox')
+    const expect             = require('expect')
 
 
-(async () => {
+async function testFlight() {
   const browser = await puppeteer.launch({ headless: false, slowMo: 20 })
   const page = await browser.newPage()
   const navigationPromise = page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 0 }) // Firefox: remove "{ waitUntil: 'networkidle2', timeout: 0 }"
@@ -15,15 +15,23 @@
 
 /*
  -----------------------------------
- SELECTORS
+ TEST VALUES
  -----------------------------------
 */
 
       const urlHomepage          = 'http://www.liligo.fr/'
+      const homePageTitlePart    = 'LILIGO.com'
+      const redirectPageTitlePart= 'liligo.com'
       const airFromTypeLetters   = 'San f'
       const airToTypeLetters     = 'Par'
       const airFromContentToBe   = 'San Francisco,  CA, Etats-Unis (SFO)'
       const airToContentToBe     = 'Paris, France (CDG)'
+
+/*
+ -----------------------------------
+ SELECTORS
+ -----------------------------------
+*/
 
       const airFrom              = '#air-from'
       const airTo                = '#air-to'
@@ -57,10 +65,13 @@
  -----------------------------------
 */
 
-  await page.waitForSelector(airFrom)
+  let homePageTitle = await page.title()
+    expect(homePageTitle).toContain(homePageTitlePart)
+    console.log(homePageTitle + ' contains: ' + homePageTitlePart)
 // @ @ @ GHERKIN
     console.log('√ GIVEN I am on the homepage of ' + urlHomepage )
 
+  await page.waitForSelector(airFrom)
   await page.click(airFrom)
   await page.keyboard.type(airFromTypeLetters)
   await page.waitFor(1000)        // make sure dropdown opens
@@ -69,16 +80,18 @@
   let airFromContent = await page.evaluate(el => el.value, await page.$(airFrom))
   expect(airFromContent).toBe(airFromContentToBe)
 // @ @ @ GHERKIN
-    console.log('√ WHEN I set departure to ' + airFromContent)
+    console.log('√ WHEN I set departure with mouse to ' + airFromContent)
 
   await page.keyboard.type(airToTypeLetters)
   await page.waitFor(1000)
   await page.waitForSelector(complocSecond)
-  await page.click(complocSecond)
+  await page.keyboard.press('ArrowDown')
+  await page.keyboard.press('Enter')
+  //await page.click(complocSecond)
   let airToContent = await page.evaluate(el => el.value, await page.$(airTo))
   expect(airToContent).toBe(airToContentToBe)
 // @ @ @ GHERKIN
-    console.log('√ AND I set destination to ' + airToContent)
+    console.log('√ AND I set destination by keyboard to ' + airToContent)
 
   // prepare arrays from route location elements for result page validation
   // expected format: [ 'San Francisco', ' CA', 'Etats-Unis (SFO)' ]
@@ -147,7 +160,7 @@
                 await Promise.race([
                   page.waitForSelector(clickoutHome),
                   page.waitForSelector(clickoutSeo)
-                ]);
+                ])
 
                 if (await page.$(clickoutHome) !== null) {
                     await page.click(clickoutHome)
@@ -203,10 +216,23 @@
 
   await page.waitForSelector(cta)
   await page.click(cta)
+
+/*
+-----------------------------------
+REDIRECT PAGE
+-----------------------------------
+*/
+
 // @ @ @ GHERKIN
       console.log('√ WHEN I click on an offer')
-  await navigationPromise
+await page.waitFor(1000)
+await navigationPromise
+  let redirectPageTitle = await page.title()
+    // this part needs more work to store the new tab's title instead of the initial tab's title
+    //expect(redirectPageTitle).toContain(redirectPageTitlePart)
+    //console.log(redirectPageTitle + ' contains: ' + redirectPageTitlePart)
+
 // @ @ @ GHERKIN
       console.log('√ THEN I see a redirection to partner\'s site')
   await browser.close()
-})()
+} testFlight()
