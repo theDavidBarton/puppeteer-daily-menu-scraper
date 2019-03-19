@@ -1,8 +1,7 @@
 // scraping daily menus with Puppeteer
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer')
 
-
-(async () => {
+async function scrapeMenu() {
   const browser = await puppeteer.launch({ headless: true })
   const page = await browser.newPage()
   await page.setViewport({ width: 1024, height: 768 })
@@ -812,7 +811,7 @@ dailyKamra
   const dayKamra = await page.evaluate(el => el.innerText, await page.$(dayKamraSelector))
   // stores all elements with same ID, source: https://stackoverflow.com/questions/54677126/how-to-select-all-child-div-with-same-class-using-puppeteer
   const dailyKamra = await page.$$eval(dailyKamraSelector,
-    divs => divs.map(({ innerText }) => innerText));
+    divs => divs.map(({ innerText }) => innerText))
 
     //@ KAMRA print menu
     console.log('• ' + dayKamra + ' daily menu: ' + dailyKamra + '\n')
@@ -893,7 +892,7 @@ nokedliName, nokedliLength
 
 imageSelector --> imageNokedliSelector
 * store src
-* trim thumbnail sub for normal sized image 
+* trim thumbnail sub for normal sized image
 
 */
 
@@ -915,4 +914,5 @@ imageSelector --> imageNokedliSelector
 
 
   await browser.close()
-})()
+}
+scrapeMenu()

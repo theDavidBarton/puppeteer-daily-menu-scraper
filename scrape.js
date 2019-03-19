@@ -23,4 +23,5 @@ async function scrapePage() {
     console.log('pdf is created')
 
   await browser.close()
-} scrapePage()
+}
+scrapePage()
