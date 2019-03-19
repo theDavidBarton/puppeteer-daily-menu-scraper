@@ -235,4 +235,5 @@ await navigationPromise
 // @ @ @ GHERKIN
       console.log('√ THEN I see a redirection to partner\'s site')
   await browser.close()
-} testFlight()
+}
+testFlight()
