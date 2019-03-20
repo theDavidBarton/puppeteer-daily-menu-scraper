@@ -75,11 +75,11 @@ yamatoName, yamatoLength
 */
 
   //@ YAMATO selectors
-      const mondayYamatoSelector = 'body > div > h6:nth-child(3)'
-      const tuesdayYamatoSelector = 'body > div > h6:nth-child(5)'
-      const wednesdayYamatoSelector = 'body > div > h6:nth-child(7)'
-      const thursdayYamatoSelector = 'body > div > h6:nth-child(9)'
-      const fridayYamatoSelector = 'body > div > h6:nth-child(11)'
+      const mondayYamatoSelector = 'body > div > h6:nth-child(4)'
+      const tuesdayYamatoSelector = 'body > div > h6:nth-child(6)'
+      const wednesdayYamatoSelector = 'body > div > h6:nth-child(8)'
+      const thursdayYamatoSelector = 'body > div > h6:nth-child(10)'
+      const fridayYamatoSelector = 'body > div > h6:nth-child(12)'
 
   let yamatoName = 'Yamato menu:'
   let yamatoLength = yamatoName.length
