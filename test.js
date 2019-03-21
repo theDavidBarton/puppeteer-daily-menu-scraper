@@ -236,4 +236,20 @@ await navigationPromise
       console.log('√ THEN I see a redirection to partner\'s site')
   await browser.close()
 }
+
+// it look as async as you'd expect :D
+async function testCar() {
+  const browser = await puppeteer.launch({ headless: false, slowMo: 20 })
+  const page = await browser.newPage()
+  const navigationPromise = page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 0 }) // Firefox: remove "{ waitUntil: 'networkidle2', timeout: 0 }"
+
+  await page.setViewport({ width: 1024, height: 768 })
+
+    console.log('... puppeteer has launched')
+
+    await page.goto('http://www.liligo.fr/location-voiture.html' , { waitUntil: 'networkidle2', timeout: 0 })
+    console.log('page is loaded')
+    await browser.close()
+}
 testFlight()
+testCar()
