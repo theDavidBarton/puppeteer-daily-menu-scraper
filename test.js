@@ -19,7 +19,7 @@ async function testFlight () {
 
   const urlHomepage = 'http://www.liligo.fr/'
   const homePageTitlePart = 'LILIGO.com'
-  // const redirectPageTitlePart = 'liligo.com'
+  const redirectPageTitlePart = 'liligo.com'
   const airFromTypeLetters = 'San f'
   const airToTypeLetters = 'Par'
   const airFromContentToBe = 'San Francisco,  CA, Etats-Unis (SFO)'
@@ -220,27 +220,25 @@ async function testFlight () {
 
   // @ @ @ GHERKIN
   console.log('√ WHEN I click on an offer')
+
   await page.waitFor(1000)
-  await navigationPromise
-  // let redirectPageTitle = await page.title()
+  let redirectPageTitle = await page.title()
   // this part needs more work to store the new tab's title instead of the initial tab's title
   // expect(redirectPageTitle).toContain(redirectPageTitlePart)
-  // console.log(redirectPageTitle + ' contains: ' + redirectPageTitlePart)
+  console.log(redirectPageTitle + ' contains: ' + redirectPageTitlePart)
 
   // @ @ @ GHERKIN
   console.log('√ THEN I see a redirection to partner\'s site')
-  await browser.close()
-}
-
-// it look as async as you'd expect :D
-async function testCar () {
-  const browser = await puppeteer.launch({ headless: false, slowMo: 20 })
-  const page = await browser.newPage()
-  const navigationPromise = page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 0 }) // Firefox: remove "{ waitUntil: 'networkidle2', timeout: 0 }"
-
-  await page.setViewport({ width: 1024, height: 768 })
-
-  console.log('... puppeteer has launched')
+  const pageList = await browser.pages()
+  console.log('- NUMBER TABS:', pageList.length)
+  console.log('- ' + pageList)
+  await pageList[2].close()
+  await page.bringToFront()
+  /*
+  -----------------------------------
+  CAR ENTRY PAGE
+  -----------------------------------
+  */
 
   await page.goto('http://www.liligo.fr/location-voiture.html', { waitUntil: 'networkidle2', timeout: 0 })
   await navigationPromise
@@ -248,4 +246,3 @@ async function testCar () {
   await browser.close()
 }
 testFlight()
-testCar()
