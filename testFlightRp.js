@@ -4,22 +4,8 @@ const expect = require('expect')
 async function testFlightRp () {
   const browser = await puppeteer.launch({ headless: false, slowMo: 20 })
   const page = await browser.newPage()
+  const navigationPromise = page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 0 })
   await page.setViewport({ width: 1024, height: 768 })
-
-  // abort 3rd party content, source: https://github.com/GoogleChrome/puppeteer/blob/master/examples/block-images.js
-  await page.setRequestInterception(true)
-  page.on('request', interceptedRequest => {
-    if (interceptedRequest.url().startsWith('https://cdn.ampproject.org') ||
-      interceptedRequest.url().startsWith('https://ads.travelaudience.com') ||
-      interceptedRequest.url().startsWith('https://tpc.googlesyndication.com') ||
-      interceptedRequest.url().startsWith('https://www.google') ||
-      interceptedRequest.url().startsWith('') ||
-      interceptedRequest.url().startsWith('https://pixel.rubiconproject.com')) {
-      interceptedRequest.abort()
-    } else {
-      interceptedRequest.continue()
-    }
-  })
 
   /*
   SELECTORS LILIGO
@@ -27,7 +13,7 @@ async function testFlightRp () {
 
   const resultDetailsButton = '.travel-details-button'
   const cta = '.cta'
-  const price = '.price'
+  const price = 'div.booking > div.price'
   const outboundDep = 'div.outbound > div.timing > div.from > div.time'
   const outboundArr = 'div.outbound > div.timing > div.to > div.time'
   const inboundDep = 'div.return > div.timing > div.from > div.time'
@@ -79,20 +65,55 @@ async function testFlightRp () {
     '&air-to-nearby=on' +
     '&rpFilter=' + rpFilter
 
+  await page.goto(urlStructure, { waitUntil: 'domcontentloaded', timeout: 0 })
   console.log(urlStructure)
-  await page.goto(urlStructure, { waitUntil: 'networkidle2', timeout: 0 })
   await page.waitForSelector(resultDetailsButton)
   await page.click(resultDetailsButton)[0]
-  // stores all the first result's data to be compared
-  let outboundDepData = await page.evaluate(
-    el => el.textContent, await page.$$(outboundDep)[0]
+
+  // [1.] stores all the first result's data to be compared
+  const outboundDepFirst = (await page.$$(outboundDep))[0]
+  let outboundDepFirstContent = await page.evaluate(
+    el => el.textContent, outboundDepFirst
   )
-  let outboundDepData2 = page.$$('div.from > div.time.is-am')[1].innerText
-  console.log(outboundDepData + '\n' + outboundDepData2)
+  const outboundArrFirst = (await page.$$(outboundArr))[0]
+  let outboundArrFirstContent = await page.evaluate(
+    el => el.textContent, outboundArrFirst
+  )
+  const inboundDepFirst = (await page.$$(inboundDep))[0]
+  let inboundDepFirstContent = await page.evaluate(
+    el => el.textContent, inboundDepFirst
+  )
+  const inboundArrFirst = (await page.$$(inboundArr))[0]
+  let inboundArrFirstContent = await page.evaluate(
+    el => el.textContent, inboundArrFirst
+  )
+  const outboundDurationFirst = (await page.$$(outboundDuration))[0]
+  let outboundDurationFirstContent = await page.evaluate(
+    el => el.textContent, outboundDurationFirst
+  )
+  const inboundDurationFirst = (await page.$$(inboundDuration))[0]
+  let inboundDurationFirstContent = await page.evaluate(
+    el => el.textContent, inboundDurationFirst
+  )
+  const priceFirst = (await page.$$(price))[0]
+  let priceFirstContent = await page.evaluate(
+    el => el.textContent, priceFirst
+  )
 
-  await page.waitForSelector(cta)
+  console.log('\nOUTBOUND: ' +
+    outboundDepFirstContent + '->' +
+    outboundArrFirstContent + ' (' +
+    outboundDurationFirstContent + ') ' +
+    'INBOUND: ' +
+    inboundDepFirstContent + '->' +
+    inboundArrFirstContent + ' (' +
+    inboundDurationFirstContent + ') PRICE: ' +
+    priceFirstContent + '\n')
+
+  await navigationPromise
+  await page.screenshot({ path: 'tmp/screenshot.png' })
   await page.click(cta)[0]
-
+  await page.waitFor(1000)
   await browser.close()
 }
 testFlightRp()
