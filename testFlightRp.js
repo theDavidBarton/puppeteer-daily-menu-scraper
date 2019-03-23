@@ -10,7 +10,6 @@ async function testFlightRp () {
   /*
   SELECTORS LILIGO
   */
-
   const resultDetailsButton = '.travel-details-button'
   const cta = '.cta'
   const price = 'div.booking > div.price'
@@ -20,6 +19,16 @@ async function testFlightRp () {
   const inboundArr = 'div.return > div.timing > div.to > div.time'
   const outboundDuration = 'div.outbound > div.timing > div.center > div.duration'
   const inboundDuration = 'div.return > div.timing > div.center > div.duration'
+  /*
+  SELECTORS OTHER
+  */
+  const priceOther = 'tr.flexifare__price-row > td:nth-child(3) > span.flexifare__th'
+  const outboundDepOther = 'div:nth-child(1) > div.jcw-way-view__details-container > div > div.jcw-way-view__departure-container > div > div.jcw-way-view__departure-time'
+  const outboundArrOther = 'div:nth-child(1) > div.jcw-way-view__details-container > div > div.jcw-way-view__arrival-container > div > div.jcw-way-view__arrival-time'
+  const inboundDepOther = 'div:nth-child(2) > div.jcw-way-view__details-container > div > div.jcw-way-view__departure-container > div > div.jcw-way-view__departure-time'
+  const inboundArrOther = 'div:nth-child(2) > div.jcw-way-view__details-container > div > div.jcw-way-view__arrival-container > div > div.jcw-way-view__arrival-time'
+  const outboundDurationOther = 'div:nth-child(1) > div.jcw-way-view__duration-container.hidden-xs.hidden-sm > div'
+  const inboundDurationOther = 'div:nth-child(2) > div.jcw-way-view__duration-container.hidden-xs.hidden-sm > div'
 
   /*
   PARAMETERS
@@ -44,7 +53,7 @@ async function testFlightRp () {
 
   let tripType = 'roundTrip' // roundTrip, oneWay
   let airClass = 'EC' // EC, PC, BC, FC
-  let rpFilter = 'MAPI'
+  let rpFilter = 'LAS'
 
   let urlStructure = environment + marketBaseUrl +
     '/air/SearchFlights.jsp' +
@@ -66,8 +75,9 @@ async function testFlightRp () {
     '&rpFilter=' + rpFilter
 
   await page.goto(urlStructure, { waitUntil: 'domcontentloaded', timeout: 0 })
-  console.log(urlStructure)
   await page.waitForSelector(resultDetailsButton)
+  await page.waitForSelector('div.simplepagination-filter')
+  // await page.waitFor(30000)
   await page.click(resultDetailsButton)[0]
 
   // [1.] stores all the first result's data to be compared
@@ -100,7 +110,20 @@ async function testFlightRp () {
     el => el.textContent, priceFirst
   )
 
-  console.log('\nOUTBOUND: ' +
+  console.log(
+    fromLocation + '-' +
+    toLocation + ' ' +
+    depYear + '/' +
+    depMonth + '/' +
+    depDay + '-' +
+    retYear + '/' +
+    retMonth + '/' +
+    retDay + ', ' +
+    tripType + ', ' +
+    airClass + ' | ' +
+    rpFilter +
+    '\nFirst result: ' +
+    '\nOUTBOUND: ' +
     outboundDepFirstContent + '->' +
     outboundArrFirstContent + ' (' +
     outboundDurationFirstContent + ') ' +
@@ -108,10 +131,58 @@ async function testFlightRp () {
     inboundDepFirstContent + '->' +
     inboundArrFirstContent + ' (' +
     inboundDurationFirstContent + ') PRICE: ' +
-    priceFirstContent + '\n')
+    priceFirstContent + '\n'
+  )
 
   await navigationPromise
-  await page.screenshot({ path: 'tmp/screenshot.png' })
+  await page.screenshot({ path: 'tmp/screenshot01.png' })
+
+  await page.click(resultDetailsButton)[2]
+
+  // [3.] stores all the third result's data to be compared
+  const outboundDepThird = (await page.$$(outboundDep))[2]
+  let outboundDepThirdContent = await page.evaluate(
+    el => el.textContent, outboundDepThird
+  )
+  const outboundArrThird = (await page.$$(outboundArr))[2]
+  let outboundArrThirdContent = await page.evaluate(
+    el => el.textContent, outboundArrThird
+  )
+  const inboundDepThird = (await page.$$(inboundDep))[2]
+  let inboundDepThirdContent = await page.evaluate(
+    el => el.textContent, inboundDepThird
+  )
+  const inboundArrThird = (await page.$$(inboundArr))[2]
+  let inboundArrThirdContent = await page.evaluate(
+    el => el.textContent, inboundArrThird
+  )
+  const outboundDurationThird = (await page.$$(outboundDuration))[2]
+  let outboundDurationThirdContent = await page.evaluate(
+    el => el.textContent, outboundDurationThird
+  )
+  const inboundDurationThird = (await page.$$(inboundDuration))[2]
+  let inboundDurationThirdContent = await page.evaluate(
+    el => el.textContent, inboundDurationThird
+  )
+  const priceThird = (await page.$$(price))[2]
+  let priceThirdContent = await page.evaluate(
+    el => el.textContent, priceThird
+  )
+
+  console.log(
+    '\nThird result: ' +
+    '\nOUTBOUND: ' +
+    outboundDepThirdContent + '->' +
+    outboundArrThirdContent + ' (' +
+    outboundDurationThirdContent + ') ' +
+    'INBOUND: ' +
+    inboundDepThirdContent + '->' +
+    inboundArrThirdContent + ' (' +
+    inboundDurationThirdContent + ') PRICE: ' +
+    priceThirdContent + '\n'
+  )
+  await page.screenshot({ path: 'tmp/screenshot02.png' })
+
   await page.click(cta)[0]
   await page.waitFor(1000)
   await browser.close()
