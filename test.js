@@ -5,7 +5,7 @@ const expect = require('expect')
 async function testFlight () {
   const browser = await puppeteer.launch({ headless: false, slowMo: 20 })
   const page = await browser.newPage()
-  const navigationPromise = page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 0 }) // Firefox: remove "{ waitUntil: 'networkidle2', timeout: 0 }"
+  const navigationPromise = page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 0 }) // Firefox: remove "{ waitUntil: 'networkidle2', timeout: 0 }"
 
   await page.setViewport({ width: 1024, height: 768 })
 
@@ -40,21 +40,27 @@ async function testFlight () {
   const deselectComparesite = '.hp-searchform-comparesite-selectnone'
   const airSubmit = '#air-submit'
 
-  // const nowDate = '.now'
   const actualDate = '.actual'
   const datePickerMonth1 = 'div.dpMonth.dpMonth1 .dpMonthHeader'
   // const datePickerMonth2 = 'div.dpMonth.dpMonth2 .dpMonthHeader'
-  // const datePickerArrowLeft = '.dpPrev'
   const datePickerArrowRight = '.dpNext'
   const randomFutureDate = 'tr:nth-child(3) > td:nth-child(4)'
 
   const clickoutHome = '.hp-searcharea' // the searchform's background on homepage
   const clickoutSeo = '.sc-searchform' // the searchform's background on SEO (sc)
 
+  const simplePagination = 'div.simplepagination-filter'
+  const price = 'div.booking > div.price'
+  const outboundDep = 'div.outbound > div.timing > div.from > div.time'
+  const outboundArr = 'div.outbound > div.timing > div.to > div.time'
+  const inboundDep = 'div.return > div.timing > div.from > div.time'
+  const inboundArr = 'div.return > div.timing > div.to > div.time'
+  const outboundDuration = 'div.outbound > div.timing > div.center > div.duration'
+  const inboundDuration = 'div.return > div.timing > div.center > div.duration'
   const resultDetailsButton = '.travel-details-button'
   const cta = '.cta'
 
-  await page.goto(urlHomepage, { waitUntil: 'networkidle2', timeout: 0 }) // Firefox: remove "{ waitUntil: 'networkidle2', timeout: 0 }"
+  await page.goto(urlHomepage, { waitUntil: 'domcontentloaded', timeout: 0 }) // Firefox: remove "{ waitUntil: 'networkidle2', timeout: 0 }"
 
   /*
    -----------------------------------
@@ -208,10 +214,103 @@ async function testFlight () {
   // @ @ @ GHERKIN
   console.log('√ THEN result details appear')
   await navigationPromise
+  // make sure search finished
+  await page.waitForSelector(simplePagination)
 
-  await page.waitForSelector(cta)
-  await page.click(cta)
+  await page.click(resultDetailsButton)[0]
 
+  // [1.] stores all the first result's data to be compared
+  const outboundDepFirst = (await page.$$(outboundDep))[0]
+  let outboundDepFirstContent = await page.evaluate(
+    el => el.textContent, outboundDepFirst
+  )
+  const outboundArrFirst = (await page.$$(outboundArr))[0]
+  let outboundArrFirstContent = await page.evaluate(
+    el => el.textContent, outboundArrFirst
+  )
+  const inboundDepFirst = (await page.$$(inboundDep))[0]
+  let inboundDepFirstContent = await page.evaluate(
+    el => el.textContent, inboundDepFirst
+  )
+  const inboundArrFirst = (await page.$$(inboundArr))[0]
+  let inboundArrFirstContent = await page.evaluate(
+    el => el.textContent, inboundArrFirst
+  )
+  const outboundDurationFirst = (await page.$$(outboundDuration))[0]
+  let outboundDurationFirstContent = await page.evaluate(
+    el => el.textContent, outboundDurationFirst
+  )
+  const inboundDurationFirst = (await page.$$(inboundDuration))[0]
+  let inboundDurationFirstContent = await page.evaluate(
+    el => el.textContent, inboundDurationFirst
+  )
+  const priceFirst = (await page.$$(price))[0]
+  let priceFirstContent = await page.evaluate(
+    el => el.textContent, priceFirst
+  )
+
+  console.log(
+    '\nFirst result: ' +
+    '\nOUTBOUND: ' +
+    outboundDepFirstContent + '->' +
+    outboundArrFirstContent + ' (' +
+    outboundDurationFirstContent + ') ' +
+    'INBOUND: ' +
+    inboundDepFirstContent + '->' +
+    inboundArrFirstContent + ' (' +
+    inboundDurationFirstContent + ') PRICE: ' +
+    priceFirstContent + '\n'
+  )
+
+  await page.screenshot({ path: 'tmp/screenshot01.png' })
+
+  await page.click(resultDetailsButton)[2]
+
+  // [3.] stores all the third result's data to be compared
+  const outboundDepThird = (await page.$$(outboundDep))[2]
+  let outboundDepThirdContent = await page.evaluate(
+    el => el.textContent, outboundDepThird
+  )
+  const outboundArrThird = (await page.$$(outboundArr))[2]
+  let outboundArrThirdContent = await page.evaluate(
+    el => el.textContent, outboundArrThird
+  )
+  const inboundDepThird = (await page.$$(inboundDep))[2]
+  let inboundDepThirdContent = await page.evaluate(
+    el => el.textContent, inboundDepThird
+  )
+  const inboundArrThird = (await page.$$(inboundArr))[2]
+  let inboundArrThirdContent = await page.evaluate(
+    el => el.textContent, inboundArrThird
+  )
+  const outboundDurationThird = (await page.$$(outboundDuration))[2]
+  let outboundDurationThirdContent = await page.evaluate(
+    el => el.textContent, outboundDurationThird
+  )
+  const inboundDurationThird = (await page.$$(inboundDuration))[2]
+  let inboundDurationThirdContent = await page.evaluate(
+    el => el.textContent, inboundDurationThird
+  )
+  const priceThird = (await page.$$(price))[2]
+  let priceThirdContent = await page.evaluate(
+    el => el.textContent, priceThird
+  )
+
+  console.log(
+    '\nThird result: ' +
+    '\nOUTBOUND: ' +
+    outboundDepThirdContent + '->' +
+    outboundArrThirdContent + ' (' +
+    outboundDurationThirdContent + ') ' +
+    'INBOUND: ' +
+    inboundDepThirdContent + '->' +
+    inboundArrThirdContent + ' (' +
+    inboundDurationThirdContent + ') PRICE: ' +
+    priceThirdContent + '\n'
+  )
+  await page.screenshot({ path: 'tmp/screenshot02.png' })
+
+  await page.click(cta)[0]
   /*
   -----------------------------------
   REDIRECT PAGE
@@ -231,18 +330,9 @@ async function testFlight () {
   console.log('√ THEN I see a redirection to partner\'s site')
   const pageList = await browser.pages()
   console.log('- NUMBER TABS:', pageList.length)
-  console.log('- ' + pageList)
   await pageList[2].close()
   await page.bringToFront()
-  /*
-  -----------------------------------
-  CAR ENTRY PAGE
-  -----------------------------------
-  */
 
-  await page.goto('http://www.liligo.fr/location-voiture.html', { waitUntil: 'networkidle2', timeout: 0 })
-  await navigationPromise
-  console.log('page is loaded')
   await browser.close()
 }
 testFlight()
