@@ -328,6 +328,7 @@ async function testFlight () {
 
   // @ @ @ GHERKIN
   console.log('√ THEN I see a redirection to partner\'s site')
+  await page.waitFor(1000) // sorry about this one we need a better structure here to avoid failing tab closes
   const pageList = await browser.pages()
   console.log('- NUMBER TABS:', pageList.length)
   await pageList[2].close()
