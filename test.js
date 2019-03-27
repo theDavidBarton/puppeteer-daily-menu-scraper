@@ -208,17 +208,15 @@ async function testFlight () {
   // @ @ @ GHERKIN
   console.log('√ AND destination: ' + arrivalHeaderContent + ' from result header matches ' + airToContentArray[0] + ' from homepage')
 
-  // @ @ @ GHERKIN
-  console.log('√ WHEN I click on result details')
-  await page.click(resultDetailsButton)
-  // @ @ @ GHERKIN
-  console.log('√ THEN result details appear')
   await navigationPromise
   // make sure search finished
   await page.waitForSelector(simplePagination)
-
+  // @ @ @ GHERKIN
+  console.log('√ WHEN I click on result details')
   await page.click(resultDetailsButton)[0]
-
+  // @ @ @ GHERKIN
+  console.log('√ THEN result details appear')
+  
   // [1.] stores all the first result's data to be compared
   const outboundDepFirst = (await page.$$(outboundDep))[0]
   let outboundDepFirstContent = await page.evaluate(

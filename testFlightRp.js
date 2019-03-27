@@ -184,7 +184,41 @@ async function testFlightRp () {
   await page.screenshot({ path: 'tmp/screenshot02.png' })
 
   await page.click(cta)[0]
-  await page.waitFor(1000)
+  await page.waitFor(5000)
+
+  /* await page.waitForSelector('div.passengers > form > div > div.panel-body') // wait till data presents
+  // [1.] stores all the other site's
+  const outboundDepFirstOther = (await page.$$(outboundDepOther))[0]
+  let outboundDepFirstContentOther = await page.evaluate(
+    el => el.textContent, outboundDepFirstOther
+  )
+  const outboundArrFirstOther = (await page.$$(outboundArrOther))[0]
+  let outboundArrFirstContentOther = await page.evaluate(
+    el => el.textContent, outboundArrFirstOther
+  )
+  const inboundDepFirstOther = (await page.$$(inboundDepOther))[0]
+  let inboundDepFirstContentOther = await page.evaluate(
+    el => el.textContent, inboundDepFirstOther
+  )
+  const inboundArrFirstOther = (await page.$$(inboundArrOther))[0]
+  let inboundArrFirstContentOther = await page.evaluate(
+    el => el.textContent, inboundArrFirstOther
+  )
+  const outboundDurationFirstOther = (await page.$$(outboundDurationOther))[0]
+  let outboundDurationFirstContentOther = await page.evaluate(
+    el => el.textContent, outboundDurationFirstOther
+  )
+  const inboundDurationFirstOther = (await page.$$(inboundDurationOther))[0]
+  let inboundDurationFirstContentOther = await page.evaluate(
+    el => el.textContent, inboundDurationFirstOther
+  )
+  const priceFirstOther = (await page.$$(priceOther))[0]
+  let priceFirstContentOther = await page.evaluate(
+    el => el.textContent, priceFirstOther
+  )
+
+  expect(outboundDepFirstOther).toBe(outboundDepFirst) */
+
   await browser.close()
 }
 testFlightRp()
