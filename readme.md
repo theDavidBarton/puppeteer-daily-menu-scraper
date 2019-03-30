@@ -1,18 +1,18 @@
 # Puppeteer examples
 
-A playground repository for the well known Node library **Puppeteer** (pptr) made by GoogleChromeLabs team. See below the covered areas. The aim is to experiment with its possibilities for a bigger project.
+A sandbox repository for the Node library **Puppeteer** (pptr) made by GoogleChromeLabs. See below the covered areas. The aim is to experiment with its possibilities for later projects.
 
-The current version of pptr is v1.13.0
+The actual version of pptr is v1.14.0
 
 ### Fields to be covered
-- scraping web with pptr;
-- scraping daily menus and print the output with webhooks;
+
+- scraping daily menus and print the output with webhooks to slack;
 - automate user flows (e2e testing) with pptr;
 - try out the experimental [Puppeteer-Firefox](https://aslushnikov.github.io/ispuppeteerfirefoxready/).
 
 ### Install packages
 
-You will need Node v7.6.0 or greater to run the scripts in this repo. And v8.9.4 or greater to run puppeteer with Firefox.
+Node v7.6.0 or greater is needed to run the scripts in this repo. And v8.9.4 or greater to run puppeteer with Firefox.
 
 via Yarn:
 ```shell_session
@@ -22,7 +22,6 @@ yarn add expect
 ```
 
 via NPM:
-
 ```shell_session
 npm install puppeteer
 npm install puppeteer-firefox
@@ -50,10 +49,4 @@ node scrape-menu.js > tmp/output.txt
 
 [Slightly better examples than mine](https://github.com/GoogleChromeLabs/puppeteer-examples)
 
-[Keep this file fancy (Markdown Cheatsheet)](https://help.github.com/en/articles/basic-writing-and-formatting-syntax)
-
 [StackOverFlow](https://stackoverflow.com/questions/tagged/puppeteer)
-
----
-
-Last edit: *12th March 2019*
