@@ -216,7 +216,7 @@ async function testFlight () {
   await page.click(resultDetailsButton)[0]
   // @ @ @ GHERKIN
   console.log('√ THEN result details appear')
-  
+
   // [1.] stores all the first result's data to be compared
   const outboundDepFirst = (await page.$$(outboundDep))[0]
   let outboundDepFirstContent = await page.evaluate(

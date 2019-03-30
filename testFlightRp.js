@@ -185,8 +185,10 @@ async function testFlightRp () {
 
   await page.click(cta)[0]
   await page.waitFor(5000)
+  const pageList = await browser.pages()
+  await pageList[2].focus()
 
-  /* await page.waitForSelector('div.passengers > form > div > div.panel-body') // wait till data presents
+  await page.waitForSelector('div.passengers > form > div > div.panel-body') // wait till data presents
   // [1.] stores all the other site's
   const outboundDepFirstOther = (await page.$$(outboundDepOther))[0]
   let outboundDepFirstContentOther = await page.evaluate(
@@ -217,7 +219,7 @@ async function testFlightRp () {
     el => el.textContent, priceFirstOther
   )
 
-  expect(outboundDepFirstOther).toBe(outboundDepFirst) */
+  expect(outboundDepFirstOther).toBe(outboundDepFirst)
 
   await browser.close()
 }
