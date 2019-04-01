@@ -83,7 +83,7 @@ async function scrapeMenu () {
   let yamatoName = 'Yamato menu:'
   let yamatoLength = yamatoName.length
   console.log('*' + yamatoName + '* \n' + '-'.repeat(yamatoLength))
-  await page.goto('https://www.wasabi.hu/napimenu.php?source=yamato&lang=hu', { waitUntil: 'domcontentloaded', timout: 0 })
+  await page.goto('https://www.wasabi.hu/napimenu.php?source=yamato&lang=hu', { waitUntil: 'networkidle2', timout: 0 })
 
   // @ YAMATO Monday
   let mondayYamato
