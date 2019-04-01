@@ -83,7 +83,7 @@ async function scrapeMenu () {
   let yamatoName = 'Yamato menu:'
   let yamatoLength = yamatoName.length
   console.log('*' + yamatoName + '* \n' + '-'.repeat(yamatoLength))
-  await page.goto('https://www.wasabi.hu/napimenu.php?source=yamato&lang=hu', { waitUntil: 'networkidle2', timout: 0 })
+  await page.goto('https://www.wasabi.hu/napimenu.php?source=yamato&lang=hu', { waitUntil: 'domcontentloaded', timout: 0 })
 
   // @ YAMATO Monday
   let mondayYamato
@@ -206,10 +206,7 @@ async function scrapeMenu () {
     return document.querySelector(sel).getAttribute('src')
   }, linkSelectorVian)
 
-  await page.goto(linkVian, {
-    waitUntil: 'networkidle2',
-    timeout: 0
-  })
+  await page.goto(linkVian, { waitUntil: 'networkidle2', timeout: 0 })
 
   // @ VIAN Monday
   let mondayVian1
@@ -523,9 +520,7 @@ async function scrapeMenu () {
   let fruccolaName = 'Fruccola (Arany Janos utca) menu:'
   let fruccolaLength = fruccolaName.length
   console.log('*' + fruccolaName + '* \n' + '-'.repeat(fruccolaLength))
-  await page.goto('http://fruccola.hu/hu', {
-    waitUntil: 'networkidle2'
-  })
+  await page.goto('http://fruccola.hu/hu', { waitUntil: 'networkidle2' })
   const dailyFruccola1 = await page.evaluate(el => el.innerText, await page.$(dailyFruccolaSelector1))
   const dailyFruccola2 = await page.evaluate(el => el.innerText, await page.$(dailyFruccolaSelector2))
 
@@ -565,9 +560,7 @@ async function scrapeMenu () {
   let kamraName = 'Kamra menu:'
   let kamraLength = kamraName.length
   console.log('*' + kamraName + '* \n' + '-'.repeat(kamraLength))
-  await page.goto('http://www.kamraetelbar.hu/kamra_etelbar_mai_menu.html', {
-    waitUntil: 'networkidle2'
-  })
+  await page.goto('http://www.kamraetelbar.hu/kamra_etelbar_mai_menu.html', { waitUntil: 'networkidle2' })
   const dayKamra = await page.evaluate(el => el.innerText, await page.$(dayKamraSelector))
   // stores all elements with same ID, source: https://stackoverflow.com/questions/54677126/how-to-select-all-child-div-with-same-class-using-puppeteer
   const dailyKamra = await page.$$eval(dailyKamraSelector,
