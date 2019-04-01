@@ -160,132 +160,6 @@ async function scrapeMenu () {
 
   /*
 
-  @ MOZSAR
-  ------------------------------------------
-  contact info:
-  * Address: Budapest, Nagymező u. 21, 1065
-  * Phone: (70) 426 8199
-  -----------------------------------------
-
-  <dayname>MozsarSelector1-2(const)
-  * exact selector for <dayname> menu
-  * courses are scraped
-    from different selectors [1-2]
-
-  <dayname>Mozsar1-2(let)
-  * content of <dayname>MozsarSelector
-  * courses are scraped
-    from different selectors [1-2]
-
-  MozsarName, MozsarLength
-  * the restaurant title
-  * the calculated length of title string
-  * underlined in length of title
-
-  */
-
-  // @ MOZSAR selectors
-  const mondayMozsarSelector1 = '#etlapresult > section:nth-child(1) > ul > li:nth-child(1) > label'
-  const mondayMozsarSelector2 = '#etlapresult > section:nth-child(1) > ul > li:nth-child(2) > label'
-  const tuesdayMozsarSelector1 = '#etlapresult > section:nth-child(2) > ul > li:nth-child(1) > label'
-  const tuesdayMozsarSelector2 = '#etlapresult > section:nth-child(2) > ul > li:nth-child(2) > label'
-  const wednesdayMozsarSelector1 = '#etlapresult > section:nth-child(3) > ul > li:nth-child(1) > label'
-  const wednesdayMozsarSelector2 = '#etlapresult > section:nth-child(3) > ul > li:nth-child(2) > label'
-  const thursdayMozsarSelector1 = '#etlapresult > section:nth-child(4) > ul > li:nth-child(1) > label'
-  const thursdayMozsarSelector2 = '#etlapresult > section:nth-child(4) > ul > li:nth-child(2) > label'
-  const fridayMozsarSelector1 = '#etlapresult > section:nth-child(5) > ul > li:nth-child(1) > label'
-  const fridayMozsarSelector2 = '#etlapresult > section:nth-child(5) > ul > li:nth-child(2) > label'
-
-  let mozsarName = 'Mozsar menu:'
-  let mozsarLength = mozsarName.length
-  console.log('*' + mozsarName + '* \n' + '-'.repeat(mozsarLength))
-  await page.goto('http://mozsarbisztro.hu/index.php?p=3', { waitUntil: 'networkidle2' })
-
-  // @ MOZSAR Monday
-  let mondayMozsar1
-  let mondayMozsar2
-  if (await page.$(mondayMozsarSelector1) !== null) {
-    mondayMozsar1 = await page.evaluate(el => el.innerHTML, await page.$(mondayMozsarSelector1))
-    mondayMozsar2 = await page.evaluate(el => el.innerHTML, await page.$(mondayMozsarSelector2))
-  } else {
-    mondayMozsar1 = '♪"No Milk Today"♫'
-    mondayMozsar2 = ''
-  }
-
-  // @ MOZSAR Tuesday
-  let tuesdayMozsar1
-  let tuesdayMozsar2
-  if (await page.$(tuesdayMozsarSelector1) !== null) {
-    tuesdayMozsar1 = await page.evaluate(el => el.innerHTML, await page.$(tuesdayMozsarSelector1))
-    tuesdayMozsar2 = await page.evaluate(el => el.innerHTML, await page.$(tuesdayMozsarSelector2))
-  } else {
-    tuesdayMozsar1 = '♪"No Milk Today"♫'
-    tuesdayMozsar2 = ''
-  }
-
-  // @ MOZSAR Wednesday
-  let wednesdayMozsar1
-  let wednesdayMozsar2
-  if (await page.$(wednesdayMozsarSelector1) !== null) {
-    wednesdayMozsar1 = await page.evaluate(el => el.innerHTML, await page.$(wednesdayMozsarSelector1))
-    wednesdayMozsar2 = await page.evaluate(el => el.innerHTML, await page.$(wednesdayMozsarSelector2))
-  } else {
-    wednesdayMozsar1 = '♪"No Milk Today"♫'
-    wednesdayMozsar2 = ''
-  }
-
-  // @ MOZSAR Thursday
-  let thursdayMozsar1
-  let thursdayMozsar2
-  if (await page.$(thursdayMozsarSelector1) !== null) {
-    thursdayMozsar1 = await page.evaluate(el => el.innerHTML, await page.$(thursdayMozsarSelector1))
-    thursdayMozsar2 = await page.evaluate(el => el.innerHTML, await page.$(thursdayMozsarSelector2))
-  } else {
-    thursdayMozsar1 = '♪"No Milk Today"♫'
-    thursdayMozsar2 = ''
-  }
-
-  // @ MOZSAR Friday
-  let fridayMozsar1
-  let fridayMozsar2
-  if (await page.$(fridayMozsarSelector1) !== null) {
-    fridayMozsar1 = await page.evaluate(el => el.innerHTML, await page.$(fridayMozsarSelector1))
-    fridayMozsar2 = await page.evaluate(el => el.innerHTML, await page.$(fridayMozsarSelector2))
-  } else {
-    fridayMozsar1 = '♪"No Milk Today"♫'
-    fridayMozsar2 = ''
-  }
-
-  // @ MOZSAR print menu
-  var nameOfDayMozsar = today
-  switch (nameOfDayMozsar) {
-    case 1:
-      console.log('• Monday: ' + mondayMozsar1 + ', ' + mondayMozsar2 + '\n')
-      break
-    case 2:
-      console.log('• Tuesday: ' + tuesdayMozsar1 + ', ' + tuesdayMozsar2 + '\n')
-      break
-    case 3:
-      console.log('• Wednesday: ' + wednesdayMozsar1 + ', ' + wednesdayMozsar2 + '\n')
-      break
-    case 4:
-      console.log('• Thursday: ' + thursdayMozsar1 + ', ' + thursdayMozsar2 + '\n')
-      break
-    case 5:
-      console.log('• Friday: ' + fridayMozsar1 + ', ' + fridayMozsar2 + '\n')
-      break
-    default:
-      console.log(
-        '• Monday: ' + mondayMozsar1 + ', ' + mondayMozsar2 + '\n' +
-        '• Tuesday: ' + tuesdayMozsar1 + ', ' + tuesdayMozsar2 + '\n' +
-        '• Wednesday: ' + wednesdayMozsar1 + ', ' + wednesdayMozsar2 + '\n' +
-        '• Thursday: ' + thursdayMozsar1 + ', ' + thursdayMozsar2 + '\n' +
-        '• Friday: ' + fridayMozsar1 + ', ' + fridayMozsar2 + '\n'
-      )
-  }
-
-  /*
-
   @ VIAN
   ------------------------------------------
   contact info:
@@ -332,10 +206,7 @@ async function scrapeMenu () {
     return document.querySelector(sel).getAttribute('src')
   }, linkSelectorVian)
 
-  await page.goto(linkVian, {
-    waitUntil: 'networkidle2',
-    timeout: 0
-  })
+  await page.goto(linkVian, { waitUntil: 'networkidle2', timeout: 0 })
 
   // @ VIAN Monday
   let mondayVian1
@@ -649,9 +520,7 @@ async function scrapeMenu () {
   let fruccolaName = 'Fruccola (Arany Janos utca) menu:'
   let fruccolaLength = fruccolaName.length
   console.log('*' + fruccolaName + '* \n' + '-'.repeat(fruccolaLength))
-  await page.goto('http://fruccola.hu/hu', {
-    waitUntil: 'networkidle2'
-  })
+  await page.goto('http://fruccola.hu/hu', { waitUntil: 'networkidle2' })
   const dailyFruccola1 = await page.evaluate(el => el.innerText, await page.$(dailyFruccolaSelector1))
   const dailyFruccola2 = await page.evaluate(el => el.innerText, await page.$(dailyFruccolaSelector2))
 
@@ -691,9 +560,7 @@ async function scrapeMenu () {
   let kamraName = 'Kamra menu:'
   let kamraLength = kamraName.length
   console.log('*' + kamraName + '* \n' + '-'.repeat(kamraLength))
-  await page.goto('http://www.kamraetelbar.hu/kamra_etelbar_mai_menu.html', {
-    waitUntil: 'networkidle2'
-  })
+  await page.goto('http://www.kamraetelbar.hu/kamra_etelbar_mai_menu.html', { waitUntil: 'networkidle2' })
   const dayKamra = await page.evaluate(el => el.innerText, await page.$(dayKamraSelector))
   // stores all elements with same ID, source: https://stackoverflow.com/questions/54677126/how-to-select-all-child-div-with-same-class-using-puppeteer
   const dailyKamra = await page.$$eval(dailyKamraSelector,
