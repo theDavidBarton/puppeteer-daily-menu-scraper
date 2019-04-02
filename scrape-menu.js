@@ -74,11 +74,11 @@ async function scrapeMenu () {
   */
 
   // @ YAMATO selectors
-  const mondayYamatoSelector = 'body > div > h6:nth-child(4)'
-  const tuesdayYamatoSelector = 'body > div > h6:nth-child(6)'
-  const wednesdayYamatoSelector = 'body > div > h6:nth-child(8)'
-  const thursdayYamatoSelector = 'body > div > h6:nth-child(10)'
-  const fridayYamatoSelector = 'body > div > h6:nth-child(12)'
+  const mondayYamatoSelector = 'body > div:nth-child(1) > p:nth-child(2)'
+  const tuesdayYamatoSelector = 'body > div:nth-child(1) > p:nth-child(4)'
+  const wednesdayYamatoSelector = 'body > div:nth-child(1) > p:nth-child(6)'
+  const thursdayYamatoSelector = 'body > div:nth-child(1) > p:nth-child(8)'
+  const fridayYamatoSelector = 'body > div:nth-child(1) > p:nth-child(10)'
 
   let yamatoName = 'Yamato menu:'
   let yamatoLength = yamatoName.length
