@@ -53,6 +53,19 @@ async function scrapeMenu() {
 
   /*
 
+  @ SUPPÉ restaurant
+  -------------------------------------
+  contact info:
+  * Address: Hajós u. 19 (19.45 mi), Budapest, Hungary 1065
+  * Phone: (70) 336 0822
+
+  */
+
+  // @ SUPPÉ selectors
+  const 
+
+  /*
+
   @ YAMATO
   ---------------------------------------
   contact info:
