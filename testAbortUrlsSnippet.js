@@ -1,12 +1,13 @@
 const puppeteer = require('puppeteer')
 
-async function abortSnippet () {
+async function abortSnippet() {
   const browser = await puppeteer.launch()
   const page = await browser.newPage()
   // abort 3rd party content, source: https://github.com/GoogleChrome/puppeteer/blob/master/examples/block-images.js
   await page.setRequestInterception(true)
   page.on('request', interceptedRequest => {
-    if (interceptedRequest.url().startsWith('https://cdn.ampproject.org') ||
+    if (
+      interceptedRequest.url().startsWith('https://cdn.ampproject.org') ||
       interceptedRequest.url().startsWith('https://ads.travelaudience.com') ||
       interceptedRequest.url().startsWith('https://tpc.googlesyndication.com') ||
       interceptedRequest.url().startsWith('https://www.google') ||
@@ -32,7 +33,8 @@ async function abortSnippet () {
       interceptedRequest.url().startsWith('https://nxtck.com') ||
       interceptedRequest.url().startsWith('https://fonts.googleapis.com') ||
       interceptedRequest.url().startsWith('https://sslwidget.criteo.com') ||
-      interceptedRequest.url().startsWith('https://pixel.rubiconproject.com')) {
+      interceptedRequest.url().startsWith('https://pixel.rubiconproject.com')
+    ) {
       interceptedRequest.abort()
     } else {
       interceptedRequest.continue()
