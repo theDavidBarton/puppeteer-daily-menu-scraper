@@ -2,7 +2,7 @@
 const puppeteer = require('puppeteer')
 const expect = require('expect')
 
-async function scrapePage () {
+async function scrapePage() {
   const browser = await puppeteer.launch({ headless: true })
   const page = await browser.newPage()
   const navigationPromise = page.waitForNavigation()
@@ -11,7 +11,10 @@ async function scrapePage () {
 
   await page.goto('http://www.liligo.fr/', { waitUntil: 'networkidle2', timeout: 0 })
   await navigationPromise
-  let linkText = await page.evaluate(el => el.innerHTML, await page.$('body > header > h1 > span > a'))
+  let linkText = await page.evaluate(
+    el => el.innerHTML,
+    await page.$('body > header > h1 > span > a')
+  )
   console.log(linkText)
   expect(linkText).toBe('vol pas cher')
   console.log("it's a match")

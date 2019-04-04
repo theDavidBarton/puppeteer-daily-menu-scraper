@@ -1,6 +1,8 @@
 {
-  "dependencies": {
-    "expect": "^24.5.0",
+  "dependencies": {},
+  "devDependencies": {
+    "expect": "^24.7.1",
+    "prettier": "^1.16.4",
     "puppeteer": "^1.14.0",
     "puppeteer-firefox": "^0.5.0"
   }
