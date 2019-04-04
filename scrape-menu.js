@@ -62,8 +62,16 @@ async function scrapeMenu() {
   */
 
   // @ SUPPÉ selectors
-  const 
+  const dailySuppeSelector = ''
 
+  let suppeName = 'Suppé menu:'
+  let suppeLength = suppeName.length
+  console.log('*' + suppeName + '* \n' + '-'.repeat(suppeLength))
+  await page.goto('', { waitUntil: 'networkidle2' })
+  let dailySuppe = await page.evaluate(el => el.innerText, await page.$(dailySuppeSelector))
+
+  // @ SUPPÉ print menu
+  console.log('• Daily menu: ' + dailySuppe + '\n')
   /*
 
   @ YAMATO
