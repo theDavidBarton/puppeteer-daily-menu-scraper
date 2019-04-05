@@ -7,9 +7,7 @@ async function testFlight() {
   const page = await browser.newPage()
   const navigationPromise = page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 0 })
   // Firefox: remove "{ waitUntil: 'networkidle2', timeout: 0 }"
-
   await page.setViewport({ width: 1024, height: 768 })
-
   console.log('... puppeteer has launched')
 
   /*
@@ -20,11 +18,11 @@ async function testFlight() {
 
   const urlHomepage = 'http://www.liligo.fr/'
   const homePageTitlePart = 'LILIGO.com'
-  const redirectPageTitlePart = 'liligo.com'
-  const airFromTypeLetters = 'San f'
-  const airToTypeLetters = 'Par'
-  const airFromContentToBe = 'San Francisco,  CA, Etats-Unis (SFO)'
-  const airToContentToBe = 'Paris, France (CDG)'
+  const flightRedirectPageTitlePart = 'liligo.com'
+  const flightFromTypeLetters = 'San f'
+  const flightToTypeLetters = 'Par'
+  const flightFromContentToBe = 'San Francisco,  CA, Etats-Unis (SFO)'
+  const flightToContentToBe = 'Paris, France (CDG)'
 
   /*
    -----------------------------------
@@ -32,14 +30,14 @@ async function testFlight() {
    -----------------------------------
   */
 
-  const airFrom = '#air-from'
-  const airTo = '#air-to'
+  const flightFrom = '#air-from'
+  const flightTo = '#air-to'
   const complocFirst = '#liligo_cl2_item_0'
   const complocSecond = '#liligo_cl2_item_1'
-  const airFromDate = '#air-out-date-value'
-  const airToDate = '#air-ret-date-value'
+  const flightDepartureDate = '#air-out-date-value'
+  const flightReturnDate = '#air-ret-date-value'
   const deselectComparesite = '.hp-searchform-comparesite-selectnone'
-  const airSubmit = '#air-submit'
+  const flightSubmit = '#air-submit'
 
   const actualDate = '.actual'
   const datePickerMonth1 = 'div.dpMonth.dpMonth1 .dpMonthHeader'
@@ -75,84 +73,84 @@ async function testFlight() {
 
   console.log('√ GIVEN I am on the homepage of ' + urlHomepage)
 
-  await page.waitForSelector(airFrom)
-  await page.click(airFrom)
-  await page.keyboard.type(airFromTypeLetters)
+  await page.waitForSelector(flightFrom)
+  await page.click(flightFrom)
+  await page.keyboard.type(flightFromTypeLetters)
   await page.waitFor(1000) // make sure dropdown opens
   await page.waitForSelector(complocFirst)
   await page.click(complocFirst)
-  let airFromContent = await page.evaluate(el => el.value, await page.$(airFrom))
-  expect(airFromContent).toBe(airFromContentToBe)
+  let flightFromContent = await page.evaluate(el => el.value, await page.$(flightFrom))
+  expect(flightFromContent).toBe(flightFromContentToBe)
 
-  console.log('√ WHEN I set departure with mouse to ' + airFromContent)
+  console.log('√ WHEN I set departure with mouse to ' + flightFromContent)
 
-  await page.keyboard.type(airToTypeLetters)
+  await page.keyboard.type(flightToTypeLetters)
   await page.waitFor(1000)
   await page.waitForSelector(complocSecond)
   await page.keyboard.press('ArrowDown')
   await page.keyboard.press('Enter')
   // await page.click(complocSecond)
-  let airToContent = await page.evaluate(el => el.value, await page.$(airTo))
-  expect(airToContent).toBe(airToContentToBe)
+  let flightToContent = await page.evaluate(el => el.value, await page.$(flightTo))
+  expect(flightToContent).toBe(flightToContentToBe)
 
-  console.log('√ AND I set destination by keyboard to ' + airToContent)
+  console.log('√ AND I set destination by keyboard to ' + flightToContent)
 
   // prepare arrays from route location elements for result page validation
   // expected format: [ 'San Francisco', ' CA', 'Etats-Unis (SFO)' ]
-  let airFromContentArray = airFromContent.split(', ')
-  let airToContentArray = airToContent.split(', ')
+  let flightFromContentArray = flightFromContent.split(', ')
+  let flightToContentArray = flightToContent.split(', ')
   /*
    -----------------------------------
    DATE PICKER
    -----------------------------------
   */
 
-  await page.waitForSelector(airFromDate)
-  let airFromDateContent = await page.evaluate(el => el.innerText, await page.$(airFromDate))
-  await page.waitForSelector(airToDate)
-  let airToDateContent = await page.evaluate(el => el.innerText, await page.$(airToDate))
+  await page.waitForSelector(flightDepartureDate)
+  let flightDepartureDateContent = await page.evaluate(el => el.innerText, await page.$(flightDepartureDate))
+  await page.waitForSelector(flightReturnDate)
+  let flightReturnDateContent = await page.evaluate(el => el.innerText, await page.$(flightReturnDate))
 
-  console.log('√ AND default departure date is: ' + airFromDateContent)
-  console.log('√ AND default return date is: ' + airToDateContent)
+  console.log('√ AND default departure date is: ' + flightDepartureDateContent)
+  console.log('√ AND default return date is: ' + flightReturnDateContent)
 
-  await page.click(airFromDate)
+  await page.click(flightDepartureDate)
   await page.waitForSelector(datePickerArrowRight)
   await page.click(datePickerArrowRight)
   await page.click(randomFutureDate)
-  airFromDateContent = await page.evaluate(el => el.innerText, await page.$(airFromDate)) // format: 18 Avr. 2019 (jeudi)
-  airToDateContent = await page.evaluate(el => el.innerText, await page.$(airToDate)) // format: 25 Avr. 2019 (jeudi)
+  flightDepartureDateContent = await page.evaluate(el => el.innerText, await page.$(flightDepartureDate)) // format: 18 Avr. 2019 (jeudi)
+  flightReturnDateContent = await page.evaluate(el => el.innerText, await page.$(flightReturnDate)) // format: 25 Avr. 2019 (jeudi)
 
-  console.log('√ AND I select departure date: ' + airFromDateContent)
-  console.log('√ THEN selected return date is: ' + airToDateContent)
+  console.log('√ AND I select departure date: ' + flightDepartureDateContent)
+  console.log('√ THEN selected return date is: ' + flightReturnDateContent)
 
   // validates date selection
-  await page.click(airFromDate)
-  let airFromDateSelectedMonth = await page.evaluate(el => el.innerText, await page.$(datePickerMonth1))
-  let airFromDateSelectedDay = await page.evaluate(el => el.innerText, await page.$(actualDate))
-  let airFromDateSelected = airFromDateSelectedDay + ' ' + airFromDateSelectedMonth // format: 18 Avril, 2019
+  await page.click(flightDepartureDate)
+  let flightDepartureDateSelectedMonth = await page.evaluate(el => el.innerText, await page.$(datePickerMonth1))
+  let flightDepartureDateSelectedDay = await page.evaluate(el => el.innerText, await page.$(actualDate))
+  let flightDepartureDateSelected = flightDepartureDateSelectedDay + ' ' + flightDepartureDateSelectedMonth // format: 18 Avril, 2019
 
-  let airFromDateContentArray = airFromDateSelected.split(' ')
-  console.log(airFromDateContentArray)
+  let flightDepartureDateContentArray = flightDepartureDateSelected.split(' ')
+  console.log(flightDepartureDateContentArray)
 
-  console.log('   ----> departure day selected by me: ' + airFromDateSelected)
+  console.log('   ----> departure day selected by me: ' + flightDepartureDateSelected)
 
-  expect(airFromDateContentArray).toContain(airFromDateSelectedDay)
+  expect(flightDepartureDateContentArray).toContain(flightDepartureDateSelectedDay)
 
-  console.log('        √ departure field contains the selected day: ' + airFromDateSelectedDay)
+  console.log('        √ departure field contains the selected day: ' + flightDepartureDateSelectedDay)
 
-  await page.click(airToDate)
-  let airToDateSelectedMonth = await page.evaluate(el => el.innerText, await page.$(datePickerMonth1))
-  let airToDateSelectedDay = await page.evaluate(el => el.innerText, await page.$(actualDate))
-  let airToDateSelected = airToDateSelectedDay + ' ' + airToDateSelectedMonth // format: 25 Avril, 2019
+  await page.click(flightReturnDate)
+  let flightReturnDateSelectedMonth = await page.evaluate(el => el.innerText, await page.$(datePickerMonth1))
+  let flightReturnDateSelectedDay = await page.evaluate(el => el.innerText, await page.$(actualDate))
+  let flightReturnDateSelected = flightReturnDateSelectedDay + ' ' + flightReturnDateSelectedMonth // format: 25 Avril, 2019
 
-  let airToDateContentArray = airToDateSelected.split(' ')
-  console.log(airToDateContentArray)
+  let flightReturnDateContentArray = flightReturnDateSelected.split(' ')
+  console.log(flightReturnDateContentArray)
 
-  console.log('    ----> return day selected by me: ' + airToDateSelected)
+  console.log('    ----> return day selected by me: ' + flightReturnDateSelected)
 
-  expect(airToDateContentArray).toContain(airToDateSelectedDay)
+  expect(flightReturnDateContentArray).toContain(flightReturnDateSelectedDay)
 
-  console.log('        √ destination field contains the selected day: ' + airToDateSelectedDay)
+  console.log('        √ destination field contains the selected day: ' + flightReturnDateSelectedDay)
 
   /*
    -----------------------------------
@@ -177,8 +175,8 @@ async function testFlight() {
 
   console.log('√ WHEN I deselect comparesites')
 
-  await page.waitForSelector(airSubmit)
-  await page.click(airSubmit)
+  await page.waitForSelector(flightSubmit)
+  await page.click(flightSubmit)
 
   console.log('√ AND I launch search')
 
@@ -198,13 +196,13 @@ async function testFlight() {
   let departureHeaderContent = await page.evaluate(el => el.textContent, departureHeaderSelector)
   let arrivalHeaderContent = await page.evaluate(el => el.textContent, arrivalHeaderSelector)
 
-  expect(departureHeaderContent).toBe(airFromContentArray[0])
+  expect(departureHeaderContent).toBe(flightFromContentArray[0])
 
-  console.log('√ AND departure: ' + departureHeaderContent + ' from result header matches ' + airFromContentArray[0] + ' from homepage')
+  console.log('√ AND departure: ' + departureHeaderContent + ' from result header matches ' + flightFromContentArray[0] + ' from homepage')
 
-  expect(arrivalHeaderContent).toBe(airToContentArray[0])
+  expect(arrivalHeaderContent).toBe(flightToContentArray[0])
 
-  console.log('√ AND destination: ' + arrivalHeaderContent + ' from result header matches ' + airToContentArray[0] + ' from homepage')
+  console.log('√ AND destination: ' + arrivalHeaderContent + ' from result header matches ' + flightToContentArray[0] + ' from homepage')
 
   await navigationPromise
   // make sure search finished
@@ -304,8 +302,8 @@ async function testFlight() {
   await page.waitFor(1000)
   let redirectPageTitle = await page.title()
   // this part needs more work to store the new tab's title instead of the initial tab's title
-  // expect(redirectPageTitle).toContain(redirectPageTitlePart)
-  console.log(redirectPageTitle + ' contains: ' + redirectPageTitlePart)
+  // expect(redirectPageTitle).toContain(flightRedirectPageTitlePart)
+  console.log(redirectPageTitle + ' contains: ' + flightRedirectPageTitlePart)
 
   console.log("√ THEN I see a redirection to partner's site")
   await page.waitFor(1000) // sorry about this one we need a better structure here to avoid failing tab closes

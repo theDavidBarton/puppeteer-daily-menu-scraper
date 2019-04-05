@@ -14,7 +14,9 @@ The actual version of pptr is v1.14.0
 
 Node v7.6.0 or greater is needed to run the scripts in this repo. And v8.9.4 or greater to run puppeteer with Firefox.
 
-via Yarn:
+`yarn install` the project (everything is added as devDependencies in package.json)
+
+or add each packages each by each via Yarn:
 ```shell_session
 yarn add expect puppeteer puppeteer-firefox prettier --dev
 ```
