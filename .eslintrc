@@ -1,4 +1,0 @@
-module.exports = {
-    "extends": ["google","prettier"],
-    "plugins": ["prettier"]
-};

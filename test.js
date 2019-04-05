@@ -130,10 +130,7 @@ async function testFlight() {
 
   // validates date selection
   await page.click(airFromDate)
-  let airFromDateSelectedMonth = await page.evaluate(
-    el => el.innerText,
-    await page.$(datePickerMonth1)
-  )
+  let airFromDateSelectedMonth = await page.evaluate(el => el.innerText, await page.$(datePickerMonth1))
   let airFromDateSelectedDay = await page.evaluate(el => el.innerText, await page.$(actualDate))
   let airFromDateSelected = airFromDateSelectedDay + ' ' + airFromDateSelectedMonth // format: 18 Avril, 2019
 
@@ -147,10 +144,7 @@ async function testFlight() {
   console.log('        √ departure field contains the selected day: ' + airFromDateSelectedDay)
 
   await page.click(airToDate)
-  let airToDateSelectedMonth = await page.evaluate(
-    el => el.innerText,
-    await page.$(datePickerMonth1)
-  )
+  let airToDateSelectedMonth = await page.evaluate(el => el.innerText, await page.$(datePickerMonth1))
   let airToDateSelectedDay = await page.evaluate(el => el.innerText, await page.$(actualDate))
   let airToDateSelected = airToDateSelectedDay + ' ' + airToDateSelectedMonth // format: 25 Avril, 2019
 
@@ -246,10 +240,7 @@ async function testFlight() {
   const inboundArrFirst = (await page.$$(inboundArr))[0]
   let inboundArrFirstContent = await page.evaluate(el => el.textContent, inboundArrFirst)
   const outboundDurationFirst = (await page.$$(outboundDuration))[0]
-  let outboundDurationFirstContent = await page.evaluate(
-    el => el.textContent,
-    outboundDurationFirst
-  )
+  let outboundDurationFirstContent = await page.evaluate(el => el.textContent, outboundDurationFirst)
   const inboundDurationFirst = (await page.$$(inboundDuration))[0]
   let inboundDurationFirstContent = await page.evaluate(el => el.textContent, inboundDurationFirst)
   const priceFirst = (await page.$$(price))[0]
@@ -289,10 +280,7 @@ async function testFlight() {
   const inboundArrThird = (await page.$$(inboundArr))[2]
   let inboundArrThirdContent = await page.evaluate(el => el.textContent, inboundArrThird)
   const outboundDurationThird = (await page.$$(outboundDuration))[2]
-  let outboundDurationThirdContent = await page.evaluate(
-    el => el.textContent,
-    outboundDurationThird
-  )
+  let outboundDurationThirdContent = await page.evaluate(el => el.textContent, outboundDurationThird)
   const inboundDurationThird = (await page.$$(inboundDuration))[2]
   let inboundDurationThirdContent = await page.evaluate(el => el.textContent, inboundDurationThird)
   const priceThird = (await page.$$(price))[2]
