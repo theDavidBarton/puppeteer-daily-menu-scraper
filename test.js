@@ -5,10 +5,7 @@ const expect = require('expect')
 async function testFlight() {
   const browser = await puppeteer.launch({ headless: false, slowMo: 20 })
   const page = await browser.newPage()
-  const navigationPromise = page.waitForNavigation({
-    waitUntil: 'domcontentloaded',
-    timeout: 0
-  })
+  const navigationPromise = page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 0 })
   // Firefox: remove "{ waitUntil: 'networkidle2', timeout: 0 }"
 
   await page.setViewport({ width: 1024, height: 768 })
@@ -130,10 +127,7 @@ async function testFlight() {
 
   // validates date selection
   await page.click(airFromDate)
-  let airFromDateSelectedMonth = await page.evaluate(
-    el => el.innerText,
-    await page.$(datePickerMonth1)
-  )
+  let airFromDateSelectedMonth = await page.evaluate(el => el.innerText, await page.$(datePickerMonth1))
   let airFromDateSelectedDay = await page.evaluate(el => el.innerText, await page.$(actualDate))
   let airFromDateSelected = airFromDateSelectedDay + ' ' + airFromDateSelectedMonth // format: 18 Avril, 2019
 
@@ -147,10 +141,7 @@ async function testFlight() {
   console.log('        √ departure field contains the selected day: ' + airFromDateSelectedDay)
 
   await page.click(airToDate)
-  let airToDateSelectedMonth = await page.evaluate(
-    el => el.innerText,
-    await page.$(datePickerMonth1)
-  )
+  let airToDateSelectedMonth = await page.evaluate(el => el.innerText, await page.$(datePickerMonth1))
   let airToDateSelectedDay = await page.evaluate(el => el.innerText, await page.$(actualDate))
   let airToDateSelected = airToDateSelectedDay + ' ' + airToDateSelectedMonth // format: 25 Avril, 2019
 
@@ -209,23 +200,11 @@ async function testFlight() {
 
   expect(departureHeaderContent).toBe(airFromContentArray[0])
 
-  console.log(
-    '√ AND departure: ' +
-      departureHeaderContent +
-      ' from result header matches ' +
-      airFromContentArray[0] +
-      ' from homepage'
-  )
+  console.log('√ AND departure: ' + departureHeaderContent + ' from result header matches ' + airFromContentArray[0] + ' from homepage')
 
   expect(arrivalHeaderContent).toBe(airToContentArray[0])
 
-  console.log(
-    '√ AND destination: ' +
-      arrivalHeaderContent +
-      ' from result header matches ' +
-      airToContentArray[0] +
-      ' from homepage'
-  )
+  console.log('√ AND destination: ' + arrivalHeaderContent + ' from result header matches ' + airToContentArray[0] + ' from homepage')
 
   await navigationPromise
   // make sure search finished
@@ -246,10 +225,7 @@ async function testFlight() {
   const inboundArrFirst = (await page.$$(inboundArr))[0]
   let inboundArrFirstContent = await page.evaluate(el => el.textContent, inboundArrFirst)
   const outboundDurationFirst = (await page.$$(outboundDuration))[0]
-  let outboundDurationFirstContent = await page.evaluate(
-    el => el.textContent,
-    outboundDurationFirst
-  )
+  let outboundDurationFirstContent = await page.evaluate(el => el.textContent, outboundDurationFirst)
   const inboundDurationFirst = (await page.$$(inboundDuration))[0]
   let inboundDurationFirstContent = await page.evaluate(el => el.textContent, inboundDurationFirst)
   const priceFirst = (await page.$$(price))[0]
@@ -289,10 +265,7 @@ async function testFlight() {
   const inboundArrThird = (await page.$$(inboundArr))[2]
   let inboundArrThirdContent = await page.evaluate(el => el.textContent, inboundArrThird)
   const outboundDurationThird = (await page.$$(outboundDuration))[2]
-  let outboundDurationThirdContent = await page.evaluate(
-    el => el.textContent,
-    outboundDurationThird
-  )
+  let outboundDurationThirdContent = await page.evaluate(el => el.textContent, outboundDurationThird)
   const inboundDurationThird = (await page.$$(inboundDuration))[2]
   let inboundDurationThirdContent = await page.evaluate(el => el.textContent, inboundDurationThird)
   const priceThird = (await page.$$(price))[2]
