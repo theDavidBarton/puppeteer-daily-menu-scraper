@@ -5,10 +5,7 @@ const expect = require('expect')
 async function testFlight() {
   const browser = await puppeteer.launch({ headless: false, slowMo: 20 })
   const page = await browser.newPage()
-  const navigationPromise = page.waitForNavigation({
-    waitUntil: 'domcontentloaded',
-    timeout: 0
-  })
+  const navigationPromise = page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 0 })
   // Firefox: remove "{ waitUntil: 'networkidle2', timeout: 0 }"
 
   await page.setViewport({ width: 1024, height: 768 })
@@ -203,23 +200,11 @@ async function testFlight() {
 
   expect(departureHeaderContent).toBe(airFromContentArray[0])
 
-  console.log(
-    '√ AND departure: ' +
-      departureHeaderContent +
-      ' from result header matches ' +
-      airFromContentArray[0] +
-      ' from homepage'
-  )
+  console.log('√ AND departure: ' + departureHeaderContent + ' from result header matches ' + airFromContentArray[0] + ' from homepage')
 
   expect(arrivalHeaderContent).toBe(airToContentArray[0])
 
-  console.log(
-    '√ AND destination: ' +
-      arrivalHeaderContent +
-      ' from result header matches ' +
-      airToContentArray[0] +
-      ' from homepage'
-  )
+  console.log('√ AND destination: ' + arrivalHeaderContent + ' from result header matches ' + airToContentArray[0] + ' from homepage')
 
   await navigationPromise
   // make sure search finished

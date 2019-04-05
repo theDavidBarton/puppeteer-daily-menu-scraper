@@ -23,23 +23,15 @@ async function testFlightRp() {
   SELECTORS OTHER
   */
   const priceOther = 'tr.flexifare__price-row > td:nth-child(3) > span.flexifare__th'
-  const outboundDepOther =
-    'div:nth-child(1) > div.jcw-way-view__details-container > div > div.jcw-way-view__departure-container > div > div.jcw-way-view__departure-time'
-  const outboundArrOther =
-    'div:nth-child(1) > div.jcw-way-view__details-container > div > div.jcw-way-view__arrival-container > div > div.jcw-way-view__arrival-time'
-  const inboundDepOther =
-    'div:nth-child(2) > div.jcw-way-view__details-container > div > div.jcw-way-view__departure-container > div > div.jcw-way-view__departure-time'
-  const inboundArrOther =
-    'div:nth-child(2) > div.jcw-way-view__details-container > div > div.jcw-way-view__arrival-container > div > div.jcw-way-view__arrival-time'
-  const outboundDurationOther =
-    'div:nth-child(1) > div.jcw-way-view__duration-container.hidden-xs.hidden-sm > div'
-  const inboundDurationOther =
-    'div:nth-child(2) > div.jcw-way-view__duration-container.hidden-xs.hidden-sm > div'
-
+  const outboundDepOther = 'div:nth-child(1) > div.jcw-way-view__details-container > div > div.jcw-way-view__departure-container > div > div.jcw-way-view__departure-time'
+  const outboundArrOther = 'div:nth-child(1) > div.jcw-way-view__details-container > div > div.jcw-way-view__arrival-container > div > div.jcw-way-view__arrival-time'
+  const inboundDepOther = 'div:nth-child(2) > div.jcw-way-view__details-container > div > div.jcw-way-view__departure-container > div > div.jcw-way-view__departure-time'
+  const inboundArrOther = 'div:nth-child(2) > div.jcw-way-view__details-container > div > div.jcw-way-view__arrival-container > div > div.jcw-way-view__arrival-time'
+  const outboundDurationOther = 'div:nth-child(1) > div.jcw-way-view__duration-container.hidden-xs.hidden-sm > div'
+  const inboundDurationOther = 'div:nth-child(2) > div.jcw-way-view__duration-container.hidden-xs.hidden-sm > div'
   /*
   PARAMETERS
   */
-
   let environment = 'https://' // https://, https://admin.
   let marketBaseUrl = 'flights-results.liligo.fr' // flights-results. --> FR, US
   let fromLocation = 'PAR'
@@ -112,10 +104,7 @@ async function testFlightRp() {
   const inboundArrFirst = (await page.$$(inboundArr))[0]
   let inboundArrFirstContent = await page.evaluate(el => el.textContent, inboundArrFirst)
   const outboundDurationFirst = (await page.$$(outboundDuration))[0]
-  let outboundDurationFirstContent = await page.evaluate(
-    el => el.textContent,
-    outboundDurationFirst
-  )
+  let outboundDurationFirstContent = await page.evaluate(el => el.textContent, outboundDurationFirst)
   const inboundDurationFirst = (await page.$$(inboundDuration))[0]
   let inboundDurationFirstContent = await page.evaluate(el => el.textContent, inboundDurationFirst)
   const priceFirst = (await page.$$(price))[0]
@@ -177,10 +166,7 @@ async function testFlightRp() {
   const inboundArrThird = (await page.$$(inboundArr))[2]
   let inboundArrThirdContent = await page.evaluate(el => el.textContent, inboundArrThird)
   const outboundDurationThird = (await page.$$(outboundDuration))[2]
-  let outboundDurationThirdContent = await page.evaluate(
-    el => el.textContent,
-    outboundDurationThird
-  )
+  let outboundDurationThirdContent = await page.evaluate(el => el.textContent, outboundDurationThird)
   const inboundDurationThird = (await page.$$(inboundDuration))[2]
   let inboundDurationThirdContent = await page.evaluate(el => el.textContent, inboundDurationThird)
   const priceThird = (await page.$$(price))[2]
@@ -215,29 +201,17 @@ async function testFlightRp() {
   await page.waitForSelector('div.passengers > form > div > div.panel-body') // wait till data presents
   // [1.] stores all the other site's
   const outboundDepFirstOther = (await page.$$(outboundDepOther))[0]
-  let outboundDepFirstContentOther = await page.evaluate(
-    el => el.textContent,
-    outboundDepFirstOther
-  )
+  let outboundDepFirstContentOther = await page.evaluate(el => el.textContent, outboundDepFirstOther)
   const outboundArrFirstOther = (await page.$$(outboundArrOther))[0]
-  let outboundArrFirstContentOther = await page.evaluate(
-    el => el.textContent,
-    outboundArrFirstOther
-  )
+  let outboundArrFirstContentOther = await page.evaluate(el => el.textContent, outboundArrFirstOther)
   const inboundDepFirstOther = (await page.$$(inboundDepOther))[0]
   let inboundDepFirstContentOther = await page.evaluate(el => el.textContent, inboundDepFirstOther)
   const inboundArrFirstOther = (await page.$$(inboundArrOther))[0]
   let inboundArrFirstContentOther = await page.evaluate(el => el.textContent, inboundArrFirstOther)
   const outboundDurationFirstOther = (await page.$$(outboundDurationOther))[0]
-  let outboundDurationFirstContentOther = await page.evaluate(
-    el => el.textContent,
-    outboundDurationFirstOther
-  )
+  let outboundDurationFirstContentOther = await page.evaluate(el => el.textContent, outboundDurationFirstOther)
   const inboundDurationFirstOther = (await page.$$(inboundDurationOther))[0]
-  let inboundDurationFirstContentOther = await page.evaluate(
-    el => el.textContent,
-    inboundDurationFirstOther
-  )
+  let inboundDurationFirstContentOther = await page.evaluate(el => el.textContent, inboundDurationFirstOther)
   const priceFirstOther = (await page.$$(priceOther))[0]
   let priceFirstContentOther = await page.evaluate(el => el.textContent, priceFirstOther)
 
