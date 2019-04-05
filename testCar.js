@@ -34,6 +34,9 @@ async function testCar() {
   const deselectComparesite = '.hp-searchform-comparesite-selectnone'
   const carSubmit = '#car-submit'
 
+  const clickoutHome = '.hp-searcharea' // the searchform's background on homepage
+  const clickoutSeo = '.sc-searchform' // the searchform's background on SEO (sc)
+
   await page.goto(urlCarEntrypage, { waitUntil: 'domcontentloaded', timeout: 0 }) // Firefox: remove "{ waitUntil: 'networkidle2', timeout: 0 }"
 
   /*
@@ -57,6 +60,24 @@ async function testCar() {
   await page.keyboard.press('Enter')
   let carPickupContent = await page.evaluate(el => el.value, await page.$(carPickup))
   expect(carPickupContent).toBe(carPickupContentToBe)
+
+  /*
+   -----------------------------------
+   CLICKOUT (promise.race)
+   -----------------------------------
+  */
+
+  await Promise.race([page.waitForSelector(clickoutHome), page.waitForSelector(clickoutSeo)])
+
+  if ((await page.$(clickoutHome)) !== null) {
+    await page.click(clickoutHome)
+
+    console.log('√ AND I clickout from homepage searchform')
+  } else {
+    await page.click(clickoutSeo)
+
+    console.log('√ AND I clickout from seo searchform')
+  }
 
   await page.waitForSelector(deselectComparesite)
   await page.click(deselectComparesite)
