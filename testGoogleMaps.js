@@ -7,7 +7,7 @@ async function testGoogleMaps() {
   await page.waitForSelector('#minimap > div > div.widget-minimap > button')
   await page.click('#minimap > div > div.widget-minimap > button')
   for (let i = 0; i < 15; i++) {
-    await page.click('#widget-zoom-in')
+    page.evaluate('window.scrollBy(0, 15);')
   }
   await page.waitFor(3000)
   await page.screenshot({ path: 'tmp/maps.png' })
