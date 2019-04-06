@@ -53,33 +53,54 @@ async function scrapeMenu() {
 
   /*
 
-  @ SUPPÉ restaurant
-  -------------------------------------
+  @ SUPPÉ bistro
+  ---------------------------------------
   contact info:
   * Address: Hajós u. 19 (19.45 mi), Budapest, Hungary 1065
   * Phone: (70) 336 0822
+  ---------------------------------------
+  Description:
+  * scrape facebook posts based on xpath patterns
+  * todo: avoid xpath and use selectors
+  * replace redundant string patterns with regex
 
   */
 
   let suppeName = 'Suppé menu:'
   let suppeLength = suppeName.length
   console.log('*' + suppeName + '* \n' + '-'.repeat(suppeLength))
-  await page.goto('https://www.facebook.com/pg/bistrosuppe/posts/?ref=page_internal', { waitUntil: 'networkidle2' })
-
+  await page.goto('https://www.facebook.com/pg/bistrosuppe/posts/?ref=page_internal', {
+    waitUntil: 'networkidle2'
+  })
   // @ SUPPÉ selector, source: https://stackoverflow.com/questions/48448586/how-to-use-xpath-in-chrome-headlesspuppeteer-evaluate
+  // daily
   const dailySuppeIncludes = (await page.$x('//span[contains(text(), "Sziasztok")]'))[0]
-  let dailySuppe = await page.evaluate(el => { return el.textContent }, dailySuppeIncludes)
-  dailySuppe = dailySuppe.replace(/Sziasztok, |, kellemes hétvégét!|, szép napot!/gi, '')
+  let dailySuppe = await page.evaluate(el => {
+    return el.textContent
+  }, dailySuppeIncludes)
+  dailySuppe = dailySuppe.replace(/Sziasztok, |, kellemes hétvégét!|, szép napot!|, várunk Titeket!/gi, '')
+  // weekly (on Monday)
+  const weeklySuppeIncludes = (await page.$x('//p[contains(text(), "Sziasztok")]'))[0]
+  let weeklySuppe = await page.evaluate(el => {
+    return el.textContent
+  }, weeklySuppeIncludes)
+  weeklySuppe = weeklySuppe.replace(/(?=sziasztok)(.*)(?=levesek )|(?=mai)(.*)(?=\s*)/gi, '')
+  // Monday only (on Monday)
+  const mondaySuppeIncludes = (await page.$x('//p[contains(text(), "Sziasztok")]'))[0]
+  let mondaySuppe = await page.evaluate(el => {
+    return el.textContent
+  }, mondaySuppeIncludes)
+  mondaySuppe = mondaySuppe.replace(/(?=sziasztok)(.*)(?=levesek )|(, várunk Titeket!)/gi, '')
 
   // @ SUPPÉ print menu
   var nameOfDaySuppe = today
   switch (nameOfDaySuppe) {
     case 1:
-      console.log('• Monday: ' + dailySuppe + '\n')
+      console.log('• Monday: ' + mondaySuppe + '\n')
       break
     default:
-      console.log('• Daily menu: ' + dailySuppe + '\n')
-    }
+      console.log('• Daily menu: ' + dailySuppe + '\n' + weeklySuppe + '\n')
+  }
 
   /*
 
@@ -117,47 +138,57 @@ async function scrapeMenu() {
     waitUntil: 'networkidle2',
     timout: 0
   })
-
   // @ YAMATO Monday
   let mondayYamato
   if ((await page.$(mondayYamatoSelector)) !== null) {
-    let mondayYamatoRaw = await page.evaluate(el => el.innerText, await page.$(mondayYamatoSelector))
+    let mondayYamatoRaw = await page.evaluate(
+      el => el.innerText,
+      await page.$(mondayYamatoSelector)
+    )
     mondayYamato = mondayYamatoRaw.replace(/(\n)/gm, ', ')
   } else {
     mondayYamato = '♪"No Milk Today"♫'
   }
-
   // @ YAMATO Tuesday
   let tuesdayYamato
   if ((await page.$(tuesdayYamatoSelector)) !== null) {
-    let tuesdayYamatoRaw = await page.evaluate(el => el.innerText, await page.$(tuesdayYamatoSelector))
+    let tuesdayYamatoRaw = await page.evaluate(
+      el => el.innerText,
+      await page.$(tuesdayYamatoSelector)
+    )
     tuesdayYamato = tuesdayYamatoRaw.replace(/(\n)/gm, ', ')
   } else {
     tuesdayYamato = '♪"No Milk Today"♫'
   }
-
   // @ YAMATO Wednesday
   let wednesdayYamato
   if ((await page.$(wednesdayYamatoSelector)) !== null) {
-    let wednesdayYamatoRaw = await page.evaluate(el => el.innerText, await page.$(wednesdayYamatoSelector))
+    let wednesdayYamatoRaw = await page.evaluate(
+      el => el.innerText,
+      await page.$(wednesdayYamatoSelector)
+    )
     wednesdayYamato = wednesdayYamatoRaw.replace(/(\n)/gm, ', ')
   } else {
     wednesdayYamato = '♪"No Milk Today"♫'
   }
-
   // @ YAMATO Thursday
   let thursdayYamato
   if ((await page.$(thursdayYamatoSelector)) !== null) {
-    let thursdayYamatoRaw = await page.evaluate(el => el.innerText, await page.$(thursdayYamatoSelector))
+    let thursdayYamatoRaw = await page.evaluate(
+      el => el.innerText,
+      await page.$(thursdayYamatoSelector)
+    )
     thursdayYamato = thursdayYamatoRaw.replace(/(\n)/gm, ', ')
   } else {
     thursdayYamato = '♪"No Milk Today"♫'
   }
-
   // @ YAMATO Friday
   let fridayYamato
   if ((await page.$(fridayYamatoSelector)) !== null) {
-    let fridayYamatoRaw = await page.evaluate(el => el.innerText, await page.$(fridayYamatoSelector))
+    let fridayYamatoRaw = await page.evaluate(
+      el => el.innerText,
+      await page.$(fridayYamatoSelector)
+    )
     fridayYamato = fridayYamatoRaw.replace(/(\n)/gm, ', ')
   } else {
     fridayYamato = '♪"No Milk Today"♫'
@@ -261,7 +292,6 @@ async function scrapeMenu() {
   const linkVian = await page.evaluate(sel => {
     return document.querySelector(sel).getAttribute('src')
   }, linkSelectorVian)
-
   await page.goto(linkVian, { waitUntil: 'networkidle2', timeout: 0 })
 
   // @ VIAN Monday
@@ -274,7 +304,6 @@ async function scrapeMenu() {
     mondayVian1 = '♪"No Milk Today"♫'
     mondayVian2 = ''
   }
-
   // @ VIAN Tuesday
   let tuesdayVian1
   let tuesdayVian2
@@ -285,7 +314,6 @@ async function scrapeMenu() {
     tuesdayVian1 = '♪"No Milk Today"♫'
     tuesdayVian2 = ''
   }
-
   // @ VIAN Wednesday
   let wednesdayVian1
   let wednesdayVian2
@@ -296,7 +324,6 @@ async function scrapeMenu() {
     wednesdayVian1 = '♪"No Milk Today"♫'
     wednesdayVian1 = ''
   }
-
   // @ VIAN Thursday
   let thursdayVian1
   let thursdayVian2
@@ -307,7 +334,6 @@ async function scrapeMenu() {
     thursdayVian1 = '♪"No Milk Today"♫'
     thursdayVian2 = ''
   }
-
   // @ VIAN Friday
   let fridayVian1
   let fridayVian2
@@ -318,7 +344,6 @@ async function scrapeMenu() {
     fridayVian1 = '♪"No Milk Today"♫'
     fridayVian2 = ''
   }
-
   // @ VIAN print menu
   var nameOfDayVian = today
   switch (nameOfDayVian) {
@@ -419,9 +444,12 @@ async function scrapeMenu() {
   */
 
   // @ KORHELY selectors
-  const weeklySoupKorhelySelector = '#mainDiv > div > div:nth-child(2) > section > ul > li:nth-child(1)'
-  const weeklyMainKorhelySelector = '#mainDiv > div > div:nth-child(2) > section > ul > li:nth-child(2)'
-  const weeklyDessertKorhelySelector = '#mainDiv > div > div:nth-child(2) > section > ul > li:nth-child(3)'
+  const weeklySoupKorhelySelector =
+    '#mainDiv > div > div:nth-child(2) > section > ul > li:nth-child(1)'
+  const weeklyMainKorhelySelector =
+    '#mainDiv > div > div:nth-child(2) > section > ul > li:nth-child(2)'
+  const weeklyDessertKorhelySelector =
+    '#mainDiv > div > div:nth-child(2) > section > ul > li:nth-child(3)'
 
   let korhelyName = 'Korhely menu:'
   let korhelyLength = korhelyName.length
@@ -438,11 +466,20 @@ async function scrapeMenu() {
 
   await page.goto(linkKorhely, { waitUntil: 'networkidle2', timeout: 0 })
   // let weeklySummaryKorhely = await page.evaluate(el => el.innerText, await page.$(weeklySummaryKorhelySelector))
-  let weeklySoupKorhely = await page.evaluate(el => el.innerText, await page.$(weeklySoupKorhelySelector))
+  let weeklySoupKorhely = await page.evaluate(
+    el => el.innerText,
+    await page.$(weeklySoupKorhelySelector)
+  )
   weeklySoupKorhely = weeklySoupKorhely.replace('LEVESEK', '')
-  let weeklyMainKorhely = await page.evaluate(el => el.innerText, await page.$(weeklyMainKorhelySelector))
+  let weeklyMainKorhely = await page.evaluate(
+    el => el.innerText,
+    await page.$(weeklyMainKorhelySelector)
+  )
   weeklyMainKorhely = weeklyMainKorhely.replace('FŐÉTELEK', '')
-  let weeklyDessertKorhely = await page.evaluate(el => el.innerText, await page.$(weeklyDessertKorhelySelector))
+  let weeklyDessertKorhely = await page.evaluate(
+    el => el.innerText,
+    await page.$(weeklyDessertKorhelySelector)
+  )
   weeklyDessertKorhely = weeklyDessertKorhely.replace('DESSZERTEK', '')
 
   // @ KORHELY print menu
@@ -507,52 +544,78 @@ async function scrapeMenu() {
   let mondayKetszerecsen1
   let mondayKetszerecsen2
   if ((await page.$(mondayKetszerecsenSelector1)) !== null) {
-    mondayKetszerecsen1 = await page.evaluate(el => el.innerHTML, await page.$(mondayKetszerecsenSelector1))
-    mondayKetszerecsen2 = await page.evaluate(el => el.innerHTML, await page.$(mondayKetszerecsenSelector2))
+    mondayKetszerecsen1 = await page.evaluate(
+      el => el.innerHTML,
+      await page.$(mondayKetszerecsenSelector1)
+    )
+    mondayKetszerecsen2 = await page.evaluate(
+      el => el.innerHTML,
+      await page.$(mondayKetszerecsenSelector2)
+    )
   } else {
     mondayKetszerecsen1 = '♪"No Milk Today"♫'
     mondayKetszerecsen2 = ''
   }
-
   // @ KETSZERECSEN Tuesday
   let tuesdayKetszerecsen1
   let tuesdayKetszerecsen2
   if ((await page.$(tuesdayKetszerecsenSelector1)) !== null) {
-    tuesdayKetszerecsen1 = await page.evaluate(el => el.innerHTML, await page.$(tuesdayKetszerecsenSelector1))
-    tuesdayKetszerecsen2 = await page.evaluate(el => el.innerHTML, await page.$(tuesdayKetszerecsenSelector2))
+    tuesdayKetszerecsen1 = await page.evaluate(
+      el => el.innerHTML,
+      await page.$(tuesdayKetszerecsenSelector1)
+    )
+    tuesdayKetszerecsen2 = await page.evaluate(
+      el => el.innerHTML,
+      await page.$(tuesdayKetszerecsenSelector2)
+    )
   } else {
     tuesdayKetszerecsen1 = '♪"No Milk Today"♫'
     tuesdayKetszerecsen2 = ''
   }
-
   // @ KETSZERECSEN Wednesday
   let wednesdayKetszerecsen1
   let wednesdayKetszerecsen2
   if ((await page.$(wednesdayKetszerecsenSelector1)) !== null) {
-    wednesdayKetszerecsen1 = await page.evaluate(el => el.innerHTML, await page.$(wednesdayKetszerecsenSelector1))
-    wednesdayKetszerecsen2 = await page.evaluate(el => el.innerHTML, await page.$(wednesdayKetszerecsenSelector2))
+    wednesdayKetszerecsen1 = await page.evaluate(
+      el => el.innerHTML,
+      await page.$(wednesdayKetszerecsenSelector1)
+    )
+    wednesdayKetszerecsen2 = await page.evaluate(
+      el => el.innerHTML,
+      await page.$(wednesdayKetszerecsenSelector2)
+    )
   } else {
     wednesdayKetszerecsen1 = '♪"No Milk Today"♫'
     wednesdayKetszerecsen2 = ''
   }
-
   // @ KETSZERECSEN Thursday
   let thursdayKetszerecsen1
   let thursdayKetszerecsen2
   if ((await page.$(thursdayKetszerecsenSelector1)) !== null) {
-    thursdayKetszerecsen1 = await page.evaluate(el => el.innerHTML, await page.$(thursdayKetszerecsenSelector1))
-    thursdayKetszerecsen2 = await page.evaluate(el => el.innerHTML, await page.$(thursdayKetszerecsenSelector2))
+    thursdayKetszerecsen1 = await page.evaluate(
+      el => el.innerHTML,
+      await page.$(thursdayKetszerecsenSelector1)
+    )
+    thursdayKetszerecsen2 = await page.evaluate(
+      el => el.innerHTML,
+      await page.$(thursdayKetszerecsenSelector2)
+    )
   } else {
     thursdayKetszerecsen1 = '♪"No Milk Today"♫'
     thursdayKetszerecsen2 = ''
   }
-
   // @ KETSZERECSEN Friday
   let fridayKetszerecsen1
   let fridayKetszerecsen2
   if ((await page.$(fridayKetszerecsenSelector1)) !== null) {
-    fridayKetszerecsen1 = await page.evaluate(el => el.innerHTML, await page.$(fridayKetszerecsenSelector1))
-    fridayKetszerecsen2 = await page.evaluate(el => el.innerHTML, await page.$(fridayKetszerecsenSelector2))
+    fridayKetszerecsen1 = await page.evaluate(
+      el => el.innerHTML,
+      await page.$(fridayKetszerecsenSelector1)
+    )
+    fridayKetszerecsen2 = await page.evaluate(
+      el => el.innerHTML,
+      await page.$(fridayKetszerecsenSelector2)
+    )
   } else {
     fridayKetszerecsen1 = '♪"No Milk Today"♫'
     fridayKetszerecsen2 = ''
@@ -624,14 +687,21 @@ async function scrapeMenu() {
 
   // @ FRUCCOLA selectors
   const dailyFruccolaSelector1 = '#dailymenu-holder > li.arany.today > div.soup > p.description'
-  const dailyFruccolaSelector2 = '#dailymenu-holder > li.arany.today > div.main-dish > p.description'
+  const dailyFruccolaSelector2 =
+    '#dailymenu-holder > li.arany.today > div.main-dish > p.description'
 
   let fruccolaName = 'Fruccola (Arany Janos utca) menu:'
   let fruccolaLength = fruccolaName.length
   console.log('*' + fruccolaName + '* \n' + '-'.repeat(fruccolaLength))
   await page.goto('http://fruccola.hu/hu', { waitUntil: 'networkidle2' })
-  const dailyFruccola1 = await page.evaluate(el => el.innerText, await page.$(dailyFruccolaSelector1))
-  const dailyFruccola2 = await page.evaluate(el => el.innerText, await page.$(dailyFruccolaSelector2))
+  const dailyFruccola1 = await page.evaluate(
+    el => el.innerText,
+    await page.$(dailyFruccolaSelector1)
+  )
+  const dailyFruccola2 = await page.evaluate(
+    el => el.innerText,
+    await page.$(dailyFruccolaSelector2)
+  )
 
   // @ FRUCCOLA print menu
   console.log('• Daily menu: ' + dailyFruccola1 + ', ' + dailyFruccola2 + '\n')
@@ -674,7 +744,9 @@ async function scrapeMenu() {
   })
   const dayKamra = await page.evaluate(el => el.innerText, await page.$(dayKamraSelector))
   // stores all elements with same ID, source: https://stackoverflow.com/questions/54677126/how-to-select-all-child-div-with-same-class-using-puppeteer
-  const dailyKamra = await page.$$eval(dailyKamraSelector, divs => divs.map(({ innerText }) => innerText))
+  const dailyKamra = await page.$$eval(dailyKamraSelector, divs =>
+    divs.map(({ innerText }) => innerText)
+  )
 
   // @ KAMRA print menu
   console.log('• ' + dayKamra + ' daily menu: ' + dailyKamra + '\n')
