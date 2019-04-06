@@ -61,19 +61,26 @@ async function scrapeMenu() {
 
   */
 
-  // @ SUPPÉ selectors
-
   let suppeName = 'Suppé menu:'
   let suppeLength = suppeName.length
   console.log('*' + suppeName + '* \n' + '-'.repeat(suppeLength))
   await page.goto('https://www.facebook.com/pg/bistrosuppe/posts/?ref=page_internal', { waitUntil: 'networkidle2' })
+
+  // @ SUPPÉ selector, source: https://stackoverflow.com/questions/48448586/how-to-use-xpath-in-chrome-headlesspuppeteer-evaluate
   const dailySuppeIncludes = (await page.$x('//span[contains(text(), "Sziasztok")]'))[0]
-  console.log(dailySuppeIncludes)
-  const dailySuppeSelector = dailySuppeIncludes
-  //let dailySuppe = await page.evaluate(el => el.innerText, await page.$(dailySuppeSelector))
+  let dailySuppe = await page.evaluate(el => { return el.textContent }, dailySuppeIncludes)
+  dailySuppe = dailySuppe.replace(/Sziasztok, |, kellemes hétvégét!|, szép napot!/gi, '')
 
   // @ SUPPÉ print menu
-  console.log('• Daily menu: ' + dailySuppe + '\n')
+  var nameOfDaySuppe = today
+  switch (nameOfDaySuppe) {
+    case 1:
+      console.log('• Monday: ' + dailySuppe + '\n')
+      break
+    default:
+      console.log('• Daily menu: ' + dailySuppe + '\n')
+    }
+
   /*
 
   @ YAMATO
