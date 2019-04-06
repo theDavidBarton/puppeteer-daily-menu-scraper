@@ -19,6 +19,7 @@ async function testCar() {
   const carRedirectPageTitlePart = 'Redirection'
   const carPickupTypeLetters = 'Marr'
   const carPickupContentToBe = 'Marrakech, Menara Airport - Maroc'
+  const pickupHeaderContentToBe = 'Marrakech'
 
   /*
    -----------------------------------
@@ -34,8 +35,11 @@ async function testCar() {
   const deselectComparesite = '.hp-searchform-comparesite-selectnone'
   const carSubmit = '#car-submit'
 
-  const clickoutHome = '.hp-searcharea' // the searchform's background on homepage
+  const clickoutHome = '.hp-searcharea' // the searchform's background on homepage or v6
   const clickoutSeo = '.sc-searchform' // the searchform's background on SEO (sc)
+
+  const simplePagination = 'div.simplepagination-filter'
+  const carResultItem = '.car-result-item'
 
   await page.goto(urlCarEntrypage, { waitUntil: 'domcontentloaded', timeout: 0 }) // Firefox: remove "{ waitUntil: 'networkidle2', timeout: 0 }"
 
@@ -60,6 +64,8 @@ async function testCar() {
   await page.keyboard.press('Enter')
   let carPickupContent = await page.evaluate(el => el.value, await page.$(carPickup))
   expect(carPickupContent).toBe(carPickupContentToBe)
+
+  console.log('√ WHEN I set pick up with keyboard and arrows to ' + carPickupContent)
 
   /*
    -----------------------------------
@@ -88,6 +94,26 @@ async function testCar() {
   await page.click(carSubmit)
 
   console.log('√ AND I launch search')
+
+  /*
+   -----------------------------------
+   RESULT PAGE
+   -----------------------------------
+  */
+
+  await page.waitForSelector(carResultItem)
+
+  console.log('√ THEN resultpage appears')
+  console.log('√ AND results appear')
+  const pickupHeaderSelector = (await page.$$('.results-header-code'))[0]
+  let pickupHeaderContent = await page.evaluate(el => el.textContent, pickupHeaderSelector)
+  expect(pickupHeaderContent).toBe(pickupHeaderContentToBe)
+
+  console.log('√ AND pickup: ' + pickupHeaderContent + ' from result header matches ' + pickupHeaderContentToBe + ' from homepage')
+
+  await navigationPromise
+  // make sure search finished
+  await page.waitForSelector(simplePagination)
 
   await browser.close()
 }

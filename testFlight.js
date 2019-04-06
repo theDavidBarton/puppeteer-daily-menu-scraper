@@ -45,7 +45,7 @@ async function testFlight() {
   const datePickerArrowRight = '.dpNext'
   const randomFutureDate = 'tr:nth-child(3) > td:nth-child(4)'
 
-  const clickoutHome = '.hp-searcharea' // the searchform's background on homepage
+  const clickoutHome = '.hp-searcharea' // the searchform's background on homepage or v6
   const clickoutSeo = '.sc-searchform' // the searchform's background on SEO (sc)
 
   const simplePagination = 'div.simplepagination-filter'
@@ -195,11 +195,9 @@ async function testFlight() {
   const arrivalHeaderSelector = (await page.$$('.results-header-city'))[1]
   let departureHeaderContent = await page.evaluate(el => el.textContent, departureHeaderSelector)
   let arrivalHeaderContent = await page.evaluate(el => el.textContent, arrivalHeaderSelector)
-
   expect(departureHeaderContent).toBe(flightFromContentArray[0])
 
   console.log('√ AND departure: ' + departureHeaderContent + ' from result header matches ' + flightFromContentArray[0] + ' from homepage')
-
   expect(arrivalHeaderContent).toBe(flightToContentArray[0])
 
   console.log('√ AND destination: ' + arrivalHeaderContent + ' from result header matches ' + flightToContentArray[0] + ' from homepage')
