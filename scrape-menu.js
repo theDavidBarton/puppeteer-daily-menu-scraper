@@ -53,6 +53,57 @@ async function scrapeMenu() {
 
   /*
 
+  @ SUPPÉ bistro
+  ---------------------------------------
+  contact info:
+  * Address: Hajós u. 19 (19.45 mi), Budapest, Hungary 1065
+  * Phone: (70) 336 0822
+  ---------------------------------------
+  Description:
+  * scrape facebook posts based on xpath patterns
+  * todo: avoid xpath and use selectors
+  * replace redundant string patterns with regex
+
+  */
+
+  let suppeName = 'Suppé menu:'
+  let suppeLength = suppeName.length
+  console.log('*' + suppeName + '* \n' + '-'.repeat(suppeLength))
+  await page.goto('https://www.facebook.com/pg/bistrosuppe/posts/?ref=page_internal', {
+    waitUntil: 'networkidle2'
+  })
+  // @ SUPPÉ selector, source: https://stackoverflow.com/questions/48448586/how-to-use-xpath-in-chrome-headlesspuppeteer-evaluate
+  // daily
+  const dailySuppeIncludes = (await page.$x('//span[contains(text(), "Sziasztok")]'))[0]
+  let dailySuppe = await page.evaluate(el => {
+    return el.textContent
+  }, dailySuppeIncludes)
+  dailySuppe = dailySuppe.replace(/Sziasztok, |, kellemes hétvégét!|, szép napot!|, várunk Titeket!/gi, '')
+  // weekly (on Monday)
+  const weeklySuppeIncludes = (await page.$x('//p[contains(text(), "Sziasztok")]'))[0]
+  let weeklySuppe = await page.evaluate(el => {
+    return el.textContent
+  }, weeklySuppeIncludes)
+  weeklySuppe = weeklySuppe.replace(/(?=sziasztok)(.*)(?=levesek )|(?=mai)(.*)(?=\s*)/gi, '')
+  // Monday only (on Monday)
+  const mondaySuppeIncludes = (await page.$x('//p[contains(text(), "Sziasztok")]'))[0]
+  let mondaySuppe = await page.evaluate(el => {
+    return el.textContent
+  }, mondaySuppeIncludes)
+  mondaySuppe = mondaySuppe.replace(/(?=sziasztok)(.*)(?=levesek )|(, várunk Titeket!)/gi, '')
+
+  // @ SUPPÉ print menu
+  var nameOfDaySuppe = today
+  switch (nameOfDaySuppe) {
+    case 1:
+      console.log('• Monday: ' + mondaySuppe + '\n')
+      break
+    default:
+      console.log('• Daily menu: ' + dailySuppe + '\n' + weeklySuppe + '\n')
+  }
+
+  /*
+
   @ YAMATO
   ---------------------------------------
   contact info:
@@ -87,7 +138,6 @@ async function scrapeMenu() {
     waitUntil: 'networkidle2',
     timout: 0
   })
-
   // @ YAMATO Monday
   let mondayYamato
   if ((await page.$(mondayYamatoSelector)) !== null) {
@@ -96,7 +146,6 @@ async function scrapeMenu() {
   } else {
     mondayYamato = '♪"No Milk Today"♫'
   }
-
   // @ YAMATO Tuesday
   let tuesdayYamato
   if ((await page.$(tuesdayYamatoSelector)) !== null) {
@@ -105,7 +154,6 @@ async function scrapeMenu() {
   } else {
     tuesdayYamato = '♪"No Milk Today"♫'
   }
-
   // @ YAMATO Wednesday
   let wednesdayYamato
   if ((await page.$(wednesdayYamatoSelector)) !== null) {
@@ -114,7 +162,6 @@ async function scrapeMenu() {
   } else {
     wednesdayYamato = '♪"No Milk Today"♫'
   }
-
   // @ YAMATO Thursday
   let thursdayYamato
   if ((await page.$(thursdayYamatoSelector)) !== null) {
@@ -123,7 +170,6 @@ async function scrapeMenu() {
   } else {
     thursdayYamato = '♪"No Milk Today"♫'
   }
-
   // @ YAMATO Friday
   let fridayYamato
   if ((await page.$(fridayYamatoSelector)) !== null) {
@@ -221,7 +267,6 @@ async function scrapeMenu() {
   const linkVian = await page.evaluate(sel => {
     return document.querySelector(sel).getAttribute('src')
   }, linkSelectorVian)
-
   await page.goto(linkVian, { waitUntil: 'networkidle2', timeout: 0 })
 
   // @ VIAN Monday
@@ -234,7 +279,6 @@ async function scrapeMenu() {
     mondayVian1 = '♪"No Milk Today"♫'
     mondayVian2 = ''
   }
-
   // @ VIAN Tuesday
   let tuesdayVian1
   let tuesdayVian2
@@ -245,7 +289,6 @@ async function scrapeMenu() {
     tuesdayVian1 = '♪"No Milk Today"♫'
     tuesdayVian2 = ''
   }
-
   // @ VIAN Wednesday
   let wednesdayVian1
   let wednesdayVian2
@@ -256,7 +299,6 @@ async function scrapeMenu() {
     wednesdayVian1 = '♪"No Milk Today"♫'
     wednesdayVian1 = ''
   }
-
   // @ VIAN Thursday
   let thursdayVian1
   let thursdayVian2
@@ -267,7 +309,6 @@ async function scrapeMenu() {
     thursdayVian1 = '♪"No Milk Today"♫'
     thursdayVian2 = ''
   }
-
   // @ VIAN Friday
   let fridayVian1
   let fridayVian2
@@ -278,7 +319,6 @@ async function scrapeMenu() {
     fridayVian1 = '♪"No Milk Today"♫'
     fridayVian2 = ''
   }
-
   // @ VIAN print menu
   var nameOfDayVian = today
   switch (nameOfDayVian) {
@@ -463,7 +503,6 @@ async function scrapeMenu() {
     mondayKetszerecsen1 = '♪"No Milk Today"♫'
     mondayKetszerecsen2 = ''
   }
-
   // @ KETSZERECSEN Tuesday
   let tuesdayKetszerecsen1
   let tuesdayKetszerecsen2
@@ -474,7 +513,6 @@ async function scrapeMenu() {
     tuesdayKetszerecsen1 = '♪"No Milk Today"♫'
     tuesdayKetszerecsen2 = ''
   }
-
   // @ KETSZERECSEN Wednesday
   let wednesdayKetszerecsen1
   let wednesdayKetszerecsen2
@@ -485,7 +523,6 @@ async function scrapeMenu() {
     wednesdayKetszerecsen1 = '♪"No Milk Today"♫'
     wednesdayKetszerecsen2 = ''
   }
-
   // @ KETSZERECSEN Thursday
   let thursdayKetszerecsen1
   let thursdayKetszerecsen2
@@ -496,7 +533,6 @@ async function scrapeMenu() {
     thursdayKetszerecsen1 = '♪"No Milk Today"♫'
     thursdayKetszerecsen2 = ''
   }
-
   // @ KETSZERECSEN Friday
   let fridayKetszerecsen1
   let fridayKetszerecsen2
