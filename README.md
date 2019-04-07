@@ -1,6 +1,6 @@
 # Puppeteer examples
 
-A sandbox repository for the Node library **Puppeteer** (pptr) made by GoogleChromeLabs. See below the covered areas. The aim is to experiment with its possibilities for later projects.
+A sandbox repository for the Node library **Puppeteer** (pptr) made by GoogleChromeLabs. The aim is to experiment with its possibilities for later projects.
 
 The actual version of pptr is v1.14.0
 
@@ -14,23 +14,18 @@ The actual version of pptr is v1.14.0
 
 Node v7.6.0 or greater is needed to run the scripts in this repo. And v8.9.4 or greater to run puppeteer with Firefox.
 
-`yarn install` the project (everything is added as devDependencies in package.json)
+`yarn install` the project (everything is added as devDependencies in [package.json](/package.json))
 
-or add each packages each by each via Yarn:
-```shell_session
-yarn add expect puppeteer puppeteer-firefox prettier --dev
-```
-
-### Run script
+### Run scripts
 
 ```shell_session
-node test.js
+node scrapeDailyMenu.js
 ```
 
 If you'd want the scraper's console output to be saved for later usage then run:
 
 ```shell_session
-node scrape-menu.js > tmp/output.txt
+node scrapeDailyMenu.js > tmp/output.txt
 ```
 
 ### Links
