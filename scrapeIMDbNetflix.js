@@ -11,6 +11,7 @@ async function IMDbNetflixMovieRecommender() {
   await page.click('#navMenu1 > div:nth-child(2) > ul:nth-child(2) > li:nth-child(6) > a')
   await page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 0 })
 */
+  await page.setExtraHTTPHeaders({ 'Accept-Language': 'en-US' })
   await page.goto('https://www.imdb.com/chart/top', { waitUntil:'domcontentloaded', timeout:0 })
   var randomNumber1 = Math.floor(Math.random() * 250) + 1
   var randomNumber2 = Math.floor(Math.random() * 250) + 1
