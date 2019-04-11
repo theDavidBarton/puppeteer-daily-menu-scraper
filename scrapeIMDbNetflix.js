@@ -31,9 +31,8 @@ async function IMDbNetflixMovieRecommender() {
   await page.keyboard.type('"' + randomTop250_1ContentClean + '"' + ' site:netflix.com')
   await page.keyboard.press('Enter')
   await page.waitFor(4000)
-  var randomTop250_1UrlExists = await page.evaluate(el => el.length, await page.$$('cite'))
-  console.log(randomTop250_1UrlExists)
-  if (randomTop250_1UrlExists !== 0) {
+  var randomTop250_1UrlExists = await page.$('cite')
+  if (randomTop250_1UrlExists !== null) {
     let randomTop250_1UrlSelector = (await page.$$('cite'))[0]
     let randomTop250_1Url = await page.evaluate(el => el.textContent, randomTop250_1UrlSelector)
     randomTop250_1Url = randomTop250_1Url.replace(/(com)(.*)(?=title)/g, 'com\/')
@@ -56,21 +55,20 @@ async function IMDbNetflixMovieRecommender() {
   await page.keyboard.type('"' + randomTop250_2ContentClean + '"' + ' site:netflix.com')
   await page.keyboard.press('Enter')
   await page.waitFor(4000)
-  var randomTop250_2UrlExists = await page.evaluate(el => el.length, await page.$$('cite'))
-  console.log(randomTop250_2UrlExists)
-  if (randomTop250_2UrlExists !== 0) {
+  var randomTop250_2UrlExists = await page.$('cite')
+  if (randomTop250_2UrlExists !== null) {
     let randomTop250_2UrlSelector = (await page.$$('cite'))[0]
     let randomTop250_2Url = await page.evaluate(el => el.textContent, randomTop250_2UrlSelector)
     randomTop250_2Url = randomTop250_2Url.replace(/(com)(.*)(?=title)/g, 'com\/')
     if (randomTop250_2Url.includes('https://www.netflix.com/title/')) {
-      console.log('\n' + randomTop250_2ContentClean + ' on Netflix: ' + randomTop250_2Url)
+      console.log(randomTop250_2ContentClean + ' on Netflix: ' + randomTop250_2Url)
     } else if (randomTop250_2Url.includes('https://dvd.netflix.com/Movie/')) {
-      console.log('\n' + randomTop250_2ContentClean + ' on Netflix DVD: ' + randomTop250_2Url)
+      console.log(randomTop250_2ContentClean + ' on Netflix DVD: ' + randomTop250_2Url)
     } else {
-      console.log('\n' + randomTop250_2ContentClean + ' is NOT on Netflix!')
+      console.log(randomTop250_2ContentClean + ' is NOT on Netflix!')
     }
   } else {
-    console.log('\n' + randomTop250_2ContentClean + ' is NOT on Netflix!')
+    console.log(randomTop250_2ContentClean + ' is NOT on Netflix!')
   }
   await page.screenshot({ path: 'tmp/netflix02.png' })
   await page.click('.gsfi')
@@ -81,21 +79,20 @@ async function IMDbNetflixMovieRecommender() {
   await page.keyboard.type('"' + randomTop250_3ContentClean + '"' + ' site:netflix.com')
   await page.keyboard.press('Enter')
   await page.waitFor(4000)
-  var randomTop250_3UrlExists = await page.evaluate(el => el.length, await page.$$('cite'))
-  console.log(randomTop250_3UrlExists)
-  if (randomTop250_3UrlExists !== 0) {
+  var randomTop250_3UrlExists = await page.$('cite')
+  if (randomTop250_3UrlExists !== null) {
     let randomTop250_3UrlSelector = (await page.$$('cite'))[0]
     let randomTop250_3Url = await page.evaluate(el => el.textContent, randomTop250_3UrlSelector)
     randomTop250_3Url = randomTop250_3Url.replace(/(com)(.*)(?=title)/g, 'com\/')
     if (randomTop250_3Url.includes('https://www.netflix.com/title/')) {
-      console.log('\n' + randomTop250_3ContentClean + ' on Netflix: ' + randomTop250_3Url)
+      console.log(randomTop250_3ContentClean + ' on Netflix: ' + randomTop250_3Url)
     } else if (randomTop250_3Url.includes('https://dvd.netflix.com/Movie/')) {
-      console.log('\n' + randomTop250_3ContentClean + ' on Netflix DVD: ' + randomTop250_3Url)
+      console.log(randomTop250_3ContentClean + ' on Netflix DVD: ' + randomTop250_3Url)
     } else {
-      console.log('\n' + randomTop250_3ContentClean + ' is NOT on Netflix!')
+      console.log(randomTop250_3ContentClean + ' is NOT on Netflix!')
     }
   } else {
-    console.log('\n' + randomTop250_3ContentClean + ' is NOT on Netflix!')
+    console.log(randomTop250_3ContentClean + ' is NOT on Netflix!')
   }
   await page.screenshot({ path: 'tmp/netflix03.png' })
 
