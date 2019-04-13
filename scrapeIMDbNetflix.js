@@ -4,15 +4,28 @@ async function IMDbNetflixMovieRecommender() {
   const page = await browser.newPage()
   await page.setExtraHTTPHeaders({ 'Accept-Language': 'en-US' })
   await page.goto('https://www.imdb.com/chart/top', { waitUntil: 'domcontentloaded', timeout: 0 })
-  let randomNumber1 = Math.floor(Math.random() * 250) + 1
-  let randomNumber2 = Math.floor(Math.random() * 250) + 1
-  if (randomNumber2 === randomNumber1) {
-    let randomNumber2 = Math.floor(Math.random() * 250) + 1
+
+  // customized Fisher-Yates shuffle, source of original: http://sedition.com/perl/javascript-fy.html
+  function fisherYatesShuffle(array) {
+    let currentIndexTop250 = 250,
+      temporaryValue,
+      randomIndexTop250
+    while (0 !== currentIndexTop250) {
+      randomIndexTop250 = Math.floor(Math.random() * currentIndexTop250)
+      currentIndexTop250 -= 1
+      temporaryValue = array[currentIndexTop250]
+      array[currentIndexTop250] = array[randomIndexTop250]
+      array[randomIndexTop250] = temporaryValue
+    }
+    return array
   }
-  let randomNumber3 = Math.floor(Math.random() * 250) + 1
-  if (randomNumber3 === randomNumber1 || randomNumber3 === randomNumber2) {
-    let randomNumber3 = Math.floor(Math.random() * 250) + 1
-  }
+
+  let array250 = Array.from({ length: 250 }, (_, x) => x + 1)
+  array250 = fisherYatesShuffle(array250)
+  let randomNumber1 = array250[0]
+  let randomNumber2 = array250[1]
+  let randomNumber3 = array250[2]
+
   const randomTop250_1 = (await page.$$('.titleColumn'))[randomNumber1 - 1]
   const randomTop250_1Content = await page.evaluate(el => el.innerText, randomTop250_1)
   const randomTop250_1ContentClean = randomTop250_1Content.replace(/(\d)(.*)(\. )| \((.*)\)/g, '')
