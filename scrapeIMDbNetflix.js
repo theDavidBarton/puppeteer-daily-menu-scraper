@@ -39,7 +39,7 @@ async function IMDbNetflixMovieRecommender() {
   const randomTop250_3ContentClean = randomTop250_3Content.replace(/(\d)(.*)(\. )| \((.*)\)/g, '')
   console.log('#' + randomTop250_3Content)
 
-  await page.goto('https://google.com', { waitUntil: 'networkidle0', timeout: 0 })
+  await page.goto('https://google.com/?hl=en', { waitUntil: 'networkidle0', timeout: 0 })
   await page.waitForSelector('.gsfi')
   await page.keyboard.type('"' + randomTop250_1ContentClean + '"' + ' site:netflix.com')
   await page.keyboard.press('Enter')
