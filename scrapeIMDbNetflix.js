@@ -4,14 +4,14 @@ async function IMDbNetflixMovieRecommender() {
   const page = await browser.newPage()
   await page.setExtraHTTPHeaders({ 'Accept-Language': 'en-US' })
   await page.goto('https://www.imdb.com/chart/top', { waitUntil: 'domcontentloaded', timeout: 0 })
-  var randomNumber1 = Math.floor(Math.random() * 250) + 1
-  var randomNumber2 = Math.floor(Math.random() * 250) + 1
+  let randomNumber1 = Math.floor(Math.random() * 250) + 1
+  let randomNumber2 = Math.floor(Math.random() * 250) + 1
   if (randomNumber2 === randomNumber1) {
-    var randomNumber2 = Math.floor(Math.random() * 250) + 1
+    let randomNumber2 = Math.floor(Math.random() * 250) + 1
   }
-  var randomNumber3 = Math.floor(Math.random() * 250) + 1
+  let randomNumber3 = Math.floor(Math.random() * 250) + 1
   if (randomNumber3 === randomNumber1 || randomNumber3 === randomNumber2) {
-    var randomNumber3 = Math.floor(Math.random() * 250) + 1
+    let randomNumber3 = Math.floor(Math.random() * 250) + 1
   }
   const randomTop250_1 = (await page.$$('.titleColumn'))[randomNumber1 - 1]
   const randomTop250_1Content = await page.evaluate(el => el.innerText, randomTop250_1)
@@ -31,7 +31,7 @@ async function IMDbNetflixMovieRecommender() {
   await page.keyboard.type('"' + randomTop250_1ContentClean + '"' + ' site:netflix.com')
   await page.keyboard.press('Enter')
   await page.waitFor(4000)
-  var randomTop250_1UrlExists = await page.$('cite')
+  let randomTop250_1UrlExists = await page.$('cite')
   if (randomTop250_1UrlExists !== null) {
     let randomTop250_1UrlSelector = (await page.$$('cite'))[0]
     let randomTop250_1Url = await page.evaluate(el => el.textContent, randomTop250_1UrlSelector)
@@ -55,7 +55,7 @@ async function IMDbNetflixMovieRecommender() {
   await page.keyboard.type('"' + randomTop250_2ContentClean + '"' + ' site:netflix.com')
   await page.keyboard.press('Enter')
   await page.waitFor(4000)
-  var randomTop250_2UrlExists = await page.$('cite')
+  let randomTop250_2UrlExists = await page.$('cite')
   if (randomTop250_2UrlExists !== null) {
     let randomTop250_2UrlSelector = (await page.$$('cite'))[0]
     let randomTop250_2Url = await page.evaluate(el => el.textContent, randomTop250_2UrlSelector)
@@ -79,7 +79,7 @@ async function IMDbNetflixMovieRecommender() {
   await page.keyboard.type('"' + randomTop250_3ContentClean + '"' + ' site:netflix.com')
   await page.keyboard.press('Enter')
   await page.waitFor(4000)
-  var randomTop250_3UrlExists = await page.$('cite')
+  let randomTop250_3UrlExists = await page.$('cite')
   if (randomTop250_3UrlExists !== null) {
     let randomTop250_3UrlSelector = (await page.$$('cite'))[0]
     let randomTop250_3Url = await page.evaluate(el => el.textContent, randomTop250_3UrlSelector)
