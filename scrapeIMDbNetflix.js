@@ -51,22 +51,32 @@ async function IMDbNetflixMovieRecommender() {
     await page.keyboard.press('Enter')
     await page.waitFor(4000)
     let randomTop250UrlExists = await page.$('cite')
+    let randomTop250UrlCount = (await page.$$('cite')).length
     if (randomTop250UrlExists !== null) {
-      let randomTop250UrlSelector = (await page.$$('cite'))[0]
-      let randomTop250Url = await page.evaluate(el => el.textContent, randomTop250UrlSelector)
-      randomTop250Url = randomTop250Url.replace(/(com)(.*)(?=\/title)/g, 'com')
-      // expected Netflix url patterns:
-      // https://www.netflix.com/hu/title/959008 <= standard
-      if (randomTop250Url.includes('https://www.netflix.com/title/')) {
-        console.log('• ' + movieNames[i] + ' on Netflix: ' + randomTop250Url)
-        // https://www.netflix.com/Movie/The_Truman_Show/11819086 <= custom
-      } else if (randomTop250Url.includes('https://www.netflix.com/Movie/')) {
-        console.log('• ' + movieNames[i] + ' on Netflix: ' + randomTop250Url)
-        // https://dvd.netflix.com/Movie/It-s-a-Wonderful-Life/644637 <= DVD
-      } else if (randomTop250Url.includes('https://dvd.netflix.com/Movie/')) {
-        console.log('• ' + movieNames[i] + ' on Netflix DVD: ' + randomTop250Url)
-      } else {
-        console.log('• ' + movieNames[i] + ' is NOT on Netflix!')
+      for (let j = 0; j < randomTop250UrlCount; j++) {
+        let randomTop250UrlSelector = (await page.$$('cite'))[j]
+        let randomTop250Url = await page.evaluate(el => el.textContent, randomTop250UrlSelector)
+        randomTop250Url = randomTop250Url.replace(/(com)(.*)(?=\/title)/g, 'com')
+        // expected Netflix url patterns:
+        // https://www.netflix.com/hu/title/959008 <= standard
+        if (randomTop250Url.includes('https://www.netflix.com/title/')) {
+          console.log('• ' + movieNames[i] + ' on Netflix: ' + randomTop250Url)
+          console.log(j)
+          break
+          // https://www.netflix.com/Movie/The_Truman_Show/11819086 <= custom
+        } else if (randomTop250Url.includes('https://www.netflix.com/Movie/')) {
+          console.log('• ' + movieNames[i] + ' on Netflix: ' + randomTop250Url)
+          console.log(j)
+          break
+          // https://dvd.netflix.com/Movie/It-s-a-Wonderful-Life/644637 <= DVD
+        } else if (randomTop250Url.includes('https://dvd.netflix.com/Movie/')) {
+          console.log('• ' + movieNames[i] + ' on Netflix DVD: ' + randomTop250Url)
+          console.log(j)
+          break
+        } else {
+          console.log('• ' + movieNames[i] + ' is NOT on Netflix!')
+          console.log(j)
+        }
       }
     } else {
       console.log('• ' + movieNames[i] + ' is NOT on Netflix!')
