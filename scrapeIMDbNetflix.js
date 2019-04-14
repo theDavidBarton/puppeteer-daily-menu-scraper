@@ -4,15 +4,15 @@ async function IMDbNetflixMovieRecommender() {
   const page = await browser.newPage()
   // customized Fisher-Yates shuffle, source of original: http://sedition.com/perl/javascript-fy.html
   function fisherYatesShuffle(array) {
-    let currentIndexTop250 = 250,
+    let currentIndex = array.length, // 250
       temporaryValue,
-      randomIndexTop250
-    while (0 !== currentIndexTop250) {
-      randomIndexTop250 = Math.floor(Math.random() * currentIndexTop250)
-      currentIndexTop250 -= 1
-      temporaryValue = array[currentIndexTop250]
-      array[currentIndexTop250] = array[randomIndexTop250]
-      array[randomIndexTop250] = temporaryValue
+      randomIndex
+    while (0 !== currentIndex) {
+      randomIndex = Math.floor(Math.random() * currentIndex)
+      currentIndex -= 1
+      temporaryValue = array[currentIndex]
+      array[currentIndex] = array[randomIndex]
+      array[randomIndex] = temporaryValue
     }
     return array
   }
@@ -20,6 +20,7 @@ async function IMDbNetflixMovieRecommender() {
   let array250 = Array.from({ length: 250 }, (_, x) => x + 1)
   array250 = fisherYatesShuffle(array250)
   let movieNames = []
+  let movieYears = []
   let numberOfRecommendations = 3
   // scrape a given number of movie titles (numberOfRecommendations) from IMDb Top 250
   await page.setExtraHTTPHeaders({ 'Accept-Language': 'en-US' })
@@ -27,14 +28,16 @@ async function IMDbNetflixMovieRecommender() {
   let recommendText = 'I recommend you the following ' + numberOfRecommendations + ' movies from IMDB Top 250: '
   console.log(recommendText + '\n' + '-'.repeat(recommendText.length))
   for (let i = 0; i < numberOfRecommendations; i++) {
-    const randomTop250Selector = (await page.$$('.titleColumn'))[array250[i] - 1]
-    const randomTop250Content = await page.evaluate(el => el.innerText, randomTop250Selector)
-    const randomTop250ContentClean = randomTop250Content.replace(
+    const iMDbTitleSelector = (await page.$$('.titleColumn'))[array250[i] - 1]
+    const iMDbTitleContent = await page.evaluate(el => el.innerText, iMDbTitleSelector)
+    const iMDbTitleContentClean = iMDbTitleContent.replace(
       /(\d)(\d)(\d)(\. )|(\d)(\d)(\. )|(\d)(\. )| \((\d...)\)/g,
       ''
     )
-    movieNames.push(randomTop250ContentClean)
-    console.log('#' + randomTop250Content)
+    const iMDbTitleContentYear = iMDbTitleContent.match(/\((\d...)\)/g).toString().replace(/\(|\)/g, '')
+    movieNames.push(iMDbTitleContentClean)
+    movieYears.push(iMDbTitleContentYear)
+    console.log('#' + iMDbTitleContent)
   }
   let netflixText = '\nWatch them on Netflix: '
   console.log(netflixText + '\n' + '-'.repeat(netflixText.length))
@@ -47,35 +50,34 @@ async function IMDbNetflixMovieRecommender() {
     await page.keyboard.down('A')
     await page.keyboard.up('ControlLeft')
     await page.keyboard.up('A')
-    await page.keyboard.type('"' + movieNames[i] + '"' + ' site:netflix.com')
+    await page.keyboard.type('"' + movieNames[i] + '" + ' + movieYears[i] + ' site:netflix.com')
     await page.keyboard.press('Enter')
     await page.waitFor(4000)
-    let randomTop250UrlExists = await page.$('cite')
-    let randomTop250UrlCount = (await page.$$('cite')).length
-    if (randomTop250UrlExists !== null) {
-      for (let j = 0; j < randomTop250UrlCount; j++) {
-        let randomTop250UrlSelector = (await page.$$('cite'))[j]
-        let randomTop250Url = await page.evaluate(el => el.textContent, randomTop250UrlSelector)
-        randomTop250Url = randomTop250Url.replace(/(com)(.*)(?=\/title)/g, 'com')
+    let urlExistsOnGoogle = await page.$('cite')
+    let urlCountOnGoogle = (await page.$$('cite')).length
+    if (urlExistsOnGoogle !== null) {
+      for (let j = 0; j < urlCountOnGoogle; j++) {
+        let urlOnGoogleSelector = (await page.$$('cite'))[j]
+        let urlOnGoogle = await page.evaluate(el => el.textContent, urlOnGoogleSelector)
+        urlOnGoogle = urlOnGoogle.replace(/(com)(.*)(?=\/title)/g, 'com')
         // expected Netflix url patterns:
-        // https://www.netflix.com/hu/title/959008 <= standard
-        if (randomTop250Url.includes('https://www.netflix.com/title/')) {
-          console.log('• ' + movieNames[i] + ' on Netflix: ' + randomTop250Url)
-          console.log(j)
+        if (urlOnGoogle.includes('https://www.netflix.com/title/')) {
+          // https://www.netflix.com/hu/title/959008 <= standard
+          console.log('• ' + movieNames[i] + ' on Netflix: ' + urlOnGoogle)
           break
+        } else if (urlOnGoogle.includes('https://www.netflix.com/Movie/')) {
           // https://www.netflix.com/Movie/The_Truman_Show/11819086 <= custom
-        } else if (randomTop250Url.includes('https://www.netflix.com/Movie/')) {
-          console.log('• ' + movieNames[i] + ' on Netflix: ' + randomTop250Url)
-          console.log(j)
+          console.log('• ' + movieNames[i] + ' on Netflix: ' + urlOnGoogle)
           break
+        } else if (urlOnGoogle.includes('https://dvd.netflix.com/Movie/')) {
           // https://dvd.netflix.com/Movie/It-s-a-Wonderful-Life/644637 <= DVD
-        } else if (randomTop250Url.includes('https://dvd.netflix.com/Movie/')) {
-          console.log('• ' + movieNames[i] + ' on Netflix DVD: ' + randomTop250Url)
-          console.log(j)
+          console.log('• ' + movieNames[i] + ' on Netflix DVD: ' + urlOnGoogle)
           break
         } else {
-          console.log('• ' + movieNames[i] + ' is NOT on Netflix!')
-          console.log(j)
+          // only prints in case of last url
+          if ((j + 1) === urlCountOnGoogle) {
+            console.log('• ' + movieNames[i] + ' is NOT on Netflix!')
+          }
         }
       }
     } else {
