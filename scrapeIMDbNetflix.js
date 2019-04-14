@@ -34,7 +34,10 @@ async function IMDbNetflixMovieRecommender() {
       /(\d)(\d)(\d)(\. )|(\d)(\d)(\. )|(\d)(\. )| \((\d...)\)/g,
       ''
     )
-    const iMDbTitleContentYear = iMDbTitleContent.match(/\((\d...)\)/g).toString().replace(/\(|\)/g, '')
+    const iMDbTitleContentYear = iMDbTitleContent
+      .match(/\((\d...)\)/g)
+      .toString()
+      .replace(/\(|\)/g, '')
     movieNames.push(iMDbTitleContentClean)
     movieYears.push(iMDbTitleContentYear)
     console.log('#' + iMDbTitleContent)
@@ -75,7 +78,7 @@ async function IMDbNetflixMovieRecommender() {
           break
         } else {
           // only prints in case of last url
-          if ((j + 1) === urlCountOnGoogle) {
+          if (j + 1 === urlCountOnGoogle) {
             console.log('• ' + movieNames[i] + ' is NOT on Netflix!')
           }
         }
