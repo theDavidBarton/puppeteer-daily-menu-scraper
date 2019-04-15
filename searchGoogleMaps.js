@@ -11,7 +11,6 @@ async function testGoogleMaps() {
   await page.waitForSelector('#searchboxinput')
   await page.keyboard.type('Eifell Tower Paris')
   await page.keyboard.press('Enter')
-  await page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 0 })
   await page.waitFor(8000) // this part requires better promise handling
   await page.waitForSelector('.widget-pane-toggle-button')
   await page.click('.widget-pane-toggle-button')
@@ -27,7 +26,7 @@ async function testGoogleMaps() {
   }
   await page.waitFor(4000)
   await page.screenshot({ path: 'tmp/maps-in.png' })
-  console.log('welcome to Paris!')
+  console.log('Welcome to Paris!')
   await browser.close()
 }
 testGoogleMaps()
