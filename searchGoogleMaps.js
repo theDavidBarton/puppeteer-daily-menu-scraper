@@ -11,8 +11,9 @@ async function testGoogleMaps() {
   await page.waitForSelector('#searchboxinput')
   await page.keyboard.type('Eifell Tower Paris')
   await page.keyboard.press('Enter')
-  await page.waitFor(8000) // this part requires better promise handling
-  await page.waitForSelector('.widget-pane-toggle-button')
+  //await page.waitFor(8000) // this part requires better promise handling
+  await page.waitForSelector('.widget-pane-toggle-button', { visible: true })
+  await page.waitFor(4000)
   await page.click('.widget-pane-toggle-button')
   console.log('pane appeared and closed')
   for (let i = 0; i < 15; i++) {
