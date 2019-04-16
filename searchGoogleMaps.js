@@ -21,7 +21,7 @@ async function testGoogleMaps() {
   await page.waitFor(4000)
   await page.screenshot({ path: 'tmp/maps-out.png' })
   console.log('We are outer space!')
-  for (let i = 0; i < 30; i++) {
+  for (let i = 0; i < 20; i++) {
     await page.click('#widget-zoom-in')
   }
   await page.waitFor(4000)
