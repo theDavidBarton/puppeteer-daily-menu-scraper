@@ -1,5 +1,6 @@
 // scraping daily menus with Puppeteer
 const puppeteer = require('puppeteer')
+const moment = require('moment')
 
 async function scrapeMenu() {
   const browser = await puppeteer.launch({ headless: true })
@@ -17,39 +18,10 @@ async function scrapeMenu() {
   })
 
   // get Day of Week
-  const today = new Date().getDay()
-  var nameOfDay = today
-  switch (nameOfDay) {
-    case 1:
-      let monday = 'MONDAY'
-      let mLength = monday.length
-      console.log('*' + monday + '* \n' + '='.repeat(mLength))
-      break
-    case 2:
-      let tuesday = 'TUESDAY'
-      let tuLength = tuesday.length
-      console.log('*' + tuesday + '* \n' + '='.repeat(tuLength))
-      break
-    case 3:
-      let wednesday = 'WEDNESDAY'
-      let wLength = wednesday.length
-      console.log('*' + wednesday + '* \n' + '='.repeat(wLength))
-      break
-    case 4:
-      let thursday = 'THURSDAY'
-      let thLength = thursday.length
-      console.log('*' + thursday + '* \n' + '='.repeat(thLength))
-      break
-    case 5:
-      let friday = 'FRIDAY'
-      let fLength = friday.length
-      console.log('*' + friday + '* \n' + '='.repeat(fLength))
-      break
-    default:
-      let dflt = 'WHY ARE YOU WORKING TODAY?'
-      let dfltLength = dflt.length
-      console.log('*' + dflt + '* \n' + '='.repeat(dfltLength))
-  }
+  const todayMomentLower = moment().format('dddd')
+  const todayMomentUpper = todayMomentLower.toUpperCase()
+  console.log('*' + todayMomentUpper + '*\n' + '='.repeat(todayMomentUpper.length))
+  const today = Number(moment().format('d'))
 
   /*
 
@@ -93,7 +65,7 @@ async function scrapeMenu() {
   mondaySuppe = mondaySuppe.replace(/(?=sziasztok)(.*)(?=levesek )|(, várunk Titeket!)/gi, '')
 
   // @ SUPPÉ print menu
-  var nameOfDaySuppe = today
+  let nameOfDaySuppe = today
   switch (nameOfDaySuppe) {
     case 1:
       console.log('• Monday: ' + mondaySuppe + '\n')
@@ -180,7 +152,7 @@ async function scrapeMenu() {
   }
 
   // @ YAMATO print menu
-  var nameOfDayYamato = today
+  let nameOfDayYamato = today
   switch (nameOfDayYamato) {
     case 1:
       console.log('• Monday: ' + mondayYamato + '\n')
@@ -320,7 +292,7 @@ async function scrapeMenu() {
     fridayVian2 = ''
   }
   // @ VIAN print menu
-  var nameOfDayVian = today
+  let nameOfDayVian = today
   switch (nameOfDayVian) {
     case 1:
       console.log('• Monday: ' + mondayVian1 + ', ' + mondayVian2 + '\n')
@@ -545,7 +517,7 @@ async function scrapeMenu() {
   }
 
   // @ KETSZERECSEN print menu
-  var nameOfDayKetszerecsen = today
+  let nameOfDayKetszerecsen = today
   switch (nameOfDayKetszerecsen) {
     case 1:
       console.log('• Monday: ' + mondayKetszerecsen1 + ', ' + mondayKetszerecsen2 + '\n')
