@@ -19,11 +19,9 @@ async function scrapeMenu() {
 
   // get Day of Week
   const todayMomentLower = moment().format('dddd')
-  const todayMomentUpper = todayMoment.toUpperCase()
+  const todayMomentUpper = todayMomentLower.toUpperCase()
   console.log('*' + todayMomentUpper + '*\n' + '='.repeat(todayMomentUpper.length))
-
   const today = Number(moment().format('d'))
-  const nameOfDay = today
 
   /*
 
@@ -67,7 +65,7 @@ async function scrapeMenu() {
   mondaySuppe = mondaySuppe.replace(/(?=sziasztok)(.*)(?=levesek )|(, várunk Titeket!)/gi, '')
 
   // @ SUPPÉ print menu
-  var nameOfDaySuppe = today
+  let nameOfDaySuppe = today
   switch (nameOfDaySuppe) {
     case 1:
       console.log('• Monday: ' + mondaySuppe + '\n')
@@ -154,7 +152,7 @@ async function scrapeMenu() {
   }
 
   // @ YAMATO print menu
-  var nameOfDayYamato = today
+  let nameOfDayYamato = today
   switch (nameOfDayYamato) {
     case 1:
       console.log('• Monday: ' + mondayYamato + '\n')
@@ -294,7 +292,7 @@ async function scrapeMenu() {
     fridayVian2 = ''
   }
   // @ VIAN print menu
-  var nameOfDayVian = today
+  let nameOfDayVian = today
   switch (nameOfDayVian) {
     case 1:
       console.log('• Monday: ' + mondayVian1 + ', ' + mondayVian2 + '\n')
@@ -519,7 +517,7 @@ async function scrapeMenu() {
   }
 
   // @ KETSZERECSEN print menu
-  var nameOfDayKetszerecsen = today
+  let nameOfDayKetszerecsen = today
   switch (nameOfDayKetszerecsen) {
     case 1:
       console.log('• Monday: ' + mondayKetszerecsen1 + ', ' + mondayKetszerecsen2 + '\n')
