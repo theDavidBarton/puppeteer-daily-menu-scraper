@@ -5,7 +5,6 @@ const moment = require('moment')
 async function scrapeMenu() {
   const browser = await puppeteer.launch({ headless: true })
   const page = await browser.newPage()
-  await page.setViewport({ width: 1024, height: 768 })
 
   // abort all images, source: https://github.com/GoogleChrome/puppeteer/blob/master/examples/block-images.js
   await page.setRequestInterception(true)
@@ -39,8 +38,7 @@ async function scrapeMenu() {
   */
 
   let suppeName = 'Suppé menu:'
-  let suppeLength = suppeName.length
-  console.log('*' + suppeName + '* \n' + '-'.repeat(suppeLength))
+  console.log('*' + suppeName + '* \n' + '-'.repeat(suppeName.length))
   await page.goto('https://www.facebook.com/pg/bistrosuppe/posts/?ref=page_internal', {
     waitUntil: 'networkidle2'
   })
@@ -104,8 +102,7 @@ async function scrapeMenu() {
   const fridayYamatoSelector = 'body > div:nth-child(1) > p:nth-child(10)'
 
   let yamatoName = 'Yamato menu:'
-  let yamatoLength = yamatoName.length
-  console.log('*' + yamatoName + '* \n' + '-'.repeat(yamatoLength))
+  console.log('*' + yamatoName + '* \n' + '-'.repeat(yamatoName.length))
   await page.goto('https://www.wasabi.hu/napimenu.php?source=yamato&lang=hu', {
     waitUntil: 'networkidle2',
     timout: 0
@@ -228,8 +225,7 @@ async function scrapeMenu() {
   const fridayVianSelector2 = '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(5) > div.hearty2QDOd > div > div > div.heartyQogjj > span'
 
   let vianName = 'Cafe vian menu:'
-  let vianLength = vianName.length
-  console.log('*' + vianName + '* \n' + '-'.repeat(vianLength))
+  console.log('*' + vianName + '* \n' + '-'.repeat(vianName.length))
   await page.goto('http://www.cafevian.com/ebedmenue', {
     waitUntil: 'networkidle2',
     timeout: 0
@@ -362,8 +358,7 @@ async function scrapeMenu() {
   const dailyPecsenyesSelector = '#tabsContent1 > div'
 
   let pecsenyesName = 'A-Pecsenyés menu:'
-  let pecsenyesLength = pecsenyesName.length
-  console.log('*' + pecsenyesName + '* \n' + '-'.repeat(pecsenyesLength))
+  console.log('*' + pecsenyesName + '* \n' + '-'.repeat(pecsenyesName.length))
   await page.goto('http://www.napimenu.hu/budapest/adatlap/a-pecsenyes', {
     waitUntil: 'networkidle2'
   })
@@ -396,8 +391,7 @@ async function scrapeMenu() {
   const weeklyDessertKorhelySelector = '#mainDiv > div > div:nth-child(2) > section > ul > li:nth-child(3)'
 
   let korhelyName = 'Korhely menu:'
-  let korhelyLength = korhelyName.length
-  console.log('*' + korhelyName + '* \n' + '-'.repeat(korhelyLength))
+  console.log('*' + korhelyName + '* \n' + '-'.repeat(korhelyName.length))
   await page.goto('http://www.korhelyfaloda.hu/menu', {
     waitUntil: 'networkidle2',
     timeout: 0
@@ -459,8 +453,7 @@ async function scrapeMenu() {
   const fridayKetszerecsenSelector2 = 'p:nth-child(18)'
 
   let ketszerecsenName = 'Ketszerecsen Bisztro menu:'
-  let ketszerecsenLength = ketszerecsenName.length
-  console.log('*' + ketszerecsenName + '* \n' + '-'.repeat(ketszerecsenLength))
+  console.log('*' + ketszerecsenName + '* \n' + '-'.repeat(ketszerecsenName.length))
   await page.goto('https://ketszerecsen.hu/#daily', {
     waitUntil: 'networkidle2'
   })
@@ -585,8 +578,7 @@ async function scrapeMenu() {
   const dailyFruccolaSelector2 = '#dailymenu-holder > li.arany.today > div.main-dish > p.description'
 
   let fruccolaName = 'Fruccola (Arany Janos utca) menu:'
-  let fruccolaLength = fruccolaName.length
-  console.log('*' + fruccolaName + '* \n' + '-'.repeat(fruccolaLength))
+  console.log('*' + fruccolaName + '* \n' + '-'.repeat(fruccolaName.length))
   await page.goto('http://fruccola.hu/hu', { waitUntil: 'networkidle2' })
   const dailyFruccola1 = await page.evaluate(el => el.innerText, await page.$(dailyFruccolaSelector1))
   const dailyFruccola2 = await page.evaluate(el => el.innerText, await page.$(dailyFruccolaSelector2))
@@ -625,8 +617,7 @@ async function scrapeMenu() {
   const dailyKamraSelector = '.shop_today_title'
 
   let kamraName = 'Kamra menu:'
-  let kamraLength = kamraName.length
-  console.log('*' + kamraName + '* \n' + '-'.repeat(kamraLength))
+  console.log('*' + kamraName + '* \n' + '-'.repeat(kamraName.length))
   await page.goto('http://www.kamraetelbar.hu/kamra_etelbar_mai_menu.html', {
     waitUntil: 'networkidle2'
   })
@@ -657,8 +648,7 @@ async function scrapeMenu() {
   const dailyRozaSelector = '.text_exposed_show'
 
   let rozaName = 'Roza menu:'
-  let rozaLength = rozaName.length
-  console.log('*' + rozaName + '* \n' + '-'.repeat(rozaLength))
+  console.log('*' + rozaName + '* \n' + '-'.repeat(rozaName.length))
   await page.goto('https://www.facebook.com/pg/rozafinomitt/posts/?ref=page_internal', {
     waitUntil: 'networkidle2'
   })
@@ -685,8 +675,7 @@ async function scrapeMenu() {
   */
 
   let karcsiName = 'Karcsi menu:'
-  let karcsiLength = karcsiName.length
-  console.log('*' + karcsiName + '* \n' + '-'.repeat(karcsiLength))
+  console.log('*' + karcsiName + '* \n' + '-'.repeat(karcsiName.length))
   const weeklyKarcsi = 'http://karcsibacsivendeglo.com/letoltes/napi_menu.pdf'
 
   // @ KARCSI print menu
@@ -715,8 +704,7 @@ async function scrapeMenu() {
   const imageNokedliSelector = '.aligncenter'
 
   let nokedliName = 'Nokedli menu:'
-  let nokedliLength = nokedliName.length
-  console.log('*' + nokedliName + '* \n' + '-'.repeat(nokedliLength))
+  console.log('*' + nokedliName + '* \n' + '-'.repeat(nokedliName.length))
   await page.goto('http://nokedlikifozde.hu/', { waitUntil: 'networkidle2' })
   // stores src of given selector, source: https://stackoverflow.com/questions/52542149/how-can-i-download-images-on-a-page-using-puppeteer
   let imageSelector = imageNokedliSelector
