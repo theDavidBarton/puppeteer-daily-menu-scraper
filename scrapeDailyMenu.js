@@ -24,8 +24,8 @@ async function scrapeMenu() {
     dayNames.push(day)
   }
   console.log('*' + dayNames[today].toUpperCase() + '*\n' + '='.repeat(dayNames[today].length))
-  /*
 
+  /*
   @ SUPPÉ bistro
   ---------------------------------------
   contact info:
@@ -36,7 +36,6 @@ async function scrapeMenu() {
   * scrape facebook posts based on xpath patterns
   * todo: avoid xpath and use selectors
   * replace redundant string patterns with regex
-
   */
 
   let suppeName = 'Suppé menu:'
@@ -75,7 +74,6 @@ async function scrapeMenu() {
   }
 
   /*
-
   @ YAMATO
   ---------------------------------------
   contact info:
@@ -111,53 +109,28 @@ async function scrapeMenu() {
   }
 
   /*
-
   @ VIAN
   ------------------------------------------
   contact info:
   * Address: Budapest, Liszt Ferenc tér 9, 1061
   * Phone: (1) 268 1154
   -----------------------------------------
-
-  <dayname>VianSelector1-2(const)
-  * exact selector for <dayname> menu
-  * main courses and desserts are scraped
-    from different selectors [1-2]
-
-  <dayname>Vian1-2(let)
-  * content of <dayname>VianSelector
-  * main courses and desserts are scraped
-    from different selectors [1-2]
-
-  VianName, VianLength
-  * the restaurant title
-  * the calculated length of title string
-  * underlined in length of title
-
   */
 
-  // @ VIAN selectors
-  const mondayVianSelector1 =
-    '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(1) > div:nth-child(1) > div.heartyQ2riU'
-  const mondayVianSelector2 =
-    '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(1) > div.hearty2QDOd > div > div > div.heartyQogjj > span'
-  const tuesdayVianSelector1 =
-    '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(2) > div:nth-child(1) > div.heartyQ2riU'
-  const tuesdayVianSelector2 =
-    '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(2) > div.hearty2QDOd > div > div > div.heartyQogjj > span'
-  const wednesdayVianSelector1 =
-    '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(3) > div:nth-child(1) > div.heartyQ2riU'
-  const wednesdayVianSelector2 =
-    '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(3) > div.hearty2QDOd > div > div > div.heartyQogjj > span'
-  const thursdayVianSelector1 =
-    '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(4) > div:nth-child(1) > div.heartyQ2riU'
-  const thursdayVianSelector2 =
-    '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(4) > div.hearty2QDOd > div > div > div.heartyQogjj > span'
-  const fridayVianSelector1 =
+  let vianArray1 = [
+    '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(1) > div:nth-child(1) > div.heartyQ2riU',
+    '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(2) > div:nth-child(1) > div.heartyQ2riU',
+    '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(3) > div:nth-child(1) > div.heartyQ2riU',
+    '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(4) > div:nth-child(1) > div.heartyQ2riU',
     '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(5) > div:nth-child(1) > div.heartyQ2riU'
-  const fridayVianSelector2 =
+  ]
+  let vianArray2 = [
+    '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(1) > div.hearty2QDOd > div > div > div.heartyQogjj > span',
+    '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(2) > div.hearty2QDOd > div > div > div.heartyQogjj > span',
+    '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(3) > div.hearty2QDOd > div > div > div.heartyQogjj > span',
+    '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(4) > div.hearty2QDOd > div > div > div.heartyQogjj > span',
     '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(5) > div.hearty2QDOd > div > div > div.heartyQogjj > span'
-
+  ]
   let vianName = 'Cafe vian menu:'
   console.log('*' + vianName + '* \n' + '-'.repeat(vianName.length))
   await page.goto('http://www.cafevian.com/ebedmenue', {
@@ -171,124 +144,29 @@ async function scrapeMenu() {
   }, linkSelectorVian)
   await page.goto(linkVian, { waitUntil: 'networkidle2', timeout: 0 })
 
-  // @ VIAN Monday
-  let mondayVian1
-  let mondayVian2
-  if ((await page.$(mondayVianSelector1)) !== null) {
-    mondayVian1 = await page.evaluate(el => el.innerText, await page.$(mondayVianSelector1))
-    mondayVian2 = await page.evaluate(el => el.innerText, await page.$(mondayVianSelector2))
-  } else {
-    mondayVian1 = '♪"No Milk Today"♫'
-    mondayVian2 = ''
-  }
-  // @ VIAN Tuesday
-  let tuesdayVian1
-  let tuesdayVian2
-  if ((await page.$(tuesdayVianSelector1)) !== null) {
-    tuesdayVian1 = await page.evaluate(el => el.innerText, await page.$(tuesdayVianSelector1))
-    tuesdayVian2 = await page.evaluate(el => el.innerText, await page.$(tuesdayVianSelector2))
-  } else {
-    tuesdayVian1 = '♪"No Milk Today"♫'
-    tuesdayVian2 = ''
-  }
-  // @ VIAN Wednesday
-  let wednesdayVian1
-  let wednesdayVian2
-  if ((await page.$(wednesdayVianSelector1)) !== null) {
-    wednesdayVian1 = await page.evaluate(el => el.innerText, await page.$(wednesdayVianSelector1))
-    wednesdayVian2 = await page.evaluate(el => el.innerText, await page.$(wednesdayVianSelector2))
-  } else {
-    wednesdayVian1 = '♪"No Milk Today"♫'
-    wednesdayVian1 = ''
-  }
-  // @ VIAN Thursday
-  let thursdayVian1
-  let thursdayVian2
-  if ((await page.$(thursdayVianSelector1)) !== null) {
-    thursdayVian1 = await page.evaluate(el => el.innerText, await page.$(thursdayVianSelector1))
-    thursdayVian2 = await page.evaluate(el => el.innerText, await page.$(thursdayVianSelector2))
-  } else {
-    thursdayVian1 = '♪"No Milk Today"♫'
-    thursdayVian2 = ''
-  }
-  // @ VIAN Friday
-  let fridayVian1
-  let fridayVian2
-  if ((await page.$(fridayVianSelector1)) !== null) {
-    fridayVian1 = await page.evaluate(el => el.innerText, await page.$(fridayVianSelector1))
-    fridayVian2 = await page.evaluate(el => el.innerText, await page.$(fridayVianSelector2))
-  } else {
-    fridayVian1 = '♪"No Milk Today"♫'
-    fridayVian2 = ''
-  }
-  // @ VIAN print menu
-  let nameOfDayVian = today
-  switch (nameOfDayVian) {
-    case 1:
-      console.log('• Monday: ' + mondayVian1 + ', ' + mondayVian2 + '\n')
-      break
-    case 2:
-      console.log('• Tuesday: ' + tuesdayVian1 + ', ' + tuesdayVian2 + '\n')
-      break
-    case 3:
-      console.log('• Wednesday: ' + wednesdayVian1 + ', ' + wednesdayVian2 + '\n')
-      break
-    case 4:
-      console.log('• Thursday: ' + thursdayVian1 + ', ' + thursdayVian2 + '\n')
-      break
-    case 5:
-      console.log('• Friday: ' + fridayVian1 + ', ' + fridayVian2 + '\n')
-      break
-    default:
-      console.log(
-        '• Monday: ' +
-          mondayVian1 +
-          ', ' +
-          mondayVian2 +
-          '\n' +
-          '• Tuesday: ' +
-          tuesdayVian1 +
-          ', ' +
-          tuesdayVian2 +
-          '\n' +
-          '• Wednesday: ' +
-          wednesdayVian1 +
-          ', ' +
-          wednesdayVian2 +
-          '\n' +
-          '• Thursday: ' +
-          thursdayVian1 +
-          ', ' +
-          thursdayVian2 +
-          '\n' +
-          '• Friday: ' +
-          fridayVian1 +
-          ', ' +
-          fridayVian2 +
-          '\n'
-      )
+  // @ VIAN Monday-Friday
+  for (let i = today - 1; i < today; i++) {
+    let vian1
+    let vian2
+    if ((await page.$(vianArray1[i])) !== null) {
+      vian1 = await page.evaluate(el => el.innerText, await page.$(vianArray1[i]))
+      vian2 = await page.evaluate(el => el.innerText, await page.$(vianArray2[i]))
+    } else {
+      vian1 = '♪"No Milk Today"♫'
+      vian2 = ''
+    }
+    console.log('• ' + dayNames[i + 1] + ': ' + vian1 + ', ' + vian2 + '\n')
   }
 
   /*
-
   @ A-PECSENYES
   ------------------------------------------
   contact info:
   * Address: 1051 Budapest, Sas utca 25.
   * Phone: 36-1-610-0645
   -----------------------------------------
-
-  <dayname>Pecsenyes(let)
-  * content of menu
-
-  PecsenyesName, PecsenyesLength
-  * the restaurant title
-  * the calculated length of title string
-  * underlined in length of title
-
   */
 
-  // @ A-PECSENYES selectors
   const dailyPecsenyesSelector = '#tabsContent1 > div'
 
   let pecsenyesName = 'A-Pecsenyés menu:'
@@ -297,14 +175,12 @@ async function scrapeMenu() {
     waitUntil: 'networkidle2'
   })
   let dailyPecsenyes = await page.evaluate(el => el.innerText, await page.$(dailyPecsenyesSelector))
-  dailyPecsenyes = dailyPecsenyes.replace(/(\n)/gm, ', ') // removal of line breaks from string, source: https://www.textfixer.com/tutorials/javascript-line-breaks.php
+  dailyPecsenyes = dailyPecsenyes.replace(/(\n)/gm, ', ')
   dailyPecsenyes = dailyPecsenyes.replace('Napi ebéd menü A-Pecsenyés, ', '')
 
-  // @ A-PECSENYES print menu
   console.log('• Daily menu: ' + dailyPecsenyes + '\n')
 
   /*
-
   @ KORHELY
   ---------------------------------------------
   contact info:
@@ -316,7 +192,6 @@ async function scrapeMenu() {
   * the restaurant title
   * the calculated length of title string
   * underlined in length of title
-
   */
 
   // @ KORHELY selectors
