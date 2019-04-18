@@ -50,7 +50,7 @@ async function scrapeMenu() {
     return el.textContent
   }, dailySuppeIncludes)
   dailySuppe = dailySuppe.replace(/Sziasztok, |, kellemes hétvégét!|, szép napot!|, várunk Titeket!/gi, '')
-  // weekly (on Monday)
+  // Weekly (on Monday)
   const weeklySuppeIncludes = (await page.$x('//p[contains(text(), "Sziasztok")]'))[0]
   let weeklySuppe = await page.evaluate(el => {
     return el.textContent
@@ -63,7 +63,6 @@ async function scrapeMenu() {
   }, mondaySuppeIncludes)
   mondaySuppe = mondaySuppe.replace(/(?=sziasztok)(.*)(?=levesek )|(, várunk Titeket!)/gi, '')
 
-  // @ SUPPÉ print menu
   let nameOfDaySuppe = today
   switch (nameOfDaySuppe) {
     case 1:
@@ -194,7 +193,6 @@ async function scrapeMenu() {
   * underlined in length of title
   */
 
-  // @ KORHELY selectors
   const weeklySoupKorhelySelector = '#mainDiv > div > div:nth-child(2) > section > ul > li:nth-child(1)'
   const weeklyMainKorhelySelector = '#mainDiv > div > div:nth-child(2) > section > ul > li:nth-child(2)'
   const weeklyDessertKorhelySelector = '#mainDiv > div > div:nth-child(2) > section > ul > li:nth-child(3)'
@@ -220,7 +218,6 @@ async function scrapeMenu() {
   let weeklyDessertKorhely = await page.evaluate(el => el.innerText, await page.$(weeklyDessertKorhelySelector))
   weeklyDessertKorhely = weeklyDessertKorhely.replace('DESSZERTEK', '')
 
-  // @ KORHELY print menu
   console.log(
     '• Soups: ' +
       weeklySoupKorhely +
@@ -234,42 +231,16 @@ async function scrapeMenu() {
   )
 
   /*
-
   @ KETSZERECSEN
   ------------------------------------------
   contact info:
   * Address: Budapest, Nagymező u. 14, 1065
   * Phone: (1) 343 1984
   -----------------------------------------
-
-  <dayname>KetszerecsenSelector1-2(const)
-  * exact selector for <dayname> menu
-  * main courses and desserts are scraped
-    from different selectors [1-2]
-
-  <dayname>Ketszerecsen1-2(let)
-  * content of <dayname>KetszerecsenSelector
-  * main courses and desserts are scraped
-    from different selectors [1-2]
-
-  KetszerecsenName, KetszerecsenLength
-  * the restaurant title
-  * the calculated length of title string
-  * underlined in length of title
-
   */
 
-  // @ KETSZERECSEN selectors
-  const mondayKetszerecsenSelector1 = 'p:nth-child(5)'
-  const mondayKetszerecsenSelector2 = 'p:nth-child(6)'
-  const tuesdayKetszerecsenSelector1 = 'p:nth-child(8)'
-  const tuesdayKetszerecsenSelector2 = 'p:nth-child(9)'
-  const wednesdayKetszerecsenSelector1 = 'p:nth-child(11)'
-  const wednesdayKetszerecsenSelector2 = 'p:nth-child(12)'
-  const thursdayKetszerecsenSelector1 = 'p:nth-child(14)'
-  const thursdayKetszerecsenSelector2 = 'p:nth-child(15)'
-  const fridayKetszerecsenSelector1 = 'p:nth-child(17)'
-  const fridayKetszerecsenSelector2 = 'p:nth-child(18)'
+  let ketszerecsenArray1 = ['p:nth-child(4)', 'p:nth-child(7)', 'p:nth-child(10)', 'p:nth-child(13)', 'p:nth-child(16)']
+  let ketszerecsenArray2 = ['p:nth-child(5)', 'p:nth-child(8)', 'p:nth-child(11)', 'p:nth-child(14)', 'p:nth-child(17)']
 
   let ketszerecsenName = 'Ketszerecsen Bisztro menu:'
   console.log('*' + ketszerecsenName + '* \n' + '-'.repeat(ketszerecsenName.length))
@@ -277,122 +248,29 @@ async function scrapeMenu() {
     waitUntil: 'networkidle2'
   })
 
-  // @ KETSZERECSEN Monday
-  let mondayKetszerecsen1
-  let mondayKetszerecsen2
-  if ((await page.$(mondayKetszerecsenSelector1)) !== null) {
-    mondayKetszerecsen1 = await page.evaluate(el => el.innerHTML, await page.$(mondayKetszerecsenSelector1))
-    mondayKetszerecsen2 = await page.evaluate(el => el.innerHTML, await page.$(mondayKetszerecsenSelector2))
-  } else {
-    mondayKetszerecsen1 = '♪"No Milk Today"♫'
-    mondayKetszerecsen2 = ''
-  }
-  // @ KETSZERECSEN Tuesday
-  let tuesdayKetszerecsen1
-  let tuesdayKetszerecsen2
-  if ((await page.$(tuesdayKetszerecsenSelector1)) !== null) {
-    tuesdayKetszerecsen1 = await page.evaluate(el => el.innerHTML, await page.$(tuesdayKetszerecsenSelector1))
-    tuesdayKetszerecsen2 = await page.evaluate(el => el.innerHTML, await page.$(tuesdayKetszerecsenSelector2))
-  } else {
-    tuesdayKetszerecsen1 = '♪"No Milk Today"♫'
-    tuesdayKetszerecsen2 = ''
-  }
-  // @ KETSZERECSEN Wednesday
-  let wednesdayKetszerecsen1
-  let wednesdayKetszerecsen2
-  if ((await page.$(wednesdayKetszerecsenSelector1)) !== null) {
-    wednesdayKetszerecsen1 = await page.evaluate(el => el.innerHTML, await page.$(wednesdayKetszerecsenSelector1))
-    wednesdayKetszerecsen2 = await page.evaluate(el => el.innerHTML, await page.$(wednesdayKetszerecsenSelector2))
-  } else {
-    wednesdayKetszerecsen1 = '♪"No Milk Today"♫'
-    wednesdayKetszerecsen2 = ''
-  }
-  // @ KETSZERECSEN Thursday
-  let thursdayKetszerecsen1
-  let thursdayKetszerecsen2
-  if ((await page.$(thursdayKetszerecsenSelector1)) !== null) {
-    thursdayKetszerecsen1 = await page.evaluate(el => el.innerHTML, await page.$(thursdayKetszerecsenSelector1))
-    thursdayKetszerecsen2 = await page.evaluate(el => el.innerHTML, await page.$(thursdayKetszerecsenSelector2))
-  } else {
-    thursdayKetszerecsen1 = '♪"No Milk Today"♫'
-    thursdayKetszerecsen2 = ''
-  }
-  // @ KETSZERECSEN Friday
-  let fridayKetszerecsen1
-  let fridayKetszerecsen2
-  if ((await page.$(fridayKetszerecsenSelector1)) !== null) {
-    fridayKetszerecsen1 = await page.evaluate(el => el.innerHTML, await page.$(fridayKetszerecsenSelector1))
-    fridayKetszerecsen2 = await page.evaluate(el => el.innerHTML, await page.$(fridayKetszerecsenSelector2))
-  } else {
-    fridayKetszerecsen1 = '♪"No Milk Today"♫'
-    fridayKetszerecsen2 = ''
-  }
-
-  // @ KETSZERECSEN print menu
-  let nameOfDayKetszerecsen = today
-  switch (nameOfDayKetszerecsen) {
-    case 1:
-      console.log('• Monday: ' + mondayKetszerecsen1 + ', ' + mondayKetszerecsen2 + '\n')
-      break
-    case 2:
-      console.log('• Tuesday: ' + tuesdayKetszerecsen1 + ', ' + tuesdayKetszerecsen2 + '\n')
-      break
-    case 3:
-      console.log('• Wednesday: ' + wednesdayKetszerecsen1 + ', ' + wednesdayKetszerecsen2 + '\n')
-      break
-    case 4:
-      console.log('• Thursday: ' + thursdayKetszerecsen1 + ', ' + thursdayKetszerecsen2 + '\n')
-      break
-    case 5:
-      console.log('• Friday: ' + fridayKetszerecsen1 + ', ' + fridayKetszerecsen2 + '\n')
-      break
-    default:
-      console.log(
-        '• Monday: ' +
-          mondayKetszerecsen1 +
-          ', ' +
-          mondayKetszerecsen2 +
-          '\n' +
-          '• Tuesday: ' +
-          tuesdayKetszerecsen1 +
-          ', ' +
-          tuesdayKetszerecsen2 +
-          '\n' +
-          '• Wednesday: ' +
-          wednesdayKetszerecsen1 +
-          ', ' +
-          wednesdayKetszerecsen2 +
-          '\n' +
-          '• Thursday: ' +
-          thursdayKetszerecsen1 +
-          ', ' +
-          thursdayKetszerecsen2 +
-          '\n' +
-          '• Friday: ' +
-          fridayKetszerecsen1 +
-          ', ' +
-          fridayKetszerecsen2 +
-          '\n'
-      )
+  // @ KETSZERECSEN Monday-Friday
+  for (let i = today - 1; i < today; i++) {
+    let ketszerecsen1
+    let ketszerecsen2
+    if ((await page.$(ketszerecsenArray1[i])) !== null) {
+      ketszerecsen1 = await page.evaluate(el => el.innerHTML, await page.$(ketszerecsenArray1[i]))
+      ketszerecsen2 = await page.evaluate(el => el.innerHTML, await page.$(ketszerecsenArray2[i]))
+    } else {
+      ketszerecsen1 = '♪"No Milk Today"♫'
+      ketszerecsen2 = ''
+    }
+    console.log('• ' + dayNames[i + 1] + ': ' + ketszerecsen1 + ', ' + ketszerecsen2 + '\n')
   }
 
   /*
-
   @ FRUCCOLA
   ----------------------------------------------
   contact info:
   * Address: Budapest, Arany János u. 32, 1051
   * Phone: (1) 430 6125
   ----------------------------------------------
-
-  fruccolaName, fruccolaLength
-  * the restaurant title
-  * the calculated length of title string
-  * underlined in length of title
-
   */
 
-  // @ FRUCCOLA selectors
   const dailyFruccolaSelector1 = '#dailymenu-holder > li.arany.today > div.soup > p.description'
   const dailyFruccolaSelector2 = '#dailymenu-holder > li.arany.today > div.main-dish > p.description'
 
@@ -402,36 +280,17 @@ async function scrapeMenu() {
   const dailyFruccola1 = await page.evaluate(el => el.innerText, await page.$(dailyFruccolaSelector1))
   const dailyFruccola2 = await page.evaluate(el => el.innerText, await page.$(dailyFruccolaSelector2))
 
-  // @ FRUCCOLA print menu
   console.log('• Daily menu: ' + dailyFruccola1 + ', ' + dailyFruccola2 + '\n')
 
   /*
-
   @ KAMRA
   ------------------------------------------
   contact info:
   * Address: Budapest, Hercegprímás u. 19, 1051
   * Phone: (20) 436 9968
   -----------------------------------------
-
-  kamraName, kamraLength
-  * the restaurant title
-  * the calculated length of title string
-  * underlined in length of title
-
-  dayKamraSelector
-  dayKamra
-  * the daily menu' date
-
-  dailyKamraSelector
-  * exact selector for the daily menu's content
-
-  dailyKamra
-  * menu content
-
   */
 
-  // @ KAMRA selectors
   const dayKamraSelector = '.shop_today_1'
   const dailyKamraSelector = '.shop_today_title'
 
@@ -444,26 +303,17 @@ async function scrapeMenu() {
   // stores all elements with same ID, source: https://stackoverflow.com/questions/54677126/how-to-select-all-child-div-with-same-class-using-puppeteer
   const dailyKamra = await page.$$eval(dailyKamraSelector, divs => divs.map(({ innerText }) => innerText))
 
-  // @ KAMRA print menu
   console.log('• ' + dayKamra + ' daily menu: ' + dailyKamra + '\n')
 
   /*
-
   @ ROZA
   ------------------------------------------
   contact info:
   * Address: Budapest, Jókai u. 22, 1066
   * Phone: (30) 611 4396
   -----------------------------------------
-
-  rozaName, rozaLength
-  * the restaurant title
-  * the calculated length of title string
-  * underlined in length of title
-
   */
 
-  // @ ROZA selectors
   const dailyRozaSelector = '.text_exposed_show'
 
   let rozaName = 'Roza menu:'
@@ -474,11 +324,9 @@ async function scrapeMenu() {
   let dailyRoza = await page.evaluate(el => el.innerText, await page.$(dailyRozaSelector))
   dailyRoza = dailyRoza.replace(/🍲|🥪|🥧|❤️/g, '')
 
-  // @ ROZA print menu
   console.log('• Daily menu: ' + dailyRoza + '\n')
 
   /*
-
   @ KARCSI
   ------------------------------------------
   contact info:
@@ -490,18 +338,15 @@ async function scrapeMenu() {
   * the restaurant title
   * the calculated length of title string
   * underlined in length of title
-
   */
 
   let karcsiName = 'Karcsi menu:'
   console.log('*' + karcsiName + '* \n' + '-'.repeat(karcsiName.length))
   const weeklyKarcsi = 'http://karcsibacsivendeglo.com/letoltes/napi_menu.pdf'
 
-  // @ KARCSI print menu
   console.log('• Weekly menu: ' + weeklyKarcsi + '\n')
 
   /*
-
   @ NOKEDLI
   ------------------------------------------
   contact info:
@@ -509,15 +354,9 @@ async function scrapeMenu() {
   * Phone: (20) 499 5832
   -----------------------------------------
 
-  nokedliName, nokedliLength
-  * the restaurant title
-  * the calculated length of title string
-  * underlined in length of title
-
   imageSelector --> imageNokedliSelector
   * store src
   * trim thumbnail sub for normal sized image
-
   */
 
   const imageNokedliSelector = '.aligncenter'
@@ -534,7 +373,6 @@ async function scrapeMenu() {
       .replace('-300x212', '')
   }, imageSelector)
 
-  // @ NOKEDLI print menu
   console.log('• Weekly menu: ' + weeklyNokedly + '\n')
 
   await browser.close()
