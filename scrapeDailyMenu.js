@@ -1,4 +1,3 @@
-// scraping daily menus with Puppeteer
 const puppeteer = require('puppeteer')
 const moment = require('moment')
 
@@ -24,53 +23,6 @@ async function scrapeMenu() {
     dayNames.push(day)
   }
   console.log('*' + dayNames[today].toUpperCase() + '*\n' + '='.repeat(dayNames[today].length))
-
-  /*
-  @ SUPPÉ bistro
-  ---------------------------------------
-  contact info:
-  * Address: Hajós u. 19 (19.45 mi), Budapest, Hungary 1065
-  * Phone: (70) 336 0822
-  ---------------------------------------
-  Description:
-  * scrape facebook posts based on xpath patterns
-  * todo: avoid xpath and use selectors
-  * replace redundant string patterns with regex
-  */
-
-  let suppeName = 'Suppé menu:'
-  console.log('*' + suppeName + '* \n' + '-'.repeat(suppeName.length))
-  await page.goto('https://www.facebook.com/pg/bistrosuppe/posts/?ref=page_internal', {
-    waitUntil: 'networkidle2'
-  })
-  // @ SUPPÉ selector, source: https://stackoverflow.com/questions/48448586/how-to-use-xpath-in-chrome-headlesspuppeteer-evaluate
-  // daily
-  const dailySuppeIncludes = (await page.$x('//span[contains(text(), "Sziasztok")]'))[0]
-  let dailySuppe = await page.evaluate(el => {
-    return el.textContent
-  }, dailySuppeIncludes)
-  dailySuppe = dailySuppe.replace(/Sziasztok, |, kellemes hétvégét!|, szép napot!|, várunk Titeket!/gi, '')
-  // Weekly (on Monday)
-  const weeklySuppeIncludes = (await page.$x('//p[contains(text(), "Sziasztok")]'))[0]
-  let weeklySuppe = await page.evaluate(el => {
-    return el.textContent
-  }, weeklySuppeIncludes)
-  weeklySuppe = weeklySuppe.replace(/(?=sziasztok)(.*)(?=levesek )|(?=mai)(.*)(?=\s*)/gi, '')
-  // Monday only (on Monday)
-  const mondaySuppeIncludes = (await page.$x('//p[contains(text(), "Sziasztok")]'))[0]
-  let mondaySuppe = await page.evaluate(el => {
-    return el.textContent
-  }, mondaySuppeIncludes)
-  mondaySuppe = mondaySuppe.replace(/(?=sziasztok)(.*)(?=levesek )|(, várunk Titeket!)/gi, '')
-
-  let nameOfDaySuppe = today
-  switch (nameOfDaySuppe) {
-    case 1:
-      console.log('• Monday: ' + mondaySuppe + '\n')
-      break
-    default:
-      console.log('• Daily menu: ' + dailySuppe + '\n' + weeklySuppe + '\n')
-  }
 
   /*
   @ YAMATO
@@ -116,6 +68,7 @@ async function scrapeMenu() {
   -----------------------------------------
   */
 
+  // @ VIAN selectors [1: first course, 2: main course]
   let vianArray1 = [
     '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(1) > div:nth-child(1) > div.heartyQ2riU',
     '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(2) > div:nth-child(1) > div.heartyQ2riU',
@@ -186,13 +139,9 @@ async function scrapeMenu() {
   * Address: Budapest, Liszt Ferenc tér 7, 1061
   * Phone: (1) 321 0280
   ---------------------------------------------
-
-  korhelyName, korhelyLength
-  * the restaurant title
-  * the calculated length of title string
-  * underlined in length of title
   */
 
+  // @ KORHELY selectors
   const weeklySoupKorhelySelector = '#mainDiv > div > div:nth-child(2) > section > ul > li:nth-child(1)'
   const weeklyMainKorhelySelector = '#mainDiv > div > div:nth-child(2) > section > ul > li:nth-child(2)'
   const weeklyDessertKorhelySelector = '#mainDiv > div > div:nth-child(2) > section > ul > li:nth-child(3)'
@@ -239,6 +188,7 @@ async function scrapeMenu() {
   -----------------------------------------
   */
 
+  // @ KETSZERECSEN selectors [1: first course, 2: main course]
   let ketszerecsenArray1 = ['p:nth-child(4)', 'p:nth-child(7)', 'p:nth-child(10)', 'p:nth-child(13)', 'p:nth-child(16)']
   let ketszerecsenArray2 = ['p:nth-child(5)', 'p:nth-child(8)', 'p:nth-child(11)', 'p:nth-child(14)', 'p:nth-child(17)']
 
@@ -271,6 +221,7 @@ async function scrapeMenu() {
   ----------------------------------------------
   */
 
+  // @ FRUCCOLA selectors
   const dailyFruccolaSelector1 = '#dailymenu-holder > li.arany.today > div.soup > p.description'
   const dailyFruccolaSelector2 = '#dailymenu-holder > li.arany.today > div.main-dish > p.description'
 
@@ -291,6 +242,7 @@ async function scrapeMenu() {
   -----------------------------------------
   */
 
+  // @ KAMRA selectors
   const dayKamraSelector = '.shop_today_1'
   const dailyKamraSelector = '.shop_today_title'
 
@@ -327,17 +279,56 @@ async function scrapeMenu() {
   console.log('• Daily menu: ' + dailyRoza + '\n')
 
   /*
+  @ SUPPÉ bistro
+  ---------------------------------------
+  contact info:
+  * Address: Hajós u. 19 (19.45 mi), Budapest, Hungary 1065
+  * Phone: (70) 336 0822
+  ---------------------------------------
+  Description:
+  * scrape facebook posts based on xpath patterns
+  * todo: avoid xpath and use selectors
+  * replace redundant string patterns with regex
+  */
+
+  let suppeName = 'Suppé menu:'
+  console.log('*' + suppeName + '* \n' + '-'.repeat(suppeName.length))
+  await page.goto('https://www.facebook.com/pg/bistrosuppe/posts/?ref=page_internal', {
+    waitUntil: 'networkidle2'
+  })
+  // @ SUPPÉ selector, source: https://stackoverflow.com/questions/48448586/how-to-use-xpath-in-chrome-headlesspuppeteer-evaluate
+  // daily
+  const dailySuppeIncludes = (await page.$x('//span[contains(text(), "Sziasztok")]'))[0]
+  let dailySuppe = await page.evaluate(el => {
+    return el.textContent
+  }, dailySuppeIncludes)
+  dailySuppe = dailySuppe.replace(/Sziasztok, |, kellemes hétvégét!|, szép napot!|, várunk Titeket!/gi, '')
+  // Weekly (on Monday)
+  const weeklySuppeIncludes = (await page.$x('//p[contains(text(), "Sziasztok")]'))[0]
+  let weeklySuppe = await page.evaluate(el => {
+    return el.textContent
+  }, weeklySuppeIncludes)
+  weeklySuppe = weeklySuppe.replace(/(?=sziasztok)(.*)(?=levesek )|(?=mai)(.*)(?=\s*)/gi, '')
+  // Monday only (on Monday)
+  const mondaySuppeIncludes = (await page.$x('//p[contains(text(), "Sziasztok")]'))[0]
+  let mondaySuppe = await page.evaluate(el => {
+    return el.textContent
+  }, mondaySuppeIncludes)
+  mondaySuppe = mondaySuppe.replace(/(?=sziasztok)(.*)(?=levesek )|(, várunk Titeket!)/gi, '')
+
+  if (today === 1) {
+    console.log('• ' + dayNames[today] + ': ' + mondaySuppe + '\n')
+  } else {
+    console.log('• ' + dayNames[today] + ': ' + dailySuppe + '\n' + weeklySuppe + '\n')
+  }
+  
+  /*
   @ KARCSI
   ------------------------------------------
   contact info:
   * Address: Budapest, Jókai u. 20, 1066
   * Phone: (1) 312 0557
   -----------------------------------------
-
-  karcsiName, karcsiLength
-  * the restaurant title
-  * the calculated length of title string
-  * underlined in length of title
   */
 
   let karcsiName = 'Karcsi menu:'
