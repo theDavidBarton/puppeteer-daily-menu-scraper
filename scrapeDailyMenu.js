@@ -17,11 +17,13 @@ async function scrapeMenu() {
   })
 
   // get Day of Week
-  const todayMomentLower = moment().format('dddd')
-  const todayMomentUpper = todayMomentLower.toUpperCase()
-  console.log('*' + todayMomentUpper + '*\n' + '='.repeat(todayMomentUpper.length))
   const today = Number(moment().format('d'))
-
+  const dayNames = []
+  for (let i = 0; i < 7; i++) {
+    let day = moment(i, 'd').format('dddd')
+    dayNames.push(day)
+  }
+  console.log('*' + dayNames[today].toUpperCase() + '*\n' + '='.repeat(dayNames[today].length))
   /*
 
   @ SUPPÉ bistro
@@ -80,110 +82,32 @@ async function scrapeMenu() {
   * Address: Budapest, 1066, JÓKAI U. 30.
   * Phone: +36(70)681-75-44
   ---------------------------------------
-  <dayname>YamatoSelector(const)
-  * exact selector for <dayname> menu
-
-  <dayname>YamatoRaw, <dayname>Yamato(let)
-  * raw content of <dayname>YamatoSelector
-  * content of <dayname>YamatoSelector
-
-  yamatoName, yamatoLength
-  * the restaurant title
-  * the calculated length of title string
-  * underlined in length of title
-
   */
 
   // @ YAMATO selectors
-  const mondayYamatoSelector = 'body > div:nth-child(1) > p:nth-child(2)'
-  const tuesdayYamatoSelector = 'body > div:nth-child(1) > p:nth-child(4)'
-  const wednesdayYamatoSelector = 'body > div:nth-child(1) > p:nth-child(6)'
-  const thursdayYamatoSelector = 'body > div:nth-child(1) > p:nth-child(8)'
-  const fridayYamatoSelector = 'body > div:nth-child(1) > p:nth-child(10)'
-
+  let yamatoArray = [
+    'body > div:nth-child(1) > p:nth-child(2)',
+    'body > div:nth-child(1) > p:nth-child(4)',
+    'body > div:nth-child(1) > p:nth-child(6)',
+    'body > div:nth-child(1) > p:nth-child(8)',
+    'body > div:nth-child(1) > p:nth-child(10)'
+  ]
   let yamatoName = 'Yamato menu:'
   console.log('*' + yamatoName + '* \n' + '-'.repeat(yamatoName.length))
   await page.goto('https://www.wasabi.hu/napimenu.php?source=yamato&lang=hu', {
     waitUntil: 'networkidle2',
     timout: 0
   })
-  // @ YAMATO Monday
-  let mondayYamato
-  if ((await page.$(mondayYamatoSelector)) !== null) {
-    let mondayYamatoRaw = await page.evaluate(el => el.innerText, await page.$(mondayYamatoSelector))
-    mondayYamato = mondayYamatoRaw.replace(/(\n)/gm, ', ')
-  } else {
-    mondayYamato = '♪"No Milk Today"♫'
-  }
-  // @ YAMATO Tuesday
-  let tuesdayYamato
-  if ((await page.$(tuesdayYamatoSelector)) !== null) {
-    let tuesdayYamatoRaw = await page.evaluate(el => el.innerText, await page.$(tuesdayYamatoSelector))
-    tuesdayYamato = tuesdayYamatoRaw.replace(/(\n)/gm, ', ')
-  } else {
-    tuesdayYamato = '♪"No Milk Today"♫'
-  }
-  // @ YAMATO Wednesday
-  let wednesdayYamato
-  if ((await page.$(wednesdayYamatoSelector)) !== null) {
-    let wednesdayYamatoRaw = await page.evaluate(el => el.innerText, await page.$(wednesdayYamatoSelector))
-    wednesdayYamato = wednesdayYamatoRaw.replace(/(\n)/gm, ', ')
-  } else {
-    wednesdayYamato = '♪"No Milk Today"♫'
-  }
-  // @ YAMATO Thursday
-  let thursdayYamato
-  if ((await page.$(thursdayYamatoSelector)) !== null) {
-    let thursdayYamatoRaw = await page.evaluate(el => el.innerText, await page.$(thursdayYamatoSelector))
-    thursdayYamato = thursdayYamatoRaw.replace(/(\n)/gm, ', ')
-  } else {
-    thursdayYamato = '♪"No Milk Today"♫'
-  }
-  // @ YAMATO Friday
-  let fridayYamato
-  if ((await page.$(fridayYamatoSelector)) !== null) {
-    let fridayYamatoRaw = await page.evaluate(el => el.innerText, await page.$(fridayYamatoSelector))
-    fridayYamato = fridayYamatoRaw.replace(/(\n)/gm, ', ')
-  } else {
-    fridayYamato = '♪"No Milk Today"♫'
-  }
-
-  // @ YAMATO print menu
-  let nameOfDayYamato = today
-  switch (nameOfDayYamato) {
-    case 1:
-      console.log('• Monday: ' + mondayYamato + '\n')
-      break
-    case 2:
-      console.log('• Tuesday: ' + tuesdayYamato + '\n')
-      break
-    case 3:
-      console.log('• Wednesday: ' + wednesdayYamato + '\n')
-      break
-    case 4:
-      console.log('• Thursday: ' + thursdayYamato + '\n')
-      break
-    case 5:
-      console.log('• Friday: ' + fridayYamato + '\n')
-      break
-    default:
-      console.log(
-        '• Monday: ' +
-          mondayYamato +
-          '\n' +
-          '• Tuesday: ' +
-          tuesdayYamato +
-          '\n' +
-          '• Wednesday: ' +
-          wednesdayYamato +
-          '\n' +
-          '• Thursday: ' +
-          thursdayYamato +
-          '\n' +
-          '• Friday: ' +
-          fridayYamato +
-          '\n'
-      )
+  // @ YAMATO Monday-Friday
+  for (let i = today - 1; i < today; i++) {
+    let yamato
+    if ((await page.$(yamatoArray[i])) !== null) {
+      let yamatoRaw = await page.evaluate(el => el.innerText, await page.$(yamatoArray[i]))
+      yamato = yamatoRaw.replace(/(\n)/gm, ', ')
+    } else {
+      yamato = '♪"No Milk Today"♫'
+    }
+    console.log('• ' + dayNames[i + 1] + ': ' + yamato + '\n')
   }
 
   /*
@@ -213,16 +137,26 @@ async function scrapeMenu() {
   */
 
   // @ VIAN selectors
-  const mondayVianSelector1 = '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(1) > div:nth-child(1) > div.heartyQ2riU'
-  const mondayVianSelector2 = '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(1) > div.hearty2QDOd > div > div > div.heartyQogjj > span'
-  const tuesdayVianSelector1 = '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(2) > div:nth-child(1) > div.heartyQ2riU'
-  const tuesdayVianSelector2 = '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(2) > div.hearty2QDOd > div > div > div.heartyQogjj > span'
-  const wednesdayVianSelector1 = '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(3) > div:nth-child(1) > div.heartyQ2riU'
-  const wednesdayVianSelector2 = '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(3) > div.hearty2QDOd > div > div > div.heartyQogjj > span'
-  const thursdayVianSelector1 = '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(4) > div:nth-child(1) > div.heartyQ2riU'
-  const thursdayVianSelector2 = '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(4) > div.hearty2QDOd > div > div > div.heartyQogjj > span'
-  const fridayVianSelector1 = '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(5) > div:nth-child(1) > div.heartyQ2riU'
-  const fridayVianSelector2 = '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(5) > div.hearty2QDOd > div > div > div.heartyQogjj > span'
+  const mondayVianSelector1 =
+    '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(1) > div:nth-child(1) > div.heartyQ2riU'
+  const mondayVianSelector2 =
+    '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(1) > div.hearty2QDOd > div > div > div.heartyQogjj > span'
+  const tuesdayVianSelector1 =
+    '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(2) > div:nth-child(1) > div.heartyQ2riU'
+  const tuesdayVianSelector2 =
+    '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(2) > div.hearty2QDOd > div > div > div.heartyQogjj > span'
+  const wednesdayVianSelector1 =
+    '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(3) > div:nth-child(1) > div.heartyQ2riU'
+  const wednesdayVianSelector2 =
+    '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(3) > div.hearty2QDOd > div > div > div.heartyQogjj > span'
+  const thursdayVianSelector1 =
+    '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(4) > div:nth-child(1) > div.heartyQ2riU'
+  const thursdayVianSelector2 =
+    '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(4) > div.hearty2QDOd > div > div > div.heartyQogjj > span'
+  const fridayVianSelector1 =
+    '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(5) > div:nth-child(1) > div.heartyQ2riU'
+  const fridayVianSelector2 =
+    '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(5) > div.hearty2QDOd > div > div > div.heartyQogjj > span'
 
   let vianName = 'Cafe vian menu:'
   console.log('*' + vianName + '* \n' + '-'.repeat(vianName.length))
@@ -412,7 +346,17 @@ async function scrapeMenu() {
   weeklyDessertKorhely = weeklyDessertKorhely.replace('DESSZERTEK', '')
 
   // @ KORHELY print menu
-  console.log('• Soups: ' + weeklySoupKorhely + '\n' + '• Main courses: ' + weeklyMainKorhely + '\n' + '• Desserts: ' + weeklyDessertKorhely + '\n')
+  console.log(
+    '• Soups: ' +
+      weeklySoupKorhely +
+      '\n' +
+      '• Main courses: ' +
+      weeklyMainKorhely +
+      '\n' +
+      '• Desserts: ' +
+      weeklyDessertKorhely +
+      '\n'
+  )
 
   /*
 
