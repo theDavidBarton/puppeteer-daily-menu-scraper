@@ -1,6 +1,15 @@
 const puppeteer = require('puppeteer')
 const moment = require('moment')
 
+// get Day of Week
+const today = Number(moment().format('d'))
+const dayNames = []
+for (let i = 0; i < 7; i++) {
+  let day = moment(i, 'd').format('dddd')
+  dayNames.push(day)
+}
+console.log('*' + dayNames[today].toUpperCase() + '*\n' + '='.repeat(dayNames[today].length))
+
 async function scrapeMenu() {
   const browser = await puppeteer.launch({ headless: true })
   const page = await browser.newPage()
@@ -15,15 +24,6 @@ async function scrapeMenu() {
     }
   })
 
-  // get Day of Week
-  const today = Number(moment().format('d'))
-  const dayNames = []
-  for (let i = 0; i < 7; i++) {
-    let day = moment(i, 'd').format('dddd')
-    dayNames.push(day)
-  }
-  console.log('*' + dayNames[today].toUpperCase() + '*\n' + '='.repeat(dayNames[today].length))
-
   /*
   @ YAMATO
   ---------------------------------------
@@ -31,6 +31,9 @@ async function scrapeMenu() {
   * Address: Budapest, 1066, JÓKAI U. 30.
   * Phone: +36(70)681-75-44
   ---------------------------------------
+  description:
+  * yamatoArray: contains selectors for tha days of the week
+  * yamato: is the text inside selector (actual menu), and also the final cleaned text to be displayed in output
   */
 
   // @ YAMATO selectors
@@ -51,8 +54,8 @@ async function scrapeMenu() {
   for (let i = today - 1; i < today; i++) {
     let yamato
     if ((await page.$(yamatoArray[i])) !== null) {
-      let yamatoRaw = await page.evaluate(el => el.innerText, await page.$(yamatoArray[i]))
-      yamato = yamatoRaw.replace(/(\n)/gm, ', ')
+      yamato = await page.evaluate(el => el.innerText, await page.$(yamatoArray[i]))
+      yamato = yamato.replace(/(\n)/gm, ', ')
     } else {
       yamato = '♪"No Milk Today"♫'
     }
@@ -66,6 +69,9 @@ async function scrapeMenu() {
   * Address: Budapest, Liszt Ferenc tér 9, 1061
   * Phone: (1) 268 1154
   -----------------------------------------
+  description:
+  * vianArray[1-2]: contains selectors for tha days of the week
+  * vian[1-2]: is the text inside selector (actual menu) to be displayed in output
   */
 
   // @ VIAN selectors [1: first course, 2: main course]
@@ -94,8 +100,10 @@ async function scrapeMenu() {
   const linkVian = await page.evaluate(sel => {
     return document.querySelector(sel).getAttribute('src')
   }, linkSelectorVian)
-  await page.goto(linkVian, { waitUntil: 'networkidle2', timeout: 0 })
-
+  await page.goto(linkVian, {
+    waitUntil: 'networkidle2',
+    timeout: 0
+  })
   // @ VIAN Monday-Friday
   for (let i = today - 1; i < today; i++) {
     let vian1
@@ -119,6 +127,7 @@ async function scrapeMenu() {
   -----------------------------------------
   */
 
+  // @ A-PECSENYES selector
   const dailyPecsenyesSelector = '#tabsContent1 > div'
 
   let pecsenyesName = 'A-Pecsenyés menu:'
@@ -126,6 +135,7 @@ async function scrapeMenu() {
   await page.goto('http://www.napimenu.hu/budapest/adatlap/a-pecsenyes', {
     waitUntil: 'networkidle2'
   })
+  // @ A-PECSENYES Daily
   let dailyPecsenyes = await page.evaluate(el => el.innerText, await page.$(dailyPecsenyesSelector))
   dailyPecsenyes = dailyPecsenyes.replace(/(\n)/gm, ', ')
   dailyPecsenyes = dailyPecsenyes.replace('Napi ebéd menü A-Pecsenyés, ', '')
@@ -159,7 +169,7 @@ async function scrapeMenu() {
   }, linkSelectorKorhely)
 
   await page.goto(linkKorhely, { waitUntil: 'networkidle2', timeout: 0 })
-  // let weeklySummaryKorhely = await page.evaluate(el => el.innerText, await page.$(weeklySummaryKorhelySelector))
+  // @ KORHELY Weekly
   let weeklySoupKorhely = await page.evaluate(el => el.innerText, await page.$(weeklySoupKorhelySelector))
   weeklySoupKorhely = weeklySoupKorhely.replace('LEVESEK', '')
   let weeklyMainKorhely = await page.evaluate(el => el.innerText, await page.$(weeklyMainKorhelySelector))
@@ -186,6 +196,9 @@ async function scrapeMenu() {
   * Address: Budapest, Nagymező u. 14, 1065
   * Phone: (1) 343 1984
   -----------------------------------------
+  description:
+  * ketszerecsenArray[1-2]: contains selectors for tha days of the week
+  * ketszerecsen[1-2]: is the text inside selector (actual menu) to be displayed in output
   */
 
   // @ KETSZERECSEN selectors [1: first course, 2: main course]
@@ -197,7 +210,6 @@ async function scrapeMenu() {
   await page.goto('https://ketszerecsen.hu/#daily', {
     waitUntil: 'networkidle2'
   })
-
   // @ KETSZERECSEN Monday-Friday
   for (let i = today - 1; i < today; i++) {
     let ketszerecsen1
@@ -228,6 +240,7 @@ async function scrapeMenu() {
   let fruccolaName = 'Fruccola (Arany Janos utca) menu:'
   console.log('*' + fruccolaName + '* \n' + '-'.repeat(fruccolaName.length))
   await page.goto('http://fruccola.hu/hu', { waitUntil: 'networkidle2' })
+  // @ FRUCCOLA Daily
   const dailyFruccola1 = await page.evaluate(el => el.innerText, await page.$(dailyFruccolaSelector1))
   const dailyFruccola2 = await page.evaluate(el => el.innerText, await page.$(dailyFruccolaSelector2))
 
@@ -251,6 +264,7 @@ async function scrapeMenu() {
   await page.goto('http://www.kamraetelbar.hu/kamra_etelbar_mai_menu.html', {
     waitUntil: 'networkidle2'
   })
+  // @ KAMRA Daily
   const dayKamra = await page.evaluate(el => el.innerText, await page.$(dayKamraSelector))
   // stores all elements with same ID, source: https://stackoverflow.com/questions/54677126/how-to-select-all-child-div-with-same-class-using-puppeteer
   const dailyKamra = await page.$$eval(dailyKamraSelector, divs => divs.map(({ innerText }) => innerText))
@@ -266,6 +280,7 @@ async function scrapeMenu() {
   -----------------------------------------
   */
 
+  // @ ROZA selector
   const dailyRozaSelector = '.text_exposed_show'
 
   let rozaName = 'Roza menu:'
@@ -273,6 +288,7 @@ async function scrapeMenu() {
   await page.goto('https://www.facebook.com/pg/rozafinomitt/posts/?ref=page_internal', {
     waitUntil: 'networkidle2'
   })
+  // @ ROZA Daily
   let dailyRoza = await page.evaluate(el => el.innerText, await page.$(dailyRozaSelector))
   dailyRoza = dailyRoza.replace(/🍲|🥪|🥧|❤️/g, '')
 
@@ -297,19 +313,19 @@ async function scrapeMenu() {
     waitUntil: 'networkidle2'
   })
   // @ SUPPÉ selector, source: https://stackoverflow.com/questions/48448586/how-to-use-xpath-in-chrome-headlesspuppeteer-evaluate
-  // daily
+  // @ SUPPÉ Daily
   const dailySuppeIncludes = (await page.$x('//span[contains(text(), "Sziasztok")]'))[0]
   let dailySuppe = await page.evaluate(el => {
     return el.textContent
   }, dailySuppeIncludes)
   dailySuppe = dailySuppe.replace(/Sziasztok, |, kellemes hétvégét!|, szép napot!|, várunk Titeket!/gi, '')
-  // Weekly (on Monday)
+  // @ SUPPÉ Weekly (on Monday)
   const weeklySuppeIncludes = (await page.$x('//p[contains(text(), "Sziasztok")]'))[0]
   let weeklySuppe = await page.evaluate(el => {
     return el.textContent
   }, weeklySuppeIncludes)
   weeklySuppe = weeklySuppe.replace(/(?=sziasztok)(.*)(?=levesek )|(?=mai)(.*)(?=\s*)/gi, '')
-  // Monday only (on Monday)
+  // @ SUPPÉ Monday only (on Monday)
   const mondaySuppeIncludes = (await page.$x('//p[contains(text(), "Sziasztok")]'))[0]
   let mondaySuppe = await page.evaluate(el => {
     return el.textContent
@@ -321,7 +337,7 @@ async function scrapeMenu() {
   } else {
     console.log('• ' + dayNames[today] + ': ' + dailySuppe + '\n' + weeklySuppe + '\n')
   }
-  
+
   /*
   @ KARCSI
   ------------------------------------------
@@ -333,6 +349,7 @@ async function scrapeMenu() {
 
   let karcsiName = 'Karcsi menu:'
   console.log('*' + karcsiName + '* \n' + '-'.repeat(karcsiName.length))
+  // @ KARCSI weekly
   const weeklyKarcsi = 'http://karcsibacsivendeglo.com/letoltes/napi_menu.pdf'
 
   console.log('• Weekly menu: ' + weeklyKarcsi + '\n')
@@ -350,12 +367,13 @@ async function scrapeMenu() {
   * trim thumbnail sub for normal sized image
   */
 
+  // @ NOKEDLI selector
   const imageNokedliSelector = '.aligncenter'
 
   let nokedliName = 'Nokedli menu:'
   console.log('*' + nokedliName + '* \n' + '-'.repeat(nokedliName.length))
   await page.goto('http://nokedlikifozde.hu/', { waitUntil: 'networkidle2' })
-  // stores src of given selector, source: https://stackoverflow.com/questions/52542149/how-can-i-download-images-on-a-page-using-puppeteer
+  // @ NOKEDLI weekly, stores src of given selector, source: https://stackoverflow.com/questions/52542149/how-can-i-download-images-on-a-page-using-puppeteer
   let imageSelector = imageNokedliSelector
   const weeklyNokedly = await page.evaluate(sel => {
     return document
