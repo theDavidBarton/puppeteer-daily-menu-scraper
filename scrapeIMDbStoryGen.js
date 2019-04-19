@@ -29,7 +29,11 @@ async function scrapeIMDbStoryGen() {
   await page.goto(urls[random] + '/plotsummary#synopsis', { waitUntil: 'domcontentloaded', timeout: 0 })
   let plot = await page.evaluate(el => el.textContent, (await page.$$('#plot-synopsis-content'))[0])
   plot = plot.trim()
-  console.log(plot)
+  if (!plot.includes('It looks like we don\'t have a Synopsis for this title yet. ')) {
+    console.log(plot)
+  } else {
+    console.log('THERE IS NO PLOT AVAILABLE')
+  }
   browser.close()
 }
 scrapeIMDbStoryGen()
