@@ -24,12 +24,34 @@ async function scrapeIMDbStoryGen() {
       }
     }
   }
-  let random = Math.floor(Math.random() * urls.length)
-  console.log('Chosen movie: ' + titles[random])
-  await page.goto(urls[random] + '/plotsummary#synopsis', { waitUntil: 'domcontentloaded', timeout: 0 })
-  let plot = await page.evaluate(el => el.textContent, (await page.$$('#plot-synopsis-content'))[0])
-  plot = plot.trim()
-  console.log(plot)
+  let n = 0
+  let plot
+  do {
+    let random = Math.floor(Math.random() * urls.length)
+    console.log('Chosen movie: ' + titles[random])
+    await page.goto(urls[random] + '/plotsummary#synopsis', { waitUntil: 'domcontentloaded', timeout: 0 })
+    plot = await page.evaluate(el => el.textContent, (await page.$$('#plot-synopsis-content'))[0])
+    plot = plot.trim()
+    n++
+    console.log('Try #' + n)
+    if (!plot.includes("It looks like we don't have a Synopsis for this title yet. ")) {
+      console.log(plot)
+    } else {
+      console.log('THERE IS NO PLOT AVAILABLE')
+    }
+  } while (plot.includes("It looks like we don't have a Synopsis for this title yet. "))
+  // source for matching as much as possible actor names: https://stackoverflow.com/questions/7653942/find-names-with-regular-expression
+  let actorNameRegex = plot.match(
+    /\(([A-Z]([a-z]+|\.)(?:\s+[A-Z]([a-z]+|\.))*(?:\s+[a-z][a-z\-]+){0,2}\s+[A-Z]([a-z]+|\.)+)\)/gm
+  )
+  let actorNames = []
+  if (actorNameRegex !== null) {
+    actorNameRegex = actorNameRegex.toString().replace(/\(|\)/g, '')
+    actorNames.push(actorNameRegex)
+    console.log('\nStarring: ' + actorNames)
+  } else {
+    console.log('\nNO ACTORS WERE LISTED')
+  }
   browser.close()
 }
 scrapeIMDbStoryGen()
