@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer')
 
 async function scrapeIMDbStoryGen() {
-  const browser = await puppeteer.launch({ headless: true })
+  const browser = await puppeteer.launch({ headless: false })
   const page = await browser.newPage()
   await page.setExtraHTTPHeaders({ 'Accept-Language': 'en-US' })
   await page.goto('https://imdb.com', { waitUntil: 'domcontentloaded', timeout: 0 })
@@ -20,11 +20,16 @@ async function scrapeIMDbStoryGen() {
       if (urlOnIMDb.includes('/title/') && titleOnIMDb !== '') {
         urls.push(urlOnIMDb)
         titles.push(titleOnIMDb)
-        console.log('• ' + titleOnIMDb + '\n• IMDb url: ' + urlOnIMDb + '\n')
+        // console.log('• ' + titleOnIMDb + '\n• IMDb url: ' + urlOnIMDb + '\n')
       }
     }
   }
-  console.log(titles)
+  let random = Math.floor(Math.random() * urls.length)
+  console.log('Chosen movie: ' + titles[random])
+  await page.goto(urls[random] + '/plotsummary#synopsis', { waitUntil: 'domcontentloaded', timeout: 0 })
+  let plot = await page.evaluate(el => el.textContent, (await page.$$('#plot-synopsis-content'))[0])
+  plot = plot.trim()
+  console.log(plot)
   browser.close()
 }
 scrapeIMDbStoryGen()
