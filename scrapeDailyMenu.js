@@ -1,6 +1,15 @@
 const puppeteer = require('puppeteer')
 const moment = require('moment')
 
+// get Day of Week
+const today = Number(moment().format('d'))
+const dayNames = []
+for (let i = 0; i < 7; i++) {
+  let day = moment(i, 'd').format('dddd')
+  dayNames.push(day)
+}
+console.log('*' + dayNames[today].toUpperCase() + '*\n' + '='.repeat(dayNames[today].length))
+
 async function scrapeMenu() {
   const browser = await puppeteer.launch({ headless: true })
   const page = await browser.newPage()
@@ -15,15 +24,6 @@ async function scrapeMenu() {
     }
   })
 
-  // get Day of Week
-  const today = Number(moment().format('d'))
-  const dayNames = []
-  for (let i = 0; i < 7; i++) {
-    let day = moment(i, 'd').format('dddd')
-    dayNames.push(day)
-  }
-  console.log('*' + dayNames[today].toUpperCase() + '*\n' + '='.repeat(dayNames[today].length))
-
   /*
   @ YAMATO
   ---------------------------------------
@@ -31,6 +31,9 @@ async function scrapeMenu() {
   * Address: Budapest, 1066, JÓKAI U. 30.
   * Phone: +36(70)681-75-44
   ---------------------------------------
+  description:
+  * yamatoArray: contains selectors for tha days of the week
+  * yamato: is the text inside selector (actualy menu), and also the final cleaned text to be displayed in output
   */
 
   // @ YAMATO selectors
@@ -51,8 +54,8 @@ async function scrapeMenu() {
   for (let i = today - 1; i < today; i++) {
     let yamato
     if ((await page.$(yamatoArray[i])) !== null) {
-      let yamatoRaw = await page.evaluate(el => el.innerText, await page.$(yamatoArray[i]))
-      yamato = yamatoRaw.replace(/(\n)/gm, ', ')
+      yamato = await page.evaluate(el => el.innerText, await page.$(yamatoArray[i]))
+      yamato = yamato.replace(/(\n)/gm, ', ')
     } else {
       yamato = '♪"No Milk Today"♫'
     }
@@ -66,6 +69,9 @@ async function scrapeMenu() {
   * Address: Budapest, Liszt Ferenc tér 9, 1061
   * Phone: (1) 268 1154
   -----------------------------------------
+  description:
+  * vianArray[1-2]: contains selectors for tha days of the week
+  * vian[1-2]: is the text inside selector (actualy menu) to be displayed in output
   */
 
   // @ VIAN selectors [1: first course, 2: main course]
@@ -95,7 +101,6 @@ async function scrapeMenu() {
     return document.querySelector(sel).getAttribute('src')
   }, linkSelectorVian)
   await page.goto(linkVian, { waitUntil: 'networkidle2', timeout: 0 })
-
   // @ VIAN Monday-Friday
   for (let i = today - 1; i < today; i++) {
     let vian1
@@ -159,7 +164,6 @@ async function scrapeMenu() {
   }, linkSelectorKorhely)
 
   await page.goto(linkKorhely, { waitUntil: 'networkidle2', timeout: 0 })
-  // let weeklySummaryKorhely = await page.evaluate(el => el.innerText, await page.$(weeklySummaryKorhelySelector))
   let weeklySoupKorhely = await page.evaluate(el => el.innerText, await page.$(weeklySoupKorhelySelector))
   weeklySoupKorhely = weeklySoupKorhely.replace('LEVESEK', '')
   let weeklyMainKorhely = await page.evaluate(el => el.innerText, await page.$(weeklyMainKorhelySelector))
@@ -186,6 +190,9 @@ async function scrapeMenu() {
   * Address: Budapest, Nagymező u. 14, 1065
   * Phone: (1) 343 1984
   -----------------------------------------
+  description:
+  * ketszerecsenArray[1-2]: contains selectors for tha days of the week
+  * ketszerecsen[1-2]: is the text inside selector (actualy menu) to be displayed in output
   */
 
   // @ KETSZERECSEN selectors [1: first course, 2: main course]
@@ -197,7 +204,6 @@ async function scrapeMenu() {
   await page.goto('https://ketszerecsen.hu/#daily', {
     waitUntil: 'networkidle2'
   })
-
   // @ KETSZERECSEN Monday-Friday
   for (let i = today - 1; i < today; i++) {
     let ketszerecsen1
@@ -297,7 +303,7 @@ async function scrapeMenu() {
     waitUntil: 'networkidle2'
   })
   // @ SUPPÉ selector, source: https://stackoverflow.com/questions/48448586/how-to-use-xpath-in-chrome-headlesspuppeteer-evaluate
-  // daily
+  // Daily
   const dailySuppeIncludes = (await page.$x('//span[contains(text(), "Sziasztok")]'))[0]
   let dailySuppe = await page.evaluate(el => {
     return el.textContent
@@ -321,7 +327,7 @@ async function scrapeMenu() {
   } else {
     console.log('• ' + dayNames[today] + ': ' + dailySuppe + '\n' + weeklySuppe + '\n')
   }
-  
+
   /*
   @ KARCSI
   ------------------------------------------
