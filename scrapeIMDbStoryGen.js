@@ -9,10 +9,9 @@ async function scrapeIMDbStoryGen() {
   let urlCountOnIMDb = (await page.$$('a')).length
   let urls = []
   let titles = []
-  let actorNames = []
   let n
   let plot
-  let actorNameRegex
+  let actorNames
   if (urlExistsOnIMDb !== null) {
     for (let i = 0; i < urlCountOnIMDb; i++) {
       let urlOnIMDbSelector = (await page.$$('a'))[i]
@@ -35,8 +34,7 @@ async function scrapeIMDbStoryGen() {
       console.log('Try #' + n)
       let random = Math.floor(Math.random() * urls.length)
       console.log('Chosen movie: ' + titles[random])
-      // ⚠️ DEBUG URL: PULP FICTION :: urls[random] ⚠️
-      await page.goto('https://www.imdb.com/title/tt0110912' + '/plotsummary#synopsis', {
+      await page.goto(urls[random] + '/plotsummary#synopsis', {
         waitUntil: 'domcontentloaded',
         timeout: 0
       })
@@ -49,20 +47,19 @@ async function scrapeIMDbStoryGen() {
       }
     } while (plot.includes("It looks like we don't have a Synopsis for this title yet. "))
     // matching as much as possible actor names based on IMDb patterns, regex source: https://stackoverflow.com/questions/7653942/find-names-with-regular-expression
-    actorNameRegex = plot.match(
+    actorNames = plot.match(
       /\(([A-Z]([a-z]+|\.)(?:\s+[A-Z]([a-z]+|\.))*(?:\s+[a-z][a-z\-]+){0,2}\s+[A-Z]([a-z]+|\.)+)\)/gm
     )
-    if (actorNameRegex !== null) {
-      actorNameRegex = actorNameRegex
+    if (actorNames !== null) {
+      actorNames = actorNames
         .toString()
         .replace(/\(|\)/g, '')
         .split(',')
-      actorNames.push(actorNameRegex)
       console.log('\nStarring: ' + actorNames)
     } else {
       console.log('\nNO ACTORS WERE LISTED')
     }
-  } while (actorNameRegex === null)
+  } while (actorNames === null)
   let actorNamesTwisted = [
     'Flamand a Plummer',
     'Tim Rothen Tomatoes',
@@ -82,13 +79,10 @@ async function scrapeIMDbStoryGen() {
     'Quentin Tarantella',
     'Harvey Keitel S. K.'
   ]
-  console.log(actorNames)
-  console.log(actorNamesTwisted)
   let plotTwist = plot
-  for (let i = 0; i < actorNames[0].length; i++) {
-    plotTwistMatch = plotTwist.match(actorNames[0][i])
+  for (let i = 0; i < actorNames.length; i++) {
+    plotTwistMatch = plotTwist.match(actorNames[i])
     plotTwist = plotTwist.replace(plotTwistMatch, actorNamesTwisted[i])
-    console.log(i + ' ' + actorNames[0][i] + ' ' + actorNamesTwisted[i] + 'al:' + actorNames[0].length)
   }
   console.log('\nTWISTED STORY: ' + plotTwist)
   browser.close()
