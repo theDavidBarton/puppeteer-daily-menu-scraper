@@ -9,7 +9,6 @@ async function scrapeIMDbStoryGen() {
   let urlCountOnIMDb = (await page.$$('a')).length
   let urls = []
   let titles = []
-  let n
   let plot
   let actorNames
   let actorNamesTwisted = []
@@ -35,10 +34,7 @@ async function scrapeIMDbStoryGen() {
   // try scraping movie plots until it finds one which have actor names in it
   do {
     do {
-      n = 0
-      n++
-      console.log('Try #' + n)
-      var random = Math.floor(Math.random() * urls.length)
+      var random = Math.floor(Math.random() * urls.length) // the only var : required outside of its scope
       console.log('Chosen movie: ' + titles[random])
       await page.goto(urls[random] + '/plotsummary#synopsis', {
         waitUntil: 'domcontentloaded',
@@ -47,7 +43,8 @@ async function scrapeIMDbStoryGen() {
       plot = await page.evaluate(el => el.textContent, (await page.$$('#plot-synopsis-content'))[0])
       plot = plot.trim()
       if (!plot.includes("It looks like we don't have a Synopsis for this title yet. ")) {
-        console.log(plot)
+        // print a spoiler free shortened plot summary
+        console.log(plot.substring(0, 2500) + '...')
       } else {
         console.log('THERE IS NO PLOT AVAILABLE')
       }
@@ -64,7 +61,6 @@ async function scrapeIMDbStoryGen() {
         .split(',')
       console.log('\nStarring: ')
       console.log(actorNames)
-
     } else {
       console.log('\nNO ACTORS WERE LISTED')
     }
@@ -82,7 +78,26 @@ async function scrapeIMDbStoryGen() {
       let castMemberSelector = (await page.$$('tr > td'))[i]
       let castMemberName = await page.evaluate(el => el.textContent, castMemberSelector)
       castMemberName = castMemberName.trim().replace('\n', '')
+      if (castMemberName.includes('Prime Video' || 'Amazon')) {
+        break // stop "over scraping" the cast list's selectors
+      }
       actorNamesTwisted.push(castMemberName)
+    }
+    // with a little help from my friends: some more names pre-defined in case the second cast list was too short
+    if (actorNamesTwisted.length < actorNames.length) {
+      let backupGuys = [
+        'Arnold Schwarzenegger',
+        'Sylvester Stallone',
+        'Bruce Willis',
+        'Harrison Ford',
+        'Mickey Mouse',
+        'Bela Lugosi',
+        'Michael Jordan',
+        'Donald Trump'
+      ]
+      for (let i = 0; i < actorNames.length - actorNamesTwisted.length; i++) {
+        actorNamesTwisted.push(backupGuys[i])
+      }
     }
   }
   console.log('\nStarring (re-casted): ')
@@ -94,7 +109,8 @@ async function scrapeIMDbStoryGen() {
     plotTwistMatch = plotTwist.match(actorNames[i])
     plotTwist = plotTwist.replace(plotTwistMatch, actorNamesTwisted[i])
   }
-  console.log('\nTWISTED STORY PLOT: ' + plotTwist)
+  // print a spoiler free shortened plot summary with the mixed names
+  console.log('\nTWISTED STORY PLOT: ' + plotTwist.substring(0, 2500) + '...')
   browser.close()
 }
 scrapeIMDbStoryGen()
