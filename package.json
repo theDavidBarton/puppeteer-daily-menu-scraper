@@ -1,10 +1,13 @@
 {
-  "dependencies": {},
   "devDependencies": {
     "expect": "^24.7.1",
+    "jest": "^24.7.1",
     "moment": "^2.24.0",
     "prettier": "^1.16.4",
     "puppeteer": "^1.14.0",
     "puppeteer-firefox": "^0.5.0"
+  },
+  "scripts": {
+    "test": "jest"
   }
 }
