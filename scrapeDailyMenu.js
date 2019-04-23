@@ -3,6 +3,7 @@ const moment = require('moment')
 
 // get Day of Week
 const today = Number(moment().format('d'))
+const todayFormatted = moment().format('LLLL')
 const dayNames = []
 for (let i = 0; i < 7; i++) {
   let day = moment(i, 'd').format('dddd')
@@ -23,6 +24,62 @@ async function scrapeMenu() {
       request.continue()
     }
   })
+
+  /*
+  @ KATA
+  ---------------------------------------
+  contact info:
+  * Address: Budapest, 1065, Hajós u. 27.
+  * Phone: +36(1) 302 4614
+  ---------------------------------------
+  description:
+  * this menu relies on if facebook page was updated with menu text
+  */
+
+  let kataName = 'Kata (Chagall) menu:'
+  console.log('*' + kataName + '* \n' + '-'.repeat(kataName.length))
+  await page.goto('https://www.facebook.com/pg/katarestaurantbudapest/posts/', {
+    waitUntil: 'networkidle2'
+  })
+  // @ KATA get timestamp
+  let dailyKataTimestamp = await page.evaluate(el => el.title, (await page.$$('abbr'))[0])
+  console.log(dailyKataTimestamp)
+  dailyKataTimestamp = moment(dailyKataTimestamp, 'YYYY-MM-DD hh:mm a').format('LLLL')
+  console.log('timestamp: ' + dailyKataTimestamp)
+  console.log('present: ' + todayFormatted)
+  console.log('present-1: ' + moment(todayFormatted, 'YYYY-MM-DD hh:mm a').subtract(1, 'day').format('LLLL'))
+  if (dailyKataTimestamp < todayFormatted) {
+    console.log('we are too old')
+  } else {
+    console.log('we are good')
+  }
+
+  // @ KATA selector, source: https://stackoverflow.com/questions/48448586/how-to-use-xpath-in-chrome-headlesspuppeteer-evaluate
+  // @ KATA Daily
+
+  const dailykataIncludes = (await page.$x('//span[contains(text(), "ebédmenü")]'))[0]
+  let dailykata = await page.evaluate(el => {
+    return el.textContent
+  }, dailykataIncludes)
+  dailykata = dailykata.replace(/Sziasztok, |, kellemes hétvégét!|, szép napot!|, várunk Titeket!/gi, '')
+  // @ KATA Weekly (on Monday)
+  const weeklykataIncludes = (await page.$x('//p[contains(text(), "Sziasztok")]'))[0]
+  let weeklykata = await page.evaluate(el => {
+    return el.textContent
+  }, weeklykataIncludes)
+  weeklykata = weeklykata.replace(/(?=sziasztok)(.*)(?=levesek )|(?=mai)(.*)(?=\s*)/gi, '')
+  // @ KATA Monday only (on Monday)
+  const mondaykataIncludes = (await page.$x('//p[contains(text(), "Sziasztok")]'))[0]
+  let mondaykata = await page.evaluate(el => {
+    return el.textContent
+  }, mondaykataIncludes)
+  mondaykata = mondaykata.replace(/(?=sziasztok)(.*)(?=levesek )|(, várunk Titeket!)/gi, '')
+
+  if (today === 1) {
+    console.log('• ' + dayNames[today] + ': ' + mondaykata + '\n')
+  } else {
+    console.log('• ' + dayNames[today] + ': ' + dailykata + '\n' + weeklykata + '\n')
+  }
 
   /*
   @ YAMATO
