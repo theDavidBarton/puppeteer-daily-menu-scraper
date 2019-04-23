@@ -47,7 +47,8 @@ async function scrapeMenu() {
   dailyKataTimestamp = moment(dailyKataTimestamp, 'YYYY-MM-DD hh:mm a').format('LLLL')
   console.log('timestamp: ' + dailyKataTimestamp)
   console.log('present: ' + todayFormatted)
-  console.log('present-1: ' + moment(todayFormatted, 'YYYY-MM-DD hh:mm a').subtract(1, 'day').format('LLLL'))
+  let minusOne = moment(todayFormatted.trim(), 'YYYY-MM-DD hh:mm a')
+  console.log(minusOne)
   if (dailyKataTimestamp < todayFormatted) {
     console.log('we are too old')
   } else {
@@ -57,29 +58,12 @@ async function scrapeMenu() {
   // @ KATA selector, source: https://stackoverflow.com/questions/48448586/how-to-use-xpath-in-chrome-headlesspuppeteer-evaluate
   // @ KATA Daily
 
-  const dailykataIncludes = (await page.$x('//span[contains(text(), "ebédmenü")]'))[0]
+  const dailykataIncludes = (await page.$$('p'))[0]
   let dailykata = await page.evaluate(el => {
     return el.textContent
   }, dailykataIncludes)
-  dailykata = dailykata.replace(/Sziasztok, |, kellemes hétvégét!|, szép napot!|, várunk Titeket!/gi, '')
-  // @ KATA Weekly (on Monday)
-  const weeklykataIncludes = (await page.$x('//p[contains(text(), "Sziasztok")]'))[0]
-  let weeklykata = await page.evaluate(el => {
-    return el.textContent
-  }, weeklykataIncludes)
-  weeklykata = weeklykata.replace(/(?=sziasztok)(.*)(?=levesek )|(?=mai)(.*)(?=\s*)/gi, '')
-  // @ KATA Monday only (on Monday)
-  const mondaykataIncludes = (await page.$x('//p[contains(text(), "Sziasztok")]'))[0]
-  let mondaykata = await page.evaluate(el => {
-    return el.textContent
-  }, mondaykataIncludes)
-  mondaykata = mondaykata.replace(/(?=sziasztok)(.*)(?=levesek )|(, várunk Titeket!)/gi, '')
 
-  if (today === 1) {
-    console.log('• ' + dayNames[today] + ': ' + mondaykata + '\n')
-  } else {
-    console.log('• ' + dayNames[today] + ': ' + dailykata + '\n' + weeklykata + '\n')
-  }
+    console.log('• ' + dayNames[today] + ': ' + dailykata + '\n')
 
   /*
   @ YAMATO
