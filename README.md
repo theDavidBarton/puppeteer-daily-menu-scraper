@@ -28,6 +28,20 @@ If you'd want the scraper's console output to be saved for later usage then run:
 node scrapeDailyMenu.js > tmp/output.txt
 ```
 
+### Run tests with jest
+
+Runs all the pptr tests with the ".test.js" name ending. Check the test runner settings in [package.json](/package.json) under "scripts".
+
+```shell_session
+yarn test
+```
+
+...or run a specific test, e.g.:
+
+```shell_session
+yarn test searchGoogleTranslate.test.js
+```
+
 ### Links
 
 [The home of Puppeteer](https://pptr.dev)
