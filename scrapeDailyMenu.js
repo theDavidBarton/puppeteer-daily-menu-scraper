@@ -64,6 +64,14 @@ async function scrapeMenu() {
 
   console.log('• ' + dayNames[today] + ': ' + dailykata + '\n')
   */
+
+   // @ KATA OCR
+   /*
+https://www.npmjs.com/package/ocr-space-api
+https://ocr.space/
+https://ocr.space/ocrapi#PostParameters
+ocrExample.js
+*/
   /*
   @ YAMATO
   ---------------------------------------

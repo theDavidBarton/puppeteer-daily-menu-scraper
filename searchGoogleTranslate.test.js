@@ -9,7 +9,7 @@ let browser
 let page
 
 // beforeAll starts
-beforeAll(async () => {
+beforeAll(async function() {
   browser = await puppeteer.launch({ headless: false, slowMo: 20 })
   page = await browser.newPage()
   await page.setViewport({ width: 1024, height: 768 })
@@ -17,16 +17,16 @@ beforeAll(async () => {
 // beforeAll ends
 
 // describe starts
-describe('Google Translate (FR)', () => {
+describe('Google Translate (FR)', function() {
   // test #1 starts
-  test('has title on French', async () => {
+  test('has title on French', async function() {
     await page.goto('https://translate.google.com/?hl=fr', { waitUntil: 'domcontentloaded', timeout: 0 })
     const title = await page.title()
     expect(title).toBe('Google Traduction')
   })
   // test #1 ends
   // test #2 starts
-  test('"puppeteer" (EN) word typed and translated to "marionnettiste" (FR)', async () => {
+  test('"puppeteer" (EN) word typed and translated to "marionnettiste" (FR)', async function() {
     await page.waitFor(500)
     await page.keyboard.type('puppeteer')
     await page.waitForSelector('.translation')
@@ -36,7 +36,7 @@ describe('Google Translate (FR)', () => {
   // test #2 ends
 
   // afterAll starts
-  afterAll(async () => {
+  afterAll(async function() {
     await browser.close()
   })
   // afterAll ends
