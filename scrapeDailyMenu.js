@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer')
 const moment = require('moment')
+const ocrSpaceApi = require('ocr-space-api')
 
 // get Day of Week
 const today = Number(moment().format('d'))
@@ -65,13 +66,74 @@ async function scrapeMenu() {
   console.log('• ' + dayNames[today] + ': ' + dailykata + '\n')
   */
 
-   // @ KATA OCR
-   /*
-https://www.npmjs.com/package/ocr-space-api
-https://ocr.space/
-https://ocr.space/ocrapi#PostParameters
-ocrExample.js
-*/
+  // @ KATA OCR
+  const imageUrl =
+    'https://scontent-vie1-1.xx.fbcdn.net/v/t1.0-9/57606561_339523573433574_6878472617980854272_n.jpg?_nc_cat=107&_nc_ht=scontent-vie1-1.xx&oh=6ebfbc5ad394316fdaed3c349c8d9d19&oe=5D2BD627'
+  // https://ocr.space/ocrapi#PostParameters
+  async function ocrSpace() {
+    try {
+      let parsedResult = await ocrSpaceApi.parseImageFromUrl(imageUrl, {
+        apikey: '<your_api_key_here>', // <your_api_key_here>
+        language: 'hun',
+        imageFormat: 'image/png',
+        scale: true,
+        isOverlayRequired: true
+      })
+      let kataParsedText = parsedResult.parsedText
+      switch (today) {
+        case 1:
+          let kataMonday = kataParsedText
+            .match(/\bHÉT((.*\r\n){3})/g)
+          kataMonday = kataMonday
+            .toString()
+            .toLowerCase()
+            .replace(/\r\n/, ', ')
+          console.log('• ' + dayNames[today] + ': ' + kataMonday)
+          break
+        case 2:
+          let kataTuesday = kataParsedText
+            .match(/\bKED((.*\r\n){3})/g)
+          kataTuesday = kataTuesday
+            .toString()
+            .toLowerCase()
+            .replace(/\r\n/, ', ')
+          console.log('• ' + dayNames[today] + ': ' + kataTuesday)
+          break
+        case 3:
+          let kataWednesday = kataParsedText
+            .match(/\bSZERD((.*\r\n){3})/g)
+          kataWednesday = kataWednesday
+            .toString()
+            .toLowerCase()
+            .replace(/\r\n/, ', ')
+          console.log('• ' + dayNames[today] + ': ' + kataWednesday)
+          break
+        case 4:
+          let kataThursday = kataParsedText
+            .match(/\bCSÜ((.*\r\n){3})/g)
+          kataThursday = kataThursday
+            .toString()
+            .toLowerCase()
+            .replace(/\r\n/, ', ')
+          console.log('• ' + dayNames[today] + ': ' + kataThursday)
+          break
+        case 5:
+          let kataFriday = kataParsedText
+            .match(/\bPÉNT((.*\r\n){3})/g)
+          kataFriday = kataFriday
+            .toString()
+            .toLowerCase()
+            .replace(/\r\n/, ', ')
+          console.log('• ' + dayNames[today] + ': ' + kataFriday)
+          break
+        default:
+          console.log('Saturday as working day, eh?')
+      }
+    } catch (e) {
+      console.error(e)
+    }
+  }
+  ocrSpace()
   /*
   @ YAMATO
   ---------------------------------------
