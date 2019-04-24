@@ -4,6 +4,9 @@ const moment = require('moment')
 // get Day of Week
 const today = Number(moment().format('d'))
 const todayFormatted = moment().format('LLLL')
+const todayMinusOne = moment(todayFormatted, 'LLLL')
+  .subtract(1, 'day')
+  .format('LLLL')
 const dayNames = []
 for (let i = 0; i < 7; i++) {
   let day = moment(i, 'd').format('dddd')
@@ -42,29 +45,25 @@ async function scrapeMenu() {
     waitUntil: 'networkidle2'
   })
   // @ KATA get timestamp
+  let dailyKataTimestampSelector = (await page.$$('.timestampContent'))[0]
   let dailyKataTimestamp = await page.evaluate(el => el.title, (await page.$$('abbr'))[0])
-  console.log(dailyKataTimestamp)
   dailyKataTimestamp = moment(dailyKataTimestamp, 'YYYY-MM-DD hh:mm a').format('LLLL')
-  console.log('timestamp: ' + dailyKataTimestamp)
-  console.log('present: ' + todayFormatted)
-  let minusOne = moment(todayFormatted.trim(), 'YYYY-MM-DD hh:mm a')
-  console.log(minusOne)
-  if (dailyKataTimestamp < todayFormatted) {
-    console.log('we are too old')
+  if (dailyKataTimestamp < todayMinusOne) {
+    console.log('Kata menu is older than 24 hours')
   } else {
-    console.log('we are good')
+    console.log('Kata menu is uptodate')
   }
-
-  // @ KATA selector, source: https://stackoverflow.com/questions/48448586/how-to-use-xpath-in-chrome-headlesspuppeteer-evaluate
+  // @ KATA selector
   // @ KATA Daily
+  /*
+  await page.click(dailyKataTimestampSelector)
+  console.log('click on ' + dailyKataTimestampSelector)
+  let dailykataImgSrc = (await page.$$('img.spotlight'))[0]
+  console.log('store ' + dailykataImgSrc)
+  let dailykata = await page.evaluate(el => el.src, dailykataImgSrc)
 
-  const dailykataIncludes = (await page.$$('p'))[0]
-  let dailykata = await page.evaluate(el => {
-    return el.textContent
-  }, dailykataIncludes)
-
-    console.log('• ' + dayNames[today] + ': ' + dailykata + '\n')
-
+  console.log('• ' + dayNames[today] + ': ' + dailykata + '\n')
+  */
   /*
   @ YAMATO
   ---------------------------------------
