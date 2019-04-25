@@ -16,7 +16,7 @@ for (let i = 0; i < 7; i++) {
 console.log('*' + dayNames[today].toUpperCase() + '*\n' + '='.repeat(dayNames[today].length))
 
 async function scrapeMenu() {
-  const browser = await puppeteer.launch({ headless: false })
+  const browser = await puppeteer.launch({ headless: true })
   const page = await browser.newPage()
 
   // abort all images, source: https://github.com/GoogleChrome/puppeteer/blob/master/examples/block-images.js
@@ -41,86 +41,54 @@ async function scrapeMenu() {
   */
 
   let kataName = 'Kata (Chagall) menu:'
-  await page.goto('https://www.facebook.com/pg/katarestaurantbudapest/photos/?tab=album&album_id=324832854902646', {
+  await page.goto('https://www.facebook.com/pg/katarestaurantbudapest/posts/', {
     waitUntil: 'domcontentloaded'
   })
-
   // @ KATA the hunt for the menu image src
+  let imageUrlArray = []
   try {
-    for (let i = 0; i < 17; i++) {
-      console.log(i)
-      await page.waitFor(5000)
-      const imageUrlSelector = (await page.$$('div > a > img'))[i]
-      await page.click(imageUrlSelector)
-      await page.waitFor(5000)
-      const imageUrl = await page.evaluate(el => el.src, (await page.$$('img.spotlight'))[0])
-      console.log(imageUrl)
+    const facebookImageUrlSelector = await page.$$('.scaledImageFitWidth')
+    for (let i = 0; i < facebookImageUrlSelector.length; i++) {
+      let imageUrl = await page.evaluate(el => el.src, facebookImageUrlSelector[i])
+      imageUrlArray.push(imageUrl)
     }
   } catch (e) {
     console.error(e)
   }
-  const imageUrl =
-    'https://scontent-vie1-1.xx.fbcdn.net/v/t1.0-9/57606561_339523573433574_6878472617980854272_n.jpg?_nc_cat=107&_nc_ht=scontent-vie1-1.xx&oh=6ebfbc5ad394316fdaed3c349c8d9d19&oe=5D2BD627'
   // @ KATA OCR
   // https://ocr.space/ocrapi#PostParameters
+  let kataParsedText
+  let kataDaysRegex = [
+    '',
+    /\bHÉT((.*\r\n){3})/g,
+    /\bKED((.*\r\n){3})/g,
+    /\bSZERD((.*\r\n){3})/g,
+    /\bCSÜ((.*\r\n){3})/g,
+    /\bPÉNT((.*\r\n){3})/g
+  ]
   try {
-    let parsedResult = await ocrSpaceApi.parseImageFromUrl(imageUrl, {
-      apikey: '<your_api_key_here>', // <your_api_key_here>
-      language: 'hun',
-      imageFormat: 'image/png',
-      scale: true,
-      isOverlayRequired: true
-    })
-    let kataParsedText = parsedResult.parsedText
-    switch (today) {
-      case 1:
-        let kataMonday = kataParsedText.match(/\bHÉT((.*\r\n){3})/g)
-        kataMonday = kataMonday
-          .toString()
-          .toLowerCase()
-          .split(/\r\n/)
-        console.log('*' + kataName + '* \n' + '-'.repeat(kataName.length))
-        console.log('• ' + dayNames[today] + ': ' + kataMonday[1] + ', ' + kataMonday[2] + '\n')
-        break
-      case 2:
-        let kataTuesday = kataParsedText.match(/\bKED((.*\r\n){3})/g)
-        kataTuesday = kataTuesday
-          .toString()
-          .toLowerCase()
-          .split(/\r\n/)
-        console.log('*' + kataName + '* \n' + '-'.repeat(kataName.length))
-        console.log('• ' + dayNames[today] + ': ' + kataTuesday[1] + ', ' + kataTuesday[2] + '\n')
-        break
-      case 3:
-        let kataWednesday = kataParsedText.match(/\bSZERD((.*\r\n){3})/g)
-        kataWednesday = kataWednesday
-          .toString()
-          .toLowerCase()
-          .split(/\r\n/)
-        console.log('*' + kataName + '* \n' + '-'.repeat(kataName.length))
-        console.log('• ' + dayNames[today] + ': ' + kataWednesday[1] + ', ' + kataWednesday[2] + '\n')
-        break
-      case 4:
-        let kataThursday = kataParsedText.match(/\bCSÜ((.*\r\n){3})/g)
-        kataThursday = kataThursday
-          .toString()
-          .toLowerCase()
-          .split(/\r\n/)
-        console.log('*' + kataName + '* \n' + '-'.repeat(kataName.length))
-        console.log('• ' + dayNames[today] + ': ' + kataThursday[1] + ', ' + kataThursday[2] + '\n')
-        break
-      case 5:
-        let kataFriday = kataParsedText.match(/\bPÉNT((.*\r\n){3})/g)
-        kataFriday = kataFriday
-          .toString()
-          .toLowerCase()
-          .split(/\r\n/)
-        console.log('*' + kataName + '* \n' + '-'.repeat(kataName.length))
-        console.log('• ' + dayNames[today] + ': ' + kataFriday[1] + ', ' + kataFriday[2] + '\n')
-        break
-      default:
-        console.log('*' + kataName + '* \n' + '-'.repeat(kataName.length))
-        console.log('Saturday as working day, eh?\n')
+    forlabel: for (let j = 0; j < imageUrlArray.length; j++) {
+      let parsedResult = await ocrSpaceApi.parseImageFromUrl(imageUrlArray[j], {
+        apikey: '<your_api_key_here>', // <your_api_key_here>
+        language: 'hun',
+        imageFormat: 'image/png',
+        scale: true,
+        isOverlayRequired: true
+      })
+      kataParsedText = parsedResult.parsedText
+      if (kataParsedText.match(/espresso/gi)) {
+        // @ KATA Monday-Friday
+        for (let i = today; i < today + 1; i++) {
+          let kataDaily = kataParsedText.match(kataDaysRegex[i])
+          kataDaily = kataDaily
+            .toString()
+            .toLowerCase()
+            .split(/\r\n/)
+          console.log('*' + kataName + '* \n' + '-'.repeat(kataName.length))
+          console.log('• ' + dayNames[today] + ': ' + kataDaily[1] + ', ' + kataDaily[2] + '\n')
+          break forlabel
+        }
+      }
     }
   } catch (e) {
     console.error(e)
@@ -152,6 +120,7 @@ async function scrapeMenu() {
 
   // @ YAMATO selectors
   let yamatoArray = [
+    '',
     'body > div > h6:nth-child(2)',
     'body > div > h6:nth-child(4)',
     'body > div > h6:nth-child(6)',
@@ -165,7 +134,7 @@ async function scrapeMenu() {
     timout: 0
   })
   // @ YAMATO Monday-Friday
-  for (let i = today - 1; i < today; i++) {
+  for (let i = today; i < today + 1; i++) {
     let yamato
     if ((await page.$(yamatoArray[i])) !== null) {
       yamato = await page.evaluate(el => el.innerText, await page.$(yamatoArray[i]))
@@ -174,7 +143,7 @@ async function scrapeMenu() {
       yamato = '♪"No Milk Today"♫'
     }
     console.log('*' + yamatoName + '* \n' + '-'.repeat(yamatoName.length))
-    console.log('• ' + dayNames[i + 1] + ': ' + yamato + '\n')
+    console.log('• ' + dayNames[today] + ': ' + yamato + '\n')
   }
 
   /*
@@ -191,6 +160,7 @@ async function scrapeMenu() {
 
   // @ VIAN selectors [1: first course, 2: main course]
   let vianArray1 = [
+    '',
     '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(1) > div:nth-child(1) > div.heartyQ2riU',
     '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(2) > div:nth-child(1) > div.heartyQ2riU',
     '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(3) > div:nth-child(1) > div.heartyQ2riU',
@@ -198,6 +168,7 @@ async function scrapeMenu() {
     '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(5) > div:nth-child(1) > div.heartyQ2riU'
   ]
   let vianArray2 = [
+    '',
     '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(1) > div.hearty2QDOd > div > div > div.heartyQogjj > span',
     '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(2) > div.hearty2QDOd > div > div > div.heartyQogjj > span',
     '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(3) > div.hearty2QDOd > div > div > div.heartyQogjj > span',
@@ -220,7 +191,7 @@ async function scrapeMenu() {
     timeout: 0
   })
   // @ VIAN Monday-Friday
-  for (let i = today - 1; i < today; i++) {
+  for (let i = today; i < today + 1; i++) {
     let vian1
     let vian2
     if ((await page.$(vianArray1[i])) !== null) {
@@ -231,7 +202,7 @@ async function scrapeMenu() {
       vian2 = ''
     }
     console.log('*' + vianName + '* \n' + '-'.repeat(vianName.length))
-    console.log('• ' + dayNames[i + 1] + ': ' + vian1 + ', ' + vian2 + '\n')
+    console.log('• ' + dayNames[today] + ': ' + vian1 + ', ' + vian2 + '\n')
   }
 
   /*
@@ -318,15 +289,29 @@ async function scrapeMenu() {
   */
 
   // @ KETSZERECSEN selectors [1: first course, 2: main course]
-  let ketszerecsenArray1 = ['p:nth-child(3)', 'p:nth-child(6)', 'p:nth-child(9)', 'p:nth-child(12)', 'p:nth-child(15)']
-  let ketszerecsenArray2 = ['p:nth-child(4)', 'p:nth-child(7)', 'p:nth-child(10)', 'p:nth-child(13)', 'p:nth-child(16)']
+  let ketszerecsenArray1 = [
+    '',
+    'p:nth-child(3)',
+    'p:nth-child(6)',
+    'p:nth-child(9)',
+    'p:nth-child(12)',
+    'p:nth-child(15)'
+  ]
+  let ketszerecsenArray2 = [
+    '',
+    'p:nth-child(4)',
+    'p:nth-child(7)',
+    'p:nth-child(10)',
+    'p:nth-child(13)',
+    'p:nth-child(16)'
+  ]
 
   let ketszerecsenName = 'Ketszerecsen Bisztro menu:'
   await page.goto('https://ketszerecsen.hu/#daily', {
     waitUntil: 'networkidle2'
   })
   // @ KETSZERECSEN Monday-Friday
-  for (let i = today - 1; i < today; i++) {
+  for (let i = today; i < today + 1; i++) {
     let ketszerecsen1
     let ketszerecsen2
     if ((await page.$(ketszerecsenArray1[i])) !== null) {
@@ -337,7 +322,7 @@ async function scrapeMenu() {
       ketszerecsen2 = ''
     }
     console.log('*' + ketszerecsenName + '* \n' + '-'.repeat(ketszerecsenName.length))
-    console.log('• ' + dayNames[i + 1] + ': ' + ketszerecsen1 + ', ' + ketszerecsen2 + '\n')
+    console.log('• ' + dayNames[today] + ': ' + ketszerecsen1 + ', ' + ketszerecsen2 + '\n')
   }
 
   /*
