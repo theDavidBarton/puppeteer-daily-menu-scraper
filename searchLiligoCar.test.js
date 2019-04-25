@@ -6,7 +6,7 @@ let browser
 let page
 let navigationPromise
 
-beforeAll(async () => {
+beforeAll(async function() {
   browser = await puppeteer.launch({ headless: false, slowMo: 20 })
   page = await browser.newPage()
   navigationPromise = page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 0 })
@@ -46,8 +46,8 @@ const clickoutSeo = '.sc-searchform' // the searchform's background on SEO (sc)
 const simplePagination = 'div.simplepagination-filter'
 const carResultItem = '.car-result-item'
 
-describe('Liligo Car search', () => {
-  test('GIVEN I am on the SEO page: ' + urlCarEntrypage, async () => {
+describe('Liligo Car search', function() {
+  test('GIVEN I am on the SEO page: ' + urlCarEntrypage, async function() {
     await page.goto(urlCarEntrypage, { waitUntil: 'domcontentloaded', timeout: 0 }) // Firefox: remove "{ waitUntil: 'networkidle2', timeout: 0 }"
   })
 
@@ -57,12 +57,12 @@ describe('Liligo Car search', () => {
    -----------------------------------
   */
 
-  test('AND page title contains ' + carEntryPageTitlePart, async () => {
+  test('AND page title contains ' + carEntryPageTitlePart, async function() {
     let carEntryPageTitle = await page.title()
     expect(carEntryPageTitle).toContain(carEntryPageTitlePart)
   })
 
-  test('WHEN I set pick up with keyboard and arrows', async () => {
+  test('WHEN I set pick up with keyboard and arrows', async function() {
     await page.waitForSelector(carPickup)
     await page.click(carPickup)
     await page.keyboard.type(carPickupTypeLetters)
@@ -80,7 +80,7 @@ describe('Liligo Car search', () => {
    -----------------------------------
   */
 
-  test('AND I clickout from homepage searchform', async () => {
+  test('AND I clickout from homepage searchform', async function() {
     await Promise.race([page.waitForSelector(clickoutHome), page.waitForSelector(clickoutSeo)])
     if ((await page.$(clickoutHome)) !== null) {
       await page.click(clickoutHome)
@@ -89,12 +89,12 @@ describe('Liligo Car search', () => {
     }
   })
 
-  test('AND I deselect comparesites', async () => {
+  test('AND I deselect comparesites', async function() {
     await page.waitForSelector(deselectComparesite)
     await page.click(deselectComparesite)
   })
 
-  test('AND I launch search', async () => {
+  test('AND I launch search', async function() {
     await page.waitForSelector(carSubmit)
     await page.click(carSubmit)
   })
@@ -105,11 +105,11 @@ describe('Liligo Car search', () => {
    -----------------------------------
   */
 
-  test('THEN resultpage appears', async () => {
+  test('THEN resultpage appears', async function() {
     await page.waitForSelector(carResultItem)
   })
 
-  test('AND pickup from result header matches from homepage', async () => {
+  test('AND pickup from result header matches from homepage', async function() {
     const pickupHeaderSelector = (await page.$$('.results-header-code'))[0]
     let pickupHeaderContent = await page.evaluate(el => el.textContent, pickupHeaderSelector)
     expect(pickupHeaderContent).toBe(pickupHeaderContentToBe)
@@ -118,7 +118,7 @@ describe('Liligo Car search', () => {
     await page.waitForSelector(simplePagination)
   })
 
-  afterAll(async () => {
+  afterAll(async function() {
     await browser.close()
   })
 })
