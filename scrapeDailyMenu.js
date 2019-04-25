@@ -16,7 +16,7 @@ for (let i = 0; i < 7; i++) {
 console.log('*' + dayNames[today].toUpperCase() + '*\n' + '='.repeat(dayNames[today].length))
 
 async function scrapeMenu() {
-  const browser = await puppeteer.launch({ headless: true })
+  const browser = await puppeteer.launch({ headless: false })
   const page = await browser.newPage()
 
   // abort all images, source: https://github.com/GoogleChrome/puppeteer/blob/master/examples/block-images.js
@@ -37,15 +37,97 @@ async function scrapeMenu() {
   * Phone: +36(1) 302 4614
   ---------------------------------------
   description:
-  * this menu relies on if facebook page was updated with menu text
+  * this daily menu relies on if a menu (recognizable for OCR) is available among timeline photos
   */
 
   let kataName = 'Kata (Chagall) menu:'
-  console.log('*' + kataName + '* \n' + '-'.repeat(kataName.length))
-  await page.goto('https://www.facebook.com/pg/katarestaurantbudapest/posts/', {
-    waitUntil: 'networkidle2'
+  await page.goto('https://www.facebook.com/pg/katarestaurantbudapest/photos/?tab=album&album_id=324832854902646', {
+    waitUntil: 'domcontentloaded'
   })
+
+  // @ KATA the hunt for the menu image src
+  try {
+    for (let i = 0; i < 17; i++) {
+      console.log(i)
+      await page.waitFor(5000)
+      const imageUrlSelector = (await page.$$('div > a > img'))[i]
+      await page.click(imageUrlSelector)
+      await page.waitFor(5000)
+      const imageUrl = await page.evaluate(el => el.src, (await page.$$('img.spotlight'))[0])
+      console.log(imageUrl)
+    }
+  } catch (e) {
+    console.error(e)
+  }
+  const imageUrl =
+    'https://scontent-vie1-1.xx.fbcdn.net/v/t1.0-9/57606561_339523573433574_6878472617980854272_n.jpg?_nc_cat=107&_nc_ht=scontent-vie1-1.xx&oh=6ebfbc5ad394316fdaed3c349c8d9d19&oe=5D2BD627'
+  // @ KATA OCR
+  // https://ocr.space/ocrapi#PostParameters
+  try {
+    let parsedResult = await ocrSpaceApi.parseImageFromUrl(imageUrl, {
+      apikey: '<your_api_key_here>', // <your_api_key_here>
+      language: 'hun',
+      imageFormat: 'image/png',
+      scale: true,
+      isOverlayRequired: true
+    })
+    let kataParsedText = parsedResult.parsedText
+    switch (today) {
+      case 1:
+        let kataMonday = kataParsedText.match(/\bHÉT((.*\r\n){3})/g)
+        kataMonday = kataMonday
+          .toString()
+          .toLowerCase()
+          .split(/\r\n/)
+        console.log('*' + kataName + '* \n' + '-'.repeat(kataName.length))
+        console.log('• ' + dayNames[today] + ': ' + kataMonday[1] + ', ' + kataMonday[2] + '\n')
+        break
+      case 2:
+        let kataTuesday = kataParsedText.match(/\bKED((.*\r\n){3})/g)
+        kataTuesday = kataTuesday
+          .toString()
+          .toLowerCase()
+          .split(/\r\n/)
+        console.log('*' + kataName + '* \n' + '-'.repeat(kataName.length))
+        console.log('• ' + dayNames[today] + ': ' + kataTuesday[1] + ', ' + kataTuesday[2] + '\n')
+        break
+      case 3:
+        let kataWednesday = kataParsedText.match(/\bSZERD((.*\r\n){3})/g)
+        kataWednesday = kataWednesday
+          .toString()
+          .toLowerCase()
+          .split(/\r\n/)
+        console.log('*' + kataName + '* \n' + '-'.repeat(kataName.length))
+        console.log('• ' + dayNames[today] + ': ' + kataWednesday[1] + ', ' + kataWednesday[2] + '\n')
+        break
+      case 4:
+        let kataThursday = kataParsedText.match(/\bCSÜ((.*\r\n){3})/g)
+        kataThursday = kataThursday
+          .toString()
+          .toLowerCase()
+          .split(/\r\n/)
+        console.log('*' + kataName + '* \n' + '-'.repeat(kataName.length))
+        console.log('• ' + dayNames[today] + ': ' + kataThursday[1] + ', ' + kataThursday[2] + '\n')
+        break
+      case 5:
+        let kataFriday = kataParsedText.match(/\bPÉNT((.*\r\n){3})/g)
+        kataFriday = kataFriday
+          .toString()
+          .toLowerCase()
+          .split(/\r\n/)
+        console.log('*' + kataName + '* \n' + '-'.repeat(kataName.length))
+        console.log('• ' + dayNames[today] + ': ' + kataFriday[1] + ', ' + kataFriday[2] + '\n')
+        break
+      default:
+        console.log('*' + kataName + '* \n' + '-'.repeat(kataName.length))
+        console.log('Saturday as working day, eh?\n')
+    }
+  } catch (e) {
+    console.error(e)
+  }
+
   // @ KATA get timestamp
+  /*
   let dailyKataTimestampSelector = (await page.$$('.timestampContent'))[0]
   let dailyKataTimestamp = await page.evaluate(el => el.title, (await page.$$('abbr'))[0])
   dailyKataTimestamp = moment(dailyKataTimestamp, 'YYYY-MM-DD hh:mm a').format('LLLL')
@@ -54,86 +136,8 @@ async function scrapeMenu() {
   } else {
     console.log('Kata menu is uptodate')
   }
-  // @ KATA selector
-  // @ KATA Daily
-  /*
-  await page.click(dailyKataTimestampSelector)
-  console.log('click on ' + dailyKataTimestampSelector)
-  let dailykataImgSrc = (await page.$$('img.spotlight'))[0]
-  console.log('store ' + dailykataImgSrc)
-  let dailykata = await page.evaluate(el => el.src, dailykataImgSrc)
-
-  console.log('• ' + dayNames[today] + ': ' + dailykata + '\n')
   */
 
-  // @ KATA OCR
-  const imageUrl =
-    'https://scontent-vie1-1.xx.fbcdn.net/v/t1.0-9/57606561_339523573433574_6878472617980854272_n.jpg?_nc_cat=107&_nc_ht=scontent-vie1-1.xx&oh=6ebfbc5ad394316fdaed3c349c8d9d19&oe=5D2BD627'
-  // https://ocr.space/ocrapi#PostParameters
-  async function ocrSpace() {
-    try {
-      let parsedResult = await ocrSpaceApi.parseImageFromUrl(imageUrl, {
-        apikey: '<your_api_key_here>', // <your_api_key_here>
-        language: 'hun',
-        imageFormat: 'image/png',
-        scale: true,
-        isOverlayRequired: true
-      })
-      let kataParsedText = parsedResult.parsedText
-      switch (today) {
-        case 1:
-          let kataMonday = kataParsedText
-            .match(/\bHÉT((.*\r\n){3})/g)
-          kataMonday = kataMonday
-            .toString()
-            .toLowerCase()
-            .replace(/\r\n/, ', ')
-          console.log('• ' + dayNames[today] + ': ' + kataMonday)
-          break
-        case 2:
-          let kataTuesday = kataParsedText
-            .match(/\bKED((.*\r\n){3})/g)
-          kataTuesday = kataTuesday
-            .toString()
-            .toLowerCase()
-            .replace(/\r\n/, ', ')
-          console.log('• ' + dayNames[today] + ': ' + kataTuesday)
-          break
-        case 3:
-          let kataWednesday = kataParsedText
-            .match(/\bSZERD((.*\r\n){3})/g)
-          kataWednesday = kataWednesday
-            .toString()
-            .toLowerCase()
-            .replace(/\r\n/, ', ')
-          console.log('• ' + dayNames[today] + ': ' + kataWednesday)
-          break
-        case 4:
-          let kataThursday = kataParsedText
-            .match(/\bCSÜ((.*\r\n){3})/g)
-          kataThursday = kataThursday
-            .toString()
-            .toLowerCase()
-            .replace(/\r\n/, ', ')
-          console.log('• ' + dayNames[today] + ': ' + kataThursday)
-          break
-        case 5:
-          let kataFriday = kataParsedText
-            .match(/\bPÉNT((.*\r\n){3})/g)
-          kataFriday = kataFriday
-            .toString()
-            .toLowerCase()
-            .replace(/\r\n/, ', ')
-          console.log('• ' + dayNames[today] + ': ' + kataFriday)
-          break
-        default:
-          console.log('Saturday as working day, eh?')
-      }
-    } catch (e) {
-      console.error(e)
-    }
-  }
-  ocrSpace()
   /*
   @ YAMATO
   ---------------------------------------
@@ -154,8 +158,8 @@ async function scrapeMenu() {
     'body > div > h6:nth-child(8)',
     'body > div > h6:nth-child(10)'
   ]
+
   let yamatoName = 'Yamato menu:'
-  console.log('*' + yamatoName + '* \n' + '-'.repeat(yamatoName.length))
   await page.goto('https://www.wasabi.hu/napimenu.php?source=yamato&lang=hu', {
     waitUntil: 'networkidle2',
     timout: 0
@@ -169,6 +173,7 @@ async function scrapeMenu() {
     } else {
       yamato = '♪"No Milk Today"♫'
     }
+    console.log('*' + yamatoName + '* \n' + '-'.repeat(yamatoName.length))
     console.log('• ' + dayNames[i + 1] + ': ' + yamato + '\n')
   }
 
@@ -199,8 +204,8 @@ async function scrapeMenu() {
     '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(4) > div.hearty2QDOd > div > div > div.heartyQogjj > span',
     '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(5) > div.hearty2QDOd > div > div > div.heartyQogjj > span'
   ]
+
   let vianName = 'Cafe vian menu:'
-  console.log('*' + vianName + '* \n' + '-'.repeat(vianName.length))
   await page.goto('http://www.cafevian.com/ebedmenue', {
     waitUntil: 'networkidle2',
     timeout: 0
@@ -225,6 +230,7 @@ async function scrapeMenu() {
       vian1 = '♪"No Milk Today"♫'
       vian2 = ''
     }
+    console.log('*' + vianName + '* \n' + '-'.repeat(vianName.length))
     console.log('• ' + dayNames[i + 1] + ': ' + vian1 + ', ' + vian2 + '\n')
   }
 
@@ -241,7 +247,6 @@ async function scrapeMenu() {
   const dailyPecsenyesSelector = '#tabsContent1 > div'
 
   let pecsenyesName = 'A-Pecsenyés menu:'
-  console.log('*' + pecsenyesName + '* \n' + '-'.repeat(pecsenyesName.length))
   await page.goto('http://www.napimenu.hu/budapest/adatlap/a-pecsenyes', {
     waitUntil: 'networkidle2'
   })
@@ -250,6 +255,7 @@ async function scrapeMenu() {
   dailyPecsenyes = dailyPecsenyes.replace(/(\n)/gm, ', ')
   dailyPecsenyes = dailyPecsenyes.replace('Napi ebéd menü A-Pecsenyés, ', '')
 
+  console.log('*' + pecsenyesName + '* \n' + '-'.repeat(pecsenyesName.length))
   console.log('• Daily menu: ' + dailyPecsenyes + '\n')
 
   /*
@@ -267,7 +273,6 @@ async function scrapeMenu() {
   const weeklyDessertKorhelySelector = '#mainDiv > div > div:nth-child(2) > section > ul > li:nth-child(3)'
 
   let korhelyName = 'Korhely menu:'
-  console.log('*' + korhelyName + '* \n' + '-'.repeat(korhelyName.length))
   await page.goto('http://www.korhelyfaloda.hu/menu', {
     waitUntil: 'networkidle2',
     timeout: 0
@@ -287,6 +292,7 @@ async function scrapeMenu() {
   let weeklyDessertKorhely = await page.evaluate(el => el.innerText, await page.$(weeklyDessertKorhelySelector))
   weeklyDessertKorhely = weeklyDessertKorhely.replace('DESSZERTEK', '')
 
+  console.log('*' + korhelyName + '* \n' + '-'.repeat(korhelyName.length))
   console.log(
     '• Soups: ' +
       weeklySoupKorhely +
@@ -316,7 +322,6 @@ async function scrapeMenu() {
   let ketszerecsenArray2 = ['p:nth-child(4)', 'p:nth-child(7)', 'p:nth-child(10)', 'p:nth-child(13)', 'p:nth-child(16)']
 
   let ketszerecsenName = 'Ketszerecsen Bisztro menu:'
-  console.log('*' + ketszerecsenName + '* \n' + '-'.repeat(ketszerecsenName.length))
   await page.goto('https://ketszerecsen.hu/#daily', {
     waitUntil: 'networkidle2'
   })
@@ -331,6 +336,7 @@ async function scrapeMenu() {
       ketszerecsen1 = '♪"No Milk Today"♫'
       ketszerecsen2 = ''
     }
+    console.log('*' + ketszerecsenName + '* \n' + '-'.repeat(ketszerecsenName.length))
     console.log('• ' + dayNames[i + 1] + ': ' + ketszerecsen1 + ', ' + ketszerecsen2 + '\n')
   }
 
@@ -348,12 +354,12 @@ async function scrapeMenu() {
   const dailyFruccolaSelector2 = '#dailymenu-holder > li.arany.today > div.main-dish > p.description'
 
   let fruccolaName = 'Fruccola (Arany Janos utca) menu:'
-  console.log('*' + fruccolaName + '* \n' + '-'.repeat(fruccolaName.length))
   await page.goto('http://fruccola.hu/hu', { waitUntil: 'networkidle2' })
   // @ FRUCCOLA Daily
   const dailyFruccola1 = await page.evaluate(el => el.innerText, await page.$(dailyFruccolaSelector1))
   const dailyFruccola2 = await page.evaluate(el => el.innerText, await page.$(dailyFruccolaSelector2))
 
+  console.log('*' + fruccolaName + '* \n' + '-'.repeat(fruccolaName.length))
   console.log('• Daily menu: ' + dailyFruccola1 + ', ' + dailyFruccola2 + '\n')
 
   /*
@@ -370,7 +376,6 @@ async function scrapeMenu() {
   const dailyKamraSelector = '.shop_today_title'
 
   let kamraName = 'Kamra menu:'
-  console.log('*' + kamraName + '* \n' + '-'.repeat(kamraName.length))
   await page.goto('http://www.kamraetelbar.hu/kamra_etelbar_mai_menu.html', {
     waitUntil: 'networkidle2'
   })
@@ -379,6 +384,7 @@ async function scrapeMenu() {
   // stores all elements with same ID, source: https://stackoverflow.com/questions/54677126/how-to-select-all-child-div-with-same-class-using-puppeteer
   const dailyKamra = await page.$$eval(dailyKamraSelector, divs => divs.map(({ innerText }) => innerText))
 
+  console.log('*' + kamraName + '* \n' + '-'.repeat(kamraName.length))
   console.log('• ' + dayKamra + ' daily menu: ' + dailyKamra + '\n')
 
   /*
@@ -394,7 +400,6 @@ async function scrapeMenu() {
   const dailyRozaSelector = '.text_exposed_show'
 
   let rozaName = 'Roza menu:'
-  console.log('*' + rozaName + '* \n' + '-'.repeat(rozaName.length))
   await page.goto('https://www.facebook.com/pg/rozafinomitt/posts/?ref=page_internal', {
     waitUntil: 'networkidle2'
   })
@@ -402,6 +407,7 @@ async function scrapeMenu() {
   let dailyRoza = await page.evaluate(el => el.innerText, await page.$(dailyRozaSelector))
   dailyRoza = dailyRoza.replace(/🍲|🥪|🥧|❤️/g, '')
 
+  console.log('*' + rozaName + '* \n' + '-'.repeat(rozaName.length))
   console.log('• Daily menu: ' + dailyRoza + '\n')
 
   /*
@@ -418,7 +424,6 @@ async function scrapeMenu() {
   */
 
   let suppeName = 'Suppé menu:'
-  console.log('*' + suppeName + '* \n' + '-'.repeat(suppeName.length))
   await page.goto('https://www.facebook.com/pg/bistrosuppe/posts/?ref=page_internal', {
     waitUntil: 'networkidle2'
   })
@@ -442,6 +447,7 @@ async function scrapeMenu() {
   }, mondaySuppeIncludes)
   mondaySuppe = mondaySuppe.replace(/(?=sziasztok)(.*)(?=levesek )|(, várunk Titeket!)/gi, '')
 
+  console.log('*' + suppeName + '* \n' + '-'.repeat(suppeName.length))
   if (today === 1) {
     console.log('• ' + dayNames[today] + ': ' + mondaySuppe + '\n')
   } else {
@@ -458,10 +464,11 @@ async function scrapeMenu() {
   */
 
   let karcsiName = 'Karcsi menu:'
-  console.log('*' + karcsiName + '* \n' + '-'.repeat(karcsiName.length))
+
   // @ KARCSI weekly
   const weeklyKarcsi = 'http://karcsibacsivendeglo.com/letoltes/napi_menu.pdf'
 
+  console.log('*' + karcsiName + '* \n' + '-'.repeat(karcsiName.length))
   console.log('• Weekly menu: ' + weeklyKarcsi + '\n')
 
   /*
@@ -481,7 +488,6 @@ async function scrapeMenu() {
   const imageNokedliSelector = '.aligncenter'
 
   let nokedliName = 'Nokedli menu:'
-  console.log('*' + nokedliName + '* \n' + '-'.repeat(nokedliName.length))
   await page.goto('http://nokedlikifozde.hu/', { waitUntil: 'networkidle2' })
   // @ NOKEDLI weekly, stores src of given selector, source: https://stackoverflow.com/questions/52542149/how-can-i-download-images-on-a-page-using-puppeteer
   let imageSelector = imageNokedliSelector
@@ -492,6 +498,7 @@ async function scrapeMenu() {
       .replace('-300x212', '')
   }, imageSelector)
 
+  console.log('*' + nokedliName + '* \n' + '-'.repeat(nokedliName.length))
   console.log('• Weekly menu: ' + weeklyNokedly + '\n')
 
   await browser.close()
