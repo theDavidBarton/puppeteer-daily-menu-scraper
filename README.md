@@ -1,12 +1,14 @@
 # Puppeteer examples
 
-A sandbox repository for the Node library **Puppeteer** (pptr) made by GoogleChromeLabs. The aim is to experiment with its possibilities for later projects.
+A sandbox repository for **Puppeteer** (pptr), the NodeJs library made by GoogleChromeLabs to interact with webapps and browser components through headless Chrome.
 
-The actual version of pptr is v1.14.0
+The actual version of pptr is v1.15.0
 
-### Fields to be covered
+### What can you find here?
 
 - scraping daily menus and print the output with webhooks to slack;
+- scrape images and retrieve their content with OCR;
+- make some fun NodeJs apps powered by data scraped from the web;
 - automate user flows (e2e testing) with pptr;
 - try out the experimental [Puppeteer-Firefox](https://aslushnikov.github.io/ispuppeteerfirefoxready/).
 
@@ -16,16 +18,26 @@ Node v7.6.0 or greater is needed to run the scripts in this repo. And v8.9.4 or 
 
 `yarn install` the project (everything is added as devDependencies in [package.json](/package.json))
 
+### Environment variables
+
+Create your own API key and put in a file `app.env` (gitignored) in root folder of the repo:
+
+```shell_session
+# create your API key here: https://ocr.space/ocrapi#free
+export OCR_API_KEY="******************"
+
+```
+
+source the created file to local environment variables:
+
+```shell_session
+$ source app.env
+```
+
 ### Run scripts
 
 ```shell_session
-node scrapeDailyMenu.js
-```
-
-If you'd want the scraper's console output to be saved for later usage then run:
-
-```shell_session
-node scrapeDailyMenu.js > tmp/output.txt
+$ node scrapeDailyMenu.js
 ```
 
 ### Run tests with jest
@@ -33,13 +45,13 @@ node scrapeDailyMenu.js > tmp/output.txt
 Runs all the pptr tests with the ".test.js" name ending. Check the test runner settings in [package.json](/package.json) under "scripts".
 
 ```shell_session
-yarn test
+$ yarn test
 ```
 
 ...or run a specific test, e.g.:
 
 ```shell_session
-yarn test searchGoogleTranslate.test.js
+$ yarn test searchGoogleTranslate.test.js
 ```
 
 ### Links

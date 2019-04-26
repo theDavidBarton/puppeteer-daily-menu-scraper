@@ -69,8 +69,7 @@ async function scrapeMenu() {
   try {
     forlabel: for (let j = 0; j < imageUrlArray.length; j++) {
       let parsedResult = await ocrSpaceApi.parseImageFromUrl(imageUrlArray[j], {
-        apikey: process.env.OCR_API_KEY, // add app.env to your environment variables, source: https://hackernoon.com/how-to-use-environment-variables-keep-your-secret-keys-safe-secure-8b1a7877d69c
-        language: 'hun',
+        apikey: process.env.OCR_API_KEY, // add app.env to your environment variables, see README.md
         imageFormat: 'image/png',
         scale: true,
         isOverlayRequired: true
@@ -181,11 +180,8 @@ async function scrapeMenu() {
     waitUntil: 'networkidle2',
     timeout: 0
   })
-  // stores src of given selector, source: https://stackoverflow.com/questions/52542149/how-can-i-download-images-on-a-page-using-puppeteer
   let linkSelectorVian = '#TPASection_jkic76naiframe'
-  const linkVian = await page.evaluate(sel => {
-    return document.querySelector(sel).getAttribute('src')
-  }, linkSelectorVian)
+  const linkVian = await page.evaluate(el => el.src, await page.$(linkSelectorVian))
   await page.goto(linkVian, {
     waitUntil: 'networkidle2',
     timeout: 0
@@ -248,11 +244,8 @@ async function scrapeMenu() {
     waitUntil: 'networkidle2',
     timeout: 0
   })
-  // stores src of given selector, source: https://stackoverflow.com/questions/52542149/how-can-i-download-images-on-a-page-using-puppeteer
   let linkSelectorKorhely = '#TPASection_ije2yufiiframe'
-  const linkKorhely = await page.evaluate(sel => {
-    return document.querySelector(sel).getAttribute('src')
-  }, linkSelectorKorhely)
+  const linkKorhely = await page.evaluate(el => el.src, await page.$(linkSelectorKorhely))
 
   await page.goto(linkKorhely, { waitUntil: 'networkidle2', timeout: 0 })
   // @ KORHELY Weekly
@@ -365,12 +358,20 @@ async function scrapeMenu() {
     waitUntil: 'networkidle2'
   })
   // @ KAMRA Daily
-  const dayKamra = await page.evaluate(el => el.innerText, await page.$(dayKamraSelector))
-  // stores all elements with same ID, source: https://stackoverflow.com/questions/54677126/how-to-select-all-child-div-with-same-class-using-puppeteer
-  const dailyKamra = await page.$$eval(dailyKamraSelector, divs => divs.map(({ innerText }) => innerText))
+  let dailyKamra = []
+  try {
+    const dayKamra = await page.evaluate(el => el.innerText, await page.$(dayKamraSelector))
+    const dailyKamraSelectorLength = (await page.$$(dailyKamraSelector)).length
+    for (let i = 0; i < dailyKamraSelectorLength; i++) {
+      let dailyKamraItem = await page.evaluate(el => el.innerText, (await page.$$(dailyKamraSelector))[i])
+      dailyKamra.push(dailyKamraItem)
+    }
 
-  console.log('*' + kamraName + '* \n' + '-'.repeat(kamraName.length))
-  console.log('• ' + dayKamra + ' daily menu: ' + dailyKamra + '\n')
+    console.log('*' + kamraName + '* \n' + '-'.repeat(kamraName.length))
+    console.log('• ' + dayKamra + ' daily menu: ' + dailyKamra + '\n')
+  } catch (e) {
+    console.error(e)
+  }
 
   /*
   @ ROZA
@@ -474,17 +475,13 @@ async function scrapeMenu() {
 
   let nokedliName = 'Nokedli menu:'
   await page.goto('http://nokedlikifozde.hu/', { waitUntil: 'networkidle2' })
-  // @ NOKEDLI weekly, stores src of given selector, source: https://stackoverflow.com/questions/52542149/how-can-i-download-images-on-a-page-using-puppeteer
+  // @ NOKEDLI weekly
   let imageSelector = imageNokedliSelector
-  const weeklyNokedly = await page.evaluate(sel => {
-    return document
-      .querySelector(sel)
-      .getAttribute('src')
-      .replace('-300x212', '')
-  }, imageSelector)
+  let weeklyNokedli = await page.evaluate(el => el.src, await page.$(imageSelector))
+  weeklyNokedli = weeklyNokedli.replace('-300x212', '')
 
   console.log('*' + nokedliName + '* \n' + '-'.repeat(nokedliName.length))
-  console.log('• Weekly menu: ' + weeklyNokedly + '\n')
+  console.log('• Weekly menu: ' + weeklyNokedli + '\n')
 
   await browser.close()
 }
