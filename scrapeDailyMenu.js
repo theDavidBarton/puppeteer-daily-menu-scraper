@@ -45,6 +45,15 @@ async function scrapeMenu() {
     waitUntil: 'domcontentloaded'
   })
   // @ KATA the hunt for the menu image src
+  let kataParsedText
+  let kataDaysRegex = [
+    '',
+    /\bHÉT((.*\r\n){3})/g,
+    /\bKED((.*\r\n){3})/g,
+    /\bSZERD((.*\r\n){3})/g,
+    /\bCSÜ((.*\r\n){3})/g,
+    /\bPÉNT((.*\r\n){3})/g
+  ]
   let imageUrlArray = []
   try {
     const facebookImageUrlSelector = await page.$$('.scaledImageFitWidth')
@@ -57,20 +66,10 @@ async function scrapeMenu() {
   }
   // @ KATA OCR
   // https://ocr.space/ocrapi#PostParameters
-  let kataParsedText
-  let kataDaysRegex = [
-    '',
-    /\bHÉT((.*\r\n){3})/g,
-    /\bKED((.*\r\n){3})/g,
-    /\bSZERD((.*\r\n){3})/g,
-    /\bCSÜ((.*\r\n){3})/g,
-    /\bPÉNT((.*\r\n){3})/g
-  ]
   try {
     forlabel: for (let j = 0; j < imageUrlArray.length; j++) {
       let parsedResult = await ocrSpaceApi.parseImageFromUrl(imageUrlArray[j], {
-        apikey: process.env.OCR_API_KEY, // add app.env to your environment variables, source: https://hackernoon.com/how-to-use-environment-variables-keep-your-secret-keys-safe-secure-8b1a7877d69c
-        language: 'hun',
+        apikey: process.env.OCR_API_KEY, // add app.env to your environment variables, see README.md
         imageFormat: 'image/png',
         scale: true,
         isOverlayRequired: true
@@ -95,6 +94,7 @@ async function scrapeMenu() {
   }
 
   // @ KATA get timestamp
+  // * todo: waits for cleanup as it is not in use currently, but will be for the other crawlers
   /*
   let dailyKataTimestampSelector = (await page.$$('.timestampContent'))[0]
   let dailyKataTimestamp = await page.evaluate(el => el.title, (await page.$$('abbr'))[0])
@@ -134,16 +134,20 @@ async function scrapeMenu() {
     timout: 0
   })
   // @ YAMATO Monday-Friday
-  for (let i = today; i < today + 1; i++) {
-    let yamato
-    if ((await page.$(yamatoArray[i])) !== null) {
-      yamato = await page.evaluate(el => el.innerText, await page.$(yamatoArray[i]))
-      yamato = yamato.replace(/(\n)/gm, ', ')
-    } else {
-      yamato = '♪"No Milk Today"♫'
+  try {
+    for (let i = today; i < today + 1; i++) {
+      let yamato
+      if ((await page.$(yamatoArray[i])) !== null) {
+        yamato = await page.evaluate(el => el.innerText, await page.$(yamatoArray[i]))
+        yamato = yamato.replace(/(\n)/gm, ', ')
+      } else {
+        yamato = '♪"No Milk Today"♫'
+      }
+      console.log('*' + yamatoName + '* \n' + '-'.repeat(yamatoName.length))
+      console.log('• ' + dayNames[today] + ': ' + yamato + '\n')
     }
-    console.log('*' + yamatoName + '* \n' + '-'.repeat(yamatoName.length))
-    console.log('• ' + dayNames[today] + ': ' + yamato + '\n')
+  } catch (e) {
+    console.error(e)
   }
 
   /*
@@ -181,28 +185,30 @@ async function scrapeMenu() {
     waitUntil: 'networkidle2',
     timeout: 0
   })
-  // stores src of given selector, source: https://stackoverflow.com/questions/52542149/how-can-i-download-images-on-a-page-using-puppeteer
-  let linkSelectorVian = '#TPASection_jkic76naiframe'
-  const linkVian = await page.evaluate(sel => {
-    return document.querySelector(sel).getAttribute('src')
-  }, linkSelectorVian)
-  await page.goto(linkVian, {
-    waitUntil: 'networkidle2',
-    timeout: 0
-  })
+  try {
+    let linkSelectorVian = '#TPASection_jkic76naiframe'
+    const linkVian = await page.evaluate(el => el.src, await page.$(linkSelectorVian))
+    await page.goto(linkVian, { waitUntil: 'networkidle2', timeout: 0 })
+  } catch (e) {
+    console.error(e)
+  }
   // @ VIAN Monday-Friday
-  for (let i = today; i < today + 1; i++) {
-    let vian1
-    let vian2
-    if ((await page.$(vianArray1[i])) !== null) {
-      vian1 = await page.evaluate(el => el.innerText, await page.$(vianArray1[i]))
-      vian2 = await page.evaluate(el => el.innerText, await page.$(vianArray2[i]))
-    } else {
-      vian1 = '♪"No Milk Today"♫'
-      vian2 = ''
+  try {
+    for (let i = today; i < today + 1; i++) {
+      let vian1
+      let vian2
+      if ((await page.$(vianArray1[i])) !== null) {
+        vian1 = await page.evaluate(el => el.innerText, await page.$(vianArray1[i]))
+        vian2 = await page.evaluate(el => el.innerText, await page.$(vianArray2[i]))
+      } else {
+        vian1 = '♪"No Milk Today"♫'
+        vian2 = ''
+      }
+      console.log('*' + vianName + '* \n' + '-'.repeat(vianName.length))
+      console.log('• ' + dayNames[today] + ': ' + vian1 + ', ' + vian2 + '\n')
     }
-    console.log('*' + vianName + '* \n' + '-'.repeat(vianName.length))
-    console.log('• ' + dayNames[today] + ': ' + vian1 + ', ' + vian2 + '\n')
+  } catch (e) {
+    console.error(e)
   }
 
   /*
@@ -222,12 +228,16 @@ async function scrapeMenu() {
     waitUntil: 'networkidle2'
   })
   // @ A-PECSENYES Daily
-  let dailyPecsenyes = await page.evaluate(el => el.innerText, await page.$(dailyPecsenyesSelector))
-  dailyPecsenyes = dailyPecsenyes.replace(/(\n)/gm, ', ')
-  dailyPecsenyes = dailyPecsenyes.replace('Napi ebéd menü A-Pecsenyés, ', '')
+  try {
+    let dailyPecsenyes = await page.evaluate(el => el.innerText, await page.$(dailyPecsenyesSelector))
+    dailyPecsenyes = dailyPecsenyes.replace(/(\n)/gm, ', ')
+    dailyPecsenyes = dailyPecsenyes.replace('Napi ebéd menü A-Pecsenyés, ', '')
 
-  console.log('*' + pecsenyesName + '* \n' + '-'.repeat(pecsenyesName.length))
-  console.log('• Daily menu: ' + dailyPecsenyes + '\n')
+    console.log('*' + pecsenyesName + '* \n' + '-'.repeat(pecsenyesName.length))
+    console.log('• Daily menu: ' + dailyPecsenyes + '\n')
+  } catch (e) {
+    console.error(e)
+  }
 
   /*
   @ KORHELY
@@ -248,33 +258,37 @@ async function scrapeMenu() {
     waitUntil: 'networkidle2',
     timeout: 0
   })
-  // stores src of given selector, source: https://stackoverflow.com/questions/52542149/how-can-i-download-images-on-a-page-using-puppeteer
-  let linkSelectorKorhely = '#TPASection_ije2yufiiframe'
-  const linkKorhely = await page.evaluate(sel => {
-    return document.querySelector(sel).getAttribute('src')
-  }, linkSelectorKorhely)
-
-  await page.goto(linkKorhely, { waitUntil: 'networkidle2', timeout: 0 })
+  try {
+    let linkSelectorKorhely = '#TPASection_ije2yufiiframe'
+    const linkKorhely = await page.evaluate(el => el.src, await page.$(linkSelectorKorhely))
+    await page.goto(linkKorhely, { waitUntil: 'networkidle2', timeout: 0 })
+  } catch (e) {
+    console.error(e)
+  }
   // @ KORHELY Weekly
-  let weeklySoupKorhely = await page.evaluate(el => el.innerText, await page.$(weeklySoupKorhelySelector))
-  weeklySoupKorhely = weeklySoupKorhely.replace('LEVESEK', '')
-  let weeklyMainKorhely = await page.evaluate(el => el.innerText, await page.$(weeklyMainKorhelySelector))
-  weeklyMainKorhely = weeklyMainKorhely.replace('FŐÉTELEK', '')
-  let weeklyDessertKorhely = await page.evaluate(el => el.innerText, await page.$(weeklyDessertKorhelySelector))
-  weeklyDessertKorhely = weeklyDessertKorhely.replace('DESSZERTEK', '')
+  try {
+    let weeklySoupKorhely = await page.evaluate(el => el.innerText, await page.$(weeklySoupKorhelySelector))
+    weeklySoupKorhely = weeklySoupKorhely.replace('LEVESEK', '')
+    let weeklyMainKorhely = await page.evaluate(el => el.innerText, await page.$(weeklyMainKorhelySelector))
+    weeklyMainKorhely = weeklyMainKorhely.replace('FŐÉTELEK', '')
+    let weeklyDessertKorhely = await page.evaluate(el => el.innerText, await page.$(weeklyDessertKorhelySelector))
+    weeklyDessertKorhely = weeklyDessertKorhely.replace('DESSZERTEK', '')
 
-  console.log('*' + korhelyName + '* \n' + '-'.repeat(korhelyName.length))
-  console.log(
-    '• Soups: ' +
-      weeklySoupKorhely +
-      '\n' +
-      '• Main courses: ' +
-      weeklyMainKorhely +
-      '\n' +
-      '• Desserts: ' +
-      weeklyDessertKorhely +
-      '\n'
-  )
+    console.log('*' + korhelyName + '* \n' + '-'.repeat(korhelyName.length))
+    console.log(
+      '• Soups: ' +
+        weeklySoupKorhely +
+        '\n' +
+        '• Main courses: ' +
+        weeklyMainKorhely +
+        '\n' +
+        '• Desserts: ' +
+        weeklyDessertKorhely +
+        '\n'
+    )
+  } catch (e) {
+    console.error(e)
+  }
 
   /*
   @ KETSZERECSEN
@@ -311,18 +325,22 @@ async function scrapeMenu() {
     waitUntil: 'networkidle2'
   })
   // @ KETSZERECSEN Monday-Friday
-  for (let i = today; i < today + 1; i++) {
-    let ketszerecsen1
-    let ketszerecsen2
-    if ((await page.$(ketszerecsenArray1[i])) !== null) {
-      ketszerecsen1 = await page.evaluate(el => el.innerHTML, await page.$(ketszerecsenArray1[i]))
-      ketszerecsen2 = await page.evaluate(el => el.innerHTML, await page.$(ketszerecsenArray2[i]))
-    } else {
-      ketszerecsen1 = '♪"No Milk Today"♫'
-      ketszerecsen2 = ''
+  try {
+    for (let i = today; i < today + 1; i++) {
+      let ketszerecsen1
+      let ketszerecsen2
+      if ((await page.$(ketszerecsenArray1[i])) !== null) {
+        ketszerecsen1 = await page.evaluate(el => el.innerHTML, await page.$(ketszerecsenArray1[i]))
+        ketszerecsen2 = await page.evaluate(el => el.innerHTML, await page.$(ketszerecsenArray2[i]))
+      } else {
+        ketszerecsen1 = '♪"No Milk Today"♫'
+        ketszerecsen2 = ''
+      }
+      console.log('*' + ketszerecsenName + '* \n' + '-'.repeat(ketszerecsenName.length))
+      console.log('• ' + dayNames[today] + ': ' + ketszerecsen1 + ', ' + ketszerecsen2 + '\n')
     }
-    console.log('*' + ketszerecsenName + '* \n' + '-'.repeat(ketszerecsenName.length))
-    console.log('• ' + dayNames[today] + ': ' + ketszerecsen1 + ', ' + ketszerecsen2 + '\n')
+  } catch (e) {
+    console.error(e)
   }
 
   /*
@@ -341,11 +359,15 @@ async function scrapeMenu() {
   let fruccolaName = 'Fruccola (Arany Janos utca) menu:'
   await page.goto('http://fruccola.hu/hu', { waitUntil: 'networkidle2' })
   // @ FRUCCOLA Daily
-  const dailyFruccola1 = await page.evaluate(el => el.innerText, await page.$(dailyFruccolaSelector1))
-  const dailyFruccola2 = await page.evaluate(el => el.innerText, await page.$(dailyFruccolaSelector2))
+  try {
+    const dailyFruccola1 = await page.evaluate(el => el.innerText, await page.$(dailyFruccolaSelector1))
+    const dailyFruccola2 = await page.evaluate(el => el.innerText, await page.$(dailyFruccolaSelector2))
 
-  console.log('*' + fruccolaName + '* \n' + '-'.repeat(fruccolaName.length))
-  console.log('• Daily menu: ' + dailyFruccola1 + ', ' + dailyFruccola2 + '\n')
+    console.log('*' + fruccolaName + '* \n' + '-'.repeat(fruccolaName.length))
+    console.log('• Daily menu: ' + dailyFruccola1 + ', ' + dailyFruccola2 + '\n')
+  } catch (e) {
+    console.error(e)
+  }
 
   /*
   @ KAMRA
@@ -365,12 +387,20 @@ async function scrapeMenu() {
     waitUntil: 'networkidle2'
   })
   // @ KAMRA Daily
-  const dayKamra = await page.evaluate(el => el.innerText, await page.$(dayKamraSelector))
-  // stores all elements with same ID, source: https://stackoverflow.com/questions/54677126/how-to-select-all-child-div-with-same-class-using-puppeteer
-  const dailyKamra = await page.$$eval(dailyKamraSelector, divs => divs.map(({ innerText }) => innerText))
+  try {
+    let dailyKamra = []
+    const dayKamra = await page.evaluate(el => el.innerText, await page.$(dayKamraSelector))
+    const dailyKamraSelectorLength = (await page.$$(dailyKamraSelector)).length
+    for (let i = 0; i < dailyKamraSelectorLength; i++) {
+      let dailyKamraItem = await page.evaluate(el => el.innerText, (await page.$$(dailyKamraSelector))[i])
+      dailyKamra.push(dailyKamraItem)
+    }
 
-  console.log('*' + kamraName + '* \n' + '-'.repeat(kamraName.length))
-  console.log('• ' + dayKamra + ' daily menu: ' + dailyKamra + '\n')
+    console.log('*' + kamraName + '* \n' + '-'.repeat(kamraName.length))
+    console.log('• ' + dayKamra + ' daily menu: ' + dailyKamra + '\n')
+  } catch (e) {
+    console.error(e)
+  }
 
   /*
   @ ROZA
@@ -389,11 +419,15 @@ async function scrapeMenu() {
     waitUntil: 'networkidle2'
   })
   // @ ROZA Daily
-  let dailyRoza = await page.evaluate(el => el.innerText, await page.$(dailyRozaSelector))
-  dailyRoza = dailyRoza.replace(/🍲|🥪|🥧|❤️/g, '')
+  try {
+    let dailyRoza = await page.evaluate(el => el.innerText, await page.$(dailyRozaSelector))
+    dailyRoza = dailyRoza.replace(/🍲|🥪|🥧|❤️/g, '')
 
-  console.log('*' + rozaName + '* \n' + '-'.repeat(rozaName.length))
-  console.log('• Daily menu: ' + dailyRoza + '\n')
+    console.log('*' + rozaName + '* \n' + '-'.repeat(rozaName.length))
+    console.log('• Daily menu: ' + dailyRoza + '\n')
+  } catch (e) {
+    console.error(e)
+  }
 
   /*
   @ SUPPÉ bistro
@@ -412,31 +446,29 @@ async function scrapeMenu() {
   await page.goto('https://www.facebook.com/pg/bistrosuppe/posts/?ref=page_internal', {
     waitUntil: 'networkidle2'
   })
-  // @ SUPPÉ selector, source: https://stackoverflow.com/questions/48448586/how-to-use-xpath-in-chrome-headlesspuppeteer-evaluate
-  // @ SUPPÉ Daily
-  const dailySuppeIncludes = (await page.$x('//span[contains(text(), "Sziasztok")]'))[0]
-  let dailySuppe = await page.evaluate(el => {
-    return el.textContent
-  }, dailySuppeIncludes)
-  dailySuppe = dailySuppe.replace(/Sziasztok, |, kellemes hétvégét!|, szép napot!|, várunk Titeket!/gi, '')
-  // @ SUPPÉ Weekly (on Monday)
-  const weeklySuppeIncludes = (await page.$x('//p[contains(text(), "Sziasztok")]'))[0]
-  let weeklySuppe = await page.evaluate(el => {
-    return el.textContent
-  }, weeklySuppeIncludes)
-  weeklySuppe = weeklySuppe.replace(/(?=sziasztok)(.*)(?=levesek )|(?=mai)(.*)(?=\s*)/gi, '')
-  // @ SUPPÉ Monday only (on Monday)
-  const mondaySuppeIncludes = (await page.$x('//p[contains(text(), "Sziasztok")]'))[0]
-  let mondaySuppe = await page.evaluate(el => {
-    return el.textContent
-  }, mondaySuppeIncludes)
-  mondaySuppe = mondaySuppe.replace(/(?=sziasztok)(.*)(?=levesek )|(, várunk Titeket!)/gi, '')
+  try {
+    // @ SUPPÉ selector, source: https://stackoverflow.com/questions/48448586/how-to-use-xpath-in-chrome-headlesspuppeteer-evaluate
+    // @ SUPPÉ Daily
+    const dailySuppeIncludes = (await page.$x('//span[contains(text(), "Sziasztok")]'))[0]
+    let dailySuppe = await page.evaluate(el => el.textContent, dailySuppeIncludes)
+    dailySuppe = dailySuppe.replace(/Sziasztok, |, kellemes hétvégét!|, szép napot!|, várunk Titeket!/gi, '')
+    // @ SUPPÉ Weekly (on Monday)
+    const weeklySuppeIncludes = (await page.$x('//p[contains(text(), "Sziasztok")]'))[0]
+    let weeklySuppe = await page.evaluate(el => el.textContent, weeklySuppeIncludes)
+    weeklySuppe = weeklySuppe.replace(/(?=sziasztok)(.*)(?=levesek )|(?=mai)(.*)(?=\s*)/gi, '')
+    // @ SUPPÉ Monday only (on Monday)
+    const mondaySuppeIncludes = (await page.$x('//p[contains(text(), "Sziasztok")]'))[0]
+    let mondaySuppe = await page.evaluate(el => el.textContent, mondaySuppeIncludes)
+    mondaySuppe = mondaySuppe.replace(/(?=sziasztok)(.*)(?=levesek )|(, várunk Titeket!)/gi, '')
 
-  console.log('*' + suppeName + '* \n' + '-'.repeat(suppeName.length))
-  if (today === 1) {
-    console.log('• ' + dayNames[today] + ': ' + mondaySuppe + '\n')
-  } else {
-    console.log('• ' + dayNames[today] + ': ' + dailySuppe + '\n' + weeklySuppe + '\n')
+    console.log('*' + suppeName + '* \n' + '-'.repeat(suppeName.length))
+    if (today === 1) {
+      console.log('• ' + dayNames[today] + ': ' + mondaySuppe + '\n')
+    } else {
+      console.log('• ' + dayNames[today] + ': ' + dailySuppe + '\n' + weeklySuppe + '\n')
+    }
+  } catch (e) {
+    console.error(e)
   }
 
   /*
@@ -474,18 +506,17 @@ async function scrapeMenu() {
 
   let nokedliName = 'Nokedli menu:'
   await page.goto('http://nokedlikifozde.hu/', { waitUntil: 'networkidle2' })
-  // @ NOKEDLI weekly, stores src of given selector, source: https://stackoverflow.com/questions/52542149/how-can-i-download-images-on-a-page-using-puppeteer
-  let imageSelector = imageNokedliSelector
-  const weeklyNokedly = await page.evaluate(sel => {
-    return document
-      .querySelector(sel)
-      .getAttribute('src')
-      .replace('-300x212', '')
-  }, imageSelector)
+  // @ NOKEDLI weekly
+  try {
+    let imageSelector = imageNokedliSelector
+    let weeklyNokedli = await page.evaluate(el => el.src, await page.$(imageSelector))
+    weeklyNokedli = weeklyNokedli.replace('-300x212', '')
 
-  console.log('*' + nokedliName + '* \n' + '-'.repeat(nokedliName.length))
-  console.log('• Weekly menu: ' + weeklyNokedly + '\n')
-
+    console.log('*' + nokedliName + '* \n' + '-'.repeat(nokedliName.length))
+    console.log('• Weekly menu: ' + weeklyNokedli + '\n')
+  } catch (e) {
+    console.error(e)
+  }
   await browser.close()
 }
 scrapeMenu()
