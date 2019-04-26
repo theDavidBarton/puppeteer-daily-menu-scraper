@@ -18,7 +18,7 @@ console.log('*' + dayNames[today].toUpperCase() + '*\n' + '='.repeat(dayNames[to
 async function scrapeMenu() {
   const browser = await puppeteer.launch({ headless: true })
   const page = await browser.newPage()
-/*
+
   // abort all images, source: https://github.com/GoogleChrome/puppeteer/blob/master/examples/block-images.js
   await page.setRequestInterception(true)
   page.on('request', request => {
@@ -27,7 +27,7 @@ async function scrapeMenu() {
     } else {
       request.continue()
     }
-  }) */
+  })
 
   /*
   @ KATA
@@ -69,7 +69,7 @@ async function scrapeMenu() {
   try {
     forlabel: for (let j = 0; j < imageUrlArray.length; j++) {
       let parsedResult = await ocrSpaceApi.parseImageFromUrl(imageUrlArray[j], {
-        apikey: '<your_api_key_here>', // <your_api_key_here>
+        apikey: process.env.OCR_API_KEY, // add app.env to your environment variables, source: https://hackernoon.com/how-to-use-environment-variables-keep-your-secret-keys-safe-secure-8b1a7877d69c
         language: 'hun',
         imageFormat: 'image/png',
         scale: true,
