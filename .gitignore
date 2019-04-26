@@ -3,4 +3,5 @@ node_modules/
 tmp/
 *.png
 *.pdf
+*.env
 !tmp/.gitkeep
