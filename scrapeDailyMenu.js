@@ -18,7 +18,7 @@ console.log('*' + dayNames[today].toUpperCase() + '*\n' + '='.repeat(dayNames[to
 async function scrapeMenu() {
   const browser = await puppeteer.launch({ headless: true })
   const page = await browser.newPage()
-
+/*
   // abort all images, source: https://github.com/GoogleChrome/puppeteer/blob/master/examples/block-images.js
   await page.setRequestInterception(true)
   page.on('request', request => {
@@ -27,7 +27,7 @@ async function scrapeMenu() {
     } else {
       request.continue()
     }
-  })
+  }) */
 
   /*
   @ KATA
