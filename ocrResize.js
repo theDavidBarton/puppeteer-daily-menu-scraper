@@ -1,10 +1,56 @@
+const fs = require('fs')
+const puppeteer = require('puppeteer')
+const compressImages = require('compress-images')
 const ocrSpaceApi = require('ocr-space-api')
 
-const imageUrl = 'http://nokedlikifozde.hu/wp-content/uploads/172.jpg'
-// https://ocr.space/ocrapi#PostParameters
-async function ocrSpace() {
+async function saveImage() {
+  const browser = await puppeteer.launch()
+  const page = await browser.newPage()
+
+  // @ NOKEDLI selector
+  const imageNokedliSelector = '.aligncenter'
+
+  let nokedliName = 'Nokedli menu:'
+  let weeklyNokedli
+  await page.goto('http://nokedlikifozde.hu/', { waitUntil: 'networkidle2' })
+  // @ NOKEDLI weekly
   try {
-    let parsedResult = await ocrSpaceApi.parseImageFromUrl(imageUrl, {
+    let imageSelector = imageNokedliSelector
+    weeklyNokedli = await page.evaluate(el => el.src, await page.$(imageSelector))
+    weeklyNokedli = weeklyNokedli.replace('-300x212', '')
+    console.log('• Weekly menu: ' + weeklyNokedli + '\n')
+  } catch (e) {
+    console.error(e)
+  }
+  // @ NOKEDLI download weekly menu image
+  let viewSource = await page.goto(weeklyNokedli)
+  fs.writeFile('tmp/input/weeklyNokedli.jpg', await viewSource.buffer(), function(e) {
+    if (e) {
+      return console.log(e)
+    }
+    console.log('The file was saved!')
+  })
+  await page.waitFor(5000) // make sure download ends
+  await browser.close()
+  // @ NOKEDLI reduce image size
+  let input = 'tmp/input/weeklyNokedli.jpg'
+  let output = 'tmp/output/'
+
+  compressImages(
+    input,
+    output,
+    { compress_force: false, statistic: false, autoupdate: true },
+    false,
+    { jpg: { engine: 'mozjpeg', command: ['-quality', '60'] } },
+    { png: { engine: 'pngquant', command: ['--quality=20-50'] } },
+    { svg: { engine: 'svgo', command: '--multipass' } },
+    { gif: { engine: 'gifsicle', command: ['--colors', '64', '--use-col=web'] } }
+  )
+
+  // @ NOKEDLI OCR
+  const imagePath = 'tmp/output/weeklyNokedli.jpg'
+  try {
+    let parsedResult = await ocrSpaceApi.parseImageFromLocalFile(imagePath, {
       apikey: process.env.OCR_API_KEY, // add app.env to your environment variables, source: https://hackernoon.com/how-to-use-environment-variables-keep-your-secret-keys-safe-secure-8b1a7877d69c
       language: 'hun',
       imageFormat: 'image/png',
@@ -69,13 +115,14 @@ async function ocrSpace() {
         }
       }
     }
-    console.log('- Monday: ' + nokedliMondayStr.join(', ') + '\n')
-    console.log('- Tuesday: ' + nokedliTuesdayStr.join(', ') + '\n')
-    console.log('- Wednesday: ' + nokedliWednesdayStr.join(', ') + '\n')
-    console.log('- Thursday: ' + nokedliThursdayStr.join(', ') + '\n')
-    console.log('- Friday: ' + nokedliFridayStr.join(', ') + '\n')
+    console.log('*' + nokedliName + '* \n' + '-'.repeat(nokedliName.length))
+    console.log('• Monday: ' + nokedliMondayStr.join(', ') + '\n')
+    console.log('• Tuesday: ' + nokedliTuesdayStr.join(', ') + '\n')
+    console.log('• Wednesday: ' + nokedliWednesdayStr.join(', ') + '\n')
+    console.log('• Thursday: ' + nokedliThursdayStr.join(', ') + '\n')
+    console.log('• Friday: ' + nokedliFridayStr.join(', ') + '\n')
   } catch (e) {
     console.error(e)
   }
 }
-ocrSpace()
+saveImage()

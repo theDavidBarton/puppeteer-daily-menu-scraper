@@ -1,5 +1,7 @@
 {
   "devDependencies": {
+    "compress-images": "^1.5.2",
+    "fs": "^0.0.1-security",
     "jest": "^24.7.1",
     "moment": "^2.24.0",
     "ocr-space-api": "^1.0.1",

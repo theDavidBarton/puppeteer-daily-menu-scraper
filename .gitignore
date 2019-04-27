@@ -1,7 +1,10 @@
 node_modules/
 .local-chromium/
-tmp/
+
+log/
 *.png
+*.jpg
 *.pdf
 *.env
 !tmp/.gitkeep
+!tmp/input/.gitkeep
