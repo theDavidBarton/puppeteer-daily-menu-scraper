@@ -1,6 +1,9 @@
 const puppeteer = require('puppeteer')
 const moment = require('moment')
 const ocrSpaceApi = require('ocr-space-api')
+const fs = require('fs')
+const compressImages = require('compress-images')
+const nokedliJs = require('./ocrResize')
 
 // get Day of Week
 const today = Number(moment().format('d'))
@@ -30,6 +33,23 @@ async function scrapeMenu() {
   })
 
   /*
+  @ NOKEDLI
+  ------------------------------------------
+  contact info:
+  * Address: Budapest, Weiner Leó u. 17, 1065
+  * Phone: (20) 499 5832
+  -----------------------------------------
+
+  imageSelector --> imageNokedliSelector
+  * store src
+  * trim thumbnail sub for normal sized image
+  * download and reduce image size
+  * OCR the table, see nokedliJs for details
+  */
+
+  await nokedliJs.nokedliJs()
+
+  /*
   @ KATA
   ---------------------------------------
   contact info:
@@ -51,7 +71,7 @@ async function scrapeMenu() {
     /\bHÉT((.*\r\n){3})/g,
     /\bKED((.*\r\n){3})/g,
     /\bSZERD((.*\r\n){3})/g,
-    /\bCSÜ((.*\r\n){3})/g,
+    /\bCSOT((.*\r\n){3})|\bCSU((.*\r\n){3})|\bCSÜ((.*\r\n){3})/g,
     /\bPÉNT((.*\r\n){3})/g
   ]
   let imageUrlArray = []
@@ -83,6 +103,7 @@ async function scrapeMenu() {
             .toString()
             .toLowerCase()
             .split(/\r\n/)
+
           console.log('*' + kataName + '* \n' + '-'.repeat(kataName.length))
           console.log('• ' + dayNames[today] + ': ' + kataDaily[1] + ', ' + kataDaily[2] + '\n')
           break forlabel
@@ -488,35 +509,6 @@ async function scrapeMenu() {
   console.log('*' + karcsiName + '* \n' + '-'.repeat(karcsiName.length))
   console.log('• Weekly menu: ' + weeklyKarcsi + '\n')
 
-  /*
-  @ NOKEDLI
-  ------------------------------------------
-  contact info:
-  * Address: Budapest, Weiner Leó u. 17, 1065
-  * Phone: (20) 499 5832
-  -----------------------------------------
-
-  imageSelector --> imageNokedliSelector
-  * store src
-  * trim thumbnail sub for normal sized image
-  */
-
-  // @ NOKEDLI selector
-  const imageNokedliSelector = '.aligncenter'
-
-  let nokedliName = 'Nokedli menu:'
-  await page.goto('http://nokedlikifozde.hu/', { waitUntil: 'networkidle2' })
-  // @ NOKEDLI weekly
-  try {
-    let imageSelector = imageNokedliSelector
-    let weeklyNokedli = await page.evaluate(el => el.src, await page.$(imageSelector))
-    weeklyNokedli = weeklyNokedli.replace('-300x212', '')
-
-    console.log('*' + nokedliName + '* \n' + '-'.repeat(nokedliName.length))
-    console.log('• Weekly menu: ' + weeklyNokedli + '\n')
-  } catch (e) {
-    console.error(e)
-  }
   await browser.close()
 }
 scrapeMenu()

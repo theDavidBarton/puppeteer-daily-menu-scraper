@@ -28,7 +28,7 @@ export OCR_API_KEY="******************"
 
 ```
 
-source the created file to local environment variables:
+source the created file to local environment variables (depending on your environment you'll need to find a method which lasts more than the current session!):
 
 ```shell_session
 $ source app.env
