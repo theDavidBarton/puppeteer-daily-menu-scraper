@@ -28,7 +28,6 @@ async function nokedliJs() {
     if (err) {
       return console.log(err)
     }
-    console.log('The file was saved to tmp/input/weeklyNokedli.jpg!')
   })
   await page.waitFor(5000) // make sure download ends
   await browser.close()
@@ -46,7 +45,6 @@ async function nokedliJs() {
     { svg: { engine: 'svgo', command: '--multipass' } },
     { gif: { engine: 'gifsicle', command: ['--colors', '64', '--use-col=web'] } },
     async function(completed) {
-      console.log(completed + ' tmp/output/weeklyNokedli.jpg was saved!')
       // @ NOKEDLI OCR
       const imagePath = 'tmp/output/weeklyNokedli.jpg'
       try {
@@ -128,9 +126,6 @@ async function nokedliJs() {
       fs.unlink('tmp/output/weeklyNokedli.jpg', function(err) {
         if (err) {
           throw err
-          console.log('tmp/output/weeklyNokedli.jpg was not exist!')
-        } else {
-          console.log('tmp/output/weeklyNokedli.jpg was deleted!')
         }
       })
     }
