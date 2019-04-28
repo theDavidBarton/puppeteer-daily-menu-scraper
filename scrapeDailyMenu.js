@@ -3,7 +3,8 @@ const moment = require('moment')
 const ocrSpaceApi = require('ocr-space-api')
 const fs = require('fs')
 const compressImages = require('compress-images')
-// TODO: ⚠️ errorhandling for weekends. Vian, Yamato, Szerecsen arrays, no selector exception!
+const nokedliJs = require('./ocrResize')
+
 // get Day of Week
 const today = Number(moment().format('d'))
 const todayFormatted = moment().format('LLLL')
@@ -16,27 +17,6 @@ for (let i = 0; i < 7; i++) {
   dayNames.push(day)
 }
 console.log('*' + dayNames[today].toUpperCase() + '*\n' + '='.repeat(dayNames[today].length))
-
-/*
-@ NOKEDLI
-------------------------------------------
-contact info:
-* Address: Budapest, Weiner Leó u. 17, 1065
-* Phone: (20) 499 5832
------------------------------------------
-
-imageSelector --> imageNokedliSelector
-* store src
-* trim thumbnail sub for normal sized image
-* download and reduce image size
-* OCR the table, see nokedliJs for details
-*/
-
-function nokedliJsWrapper() {
-  const nokedliJs = require('./ocrResize')
-  nokedliJs.nokedliJs()
-}
-nokedliJsWrapper()
 
 async function scrapeMenu() {
   const browser = await puppeteer.launch({ headless: true })
@@ -51,6 +31,23 @@ async function scrapeMenu() {
       request.continue()
     }
   })
+
+  /*
+  @ NOKEDLI
+  ------------------------------------------
+  contact info:
+  * Address: Budapest, Weiner Leó u. 17, 1065
+  * Phone: (20) 499 5832
+  -----------------------------------------
+
+  imageSelector --> imageNokedliSelector
+  * store src
+  * trim thumbnail sub for normal sized image
+  * download and reduce image size
+  * OCR the table, see nokedliJs for details
+  */
+
+  await nokedliJs.nokedliJs()
 
   /*
   @ KATA

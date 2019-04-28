@@ -1,11 +1,15 @@
 const fs = require('fs')
+const moment = require('moment')
 const puppeteer = require('puppeteer')
 const compressImages = require('compress-images')
 const ocrSpaceApi = require('ocr-space-api')
 
-// remove comment '//' for local running nokedliJs() at the end of file
+// get Day of Week
+const today = Number(moment().format('d'))
+
+// remove comment '//' at the end of file for local running nokedliJs()
 async function nokedliJs() {
-  const browser = await puppeteer.launch()
+  const browser = await puppeteer.launch({ headless: true })
   const page = await browser.newPage()
 
   // @ NOKEDLI selector
@@ -23,18 +27,23 @@ async function nokedliJs() {
     console.error(e)
   }
   // @ NOKEDLI download weekly menu image
-  let viewSource = await page.goto(weeklyNokedli)
-  fs.writeFile('tmp/input/weeklyNokedli.jpg', await viewSource.buffer(), function(err) {
+  let weeklyNokedliUrlVisit = await page.goto(weeklyNokedli, { waitUntil: 'networkidle0' })
+  fs.writeFile('tmp/input/weeklyNokedli.jpg', await weeklyNokedliUrlVisit.buffer(), function(err) {
     if (err) {
       return console.log(err)
     }
   })
-  await page.waitFor(5000) // make sure download ends
-  await browser.close()
+  // clear output image if it already exists
+  if (fs.existsSync('tmp/output/weeklyNokedli.jpg')) {
+    fs.unlink('tmp/output/weeklyNokedli.jpg', function(err) {
+      if (err) {
+        return console.log(err)
+      }
+    })
+  }
   // @ NOKEDLI reduce image size
   let input = 'tmp/input/weeklyNokedli.jpg'
   let output = 'tmp/output/'
-
   compressImages(
     input,
     output,
@@ -44,8 +53,8 @@ async function nokedliJs() {
     { png: { engine: 'pngquant', command: ['--quality=20-50'] } },
     { svg: { engine: 'svgo', command: '--multipass' } },
     { gif: { engine: 'gifsicle', command: ['--colors', '64', '--use-col=web'] } },
-    async function(completed) {
-      // @ NOKEDLI OCR
+    async function(error, completed) {
+      // @ NOKEDLI OCR reduced image
       const imagePath = 'tmp/output/weeklyNokedli.jpg'
       try {
         let parsedResult = await ocrSpaceApi.parseImageFromLocalFile(imagePath, {
@@ -56,7 +65,7 @@ async function nokedliJs() {
           isOverlayRequired: true
         })
 
-        let textOverlayLinesCount = parsedResult.ocrParsedResult.ParsedResults[0].TextOverlay.Lines.length
+        let textOverlayLinesCount = parsedResult.ocrParsedResult.ParsedResults[0].TextOverlay.Lines.length // text group count
         let nokedliMonday = []
         let nokedliMondayStr = []
         let nokedliTuesday = []
@@ -68,6 +77,7 @@ async function nokedliJs() {
         let nokedliFriday = []
         let nokedliFridayStr = []
 
+        // checks word coordinates against a predefined map of the table
         for (let i = 0; i < textOverlayLinesCount; i++) {
           let textOverlayWordsCount = parsedResult.ocrParsedResult.ParsedResults[0].TextOverlay.Lines[i].Words.length
           for (let j = 0; j < textOverlayWordsCount; j++) {
@@ -114,22 +124,31 @@ async function nokedliJs() {
           }
         }
         console.log('*' + nokedliName + '* \n' + '-'.repeat(nokedliName.length))
-        console.log('• Monday: ' + nokedliMondayStr.join(', ') + '\n')
-        console.log('• Tuesday: ' + nokedliTuesdayStr.join(', ') + '\n')
-        console.log('• Wednesday: ' + nokedliWednesdayStr.join(', ') + '\n')
-        console.log('• Thursday: ' + nokedliThursdayStr.join(', ') + '\n')
-        console.log('• Friday: ' + nokedliFridayStr.join(', ') + '\n')
+        switch (today) {
+          case 1:
+            console.log('• Monday: ' + nokedliMondayStr.join(', ') + '\n')
+            break
+          case 2:
+            console.log('• Tuesday: ' + nokedliTuesdayStr.join(', ') + '\n')
+            break
+          case 3:
+            console.log('• Wednesday: ' + nokedliWednesdayStr.join(', ') + '\n')
+            break
+          case 4:
+            console.log('• Thursday: ' + nokedliThursdayStr.join(', ') + '\n')
+            break
+          case 5:
+            console.log('• Friday: ' + nokedliFridayStr.join(', ') + '\n')
+            break
+          default:
+            console.log('weekend work, eh?')
+        }
       } catch (e) {
         console.error(e)
       }
-      // clear compressed menu image after sucessful execution
-      fs.unlink('tmp/output/weeklyNokedli.jpg', function(err) {
-        if (err) {
-          throw err
-        }
-      })
     }
   )
+  await browser.close()
 }
 // nokedliJs()
 module.exports.nokedliJs = nokedliJs
