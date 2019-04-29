@@ -17,7 +17,7 @@ async function nokedliJs() {
 
   let nokedliName = 'Nokedli menu:'
   let weeklyNokedli
-  await page.goto('http://nokedlikifozde.hu/', { waitUntil: 'networkidle2' })
+  await page.goto('http://nokedlikifozde.hu/', { waitUntil: 'networkidle0' })
   // @ NOKEDLI weekly
   try {
     let imageSelector = imageNokedliSelector
