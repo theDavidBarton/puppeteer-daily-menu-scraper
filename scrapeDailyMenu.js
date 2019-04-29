@@ -3,7 +3,7 @@ const moment = require('moment')
 const ocrSpaceApi = require('ocr-space-api')
 const fs = require('fs')
 const compressImages = require('compress-images')
-const nokedliJs = require('./ocrResize')
+const nokedliJs = require('./scrapeDailyNokedli')
 
 // get Day of Week
 const today = Number(moment().format('d'))
@@ -39,7 +39,6 @@ async function scrapeMenu() {
   * Address: Budapest, Weiner Leó u. 17, 1065
   * Phone: (20) 499 5832
   -----------------------------------------
-
   imageSelector --> imageNokedliSelector
   * store src
   * trim thumbnail sub for normal sized image
