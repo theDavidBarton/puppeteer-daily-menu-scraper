@@ -326,19 +326,19 @@ async function scrapeMenu() {
   // @ KETSZERECSEN selectors [1: first course, 2: main course]
   let ketszerecsenArray1 = [
     '',
-    'p:nth-child(3)',
-    'p:nth-child(6)',
-    'p:nth-child(9)',
-    'p:nth-child(12)',
-    'p:nth-child(15)'
-  ]
-  let ketszerecsenArray2 = [
-    '',
     'p:nth-child(4)',
     'p:nth-child(7)',
     'p:nth-child(10)',
     'p:nth-child(13)',
     'p:nth-child(16)'
+  ]
+  let ketszerecsenArray2 = [
+    '',
+    'p:nth-child(5)',
+    'p:nth-child(8)',
+    'p:nth-child(11)',
+    'p:nth-child(14)',
+    'p:nth-child(17)'
   ]
 
   let ketszerecsenName = 'Ketszerecsen Bisztro menu:'
