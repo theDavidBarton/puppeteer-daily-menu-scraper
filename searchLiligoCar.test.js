@@ -1,15 +1,14 @@
 jest.setTimeout(30000)
 
 const puppeteer = require('puppeteer')
+// const puppeteerFirefox = require('puppeteer-firefox')
 
-let browser
-let page
-let navigationPromise
+let browser, page, navigationPromise
 
 beforeAll(async function() {
   browser = await puppeteer.launch({ headless: false, slowMo: 20 })
   page = await browser.newPage()
-  navigationPromise = page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 0 })
+  navigationPromise = page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 0 }) // for Firefox: remove "{ waitUntil: '...', timeout: x }"
   await page.setViewport({ width: 1024, height: 768 })
 })
 
@@ -45,6 +44,7 @@ const clickoutSeo = '.sc-searchform' // the searchform's background on SEO (sc)
 
 const simplePagination = 'div.simplepagination-filter'
 const carResultItem = '.car-result-item'
+const pickupHeaderSelectorInside = '.results-header-code'
 
 describe('Liligo Car search', function() {
   test('GIVEN I am on the SEO page: ' + urlCarEntrypage, async function() {
@@ -110,7 +110,7 @@ describe('Liligo Car search', function() {
   })
 
   test('AND pickup from result header matches from homepage', async function() {
-    const pickupHeaderSelector = (await page.$$('.results-header-code'))[0]
+    const pickupHeaderSelector = (await page.$$(pickupHeaderSelectorInside))[0]
     let pickupHeaderContent = await page.evaluate(el => el.textContent, pickupHeaderSelector)
     expect(pickupHeaderContent).toBe(pickupHeaderContentToBe)
     await navigationPromise
