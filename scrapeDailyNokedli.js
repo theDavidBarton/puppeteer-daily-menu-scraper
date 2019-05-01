@@ -12,6 +12,16 @@ async function nokedliJs() {
   const browser = await puppeteer.launch({ headless: true })
   const page = await browser.newPage()
 
+  // abort all images, source: https://github.com/GoogleChrome/puppeteer/blob/master/examples/block-images.js
+  await page.setRequestInterception(true)
+  page.on('request', request => {
+    if (request.resourceType() === 'image') {
+      request.abort()
+    } else {
+      request.continue()
+    }
+  })
+
   // @ NOKEDLI selector
   const imageNokedliSelector = '.aligncenter'
 

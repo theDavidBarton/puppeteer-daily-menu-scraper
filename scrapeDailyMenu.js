@@ -101,6 +101,7 @@ async function scrapeMenu() {
           kataDaily = kataDaily
             .toString()
             .toLowerCase()
+            .replace('i.', 'l')
             .split(/\r\n/)
 
           console.log('*' + kataName + '* \n' + '-'.repeat(kataName.length))
