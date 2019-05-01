@@ -5,8 +5,7 @@ jest.setTimeout(30000)
 const puppeteer = require('puppeteer')
 
 // declare the variables outside of beforeAll so 'browser' and 'page' will be available in describe block as well
-let browser
-let page
+let browser, page
 
 // beforeAll starts
 beforeAll(async function() {
