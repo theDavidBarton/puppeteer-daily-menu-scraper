@@ -50,6 +50,8 @@ const randomFutureDate = 'tr:nth-child(3) > td:nth-child(4)'
 const clickoutHome = '.hp-searcharea' // the searchform's background on homepage or v6
 const clickoutSeo = '.sc-searchform' // the searchform's background on SEO (sc)
 
+const departureHeaderSelectorInside = '.results-header-city'
+const arrivalHeaderSelectorInside = '.results-header-city'
 const simplePagination = 'div.simplepagination-filter'
 const price = 'div.booking > div.price'
 const outboundDep = 'div.outbound > div.timing > div.from > div.time'
@@ -189,58 +191,42 @@ describe('Liligo Flight search', function() {
    -----------------------------------
   */
 
-  test('everthing else', async function() {
+  test('THEN resultpage appears', async function() {
     await page.waitForSelector(resultDetailsButton)
+  })
 
-    console.log('√ THEN resultpage appears')
-    console.log('√ AND results appear')
-    // source: https://github.com/GoogleChrome/puppeteer/issues/2859
-    const departureHeaderSelector = (await page.$$('.results-header-city'))[0]
-    const arrivalHeaderSelector = (await page.$$('.results-header-city'))[1]
+  test('AND departure location from result header matches location from the homepage', async function() {
+    const departureHeaderSelector = (await page.$$(departureHeaderSelectorInside))[0]
     let departureHeaderContent = await page.evaluate(el => el.textContent, departureHeaderSelector)
-    let arrivalHeaderContent = await page.evaluate(el => el.textContent, arrivalHeaderSelector)
     expect(departureHeaderContent).toBe(flightFromContentArray[0])
+  })
 
-    console.log(
-      '√ AND departure: ' +
-        departureHeaderContent +
-        ' from result header matches ' +
-        flightFromContentArray[0] +
-        ' from homepage'
-    )
+  test('AND arrival location from result header matches location from the homepage', async function() {
+    const arrivalHeaderSelector = (await page.$$(arrivalHeaderSelectorInside))[1]
+    let arrivalHeaderContent = await page.evaluate(el => el.textContent, arrivalHeaderSelector)
     expect(arrivalHeaderContent).toBe(flightToContentArray[0])
+  })
 
-    console.log(
-      '√ AND destination: ' +
-        arrivalHeaderContent +
-        ' from result header matches ' +
-        flightToContentArray[0] +
-        ' from homepage'
-    )
-
-    await navigationPromise
-    // make sure search finished
-    await page.waitForSelector(simplePagination)
-
-    console.log('√ WHEN I click on result details')
+  test('WHEN I click on 1st result details', async function() {
     await page.click(resultDetailsButton)[0]
+  })
 
-    console.log('√ THEN result details appear')
-
+  test('THEN 1st result details appear', async function() {
     // [1.] stores all the first result's data to be compared
     const outboundDepFirst = (await page.$$(outboundDep))[0]
-    let outboundDepFirstContent = await page.evaluate(el => el.textContent, outboundDepFirst)
     const outboundArrFirst = (await page.$$(outboundArr))[0]
-    let outboundArrFirstContent = await page.evaluate(el => el.textContent, outboundArrFirst)
     const inboundDepFirst = (await page.$$(inboundDep))[0]
-    let inboundDepFirstContent = await page.evaluate(el => el.textContent, inboundDepFirst)
     const inboundArrFirst = (await page.$$(inboundArr))[0]
-    let inboundArrFirstContent = await page.evaluate(el => el.textContent, inboundArrFirst)
     const outboundDurationFirst = (await page.$$(outboundDuration))[0]
-    let outboundDurationFirstContent = await page.evaluate(el => el.textContent, outboundDurationFirst)
     const inboundDurationFirst = (await page.$$(inboundDuration))[0]
-    let inboundDurationFirstContent = await page.evaluate(el => el.textContent, inboundDurationFirst)
     const priceFirst = (await page.$$(price))[0]
+
+    let outboundDepFirstContent = await page.evaluate(el => el.textContent, outboundDepFirst)
+    let outboundArrFirstContent = await page.evaluate(el => el.textContent, outboundArrFirst)
+    let inboundDepFirstContent = await page.evaluate(el => el.textContent, inboundDepFirst)
+    let inboundArrFirstContent = await page.evaluate(el => el.textContent, inboundArrFirst)
+    let outboundDurationFirstContent = await page.evaluate(el => el.textContent, outboundDurationFirst)
+    let inboundDurationFirstContent = await page.evaluate(el => el.textContent, inboundDurationFirst)
     let priceFirstContent = await page.evaluate(el => el.textContent, priceFirst)
 
     console.log(
@@ -262,25 +248,29 @@ describe('Liligo Flight search', function() {
         priceFirstContent +
         '\n'
     )
-
     await page.screenshot({ path: 'tmp/screenshot01.png' })
+  })
 
+  test('WHEN I click on 3rd result details', async function() {
     await page.click(resultDetailsButton)[2]
+  })
 
+  test('THEN 3rd result details appear', async function() {
     // [3.] stores all the third result's data to be compared
     const outboundDepThird = (await page.$$(outboundDep))[2]
-    let outboundDepThirdContent = await page.evaluate(el => el.textContent, outboundDepThird)
     const outboundArrThird = (await page.$$(outboundArr))[2]
-    let outboundArrThirdContent = await page.evaluate(el => el.textContent, outboundArrThird)
     const inboundDepThird = (await page.$$(inboundDep))[2]
-    let inboundDepThirdContent = await page.evaluate(el => el.textContent, inboundDepThird)
     const inboundArrThird = (await page.$$(inboundArr))[2]
-    let inboundArrThirdContent = await page.evaluate(el => el.textContent, inboundArrThird)
     const outboundDurationThird = (await page.$$(outboundDuration))[2]
-    let outboundDurationThirdContent = await page.evaluate(el => el.textContent, outboundDurationThird)
     const inboundDurationThird = (await page.$$(inboundDuration))[2]
-    let inboundDurationThirdContent = await page.evaluate(el => el.textContent, inboundDurationThird)
     const priceThird = (await page.$$(price))[2]
+
+    let outboundDepThirdContent = await page.evaluate(el => el.textContent, outboundDepThird)
+    let outboundArrThirdContent = await page.evaluate(el => el.textContent, outboundArrThird)
+    let inboundDepThirdContent = await page.evaluate(el => el.textContent, inboundDepThird)
+    let inboundArrThirdContent = await page.evaluate(el => el.textContent, inboundArrThird)
+    let outboundDurationThirdContent = await page.evaluate(el => el.textContent, outboundDurationThird)
+    let inboundDurationThirdContent = await page.evaluate(el => el.textContent, inboundDurationThird)
     let priceThirdContent = await page.evaluate(el => el.textContent, priceThird)
 
     console.log(
@@ -303,26 +293,27 @@ describe('Liligo Flight search', function() {
         '\n'
     )
     await page.screenshot({ path: 'tmp/screenshot02.png' })
+  })
 
+  test('WHEN search ends I click on an offer', async function() {
+    await page.waitForSelector(simplePagination)
     await page.click(cta)[0]
-    /*
+  })
+
+  /*
   -----------------------------------
   REDIRECT PAGE
   -----------------------------------
   */
 
-    console.log('√ WHEN I click on an offer')
-
+  test("THEN I see a redirection to partner's site", async function() {
     await page.waitFor(1000)
     let redirectPageTitle = await page.title()
-    // this part needs more work to store the new tab's title instead of the initial tab's title
-    // expect(redirectPageTitle).toContain(flightRedirectPageTitlePart)
-    console.log(redirectPageTitle + ' contains: ' + flightRedirectPageTitlePart)
+  })
 
-    console.log("√ THEN I see a redirection to partner's site")
-    await page.waitFor(1000) // sorry about this one we need a better structure here to avoid failing tab closes
+  test('AND I close the new tab', async function() {
+    await page.waitFor(1000)
     const pageList = await browser.pages()
-    console.log('- NUMBER TABS:', pageList.length)
     await pageList[2].close()
     await page.bringToFront()
   })
