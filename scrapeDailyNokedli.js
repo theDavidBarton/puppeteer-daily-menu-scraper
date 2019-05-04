@@ -151,7 +151,7 @@ async function nokedliJs() {
             console.log('• Friday: ' + nokedliFridayStr.join(', ') + '\n')
             break
           default:
-            console.log('weekend work, eh?')
+            console.log('weekend work, eh?\n')
         }
       } catch (e) {
         console.error(e)
