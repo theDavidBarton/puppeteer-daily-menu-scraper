@@ -33,6 +33,48 @@ async function scrapeMenu() {
   })
 
   /*
+  @ BODZA BISTRO
+  ------------------------------------------
+  contact info:
+  * Address: Budapest, Bajcsy-Zsilinszky út 12, 1051
+  * Phone: 06 (30) 515-52-34
+  -----------------------------------------
+  */
+
+  let bodzaName = 'Bodza bistro menu:'
+  await page.goto('http://bodzabistro.hu/heti-menu/', { waitUntil: 'domcontentloaded', timeout: 0 })
+  // @ BODZA selectors
+  let bodzaSelector = '.container'
+  let bodzaBlock = await page.$$(bodzaSelector)
+
+  let bodzaDaysRegex = ['', /Hétfő/g, /Kedd/g, /Szerda/g, /Csütörtök/g, /Péntek/g]
+  let bodzaDaily
+  // @ BODZA Monday-Friday
+  try {
+    forlabelBodza: for (let i = 0; i < bodzaBlock.length; i++) {
+      let bodzaItemContent = await page.evaluate(el => el.textContent, (await page.$$(bodzaSelector))[i])
+      if (bodzaItemContent.match(bodzaDaysRegex[today])) {
+        bodzaDaily = bodzaItemContent
+        bodzaDaily = bodzaDaily
+          .replace(/(\n)/gm, ' ')
+          .replace(/\s\s+/gm, ' ')
+          .replace(/(.*)CHEF NAPI AJÁNLATA/g, '')
+          .replace(/LEVESEK/g, '\n• Soups: ')
+          .replace(/KÖRETEK, FELTÉTEK/g, '\n• Side dishes & toppings: ')
+          .replace(/LÁTVÁNYKONYHÁNK AJÁNLATA/g, '\n• Other than that: ')
+          .replace(/SALÁTABÁR/g, '\n• Salads: ')
+          .replace(/DESSZERTEK/g, '\n• Desserts: ')
+        break forlabelBodza
+      }
+      bodzaDaily = '♪"No Milk Today"♫'
+    }
+    console.log('*' + bodzaName + '* \n' + '-'.repeat(bodzaName.length))
+    console.log('• Daily menu: ' + bodzaDaily + '\n')
+  } catch (e) {
+    console.error(e)
+  }
+
+  /*
   @ NOKEDLI
   ------------------------------------------
   contact info:
@@ -86,7 +128,7 @@ async function scrapeMenu() {
   // @ KATA OCR
   // https://ocr.space/ocrapi#PostParameters
   try {
-    forlabel: for (let j = 0; j < imageUrlArray.length; j++) {
+    forlabelKata: for (let j = 0; j < imageUrlArray.length; j++) {
       let parsedResult = await ocrSpaceApi.parseImageFromUrl(imageUrlArray[j], {
         apikey: process.env.OCR_API_KEY, // add app.env to your environment variables, see README.md
         imageFormat: 'image/png',
@@ -106,7 +148,7 @@ async function scrapeMenu() {
 
           console.log('*' + kataName + '* \n' + '-'.repeat(kataName.length))
           console.log('• ' + dayNames[today] + ': ' + kataDaily[1] + ', ' + kataDaily[2] + '\n')
-          break forlabel
+          break forlabelKata
         }
       }
     }
