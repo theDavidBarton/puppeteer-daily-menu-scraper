@@ -6,7 +6,7 @@ const compressImages = require('compress-images')
 const nokedliJs = require('./scrapeDailyNokedli')
 
 // get Day of Week
-const today = Number(moment().format('d'))
+const today = 1 //Number(moment().format('d'))
 const todayFormatted = moment().format('LLLL')
 const todayMinusOne = moment(todayFormatted, 'LLLL')
   .subtract(1, 'day')
@@ -31,6 +31,72 @@ async function scrapeMenu() {
       request.continue()
     }
   })
+
+  /*
+  @ INCOGNITO
+  ---------------------------------------
+  contact info:
+  * Address: Budapest, Liszt tér
+  ---------------------------------------
+  description:
+  * this daily menu relies on if a menu (recognizable for OCR) is available among timeline photos
+  * TODO: re-enable KATA scraper, and make a function with parameters to be reusable
+  */
+
+  let incognitoName = 'Incognito menu:'
+  await page.goto('https://www.facebook.com/pg/cafeincognito/posts/', {
+    waitUntil: 'domcontentloaded'
+  })
+  // @ INCOGNITO the hunt for the menu image src
+  let incognitoParsedText
+  let incognitoDaysRegex = [
+    '',
+    /\bHÉT((.*\r\n){3})/gi,
+    /\bKED((.*\r\n){3})/gi,
+    /\bSZERD((.*\r\n){3})/gi,
+    /\bCSOT((.*\r\n){3})|\bCSU((.*\r\n){3})|\bCSÜ((.*\r\n){3})/gi,
+    /\bPÉNT((.*\r\n){3})/gi
+  ]
+  let imageUrlArray = []
+  try {
+    const facebookImageUrlSelector = await page.$$('.scaledImageFitWidth')
+    for (let i = 0; i < facebookImageUrlSelector.length; i++) {
+      let imageUrl = await page.evaluate(el => el.src, facebookImageUrlSelector[i])
+      imageUrlArray.push(imageUrl)
+    }
+  } catch (e) {
+    console.error(e)
+  }
+  // @ INCOGNITO OCR
+  // https://ocr.space/ocrapi#PostParameters
+  try {
+    forlabelIncognito: for (let j = 0; j < imageUrlArray.length; j++) {
+      let parsedResult = await ocrSpaceApi.parseImageFromUrl(imageUrlArray[j], {
+        apikey: process.env.OCR_API_KEY, // add app.env to your environment variables, see README.md
+        imageFormat: 'image/png',
+        scale: true,
+        isOverlayRequired: true
+      })
+      incognitoParsedText = parsedResult.parsedText
+      if (incognitoParsedText.match(/Heti menü/gi)) {
+        // @ INCOGNITO Monday-Friday
+        for (let i = today; i < today + 1; i++) {
+          let incognitoDaily = incognitoParsedText.match(incognitoDaysRegex[i])
+          incognitoDaily = incognitoDaily
+            .toString()
+            .toLowerCase()
+            .replace('i.', 'l')
+            .split(/\r\n/)
+
+          console.log('*' + incognitoName + '* \n' + '-'.repeat(incognitoName.length))
+          console.log('• ' + dayNames[today] + ': ' + incognitoDaily[1] + ', ' + incognitoDaily[2] + '\n')
+          break forlabelIncognito
+        }
+      }
+    }
+  } catch (e) {
+    console.error(e)
+  }
 
   /*
   @ BODZA BISTRO
@@ -100,7 +166,7 @@ async function scrapeMenu() {
   description:
   * this daily menu relies on if a menu (recognizable for OCR) is available among timeline photos
   */
-
+/*
   let kataName = 'Kata (Chagall) menu:'
   await page.goto('https://www.facebook.com/pg/katarestaurantbudapest/posts/', {
     waitUntil: 'domcontentloaded'
