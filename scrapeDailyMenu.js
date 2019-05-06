@@ -18,70 +18,9 @@ for (let i = 0; i < 7; i++) {
 }
 console.log('*' + dayNames[today].toUpperCase() + '*\n' + '='.repeat(dayNames[today].length))
 
-// function for @ {RESTAURANT}s with only facebook image menus
-async function ocrFacebookImage(
-  paramNameString,
-  paramUrl,
-  paramDaysRegexArray,
-  paramFacebookImageUrlSelector,
-  paramMenuHandleRegex
-) {
-  let browser = await puppeteer.launch({ headless: true })
-  let page = await browser.newPage()
-
-  let restaurantName = paramNameString
-  await page.goto(paramUrl, {
-    waitUntil: 'domcontentloaded'
-  })
-  // @ {RESTAURANT} the hunt for the menu image src
-  let restaurantParsedText
-  let restaurantDaysRegex = paramDaysRegexArray
-  let imageUrlArray = []
-  try {
-    const facebookImageUrl = await page.$$(paramFacebookImageUrlSelector)
-    for (let i = 0; i < facebookImageUrl.length; i++) {
-      let imageUrl = await page.evaluate(el => el.src, facebookImageUrl[i])
-      imageUrlArray.push(imageUrl)
-    }
-  } catch (e) {
-    console.error(e)
-  }
-  // @ {RESTAURANT} OCR
-  // https://ocr.space/ocrapi#PostParameters
-  try {
-    forlabelRestaurant: for (let j = 0; j < imageUrlArray.length; j++) {
-      let parsedResult = await ocrSpaceApi.parseImageFromUrl(imageUrlArray[j], {
-        apikey: process.env.OCR_API_KEY, // add app.env to your environment variables, see README.md
-        imageFormat: 'image/png',
-        scale: true,
-        isOverlayRequired: true
-      })
-      restaurantParsedText = parsedResult.parsedText
-      if (restaurantParsedText.match(paramMenuHandleRegex)) {
-        // @ {RESTAURANT} Monday-Friday
-        for (let i = today; i < today + 1; i++) {
-          let restaurantDaily = restaurantParsedText.match(restaurantDaysRegex[i])
-          restaurantDaily = restaurantDaily
-            .toString()
-            .toLowerCase()
-            .replace('i.', 'l')
-            .split(/\r\n/)
-
-          console.log('*' + restaurantName + '* \n' + '-'.repeat(restaurantName.length))
-          console.log('• ' + dayNames[today] + ': ' + restaurantDaily[1] + ', ' + restaurantDaily[2] + '\n')
-          break forlabelRestaurant
-        }
-      }
-    }
-  } catch (e) {
-    console.error(e)
-  }
-  await browser.close()
-}
-
 async function scrapeMenu() {
-  let browser = await puppeteer.launch({ headless: true })
-  let page = await browser.newPage()
+  const browser = await puppeteer.launch({ headless: true })
+  const page = await browser.newPage()
 
   // abort all images, source: https://github.com/GoogleChrome/puppeteer/blob/master/examples/block-images.js
   await page.setRequestInterception(true)
@@ -92,6 +31,63 @@ async function scrapeMenu() {
       request.continue()
     }
   })
+
+  // function for @ {RESTAURANT}s with only facebook image menus
+  async function ocrFacebookImage(
+    paramNameString,
+    paramUrl,
+    paramDaysRegexArray,
+    paramFacebookImageUrlSelector,
+    paramMenuHandleRegex
+  ) {
+    let restaurantName = paramNameString
+    await page.goto(paramUrl, {
+      waitUntil: 'domcontentloaded'
+    })
+    // @ {RESTAURANT} the hunt for the menu image src
+    let restaurantParsedText
+    let restaurantDaysRegex = paramDaysRegexArray
+    let imageUrlArray = []
+    try {
+      const facebookImageUrl = await page.$$(paramFacebookImageUrlSelector)
+      for (let i = 0; i < facebookImageUrl.length; i++) {
+        let imageUrl = await page.evaluate(el => el.src, facebookImageUrl[i])
+        imageUrlArray.push(imageUrl)
+      }
+    } catch (e) {
+      console.error(e)
+    }
+    // @ {RESTAURANT} OCR
+    // https://ocr.space/ocrapi#PostParameters
+    try {
+      forlabelRestaurant: for (let j = 0; j < imageUrlArray.length; j++) {
+        let parsedResult = await ocrSpaceApi.parseImageFromUrl(imageUrlArray[j], {
+          apikey: process.env.OCR_API_KEY, // add app.env to your environment variables, see README.md
+          imageFormat: 'image/png',
+          scale: true,
+          isOverlayRequired: true
+        })
+        restaurantParsedText = parsedResult.parsedText
+        if (restaurantParsedText.match(paramMenuHandleRegex)) {
+          // @ {RESTAURANT} Monday-Friday
+          for (let i = today; i < today + 1; i++) {
+            let restaurantDaily = restaurantParsedText.match(restaurantDaysRegex[i])
+            restaurantDaily = restaurantDaily
+              .toString()
+              .toLowerCase()
+              .replace('i.', 'l')
+              .split(/\r\n/)
+
+            console.log('*' + restaurantName + '* \n' + '-'.repeat(restaurantName.length))
+            console.log('• ' + dayNames[today] + ': ' + restaurantDaily[1] + ', ' + restaurantDaily[2] + '\n')
+            break forlabelRestaurant
+          }
+        }
+      }
+    } catch (e) {
+      console.error(e)
+    }
+  }
 
   /*
   @ INCOGNITO
