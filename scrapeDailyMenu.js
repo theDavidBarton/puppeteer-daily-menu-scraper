@@ -97,7 +97,6 @@ async function scrapeMenu() {
   ---------------------------------------
   description:
   * this daily menu relies on if a menu (recognizable for OCR) is available among timeline photos
-  * TODO: re-enable KATA scraper, and make a function with parameters to be reusable
   */
 
   await ocrFacebookImage(
