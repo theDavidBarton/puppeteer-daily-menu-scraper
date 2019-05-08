@@ -90,6 +90,31 @@ async function scrapeMenu() {
   }
 
   /*
+  @ PPESTI DISZNO
+  ---------------------------------------
+  contact info:
+
+  ---------------------------------------
+  description:
+  * this daily menu relies on if a menu (recognizable for OCR) is available among timeline photos
+  */
+
+  await ocrFacebookImage(
+    'Pesti Diszno menu:',
+    'https://www.facebook.com/pg/PestiDiszno/posts/',
+    [
+      /.*/gi,
+      /.*/gi,
+      /.*/gi,
+      /.*/gi,
+      /.*/gi,
+      /.*/gi
+    ],
+    '.scaledImageFitWidth',
+    /napi menü/gi
+  )
+
+  /*
   @ INCOGNITO
   ---------------------------------------
   contact info:
