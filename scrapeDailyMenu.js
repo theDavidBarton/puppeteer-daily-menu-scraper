@@ -90,28 +90,30 @@ async function scrapeMenu() {
   }
 
   /*
-  @ PPESTI DISZNO
+  @ PESTI DISZNO
   ---------------------------------------
   contact info:
-
+  * Budapest, Nagymező u. 19, 1063
+  * Phone: +36 (1) 951 4061
   ---------------------------------------
   description:
   * this daily menu relies on if a menu (recognizable for OCR) is available among timeline photos
+  * TODO: console.log in the end to fit the output different than Kata or Incognito!
   */
 
   await ocrFacebookImage(
     'Pesti Diszno menu:',
     'https://www.facebook.com/pg/PestiDiszno/posts/',
     [
-      /.*/gi,
-      /.*/gi,
-      /.*/gi,
-      /.*/gi,
-      /.*/gi,
-      /.*/gi
+      '',
+      /[^%]*/g,
+      /[^%]*/g,
+      /[^%]*/g,
+      /[^%]*/g,
+      /[^%]*/g
     ],
-    '.scaledImageFitWidth',
-    /napi menü/gi
+    '.scaledImageFitHeight',
+    /NAPI MENÜ/gi
   )
 
   /*
@@ -132,7 +134,7 @@ async function scrapeMenu() {
       /\bHÉT((.*\r\n){3})/gi,
       /\bKED((.*\r\n){3})/gi,
       /\bSZERD((.*\r\n){3})/gi,
-      /\bCSOT((.*\r\n){3})|\bCSU((.*\r\n){3})|\bCSÜ((.*\r\n){3})/gi,
+      /\bCSOT((.*\r\n){3})|\bCSU((.*\r\n){3})|\bCSÜ((.*\r\n){3})|\bCsiitörtök((.*\r\n){3})/gi,
       /\bPÉNT((.*\r\n){3})/gi
     ],
     '.scaledImageFitWidth',
