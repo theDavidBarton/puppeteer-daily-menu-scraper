@@ -32,13 +32,36 @@ async function scrapeMenu() {
     }
   })
 
+  // replace pairs for typical OCR errors in Hungarian dish names
+  let replacementMap = [
+    ['i.', 'l'],
+    ['zóld', 'zöld'],
+    ['fustblt', 'füstölt'],
+    ['fostólt', 'füstölt'],
+    ['gyijmolcs', 'gyümölcs'],
+    ['gvümõlcs', 'gyümölcs'],
+    ['c.sirkf.', 'csirke'],
+    ['pbrkblt', 'pörkölt'],
+    ['fóétel', 'főétel'],
+    ['tóltve', 'töltve'],
+    ['siilt', 'sült'],
+    ['hagvm', 'hagym'],
+    ['gulv', 'guly'],
+    ['c,s', 'cs'],
+    ['0s', 'ös'],
+    ['ggv', 'ggy'],
+    ['hcs', 'hús']
+  ]
+
   // function for @ {RESTAURANT}s with only facebook image menus
   async function ocrFacebookImage(
     paramNameString,
     paramUrl,
     paramDaysRegexArray,
     paramFacebookImageUrlSelector,
-    paramMenuHandleRegex
+    paramMenuHandleRegex,
+    paramStartLine,
+    paramEndLine
   ) {
     let restaurantName = paramNameString
     await page.goto(paramUrl, {
@@ -48,6 +71,7 @@ async function scrapeMenu() {
     let restaurantParsedText
     let restaurantDaysRegex = paramDaysRegexArray
     let imageUrlArray = []
+    let restaurantDailyArray = []
     try {
       const facebookImageUrl = await page.$$(paramFacebookImageUrlSelector)
       for (let i = 0; i < facebookImageUrl.length; i++) {
@@ -60,8 +84,8 @@ async function scrapeMenu() {
     // @ {RESTAURANT} OCR
     // https://ocr.space/ocrapi#PostParameters
     try {
-      forlabelRestaurant: for (let j = 0; j < imageUrlArray.length; j++) {
-        let parsedResult = await ocrSpaceApi.parseImageFromUrl(imageUrlArray[j], {
+      forlabelRestaurant: for (let i = 0; i < imageUrlArray.length; i++) {
+        let parsedResult = await ocrSpaceApi.parseImageFromUrl(imageUrlArray[i], {
           apikey: process.env.OCR_API_KEY, // add app.env to your environment variables, see README.md
           imageFormat: 'image/png',
           scale: true,
@@ -70,16 +94,22 @@ async function scrapeMenu() {
         restaurantParsedText = parsedResult.parsedText
         if (restaurantParsedText.match(paramMenuHandleRegex)) {
           // @ {RESTAURANT} Monday-Friday
-          for (let i = today; i < today + 1; i++) {
-            let restaurantDaily = restaurantParsedText.match(restaurantDaysRegex[i])
-            restaurantDaily = restaurantDaily
-              .toString()
-              .toLowerCase()
-              .replace('i.', 'l')
-              .split(/\r\n/)
+          for (let j = today; j < today + 1; j++) {
+            let restaurantDaily = restaurantParsedText.match(restaurantDaysRegex[j])
+            for (let k = 0; k < replacementMap.length; k++) {
+              restaurantDaily = restaurantDaily
+                .toString()
+                .toLowerCase()
+                .replace(replacementMap[k][0], replacementMap[k][1])
+            }
+            restaurantDaily = restaurantDaily.split(/\r\n/)
 
+            for (let l = paramStartLine; l < paramEndLine + 1; l++) {
+              restaurantDaily[l] = restaurantDaily[l].trim()
+              restaurantDailyArray.push(restaurantDaily[l])
+            }
             console.log('*' + restaurantName + '* \n' + '-'.repeat(restaurantName.length))
-            console.log('• ' + dayNames[today] + ': ' + restaurantDaily[1] + ', ' + restaurantDaily[2] + '\n')
+            console.log('• ' + dayNames[today] + ': ' + restaurantDailyArray.join(', ') + '\n')
             break forlabelRestaurant
           }
         }
@@ -90,6 +120,27 @@ async function scrapeMenu() {
   }
 
   /*
+  @ PESTI DISZNO
+  ---------------------------------------
+  contact info:
+  * Budapest, Nagymező u. 19, 1063
+  * Phone: +36 (1) 951 4061
+  ---------------------------------------
+  description:
+  * this daily menu relies on if a menu (recognizable for OCR) is available among timeline photos
+  */
+
+  await ocrFacebookImage(
+    'Pesti Diszno menu:',
+    'https://www.facebook.com/pg/PestiDiszno/posts/',
+    ['', /[^%]*/g, /[^%]*/g, /[^%]*/g, /[^%]*/g, /[^%]*/g],
+    '.scaledImageFitHeight',
+    /NAPI MENÜ/gi,
+    3,
+    17
+  )
+
+  /*
   @ INCOGNITO
   ---------------------------------------
   contact info:
@@ -97,7 +148,6 @@ async function scrapeMenu() {
   ---------------------------------------
   description:
   * this daily menu relies on if a menu (recognizable for OCR) is available among timeline photos
-  * TODO: re-enable KATA scraper, and make a function with parameters to be reusable
   */
 
   await ocrFacebookImage(
@@ -108,11 +158,13 @@ async function scrapeMenu() {
       /\bHÉT((.*\r\n){3})/gi,
       /\bKED((.*\r\n){3})/gi,
       /\bSZERD((.*\r\n){3})/gi,
-      /\bCSOT((.*\r\n){3})|\bCSU((.*\r\n){3})|\bCSÜ((.*\r\n){3})/gi,
+      /\bCSOT((.*\r\n){3})|\bCSU((.*\r\n){3})|\bCSÜ((.*\r\n){3})|\bCsiitörtök((.*\r\n){3})|törtök((.*\r\n){3})/gi,
       /\bPÉNT((.*\r\n){3})/gi
     ],
     '.scaledImageFitWidth',
-    /Heti menü/gi
+    /Heti menü/gi,
+    1,
+    2
   )
 
   /*
@@ -138,7 +190,9 @@ async function scrapeMenu() {
       /\bPÉNT((.*\r\n){3})/gi
     ],
     '.scaledImageFitWidth',
-    /espresso/gi
+    /espresso/gi,
+    1,
+    2
   )
 
   // @ KATA get timestamp
