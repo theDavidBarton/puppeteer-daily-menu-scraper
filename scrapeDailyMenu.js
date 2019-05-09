@@ -44,7 +44,7 @@ async function scrapeMenu() {
     ['pbrkblt', 'pörkölt'],
     ['fóétel', 'főétel'],
     ['tóltve', 'töltve'],
-    [('siilt', 'sült')],
+    ['siilt', 'sült'],
     ['hagvm', 'hagym'],
     ['gulv', 'guly'],
     ['c,s', 'cs'],
