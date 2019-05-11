@@ -1171,7 +1171,7 @@ async function scrapeMenu() {
   console.log(finalJSON)
   request(
     {
-      url: process.env.WEBHOOK_URL_TEST,
+      url: process.env.WEBHOOK_URL_PROD,
       method: 'POST',
       json: false,
       body: finalJSON
