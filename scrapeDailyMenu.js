@@ -4,7 +4,6 @@ const ocrSpaceApi = require('ocr-space-api')
 const fs = require('fs')
 const request = require('request')
 const compressImages = require('compress-images')
-const nokedliJs = require('./scrapeDailyNokedli')
 
 // get Day of Week
 const today = Number(moment().format('d'))
@@ -35,6 +34,7 @@ async function scrapeMenu() {
 
   // replace pairs for typical OCR errors in Hungarian dish names
   let replacementMap = [
+    ['i..', 'l'],
     ['i.', 'l'],
     ['zóld', 'zöld'],
     ['fustblt', 'füstölt'],
@@ -80,7 +80,6 @@ async function scrapeMenu() {
     let restaurantDaysRegex = paramDaysRegexArray
     let imageUrlArray = []
     let restaurantDailyArray = []
-    let restaurantJSON
     let restaurantObj
     try {
       const facebookImageUrl = await page.$$(paramFacebookImageUrlSelector)
@@ -107,6 +106,7 @@ async function scrapeMenu() {
           // @ {RESTAURANT} Monday-Friday
           for (let j = today; j < today + 1; j++) {
             let restaurantDaily = restaurantParsedText.match(restaurantDaysRegex[j])
+            // format text and replace faulty string parts
             for (let k = 0; k < replacementMap.length; k++) {
               restaurantDaily = restaurantDaily
                 .toString()
@@ -151,21 +151,190 @@ async function scrapeMenu() {
     }
   }
 
-  /*
-  @ NOKEDLI
-  ------------------------------------------
-  contact info:
-  * Address: Budapest, Weiner Leó u. 17, 1065
-  * Phone: (20) 499 5832
-  -----------------------------------------
-  imageSelector --> imageNokedliSelector
-  * store src
-  * trim thumbnail sub for normal sized image
-  * download and reduce image size
-  * OCR the table, see nokedliJs for details
-  */
+  async function nokedli() {
+    /*
+    @ NOKEDLI
+    ------------------------------------------
+    contact info:
+    * Address: Budapest, Weiner Leó u. 17, 1065
+    * Phone: (20) 499 5832
+    -----------------------------------------
+    imageSelector --> imageNokedliSelector
+    * store src
+    * trim thumbnail sub for normal sized image
+    * download and reduce image size
+    * OCR the table
+    */
 
-  await nokedliJs.nokedliJs()
+    let paramColor = '#aa2020'
+    let paramTitleString = 'Nokedli'
+    let paramUrl = 'http://nokedlikifozde.hu/'
+    let paramIcon =
+      'https://scontent.fbud1-1.fna.fbcdn.net/v/t1.0-1/p320x320/969066_507629642637360_22543675_n.jpg?_nc_cat=108&_nc_ht=scontent.fbud1-1.fna&oh=a2e8efd55605ba9b7b63553dc54c23ca&oe=5D6F4115'
+    let paramValueString
+    let weeklyNokedli
+
+    // @ NOKEDLI selector
+    const imageNokedliSelector = '.aligncenter'
+
+    try {
+      await page.goto(paramUrl, { waitUntil: 'networkidle0' })
+      // @ NOKEDLI weekly
+      let imageSelector = imageNokedliSelector
+      weeklyNokedli = await page.evaluate(el => el.src, await page.$(imageSelector))
+      weeklyNokedli = weeklyNokedli.replace('-300x212', '')
+    } catch (e) {
+      console.error(e)
+    }
+    // @ NOKEDLI download latest weekly menu image
+    let weeklyNokedliUrlVisit = await page.goto(weeklyNokedli, { waitUntil: 'networkidle0' })
+    fs.writeFile('tmp/input/weeklyNokedli.jpg', await weeklyNokedliUrlVisit.buffer(), function(err) {
+      if (err) {
+        return console.log(err)
+      }
+    })
+    // clear output image if it already exists
+    if (fs.existsSync('tmp/output/weeklyNokedli.jpg')) {
+      fs.unlink('tmp/output/weeklyNokedli.jpg', function(err) {
+        if (err) {
+          return console.log(err)
+        }
+      })
+    }
+    // @ NOKEDLI reduce image size
+    let input = 'tmp/input/weeklyNokedli.jpg'
+    let output = 'tmp/output/'
+    compressImages(
+      input,
+      output,
+      { compress_force: false, statistic: false, autoupdate: true },
+      false,
+      { jpg: { engine: 'mozjpeg', command: ['-quality', '60'] } },
+      { png: { engine: 'pngquant', command: ['--quality=20-50'] } },
+      { svg: { engine: 'svgo', command: '--multipass' } },
+      { gif: { engine: 'gifsicle', command: ['--colors', '64', '--use-col=web'] } },
+      async function(error, completed) {
+        // @ NOKEDLI OCR reduced image
+        const imagePath = 'tmp/output/weeklyNokedli.jpg'
+        try {
+          let parsedResult = await ocrSpaceApi.parseImageFromLocalFile(imagePath, {
+            apikey: process.env.OCR_API_KEY, // add app.env to your environment variables, source: https://hackernoon.com/how-to-use-environment-variables-keep-your-secret-keys-safe-secure-8b1a7877d69c
+            language: 'hun',
+            imageFormat: 'image/png',
+            scale: true,
+            isOverlayRequired: true
+          })
+
+          let textOverlayLinesCount = parsedResult.ocrParsedResult.ParsedResults[0].TextOverlay.Lines.length // text group count
+          let nokedliMonday = []
+          let nokedliMondayStr = []
+          let nokedliTuesday = []
+          let nokedliTuesdayStr = []
+          let nokedliWednesday = []
+          let nokedliWednesdayStr = []
+          let nokedliThursday = []
+          let nokedliThursdayStr = []
+          let nokedliFriday = []
+          let nokedliFridayStr = []
+
+          // checks word coordinates against a predefined map of the table
+          for (let i = 0; i < textOverlayLinesCount; i++) {
+            let textOverlayWordsCount = parsedResult.ocrParsedResult.ParsedResults[0].TextOverlay.Lines[i].Words.length
+            for (let j = 0; j < textOverlayWordsCount; j++) {
+              let wordLeft = parsedResult.ocrParsedResult.ParsedResults[0].TextOverlay.Lines[i].Words[0].Left
+              let wordTop = parsedResult.ocrParsedResult.ParsedResults[0].TextOverlay.Lines[i].Words[0].Top
+              let wordText = parsedResult.ocrParsedResult.ParsedResults[0].TextOverlay.Lines[i].Words[j].WordText
+              if (wordTop > 520 && wordTop < 1930) {
+                monday: if (wordLeft > 780 && wordLeft < 980) {
+                  nokedliMonday.push(wordText)
+                  nokedliMondayStr = nokedliMonday.join(' ').split(/(?= [A-ZÁÍŰŐÜÖÚÓÉ])/g)
+                  for (let k = 0; k < nokedliMondayStr.length; k++) {
+                    nokedliMondayStr[k] = nokedliMondayStr[k].trim()
+                  }
+                }
+                tuesday: if (wordLeft > 1310 && wordLeft < 1520) {
+                  nokedliTuesday.push(wordText)
+                  nokedliTuesdayStr = nokedliTuesday.join(' ').split(/(?= [A-ZÁÍŰŐÜÖÚÓÉ])/g)
+                  for (let k = 0; k < nokedliTuesdayStr.length; k++) {
+                    nokedliTuesdayStr[k] = nokedliTuesdayStr[k].trim()
+                  }
+                }
+                wednesday: if (wordLeft > 1815 && wordLeft < 2060) {
+                  nokedliWednesday.push(wordText)
+                  nokedliWednesdayStr = nokedliWednesday.join(' ').split(/(?= [A-ZÁÍŰŐÜÖÚÓÉ])/g)
+                  for (let k = 0; k < nokedliWednesdayStr.length; k++) {
+                    nokedliWednesdayStr[k] = nokedliWednesdayStr[k].trim()
+                  }
+                }
+                thursday: if (wordLeft > 2345 && wordLeft < 2620) {
+                  nokedliThursday.push(wordText)
+                  nokedliThursdayStr = nokedliThursday.join(' ').split(/(?= [A-ZÁÍŰŐÜÖÚÓÉ])/g)
+                  for (let k = 0; k < nokedliThursdayStr.length; k++) {
+                    nokedliThursdayStr[k] = nokedliThursdayStr[k].trim()
+                  }
+                }
+                friday: if (wordLeft > 2880 && wordLeft < 3110) {
+                  nokedliFriday.push(wordText)
+                  nokedliFridayStr = nokedliFriday.join(' ').split(/(?= [A-ZÁÍŰŐÜÖÚÓÉ])/g)
+                  for (let k = 0; k < nokedliFridayStr.length; k++) {
+                    nokedliFridayStr[k] = nokedliFridayStr[k].trim()
+                  }
+                }
+              }
+            }
+          }
+          console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
+          switch (today) {
+            case 1:
+              paramValueString = '• Daily menu: ' + nokedliMondayStr.join(', ') + '\n'
+              console.log(paramValueString)
+              break
+            case 2:
+              paramValueString = '• Daily menu: ' + nokedliTuesdayStr.join(', ') + '\n'
+              console.log(paramValueString)
+              break
+            case 3:
+              paramValueString = '• Daily menu: ' + nokedliWednesdayStr.join(', ') + '\n'
+              console.log(paramValueString)
+              break
+            case 4:
+              paramValueString = '• Daily menu: ' + nokedliThursdayStr.join(', ') + '\n'
+              console.log(paramValueString)
+              break
+            case 5:
+              paramValueString = '• Daily menu: ' + nokedliFridayStr.join(', ') + '\n'
+              console.log(paramValueString)
+              break
+            default:
+              paramValueString = 'weekend work, eh?\n'
+              console.log(paramValueString)
+          }
+          // @ NOKEDLI object
+          nokedliObj = {
+            fallback: 'Please open it on a device that supports formatted messages.',
+            pretext: '...',
+            color: paramColor,
+            author_name: paramTitleString.toUpperCase(),
+            author_link: paramUrl,
+            author_icon: paramIcon,
+            fields: [
+              {
+                title: paramTitleString + ' menu (' + dayNames[today] + '):',
+                value: paramValueString,
+                short: false
+              }
+            ],
+            footer: 'scraped by DailyMenu',
+            ts: Math.floor(Date.now() / 1000)
+          }
+          finalJSON.attachments.push(nokedliObj)
+        } catch (e) {
+          console.error(e)
+        }
+      }
+    )
+  }
+  await nokedli()
 
   /*
   @ PESTI DISZNO
@@ -349,16 +518,16 @@ async function scrapeMenu() {
 
   async function yamato() {
     /*
-  @ YAMATO
-  ---------------------------------------
-  contact info:
-  * Address: Budapest, 1066, JÓKAI U. 30.
-  * Phone: +36(70)681-75-44
-  ---------------------------------------
-  description:
-  * yamatoArray: contains selectors for tha days of the week
-  * yamato: is the text inside selector (actual menu), and also the final cleaned text to be displayed in output
-  */
+    @ YAMATO
+    ---------------------------------------
+    contact info:
+    * Address: Budapest, 1066, JÓKAI U. 30.
+    * Phone: +36(70)681-75-44
+    ---------------------------------------
+    description:
+    * yamatoArray: contains selectors for tha days of the week
+    * yamato: is the text inside selector (actual menu), and also the final cleaned text to be displayed in output
+    */
 
     let paramColor = '#cca92b'
     let paramTitleString = 'Yamato'
@@ -418,16 +587,16 @@ async function scrapeMenu() {
 
   async function vian() {
     /*
-  @ VIAN
-  ------------------------------------------
-  contact info:
-  * Address: Budapest, Liszt Ferenc tér 9, 1061
-  * Phone: (1) 268 1154
-  -----------------------------------------
-  description:
-  * vianArray[1-2]: contains selectors for tha days of the week
-  * vian[1-2]: is the text inside selector (actual menu) to be displayed in output
-  */
+    @ VIAN
+    ------------------------------------------
+    contact info:
+    * Address: Budapest, Liszt Ferenc tér 9, 1061
+    * Phone: (1) 268 1154
+    -----------------------------------------
+    description:
+    * vianArray[1-2]: contains selectors for tha days of the week
+    * vian[1-2]: is the text inside selector (actual menu) to be displayed in output
+    */
 
     let paramColor = '#cc2b2b'
     let paramTitleString = 'Cafe Vian'
@@ -503,13 +672,13 @@ async function scrapeMenu() {
 
   async function aPecsenyes() {
     /*
-  @ A-PECSENYES
-  ------------------------------------------
-  contact info:
-  * Address: 1051 Budapest, Sas utca 25.
-  * Phone: 36-1-610-0645
-  -----------------------------------------
-  */
+    @ A-PECSENYES
+    ------------------------------------------
+    contact info:
+    * Address: 1051 Budapest, Sas utca 25.
+    * Phone: 36-1-610-0645
+    -----------------------------------------
+    */
 
     let paramColor = '#a3c643'
     let paramTitleString = 'A-Pecsenyés'
@@ -558,13 +727,13 @@ async function scrapeMenu() {
 
   async function korhely() {
     /*
-  @ KORHELY
-  ---------------------------------------------
-  contact info:
-  * Address: Budapest, Liszt Ferenc tér 7, 1061
-  * Phone: (1) 321 0280
-  ---------------------------------------------
-  */
+    @ KORHELY
+    ---------------------------------------------
+    contact info:
+    * Address: Budapest, Liszt Ferenc tér 7, 1061
+    * Phone: (1) 321 0280
+    ---------------------------------------------
+    */
 
     let paramColor = '#c6b443'
     let paramTitleString = 'Korhely'
@@ -634,16 +803,16 @@ async function scrapeMenu() {
 
   async function ketszerecsen() {
     /*
-  @ KETSZERECSEN
-  ------------------------------------------
-  contact info:
-  * Address: Budapest, Nagymező u. 14, 1065
-  * Phone: (1) 343 1984
-  -----------------------------------------
-  description:
-  * ketszerecsenArray[1-2]: contains selectors for tha days of the week
-  * ketszerecsen[1-2]: is the text inside selector (actual menu) to be displayed in output
-  */
+    @ KETSZERECSEN
+    ------------------------------------------
+    contact info:
+    * Address: Budapest, Nagymező u. 14, 1065
+    * Phone: (1) 343 1984
+    -----------------------------------------
+    description:
+    * ketszerecsenArray[1-2]: contains selectors for tha days of the week
+    * ketszerecsen[1-2]: is the text inside selector (actual menu) to be displayed in output
+    */
 
     let paramColor = '#000000'
     let paramTitleString = 'Két Szerecsen Bisztro'
@@ -713,13 +882,13 @@ async function scrapeMenu() {
 
   async function fruccola() {
     /*
-  @ FRUCCOLA
-  ----------------------------------------------
-  contact info:
-  * Address: Budapest, Arany János u. 32, 1051
-  * Phone: (1) 430 6125
-  ----------------------------------------------
-  */
+    @ FRUCCOLA
+    ----------------------------------------------
+    contact info:
+    * Address: Budapest, Arany János u. 32, 1051
+    * Phone: (1) 430 6125
+    ----------------------------------------------
+    */
 
     let paramColor = '#40ae49'
     let paramTitleString = 'Fruccola (Arany Janos utca)'
@@ -768,13 +937,13 @@ async function scrapeMenu() {
 
   async function kamra() {
     /*
-  @ KAMRA
-  ------------------------------------------
-  contact info:
-  * Address: Budapest, Hercegprímás u. 19, 1051
-  * Phone: (20) 436 9968
-  -----------------------------------------
-  */
+    @ KAMRA
+    ------------------------------------------
+    contact info:
+    * Address: Budapest, Hercegprímás u. 19, 1051
+    * Phone: (20) 436 9968
+    -----------------------------------------
+    */
 
     let paramColor = '#fc594e'
     let paramTitleString = 'Kamra Ételbár'
@@ -827,13 +996,13 @@ async function scrapeMenu() {
 
   async function roza() {
     /*
-  @ ROZA
-  ------------------------------------------
-  contact info:
-  * Address: Budapest, Jókai u. 22, 1066
-  * Phone: (30) 611 4396
-  -----------------------------------------
-  */
+    @ ROZA
+    ------------------------------------------
+    contact info:
+    * Address: Budapest, Jókai u. 22, 1066
+    * Phone: (30) 611 4396
+    -----------------------------------------
+    */
 
     let paramColor = '#fced4e'
     let paramTitleString = 'Róza Soup Restaurant'
@@ -882,17 +1051,17 @@ async function scrapeMenu() {
 
   async function suppe() {
     /*
-  @ SUPPÉ bistro
-  ---------------------------------------
-  contact info:
-  * Address: Hajós u. 19 (19.45 mi), Budapest, Hungary 1065
-  * Phone: (70) 336 0822
-  ---------------------------------------
-  Description:
-  * scrape facebook posts based on xpath patterns
-  * todo: avoid xpath and use selectors
-  * replace redundant string patterns with regex
-  */
+    @ SUPPÉ bistro
+    ---------------------------------------
+    contact info:
+    * Address: Hajós u. 19 (19.45 mi), Budapest, Hungary 1065
+    * Phone: (70) 336 0822
+    ---------------------------------------
+    Description:
+    * scrape facebook posts based on xpath patterns
+    * todo: avoid xpath and use selectors
+    * replace redundant string patterns with regex
+    */
 
     let paramColor = '#b5dd8d'
     let paramTitleString = 'Bistro Suppé'
@@ -953,13 +1122,13 @@ async function scrapeMenu() {
 
   async function karcsi() {
     /*
-  @ KARCSI
-  ------------------------------------------
-  contact info:
-  * Address: Budapest, Jókai u. 20, 1066
-  * Phone: (1) 312 0557
-  -----------------------------------------
-  */
+    @ KARCSI
+    ------------------------------------------
+    contact info:
+    * Address: Budapest, Jókai u. 20, 1066
+    * Phone: (1) 312 0557
+    -----------------------------------------
+    */
 
     let paramColor = '#ffba44'
     let paramTitleString = 'Karcsi Vendéglö'
