@@ -61,7 +61,7 @@ async function scrapeMenu() {
   // function for @ {RESTAURANT}s with only facebook image menus
   async function ocrFacebookImage(
     paramColor,
-    paramNameString,
+    paramTitleString,
     paramUrl,
     paramIcon,
     paramDaysRegexArray,
@@ -70,7 +70,8 @@ async function scrapeMenu() {
     paramStartLine,
     paramEndLine
   ) {
-    let restaurantName = paramNameString
+    let restaurantName = paramTitleString
+    let paramValueString
     await page.goto(paramUrl, {
       waitUntil: 'domcontentloaded'
     })
@@ -98,6 +99,7 @@ async function scrapeMenu() {
           apikey: process.env.OCR_API_KEY, // add app.env to your environment variables, see README.md
           imageFormat: 'image/png',
           scale: true,
+          isTable: true,
           isOverlayRequired: true
         })
         restaurantParsedText = parsedResult.parsedText
@@ -117,20 +119,21 @@ async function scrapeMenu() {
               restaurantDaily[l] = restaurantDaily[l].trim()
               restaurantDailyArray.push(restaurantDaily[l])
             }
+            paramValueString = restaurantDailyArray.join(', ')
             console.log('*' + restaurantName + '* \n' + '-'.repeat(restaurantName.length))
-            console.log('• ' + dayNames[today] + ': ' + restaurantDailyArray.join(', ') + '\n')
+            console.log('• ' + dayNames[today] + ': ' + paramValueString + '\n')
             // @ {RESTAURANT} object
             restaurantObj = {
               fallback: 'Please open it on a device that supports formatted messages.',
               pretext: '...',
               color: paramColor,
-              author_name: paramNameString.toUpperCase,
+              author_name: paramTitleString.toUpperCase(),
               author_link: paramUrl,
               author_icon: paramIcon,
               fields: [
                 {
-                  title: paramNameString + ' menu (' + dayNames[today] + '):',
-                  value: restaurantDailyArray.join(', '),
+                  title: paramTitleString + ' menu (' + dayNames[today] + '):',
+                  value: paramValueString,
                   short: false
                 }
               ],
@@ -185,7 +188,7 @@ async function scrapeMenu() {
     '#cc2c2c',
     'Incognito',
     'https://www.facebook.com/pg/cafeincognito/posts/',
-    '',
+    'https://www.copper-state.com/wp-content/uploads/2016/02/google_incognito_mode_400.jpg',
     [
       '',
       /\bHÉT((.*\r\n){3})/gi,
@@ -230,6 +233,36 @@ async function scrapeMenu() {
     2
   )
 
+  /*
+  @ DROP
+  ---------------------------------------
+  contact info:
+  * Address: Budapest, 1065, Hajós u. 27.
+  * Phone: +36 1 235 0468
+  ---------------------------------------
+  description:
+  * this daily menu relies on if a menu (recognizable for OCR) is available among timeline photos
+  */
+
+  await ocrFacebookImage(
+    '#d3cd78',
+    'Drop Restaurant',
+    'https://www.facebook.com/pg/droprestaurant/posts/',
+    'http://droprestaurant.com/public/wp-content/uploads/2015/07/logo-header.png',
+    [
+      '',
+      /\bHÉT((.*\r\n){2})|([ti](.*)[éd](.*)[a])((.*\n){4})/gi,
+      /\bKED((.*\r\n){2})/gi,
+      /\bSZERD((.*\r\n){2})/gi,
+      /\bCSOT((.*\r\n){2})|\bCSU((.*\r\n){3})|\bCSÜ((.*\r\n){3})/gi,
+      /\bPÉNT((.*\r\n){2})/gi
+    ],
+    '.scaledImageFitWidth',
+    /Szerda/gi,
+    1,
+    2
+  )
+
   async function bodza() {
     /*
     @ BODZA BISTRO
@@ -240,19 +273,18 @@ async function scrapeMenu() {
     -----------------------------------------
     */
 
-    let paramColor = '#53f442'
-    let paramNameString = 'Bodza bistro'
+    let paramColor = '#c7ef81'
+    let paramTitleString = 'Bodza bistro'
     let paramUrl = 'http://bodzabistro.hu/heti-menu/'
     let paramIcon = 'http://bodzabistro.hu/wp-content/uploads/2016/03/nevtelen-1.png'
     let paramDaysRegexArray = ['', /Hétfő/g, /Kedd/g, /Szerda/g, /Csütörtök/g, /Péntek/g]
     let paramSelector = '.container'
+    let paramValueString
 
     try {
       await page.goto(paramUrl, { waitUntil: 'domcontentloaded', timeout: 0 })
       // @ BODZA selectors
       let bodzaBlock = await page.$$(paramSelector)
-
-      let bodzaDaily
       // @ BODZA Monday-Friday
       forlabelBodza: for (let i = 0; i < bodzaBlock.length; i++) {
         let bodzaItemContent = await page.evaluate(el => el.textContent, (await page.$$(paramSelector))[i])
@@ -271,20 +303,21 @@ async function scrapeMenu() {
         }
         bodzaDaily = '♪"No Milk Today"♫'
       }
-      console.log('*' + paramNameString + '* \n' + '-'.repeat(paramNameString.length))
-      console.log('• Daily menu: ' + bodzaDaily + '\n')
+      paramValueString = '• Daily menu: ' + bodzaDaily + '\n'
+      console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
+      console.log(paramValueString)
       // @ BODZA object
       bodzaObj = {
         fallback: 'Please open it on a device that supports formatted messages.',
         pretext: '...',
         color: paramColor,
-        author_name: paramNameString.toUpperCase,
+        author_name: paramTitleString.toUpperCase(),
         author_link: paramUrl,
         author_icon: paramIcon,
         fields: [
           {
-            title: paramNameString + ' menu (' + dayNames[today] + '):',
-            value: '• Daily menu: ' + bodzaDaily + '\n',
+            title: paramTitleString + ' menu (' + dayNames[today] + '):',
+            value: paramValueString,
             short: false
           }
         ],
@@ -328,9 +361,11 @@ async function scrapeMenu() {
   */
 
     let paramColor = '#cca92b'
-    let paramNameString = 'Yamato'
+    let paramTitleString = 'Yamato'
     let paramUrl = 'https://www.wasabi.hu/napimenu.php?source=yamato&lang=hu'
     let paramIcon = 'http://yamatorestaurant.hu/wp-content/uploads/2014/12/yamato_logo_retina.png'
+    let paramValueString
+    let yamato
 
     // @ YAMATO selectors
     let yamatoArray = [
@@ -343,33 +378,30 @@ async function scrapeMenu() {
     ]
 
     try {
-      await page.goto(paramUrl, {
-        waitUntil: 'networkidle2',
-        timout: 0
-      })
+      await page.goto(paramUrl, { waitUntil: 'networkidle2', timout: 0 })
       // @ YAMATO Monday-Friday
       for (let i = today; i < today + 1; i++) {
-        let yamato
         if ((await page.$(yamatoArray[i])) !== null) {
           yamato = await page.evaluate(el => el.innerText, await page.$(yamatoArray[i]))
           yamato = yamato.replace(/(\n)/gm, ', ')
         } else {
           yamato = '♪"No Milk Today"♫'
         }
-        console.log('*' + paramNameString + '* \n' + '-'.repeat(paramNameString.length))
-        console.log('• ' + dayNames[today] + ': ' + yamato + '\n')
+        paramValueString = '• Daily menu: ' + yamato + '\n'
+        console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
+        console.log(paramValueString)
         // @ YAMATO object
         yamatoObj = {
           fallback: 'Please open it on a device that supports formatted messages.',
           pretext: '...',
           color: paramColor,
-          author_name: paramNameString.toUpperCase,
+          author_name: paramTitleString.toUpperCase(),
           author_link: paramUrl,
           author_icon: paramIcon,
           fields: [
             {
-              title: paramNameString + ' menu (' + dayNames[today] + '):',
-              value: '• Daily menu: ' + yamato + '\n',
+              title: paramTitleString + ' menu (' + dayNames[today] + '):',
+              value: paramValueString,
               short: false
             }
           ],
@@ -398,9 +430,11 @@ async function scrapeMenu() {
   */
 
     let paramColor = '#cc2b2b'
-    let paramNameString = 'Cafe Vian'
+    let paramTitleString = 'Cafe Vian'
     let paramUrl = 'http://www.cafevian.com/ebedmenue'
     let paramIcon = 'https://static.wixstatic.com/media/d21995_af5b6ceedafd4913b3ed17f6377cdfa7~mv2.png'
+    let paramValueString
+    let vian1, vian2
 
     // @ VIAN selectors [1: first course, 2: main course]
     let vianArray1 = [
@@ -421,10 +455,7 @@ async function scrapeMenu() {
     ]
 
     try {
-      await page.goto(paramUrl, {
-        waitUntil: 'networkidle2',
-        timeout: 0
-      })
+      await page.goto(paramUrl, { waitUntil: 'networkidle2', timeout: 0 })
       let linkSelectorVian = '#TPASection_jkic76naiframe'
       const linkVian = await page.evaluate(el => el.src, await page.$(linkSelectorVian))
       await page.goto(linkVian, { waitUntil: 'networkidle2', timeout: 0 })
@@ -434,8 +465,6 @@ async function scrapeMenu() {
     // @ VIAN Monday-Friday
     try {
       for (let i = today; i < today + 1; i++) {
-        let vian1
-        let vian2
         if ((await page.$(vianArray1[i])) !== null) {
           vian1 = await page.evaluate(el => el.innerText, await page.$(vianArray1[i]))
           vian2 = await page.evaluate(el => el.innerText, await page.$(vianArray2[i]))
@@ -443,20 +472,21 @@ async function scrapeMenu() {
           vian1 = '♪"No Milk Today"♫'
           vian2 = ''
         }
-        console.log('*' + paramNameString + '* \n' + '-'.repeat(paramNameString.length))
-        console.log('• ' + dayNames[today] + ': ' + vian1 + ', ' + vian2 + '\n')
+        paramValueString = '• Daily menu: ' + vian1 + ', ' + vian2 + '\n'
+        console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
+        console.log(paramValueString)
         // @ VIAN object
         vianObj = {
           fallback: 'Please open it on a device that supports formatted messages.',
           pretext: '...',
           color: paramColor,
-          author_name: paramNameString.toUpperCase,
+          author_name: paramTitleString.toUpperCase(),
           author_link: paramUrl,
           author_icon: paramIcon,
           fields: [
             {
-              title: paramNameString + ' menu (' + dayNames[today] + '):',
-              value: '• Daily menu: ' + vian1 + ', ' + vian2 + '\n',
+              title: paramTitleString + ' menu (' + dayNames[today] + '):',
+              value: paramValueString,
               short: false
             }
           ],
@@ -482,36 +512,37 @@ async function scrapeMenu() {
   */
 
     let paramColor = '#a3c643'
-    let paramNameString = 'A-Pecsenyés'
+    let paramTitleString = 'A-Pecsenyés'
     let paramUrl = 'http://www.napimenu.hu/budapest/adatlap/a-pecsenyes'
     let paramIcon = 'https://apecsenyes.hu/wp-content/uploads/2018/02/a_pecsenyes_logo_intro.png'
+    let paramValueString
+    let dailyPecsenyes
 
     // @ A-PECSENYES selector
     const dailyPecsenyesSelector = '#tabsContent1 > div'
 
     try {
-      await page.goto(paramUrl, {
-        waitUntil: 'networkidle2'
-      })
+      await page.goto(paramUrl, { waitUntil: 'networkidle2' })
       // @ A-PECSENYES Daily
-      let dailyPecsenyes = await page.evaluate(el => el.innerText, await page.$(dailyPecsenyesSelector))
+      dailyPecsenyes = await page.evaluate(el => el.innerText, await page.$(dailyPecsenyesSelector))
       dailyPecsenyes = dailyPecsenyes.replace(/(\n)/gm, ', ')
       dailyPecsenyes = dailyPecsenyes.replace('Napi ebéd menü A-Pecsenyés, ', '')
 
-      console.log('*' + paramNameString + '* \n' + '-'.repeat(paramNameString.length))
-      console.log('• Daily menu: ' + dailyPecsenyes + '\n')
+      paramValueString = '• Daily menu: ' + dailyPecsenyes + '\n'
+      console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
+      console.log(paramValueString)
       // @ A-PECSENYES object
       pecsenyesObj = {
         fallback: 'Please open it on a device that supports formatted messages.',
         pretext: '...',
         color: paramColor,
-        author_name: paramNameString.toUpperCase,
+        author_name: paramTitleString.toUpperCase(),
         author_link: paramUrl,
         author_icon: paramIcon,
         fields: [
           {
-            title: paramNameString + ' menu (' + dayNames[today] + '):',
-            value: '• Daily menu: ' + dailyPecsenyes + '\n',
+            title: paramTitleString + ' menu (' + dayNames[today] + '):',
+            value: paramValueString,
             short: false
           }
         ],
@@ -536,9 +567,11 @@ async function scrapeMenu() {
   */
 
     let paramColor = '#c6b443'
-    let paramNameString = 'Korhely'
+    let paramTitleString = 'Korhely'
     let paramUrl = 'http://www.korhelyfaloda.hu/menu'
     let paramIcon = 'https://etterem.hu/img/max960/p9787n/1393339359-3252.jpg'
+    let paramValueString
+    let weeklySoupKorhely, weeklyMainKorhely, weeklyDessertKorhely
 
     // @ KORHELY selectors
     const weeklySoupKorhelySelector = '#mainDiv > div > div:nth-child(2) > section > ul > li:nth-child(1)'
@@ -546,10 +579,7 @@ async function scrapeMenu() {
     const weeklyDessertKorhelySelector = '#mainDiv > div > div:nth-child(2) > section > ul > li:nth-child(3)'
 
     try {
-      await page.goto(paramUrl, {
-        waitUntil: 'networkidle2',
-        timeout: 0
-      })
+      await page.goto(paramUrl, { waitUntil: 'networkidle2', timeout: 0 })
       let linkSelectorKorhely = '#TPASection_ije2yufiiframe'
       const linkKorhely = await page.evaluate(el => el.src, await page.$(linkSelectorKorhely))
       await page.goto(linkKorhely, { waitUntil: 'networkidle2', timeout: 0 })
@@ -558,46 +588,37 @@ async function scrapeMenu() {
     }
     // @ KORHELY Weekly
     try {
-      let weeklySoupKorhely = await page.evaluate(el => el.innerText, await page.$(weeklySoupKorhelySelector))
+      weeklySoupKorhely = await page.evaluate(el => el.innerText, await page.$(weeklySoupKorhelySelector))
       weeklySoupKorhely = weeklySoupKorhely.replace('LEVESEK', '')
-      let weeklyMainKorhely = await page.evaluate(el => el.innerText, await page.$(weeklyMainKorhelySelector))
+      weeklyMainKorhely = await page.evaluate(el => el.innerText, await page.$(weeklyMainKorhelySelector))
       weeklyMainKorhely = weeklyMainKorhely.replace('FŐÉTELEK', '')
-      let weeklyDessertKorhely = await page.evaluate(el => el.innerText, await page.$(weeklyDessertKorhelySelector))
+      weeklyDessertKorhely = await page.evaluate(el => el.innerText, await page.$(weeklyDessertKorhelySelector))
       weeklyDessertKorhely = weeklyDessertKorhely.replace('DESSZERTEK', '')
 
-      console.log('*' + paramNameString + '* \n' + '-'.repeat(paramNameString.length))
-      console.log(
+      paramValueString =
         '• Soups: ' +
-          weeklySoupKorhely +
-          '\n' +
-          '• Main courses: ' +
-          weeklyMainKorhely +
-          '\n' +
-          '• Desserts: ' +
-          weeklyDessertKorhely +
-          '\n'
-      )
+        weeklySoupKorhely +
+        '\n' +
+        '• Main courses: ' +
+        weeklyMainKorhely +
+        '\n' +
+        '• Desserts: ' +
+        weeklyDessertKorhely +
+        '\n'
+      console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
+      console.log(paramValueString)
       // @ KORHELY object
       korhelyObj = {
         fallback: 'Please open it on a device that supports formatted messages.',
         pretext: '...',
         color: paramColor,
-        author_name: paramNameString.toUpperCase,
+        author_name: paramTitleString.toUpperCase(),
         author_link: paramUrl,
         author_icon: paramIcon,
         fields: [
           {
-            title: paramNameString + ' menu (' + dayNames[today] + '):',
-            value:
-              '• Soups: ' +
-              weeklySoupKorhely +
-              '\n' +
-              '• Main courses: ' +
-              weeklyMainKorhely +
-              '\n' +
-              '• Desserts: ' +
-              weeklyDessertKorhely +
-              '\n',
+            title: paramTitleString + ' menu (' + dayNames[today] + '):',
+            value: paramValueString,
             short: false
           }
         ],
@@ -610,10 +631,9 @@ async function scrapeMenu() {
     }
   }
   await korhely()
-  finalJSON = JSON.stringify(finalJSON)
-  console.log(finalJSON)
 
-  /*
+  async function ketszerecsen() {
+    /*
   @ KETSZERECSEN
   ------------------------------------------
   contact info:
@@ -625,48 +645,74 @@ async function scrapeMenu() {
   * ketszerecsen[1-2]: is the text inside selector (actual menu) to be displayed in output
   */
 
-  // @ KETSZERECSEN selectors [1: first course, 2: main course]
-  let ketszerecsenArray1 = [
-    '',
-    'p:nth-child(4)',
-    'p:nth-child(7)',
-    'p:nth-child(10)',
-    'p:nth-child(13)',
-    'p:nth-child(16)'
-  ]
-  let ketszerecsenArray2 = [
-    '',
-    'p:nth-child(5)',
-    'p:nth-child(8)',
-    'p:nth-child(11)',
-    'p:nth-child(14)',
-    'p:nth-child(17)'
-  ]
+    let paramColor = '#000000'
+    let paramTitleString = 'Két Szerecsen Bisztro'
+    let paramUrl = 'https://ketszerecsen.hu/#daily'
+    let paramIcon =
+      'https://images.deliveryhero.io/image/netpincer/caterer/sh-9a3e84d0-2e42-11e2-9d48-7a92eabdcf20/logo.png'
+    let paramValueString
+    let ketszerecsen1, ketszerecsen2
 
-  let ketszerecsenName = 'Ketszerecsen Bisztro menu:'
-  await page.goto('https://ketszerecsen.hu/#daily', {
-    waitUntil: 'networkidle2'
-  })
-  // @ KETSZERECSEN Monday-Friday
-  try {
-    for (let i = today; i < today + 1; i++) {
-      let ketszerecsen1
-      let ketszerecsen2
-      if ((await page.$(ketszerecsenArray1[i])) !== null) {
-        ketszerecsen1 = await page.evaluate(el => el.innerHTML, await page.$(ketszerecsenArray1[i]))
-        ketszerecsen2 = await page.evaluate(el => el.innerHTML, await page.$(ketszerecsenArray2[i]))
-      } else {
-        ketszerecsen1 = '♪"No Milk Today"♫'
-        ketszerecsen2 = ''
+    // @ KETSZERECSEN selectors [1: first course, 2: main course]
+    let ketszerecsenArray1 = [
+      '',
+      'p:nth-child(4)',
+      'p:nth-child(7)',
+      'p:nth-child(10)',
+      'p:nth-child(13)',
+      'p:nth-child(16)'
+    ]
+    let ketszerecsenArray2 = [
+      '',
+      'p:nth-child(5)',
+      'p:nth-child(8)',
+      'p:nth-child(11)',
+      'p:nth-child(14)',
+      'p:nth-child(17)'
+    ]
+
+    try {
+      await page.goto(paramUrl, { waitUntil: 'networkidle2' })
+      // @ KETSZERECSEN Monday-Friday
+      for (let i = today; i < today + 1; i++) {
+        if ((await page.$(ketszerecsenArray1[i])) !== null) {
+          ketszerecsen1 = await page.evaluate(el => el.innerHTML, await page.$(ketszerecsenArray1[i]))
+          ketszerecsen2 = await page.evaluate(el => el.innerHTML, await page.$(ketszerecsenArray2[i]))
+        } else {
+          ketszerecsen1 = '♪"No Milk Today"♫'
+          ketszerecsen2 = ''
+        }
+        paramValueString = '• Daily menu: ' + ketszerecsen1 + ', ' + ketszerecsen2 + '\n'
+        console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
+        console.log(paramValueString)
+        // @ KETSZERECSEN object
+        ketszerecsenObj = {
+          fallback: 'Please open it on a device that supports formatted messages.',
+          pretext: '...',
+          color: paramColor,
+          author_name: paramTitleString.toUpperCase(),
+          author_link: paramUrl,
+          author_icon: paramIcon,
+          fields: [
+            {
+              title: paramTitleString + ' menu (' + dayNames[today] + '):',
+              value: paramValueString,
+              short: false
+            }
+          ],
+          footer: 'scraped by DailyMenu',
+          ts: Math.floor(Date.now() / 1000)
+        }
+        finalJSON.attachments.push(ketszerecsenObj)
       }
-      console.log('*' + ketszerecsenName + '* \n' + '-'.repeat(ketszerecsenName.length))
-      console.log('• ' + dayNames[today] + ': ' + ketszerecsen1 + ', ' + ketszerecsen2 + '\n')
+    } catch (e) {
+      console.error(e)
     }
-  } catch (e) {
-    console.error(e)
   }
+  await ketszerecsen()
 
-  /*
+  async function fruccola() {
+    /*
   @ FRUCCOLA
   ----------------------------------------------
   contact info:
@@ -675,24 +721,53 @@ async function scrapeMenu() {
   ----------------------------------------------
   */
 
-  // @ FRUCCOLA selectors
-  const dailyFruccolaSelector1 = '#dailymenu-holder > li.arany.today > div.soup > p.description'
-  const dailyFruccolaSelector2 = '#dailymenu-holder > li.arany.today > div.main-dish > p.description'
+    let paramColor = '#40ae49'
+    let paramTitleString = 'Fruccola (Arany Janos utca)'
+    let paramUrl = 'http://fruccola.hu/hu'
+    let paramIcon = 'https://pbs.twimg.com/profile_images/295153467/fruccola_logo_rgb.png'
+    let paramValueString
+    let dailyFruccola1, dailyFruccola2
 
-  let fruccolaName = 'Fruccola (Arany Janos utca) menu:'
-  await page.goto('http://fruccola.hu/hu', { waitUntil: 'networkidle2' })
-  // @ FRUCCOLA Daily
-  try {
-    const dailyFruccola1 = await page.evaluate(el => el.innerText, await page.$(dailyFruccolaSelector1))
-    const dailyFruccola2 = await page.evaluate(el => el.innerText, await page.$(dailyFruccolaSelector2))
+    // @ FRUCCOLA selectors
+    const dailyFruccolaSelector1 = '#dailymenu-holder > li.arany.today > div.soup > p.description'
+    const dailyFruccolaSelector2 = '#dailymenu-holder > li.arany.today > div.main-dish > p.description'
 
-    console.log('*' + fruccolaName + '* \n' + '-'.repeat(fruccolaName.length))
-    console.log('• Daily menu: ' + dailyFruccola1 + ', ' + dailyFruccola2 + '\n')
-  } catch (e) {
-    console.error(e)
+    try {
+      await page.goto(paramUrl, { waitUntil: 'networkidle2' })
+      // @ FRUCCOLA Daily
+      dailyFruccola1 = await page.evaluate(el => el.innerText, await page.$(dailyFruccolaSelector1))
+      dailyFruccola2 = await page.evaluate(el => el.innerText, await page.$(dailyFruccolaSelector2))
+
+      paramValueString = '• Daily menu: ' + dailyFruccola1 + ', ' + dailyFruccola2 + '\n'
+      console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
+      console.log(paramValueString)
+      // @ FRUCCOLA object
+      fruccolaObj = {
+        fallback: 'Please open it on a device that supports formatted messages.',
+        pretext: '...',
+        color: paramColor,
+        author_name: paramTitleString.toUpperCase(),
+        author_link: paramUrl,
+        author_icon: paramIcon,
+        fields: [
+          {
+            title: paramTitleString + ' menu (' + dayNames[today] + '):',
+            value: paramValueString,
+            short: false
+          }
+        ],
+        footer: 'scraped by DailyMenu',
+        ts: Math.floor(Date.now() / 1000)
+      }
+      finalJSON.attachments.push(fruccolaObj)
+    } catch (e) {
+      console.error(e)
+    }
   }
+  await fruccola()
 
-  /*
+  async function kamra() {
+    /*
   @ KAMRA
   ------------------------------------------
   contact info:
@@ -701,31 +776,57 @@ async function scrapeMenu() {
   -----------------------------------------
   */
 
-  // @ KAMRA selectors
-  const dayKamraSelector = '.shop_today_1'
-  const dailyKamraSelector = '.shop_today_title'
-
-  let kamraName = 'Kamra menu:'
-  await page.goto('http://www.kamraetelbar.hu/kamra_etelbar_mai_menu.html', {
-    waitUntil: 'networkidle2'
-  })
-  // @ KAMRA Daily
-  try {
+    let paramColor = '#fc594e'
+    let paramTitleString = 'Kamra Ételbár'
+    let paramUrl = 'http://www.kamraetelbar.hu/kamra_etelbar_mai_menu.html'
+    let paramIcon = 'https://media-cdn.tripadvisor.com/media/photo-s/06/f5/9b/24/getlstd-property-photo.jpg'
+    let paramValueString
     let dailyKamra = []
-    const dayKamra = await page.evaluate(el => el.innerText, await page.$(dayKamraSelector))
-    const dailyKamraSelectorLength = (await page.$$(dailyKamraSelector)).length
-    for (let i = 0; i < dailyKamraSelectorLength; i++) {
-      let dailyKamraItem = await page.evaluate(el => el.innerText, (await page.$$(dailyKamraSelector))[i])
-      dailyKamra.push(dailyKamraItem)
+
+    // @ KAMRA selectors
+    const dayKamraSelector = '.shop_today_1'
+    const dailyKamraSelector = '.shop_today_title'
+
+    try {
+      await page.goto(paramUrl, { waitUntil: 'networkidle2' })
+      // @ KAMRA Daily
+      const dayKamra = await page.evaluate(el => el.innerText, await page.$(dayKamraSelector))
+      const dailyKamraSelectorLength = (await page.$$(dailyKamraSelector)).length
+      for (let i = 0; i < dailyKamraSelectorLength; i++) {
+        let dailyKamraItem = await page.evaluate(el => el.innerText, (await page.$$(dailyKamraSelector))[i])
+        dailyKamra.push(dailyKamraItem)
+      }
+
+      paramValueString = '• ' + dayKamra + ' daily menu: ' + dailyKamra + '\n'
+      console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
+      console.log(paramValueString)
+      // @ KAMRA object
+      kamraObj = {
+        fallback: 'Please open it on a device that supports formatted messages.',
+        pretext: '...',
+        color: paramColor,
+        author_name: paramTitleString.toUpperCase(),
+        author_link: paramUrl,
+        author_icon: paramIcon,
+        fields: [
+          {
+            title: paramTitleString + ' menu (' + dayNames[today] + '):',
+            value: paramValueString,
+            short: false
+          }
+        ],
+        footer: 'scraped by DailyMenu',
+        ts: Math.floor(Date.now() / 1000)
+      }
+      finalJSON.attachments.push(kamraObj)
+    } catch (e) {
+      console.error(e)
     }
-
-    console.log('*' + kamraName + '* \n' + '-'.repeat(kamraName.length))
-    console.log('• ' + dayKamra + ' daily menu: ' + dailyKamra + '\n')
-  } catch (e) {
-    console.error(e)
   }
+  await kamra()
 
-  /*
+  async function roza() {
+    /*
   @ ROZA
   ------------------------------------------
   contact info:
@@ -734,25 +835,53 @@ async function scrapeMenu() {
   -----------------------------------------
   */
 
-  // @ ROZA selector
-  const dailyRozaSelector = '.text_exposed_show'
+    let paramColor = '#fced4e'
+    let paramTitleString = 'Róza Soup Restaurant'
+    let paramUrl = 'https://www.facebook.com/pg/rozafinomitt/posts/'
+    let paramIcon =
+      'https://scontent.fbud1-1.fna.fbcdn.net/v/t1.0-1/10394619_390942531075147_2725477335166513345_n.jpg?_nc_cat=108&_nc_ht=scontent.fbud1-1.fna&oh=e1e55fe2b089e8334deaef4895579833&oe=5D77E7B6'
+    let paramValueString
+    let dailyRoza
 
-  let rozaName = 'Roza menu:'
-  await page.goto('https://www.facebook.com/pg/rozafinomitt/posts/?ref=page_internal', {
-    waitUntil: 'networkidle2'
-  })
-  // @ ROZA Daily
-  try {
-    let dailyRoza = await page.evaluate(el => el.innerText, await page.$(dailyRozaSelector))
-    dailyRoza = dailyRoza.replace(/🍲|🥪|🥧|❤️/g, '')
+    // @ ROZA selector
+    const dailyRozaSelector = '.text_exposed_show'
 
-    console.log('*' + rozaName + '* \n' + '-'.repeat(rozaName.length))
-    console.log('• Daily menu: ' + dailyRoza + '\n')
-  } catch (e) {
-    console.error(e)
+    try {
+      await page.goto(paramUrl, { waitUntil: 'networkidle2' })
+      // @ ROZA Daily
+      dailyRoza = await page.evaluate(el => el.innerText, await page.$(dailyRozaSelector))
+      dailyRoza = dailyRoza.replace(/🍲|🥪|🥧|❤️/g, '')
+
+      paramValueString = '• Daily menu: ' + dailyRoza + '\n'
+      console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
+      console.log(paramValueString)
+      // @ ROZA object
+      rozaObj = {
+        fallback: 'Please open it on a device that supports formatted messages.',
+        pretext: '...',
+        color: paramColor,
+        author_name: paramTitleString.toUpperCase(),
+        author_link: paramUrl,
+        author_icon: paramIcon,
+        fields: [
+          {
+            title: paramTitleString + ' menu (' + dayNames[today] + '):',
+            value: paramValueString,
+            short: false
+          }
+        ],
+        footer: 'scraped by DailyMenu',
+        ts: Math.floor(Date.now() / 1000)
+      }
+      finalJSON.attachments.push(rozaObj)
+    } catch (e) {
+      console.error(e)
+    }
   }
+  await roza()
 
-  /*
+  async function suppe() {
+    /*
   @ SUPPÉ bistro
   ---------------------------------------
   contact info:
@@ -765,36 +894,65 @@ async function scrapeMenu() {
   * replace redundant string patterns with regex
   */
 
-  let suppeName = 'Suppé menu:'
-  await page.goto('https://www.facebook.com/pg/bistrosuppe/posts/?ref=page_internal', {
-    waitUntil: 'networkidle2'
-  })
-  try {
-    // @ SUPPÉ selector, source: https://stackoverflow.com/questions/48448586/how-to-use-xpath-in-chrome-headlesspuppeteer-evaluate
-    // @ SUPPÉ Daily
-    const dailySuppeIncludes = (await page.$x('//span[contains(text(), "Sziasztok")]'))[0]
-    let dailySuppe = await page.evaluate(el => el.textContent, dailySuppeIncludes)
-    dailySuppe = dailySuppe.replace(/Sziasztok, |, kellemes hétvégét!|, szép napot!|, várunk Titeket!/gi, '')
-    // @ SUPPÉ Weekly (on Monday)
-    const weeklySuppeIncludes = (await page.$x('//p[contains(text(), "Sziasztok")]'))[0]
-    let weeklySuppe = await page.evaluate(el => el.textContent, weeklySuppeIncludes)
-    weeklySuppe = weeklySuppe.replace(/(?=sziasztok)(.*)(?=levesek )|(?=mai)(.*)(?=\s*)/gi, '')
-    // @ SUPPÉ Monday only (on Monday)
-    const mondaySuppeIncludes = (await page.$x('//p[contains(text(), "Sziasztok")]'))[0]
-    let mondaySuppe = await page.evaluate(el => el.textContent, mondaySuppeIncludes)
-    mondaySuppe = mondaySuppe.replace(/(?=sziasztok)(.*)(?=levesek )|(, várunk Titeket!)/gi, '')
+    let paramColor = '#b5dd8d'
+    let paramTitleString = 'Bistro Suppé'
+    let paramUrl = 'https://www.facebook.com/pg/bistrosuppe/posts/'
+    let paramIcon =
+      'https://scontent.fbud1-1.fna.fbcdn.net/v/t1.0-1/c36.0.320.320a/p320x320/1377248_364465010354681_215635093_n.jpg?_nc_cat=101&_nc_ht=scontent.fbud1-1.fna&oh=2e5b2ffdede3a0606b410ca121409f27&oe=5D5F0B90'
+    let paramValueString
+    let mondaySuppe, dailySuppe, weeklySuppe
 
-    console.log('*' + suppeName + '* \n' + '-'.repeat(suppeName.length))
-    if (today === 1) {
-      console.log('• ' + dayNames[today] + ': ' + mondaySuppe + '\n')
-    } else {
-      console.log('• ' + dayNames[today] + ': ' + dailySuppe + '\n' + weeklySuppe + '\n')
+    try {
+      await page.goto(paramUrl, { waitUntil: 'networkidle2' })
+      // @ SUPPÉ selector, source: https://stackoverflow.com/questions/48448586/how-to-use-xpath-in-chrome-headlesspuppeteer-evaluate
+      // @ SUPPÉ Daily
+      const dailySuppeIncludes = (await page.$x('//span[contains(text(), "Sziasztok")]'))[0]
+      dailySuppe = await page.evaluate(el => el.textContent, dailySuppeIncludes)
+      dailySuppe = dailySuppe.replace(/Sziasztok, |, kellemes hétvégét!|, szép napot!|, várunk Titeket!/gi, '')
+      // @ SUPPÉ Weekly (on Monday)
+      const weeklySuppeIncludes = (await page.$x('//p[contains(text(), "Sziasztok")]'))[0]
+      weeklySuppe = await page.evaluate(el => el.textContent, weeklySuppeIncludes)
+      weeklySuppe = weeklySuppe.replace(/(?=sziasztok)(.*)(?=levesek )|(?=mai)(.*)(?=\s*)/gi, '')
+      // @ SUPPÉ Monday only (on Monday)
+      const mondaySuppeIncludes = (await page.$x('//p[contains(text(), "Sziasztok")]'))[0]
+      mondaySuppe = await page.evaluate(el => el.textContent, mondaySuppeIncludes)
+      mondaySuppe = mondaySuppe.replace(/(?=sziasztok)(.*)(?=levesek )|(, várunk Titeket!)/gi, '')
+
+      console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
+      if (today === 1) {
+        paramValueString = mondaySuppe + '\n'
+        console.log('• ' + dayNames[today] + ': ' + paramValueString)
+      } else {
+        paramValueString = dailySuppe + '\n' + weeklySuppe + '\n'
+        console.log('• ' + dayNames[today] + ': ' + paramValueString)
+      }
+      // @ SUPPÉ object
+      suppeObj = {
+        fallback: 'Please open it on a device that supports formatted messages.',
+        pretext: '...',
+        color: paramColor,
+        author_name: paramTitleString.toUpperCase(),
+        author_link: paramUrl,
+        author_icon: paramIcon,
+        fields: [
+          {
+            title: paramTitleString + ' menu (' + dayNames[today] + '):',
+            value: paramValueString,
+            short: false
+          }
+        ],
+        footer: 'scraped by DailyMenu',
+        ts: Math.floor(Date.now() / 1000)
+      }
+      finalJSON.attachments.push(suppeObj)
+    } catch (e) {
+      console.error(e)
     }
-  } catch (e) {
-    console.error(e)
   }
+  await suppe()
 
-  /*
+  async function karcsi() {
+    /*
   @ KARCSI
   ------------------------------------------
   contact info:
@@ -803,13 +961,43 @@ async function scrapeMenu() {
   -----------------------------------------
   */
 
-  let karcsiName = 'Karcsi menu:'
+    let paramColor = '#ffba44'
+    let paramTitleString = 'Karcsi Vendéglö'
+    let paramUrl = 'http://karcsibacsivendeglo.com/letoltes/napi_menu.pdf'
+    let paramIcon =
+      'https://scontent.fbud1-1.fna.fbcdn.net/v/t1.0-1/c28.22.275.275a/p320x320/579633_527729393935258_751578746_n.png?_nc_cat=111&_nc_ht=scontent.fbud1-1.fna&oh=73791f008083bd39a006894bc54655d3&oe=5D61492B'
+    let paramValueString
+    let weeklyKarcsi
 
-  // @ KARCSI weekly
-  const weeklyKarcsi = 'http://karcsibacsivendeglo.com/letoltes/napi_menu.pdf'
+    let paramTitleString = 'Karcsi menu:'
 
-  console.log('*' + karcsiName + '* \n' + '-'.repeat(karcsiName.length))
-  console.log('• Weekly menu: ' + weeklyKarcsi + '\n')
+    // @ KARCSI weekly
+    weeklyKarcsi = 'http://karcsibacsivendeglo.com/letoltes/napi_menu.pdf'
+
+    paramValueString = '• Weekly menu: ' + weeklyKarcsi + '\n'
+    console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
+    console.log(paramValueString)
+    // @ KARCSI object
+    karcsiObj = {
+      fallback: 'Please open it on a device that supports formatted messages.',
+      pretext: '...',
+      color: paramColor,
+      author_name: paramTitleString.toUpperCase(),
+      author_link: paramUrl,
+      author_icon: paramIcon,
+      fields: [
+        {
+          title: paramTitleString + ' menu (' + dayNames[today] + '):',
+          value: paramValueString,
+          short: false
+        }
+      ],
+      footer: 'scraped by DailyMenu',
+      ts: Math.floor(Date.now() / 1000)
+    }
+    finalJSON.attachments.push(karcsiObj)
+  }
+  await karcsi()
 
   // POST the final JSON to webhook
   finalJSON = JSON.stringify(finalJSON)
