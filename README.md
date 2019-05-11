@@ -7,9 +7,9 @@ The actual version of pptr is v1.15.0
 ### What can you find here?
 
 - scraping daily menus and print the output with webhooks to slack;
-- scrape images and retrieve their content with OCR;
-- make some fun NodeJs apps powered by data scraped from the web;
-- automate user flows (e2e testing) with pptr;
+- scraping images and retrieve their content with OCR;
+- some fun NodeJs apps powered by data scraped from the web;
+- automated user flows (e2e testing) with pptr and jest;
 - try out the experimental [Puppeteer-Firefox](https://aslushnikov.github.io/ispuppeteerfirefoxready/).
 
 ### Install packages
@@ -20,11 +20,14 @@ Node v7.6.0 or greater is needed to run the scripts in this repo. And v8.9.4 or 
 
 ### Environment variables
 
-Create your own API key and put in a file `app.env` (gitignored) in root folder of the repo:
+Create your own API key and put in a file `app.env` (gitignored) in the root folder:
 
 ```shell_session
 # create your API key here: https://ocr.space/ocrapi#free
 export OCR_API_KEY="******************"
+# slack webhooks
+export WEBHOOK_URL_TEST=https://hooks.slack.com/services/*********/*********/************************
+export WEBHOOK_URL_PROD=https://hooks.slack.com/services/*********/*********/************************
 
 ```
 
