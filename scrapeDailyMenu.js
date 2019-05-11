@@ -152,6 +152,22 @@ async function scrapeMenu() {
   }
 
   /*
+  @ NOKEDLI
+  ------------------------------------------
+  contact info:
+  * Address: Budapest, Weiner Leó u. 17, 1065
+  * Phone: (20) 499 5832
+  -----------------------------------------
+  imageSelector --> imageNokedliSelector
+  * store src
+  * trim thumbnail sub for normal sized image
+  * download and reduce image size
+  * OCR the table, see nokedliJs for details
+  */
+
+  await nokedliJs.nokedliJs()
+
+  /*
   @ PESTI DISZNO
   ---------------------------------------
   contact info:
@@ -251,7 +267,7 @@ async function scrapeMenu() {
     'http://droprestaurant.com/public/wp-content/uploads/2015/07/logo-header.png',
     [
       '',
-      /\bHÉT((.*\r\n){2})|([ti](.*)[éd](.*)[a])((.*\n){4})/gi,
+      /\bHÉT((.*\r\n){2})/gi, //|([ti](.*)[éd](.*)[a])((.*\r\n){4})
       /\bKED((.*\r\n){2})/gi,
       /\bSZERD((.*\r\n){2})/gi,
       /\bCSOT((.*\r\n){2})|\bCSU((.*\r\n){3})|\bCSÜ((.*\r\n){3})/gi,
@@ -330,22 +346,6 @@ async function scrapeMenu() {
     }
   }
   await bodza()
-
-  /*
-  @ NOKEDLI
-  ------------------------------------------
-  contact info:
-  * Address: Budapest, Weiner Leó u. 17, 1065
-  * Phone: (20) 499 5832
-  -----------------------------------------
-  imageSelector --> imageNokedliSelector
-  * store src
-  * trim thumbnail sub for normal sized image
-  * download and reduce image size
-  * OCR the table, see nokedliJs for details
-  */
-
-  await nokedliJs.nokedliJs()
 
   async function yamato() {
     /*
@@ -968,8 +968,6 @@ async function scrapeMenu() {
       'https://scontent.fbud1-1.fna.fbcdn.net/v/t1.0-1/c28.22.275.275a/p320x320/579633_527729393935258_751578746_n.png?_nc_cat=111&_nc_ht=scontent.fbud1-1.fna&oh=73791f008083bd39a006894bc54655d3&oe=5D61492B'
     let paramValueString
     let weeklyKarcsi
-
-    let paramTitleString = 'Karcsi menu:'
 
     // @ KARCSI weekly
     weeklyKarcsi = 'http://karcsibacsivendeglo.com/letoltes/napi_menu.pdf'
