@@ -7,7 +7,7 @@ const compressImages = require('compress-images')
 const nokedliJs = require('./scrapeDailyNokedli')
 
 // get Day of Week
-const today = 5 //Number(moment().format('d'))
+const today = Number(moment().format('d'))
 const todayFormatted = moment().format('LLLL')
 const todayMinusOne = moment(todayFormatted, 'LLLL')
   .subtract(1, 'day')
