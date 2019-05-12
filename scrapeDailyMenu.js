@@ -53,10 +53,73 @@ async function scrapeMenu() {
     ['ggv', 'ggy'],
     ['hcs', 'hús']
   ]
+  // this will be the object we update with each restaurant's daily menu
   let finalJSON = {
     text: '*' + dayNames[today].toUpperCase() + '* ' + todayFormatted + '\n',
     attachments: []
   }
+  // object prototype for the restaurant daily menu outputs
+  let menuObjProto = {
+        fallback: 'Please open it on a device that supports formatted messages.',
+        pretext: '...',
+        color: this.paramColor,
+        author_name: this.paramTitleString, //.toUpperCase()
+        author_link: this.paramUrl,
+        author_icon: this.paramIcon,
+        fields: [
+          {
+            title: this.paramTitleString + ' menu (' + dayNames[today] + '):',
+            value: this.paramValueString,
+            short: false
+          }
+        ],
+        footer: 'scraped by DailyMenu',
+        ts: Math.floor(Date.now() / 1000)
+      }
+
+  // constructor for menuObjProto prototype
+  let RestaurantMenuOutput = function(color, titleString, url, icon, valueString) {
+    fallback = 'Please open it on a device that supports formatted messages.',
+    pretext = '...',
+    this.color = color,
+    this.author_name = titleString, //.toUpperCase()
+    this.author_link = url,
+    this.author_icon = icon,
+    this.fields = [
+      {
+        title: titleString + ' menu (' + dayNames[today] + '):',
+        value: valueString,
+        short: false
+      }
+    ],
+    this.footer = 'scraped by DailyMenu',
+    this.ts = Math.floor(Date.now() / 1000)
+  }
+/*
+  // constructor for menuObjProto prototype
+  let RestaurantMenuOutput = function(color, titleString, url, icon, valueString) {
+    this.paramColor = color
+    this.paramTitleString = titleString
+    this.paramUrl = url
+    this.paramIcon = icon
+    this.paramValueString = valueString
+  }
+*/
+  RestaurantMenuOutput.prototype = menuObjProto
+
+  let restaurantTestObj = new RestaurantMenuOutput(
+    'red',
+    'GIThub',
+    'http://github.com/',
+    '',
+    'Git is a very cool stuff. The Watcher :)'
+  )
+
+  console.log(restaurantTestObj)
+  //console.log(menuObjProto)
+  finalJSON.attachments.push(restaurantTestObj)
+  finalJSON = JSON.stringify(finalJSON)
+  console.log(finalJSON)
 
   // function for @ {RESTAURANT}s with only facebook image menus
   async function ocrFacebookImage(
