@@ -36,24 +36,25 @@ async function scrapeMenu() {
 
   // replace pairs for typical OCR errors in Hungarian dish names
   let replacementMap = [
-    ['i..', 'l'],
-    ['i.', 'l'],
-    ['zóld', 'zöld'],
-    ['fustblt', 'füstölt'],
-    ['fostólt', 'füstölt'],
-    ['gyijmolcs', 'gyümölcs'],
-    ['gvümõlcs', 'gyümölcs'],
-    ['c.sirkf.', 'csirke'],
-    ['pbrkblt', 'pörkölt'],
-    ['fóétel', 'főétel'],
-    ['tóltve', 'töltve'],
-    ['siilt', 'sült'],
-    ['hagvm', 'hagym'],
-    ['gulv', 'guly'],
-    ['c,s', 'cs'],
-    ['0s', 'ös'],
-    ['ggv', 'ggy'],
-    ['hcs', 'hús']
+    [/i\.\.|i\.|1\./g, 'l'],
+    [/\/eves/g, 'leves'],
+    [/zóld/g, 'zöld'],
+    [/fustblt|fostólt/g, 'füstölt'],
+    [/gyijmolcs|gvümõlcs/g, 'gyümölcs'],
+    [/c.sirkf.|c:s1rkf./g, 'csirke'],
+    [/\/VaCeďZö|\/VoCeďZö/g, 'nokedli'],
+    [/kórte/g, 'körte'],
+    [/¿/g, 'á'],
+    [/pbrkblt/g, 'pörkölt'],
+    [/fóétel/g, 'főétel'],
+    [/tóltve/g, 'töltve'],
+    [/siilt/g, 'sült'],
+    [/hagvm/g, 'hagym'],
+    [/gulv/g, 'guly'],
+    [/c,s/g, 'cs'],
+    [/0s/g, 'ös'],
+    [/ggv/g, 'ggy'],
+    [/hcs/g, 'hús']
   ]
 
   // this will be the object we update with each restaurant's daily menu
@@ -122,7 +123,6 @@ async function scrapeMenu() {
           apikey: process.env.OCR_API_KEY, // add app.env to your environment variables, see README.md
           imageFormat: 'image/png',
           scale: true,
-          isTable: true,
           isOverlayRequired: true
         })
         restaurantParsedText = parsedResult.parsedText
@@ -334,89 +334,130 @@ async function scrapeMenu() {
   }
   await nokedli()
 
-  /*
-  @ PESTI DISZNO
-  ---------------------------------------
-  contact info:
-  * Budapest, Nagymező u. 19, 1063
-  * Phone: +36 (1) 951 4061
-  ---------------------------------------
-  description:
-  * this daily menu relies on if a menu (recognizable for OCR) is available among timeline photos
-  */
+  async function pestiDiszno() {
+    /*
+    @ PESTI DISZNO
+    ---------------------------------------
+    contact info:
+    * Budapest, Nagymező u. 19, 1063
+    * Phone: +36 (1) 951 4061
+    ---------------------------------------
+    description:
+    * this daily menu relies on if a menu (recognizable for OCR) is available among timeline photos
+    */
 
-  await ocrFacebookImage(
-    '#000000',
-    'Pesti Diszno',
-    'https://www.facebook.com/pg/PestiDiszno/posts/',
-    'http://www.pestidiszno.hu/img/pdlogob2.png',
-    ['', /[^%]*/g, /[^%]*/g, /[^%]*/g, /[^%]*/g, /[^%]*/g],
-    '.scaledImageFitHeight',
-    /NAPI MENÜ/gi,
-    3,
-    17
-  )
+    let color = '#000000'
+    let titleString = 'Pesti Diszno'
+    let url = 'https://www.facebook.com/pg/PestiDiszno/posts/'
+    let icon = 'http://www.pestidiszno.hu/img/pdlogob2.png'
+    let daysRegexArray = ['', /[^%]*/g, /[^%]*/g, /[^%]*/g, /[^%]*/g, /[^%]*/g]
+    let facebookImageUrlSelector = '.scaledImageFitHeight'
+    let menuHandleRegex = /NAPI MENÜ/gi
+    let startLine = 3
+    let endLine = 17
 
-  /*
-  @ INCOGNITO
-  ---------------------------------------
-  contact info:
-  * Address: Budapest, Liszt tér
-  ---------------------------------------
-  description:
-  * this daily menu relies on if a menu (recognizable for OCR) is available among timeline photos
-  */
+    await ocrFacebookImage(
+      color,
+      titleString,
+      url,
+      icon,
+      daysRegexArray,
+      facebookImageUrlSelector,
+      menuHandleRegex,
+      startLine,
+      endLine
+    )
+  }
+  await pestiDiszno()
 
-  await ocrFacebookImage(
-    '#cc2c2c',
-    'Incognito',
-    'https://www.facebook.com/pg/cafeincognito/posts/',
-    'https://www.copper-state.com/wp-content/uploads/2016/02/google_incognito_mode_400.jpg',
-    [
+  async function incognito() {
+    /*
+    @ INCOGNITO
+    ---------------------------------------
+    contact info:
+    * Address: Budapest, Liszt tér
+    ---------------------------------------
+    description:
+    * this daily menu relies on if a menu (recognizable for OCR) is available among timeline photos
+    */
+
+    let color = '#cc2c2c'
+    let titleString = 'Incognito'
+    let url = 'https://www.facebook.com/pg/cafeincognito/posts/'
+    let icon = 'https://www.copper-state.com/wp-content/uploads/2016/02/google_incognito_mode_400.jpg'
+    let daysRegexArray = [
       '',
       /\bHÉT((.*\r\n){3})/gi,
       /\bKED((.*\r\n){3})/gi,
       /\bSZERD((.*\r\n){3})/gi,
       /\bCSOT((.*\r\n){3})|\bCSU((.*\r\n){3})|\bCSÜ((.*\r\n){3})|\bCsiitörtök((.*\r\n){3})|törtök((.*\r\n){3})/gi,
       /\bPÉNT((.*\r\n){3})/gi
-    ],
-    '.scaledImageFitWidth',
-    /Heti menü/gi,
-    1,
-    2
-  )
+    ]
+    let facebookImageUrlSelector = '.scaledImageFitWidth'
+    let menuHandleRegex = /Heti menü/gi
+    let startLine = 1
+    let endLine = 2
 
-  /*
-  @ KATA
-  ---------------------------------------
-  contact info:
-  * Address: Budapest, 1065, Hajós u. 27.
-  * Phone: +36(1) 302 4614
-  ---------------------------------------
-  description:
-  * this daily menu relies on if a menu (recognizable for OCR) is available among timeline photos
-  */
+    await ocrFacebookImage(
+      color,
+      titleString,
+      url,
+      icon,
+      daysRegexArray,
+      facebookImageUrlSelector,
+      menuHandleRegex,
+      startLine,
+      endLine
+    )
+  }
+  await incognito()
 
-  await ocrFacebookImage(
-    '#3C5A99',
-    'Kata (Chagall)',
-    'https://www.facebook.com/pg/katarestaurantbudapest/posts/',
-    'https://scontent-vie1-1.xx.fbcdn.net/v/t1.0-1/p200x200/54435606_326369938082271_8203013160240676864_n.jpg?_nc_cat=102&_nc_ht=scontent-vie1-1.xx&oh=f5ccb50053c0d9174c10d71ab0097807&oe=5D2A4D25',
-    [
+  async function kata() {
+    /*
+    @ KATA
+    ---------------------------------------
+    contact info:
+    * Address: Budapest, 1065, Hajós u. 27.
+    * Phone: +36(1) 302 4614
+    ---------------------------------------
+    description:
+    * this daily menu relies on if a menu (recognizable for OCR) is available among timeline photos
+    */
+
+    let color = '#3C5A99'
+    let titleString = 'Kata (Chagall)'
+    let url = 'https://www.facebook.com/pg/katarestaurantbudapest/posts/'
+    let icon =
+      'https://scontent-vie1-1.xx.fbcdn.net/v/t1.0-1/p200x200/54435606_326369938082271_8203013160240676864_n.jpg?_nc_cat=102&_nc_ht=scontent-vie1-1.xx&oh=f5ccb50053c0d9174c10d71ab0097807&oe=5D2A4D25'
+    let daysRegexArray = [
       '',
       /\bHÉT((.*\r\n){3})/gi,
       /\bKED((.*\r\n){3})/gi,
       /\bSZERD((.*\r\n){3})/gi,
       /\bCSOT((.*\r\n){3})|\bCSU((.*\r\n){3})|\bCSÜ((.*\r\n){3})/gi,
       /\bPÉNT((.*\r\n){3})/gi
-    ],
-    '.scaledImageFitWidth',
-    /espresso/gi,
-    1,
-    2
-  )
+    ]
+    let facebookImageUrlSelector = '.scaledImageFitWidth'
+    let menuHandleRegex = /espresso/gi
+    let startLine = 1
+    let endLine = 2
 
-  /*
+    await ocrFacebookImage(
+      color,
+      titleString,
+      url,
+      icon,
+      daysRegexArray,
+      facebookImageUrlSelector,
+      menuHandleRegex,
+      startLine,
+      endLine
+    )
+  }
+  await kata()
+
+  async function drop() {
+    /*
   @ DROP
   ---------------------------------------
   contact info:
@@ -427,24 +468,62 @@ async function scrapeMenu() {
   * this daily menu relies on if a menu (recognizable for OCR) is available among timeline photos
   */
 
-  await ocrFacebookImage(
-    '#d3cd78',
-    'Drop Restaurant',
-    'https://www.facebook.com/pg/droprestaurant/posts/',
-    'http://droprestaurant.com/public/wp-content/uploads/2015/07/logo-header.png',
-    [
+    let color = '#d3cd78'
+    let titleString = 'Drop Restaurant'
+    let url = 'https://www.facebook.com/pg/droprestaurant/posts/'
+    let icon = 'http://droprestaurant.com/public/wp-content/uploads/2015/07/logo-header.png'
+    let daysRegexArray = [
       '',
-      /\bHÉT((.*\r\n){2})/gi, //|([ti](.*)[éd](.*)[a])((.*\r\n){4})
-      /\bKED((.*\r\n){2})/gi,
-      /\bSZERD((.*\r\n){2})/gi,
-      /\bCSOT((.*\r\n){2})|\bCSU((.*\r\n){3})|\bCSÜ((.*\r\n){3})/gi,
-      /\bPÉNT((.*\r\n){2})/gi
-    ],
-    '.scaledImageFitWidth',
-    /Szerda/gi,
-    1,
-    2
-  )
+      /\bPÉNT((.*\r\n){15})/gi,
+      /\bPÉNT((.*\r\n){15})/gi,
+      /\bPÉNT((.*\r\n){15})/gi,
+      /\bPÉNT((.*\r\n){15})/gi,
+      /\bPÉNT((.*\r\n){15})/gi
+    ]
+    let facebookImageUrlSelector = '.scaledImageFitWidth'
+    let menuHandleRegex = /Szerda/gi
+    // this OCR-d menu is totally unrelaible and cannot be regexed smartly, a short term solution is a switch with predefined line numbers
+    let startLine
+    let endLine
+    switch (today) {
+      case 1:
+        startLine = 1
+        endLine = 2
+        break
+      case 2:
+        startLine = 3
+        endLine = 5
+        break
+      case 3:
+        startLine = 6
+        endLine = 8
+        break
+      case 4:
+        startLine = 9
+        endLine = 11
+        break
+      case 5:
+        startLine = 12
+        endLine = 14
+        break
+      default:
+        startLine = 1
+        endLine = 14
+    }
+
+    await ocrFacebookImage(
+      color,
+      titleString,
+      url,
+      icon,
+      daysRegexArray,
+      facebookImageUrlSelector,
+      menuHandleRegex,
+      startLine,
+      endLine
+    )
+  }
+  await drop()
 
   async function bodza() {
     /*
