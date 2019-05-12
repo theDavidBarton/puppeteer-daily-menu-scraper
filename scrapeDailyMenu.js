@@ -74,14 +74,14 @@ async function scrapeMenu() {
     this.author_link = url
     this.author_icon = icon
     this.fields = [
-        {
-          title: titleString + ' menu (' + dayNames[today] + '):',
-          value: valueString,
-          short: false
-        }
-      ]
-      this.footer = 'scraped by DailyMenu'
-      this.ts = Math.floor(Date.now() / 1000)
+      {
+        title: titleString + ' menu (' + dayNames[today] + '):',
+        value: valueString,
+        short: false
+      }
+    ]
+    this.footer = 'scraped by DailyMenu'
+    this.ts = Math.floor(Date.now() / 1000)
   }
 
   RestaurantMenuOutput.prototype = menuObjProto
