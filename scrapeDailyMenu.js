@@ -16,8 +16,10 @@ for (let i = 0; i < 7; i++) {
   let day = moment(i, 'd').format('dddd')
   dayNames.push(day)
 }
+
 console.log('*' + dayNames[today].toUpperCase() + '*\n' + '='.repeat(dayNames[today].length))
 
+// scraper browser instance
 async function scrapeMenu() {
   const browser = await puppeteer.launch({ headless: true })
   const page = await browser.newPage()
@@ -53,73 +55,36 @@ async function scrapeMenu() {
     ['ggv', 'ggy'],
     ['hcs', 'hús']
   ]
+
   // this will be the object we update with each restaurant's daily menu
   let finalJSON = {
     text: '*' + dayNames[today].toUpperCase() + '* ' + todayFormatted + '\n',
     attachments: []
   }
+
   // object prototype for the restaurant daily menu outputs
-  let menuObjProto = {
-        fallback: 'Please open it on a device that supports formatted messages.',
-        pretext: '...',
-        color: this.paramColor,
-        author_name: this.paramTitleString, //.toUpperCase()
-        author_link: this.paramUrl,
-        author_icon: this.paramIcon,
-        fields: [
-          {
-            title: this.paramTitleString + ' menu (' + dayNames[today] + '):',
-            value: this.paramValueString,
-            short: false
-          }
-        ],
-        footer: 'scraped by DailyMenu',
-        ts: Math.floor(Date.now() / 1000)
-      }
+  let menuObjProto
 
   // constructor for menuObjProto prototype
   let RestaurantMenuOutput = function(color, titleString, url, icon, valueString) {
-    fallback = 'Please open it on a device that supports formatted messages.',
-    pretext = '...',
-    this.color = color,
-    this.author_name = titleString, //.toUpperCase()
-    this.author_link = url,
-    this.author_icon = icon,
-    this.fields = [
-      {
-        title: titleString + ' menu (' + dayNames[today] + '):',
-        value: valueString,
-        short: false
-      }
-    ],
-    this.footer = 'scraped by DailyMenu',
-    this.ts = Math.floor(Date.now() / 1000)
+    ;(this.fallback = 'Please open it on a device that supports formatted messages.'),
+      (this.pretext = '...'),
+      (this.color = color),
+      (this.author_name = titleString.toUpperCase()),
+      (this.author_link = url),
+      (this.author_icon = icon),
+      (this.fields = [
+        {
+          title: titleString + ' menu (' + dayNames[today] + '):',
+          value: valueString,
+          short: false
+        }
+      ]),
+      (this.footer = 'scraped by DailyMenu'),
+      (this.ts = Math.floor(Date.now() / 1000))
   }
-/*
-  // constructor for menuObjProto prototype
-  let RestaurantMenuOutput = function(color, titleString, url, icon, valueString) {
-    this.paramColor = color
-    this.paramTitleString = titleString
-    this.paramUrl = url
-    this.paramIcon = icon
-    this.paramValueString = valueString
-  }
-*/
+
   RestaurantMenuOutput.prototype = menuObjProto
-
-  let restaurantTestObj = new RestaurantMenuOutput(
-    'red',
-    'GIThub',
-    'http://github.com/',
-    '',
-    'Git is a very cool stuff. The Watcher :)'
-  )
-
-  console.log(restaurantTestObj)
-  //console.log(menuObjProto)
-  finalJSON.attachments.push(restaurantTestObj)
-  finalJSON = JSON.stringify(finalJSON)
-  console.log(finalJSON)
 
   // function for @ {RESTAURANT}s with only facebook image menus
   async function ocrFacebookImage(
@@ -133,18 +98,14 @@ async function scrapeMenu() {
     paramStartLine,
     paramEndLine
   ) {
-    let restaurantName = paramTitleString
     let paramValueString
-    await page.goto(paramUrl, {
-      waitUntil: 'domcontentloaded'
-    })
-    // @ {RESTAURANT} the hunt for the menu image src
     let restaurantParsedText
     let restaurantDaysRegex = paramDaysRegexArray
     let imageUrlArray = []
     let restaurantDailyArray = []
-    let restaurantObj
     try {
+      await page.goto(paramUrl, { waitUntil: 'domcontentloaded' })
+      // @ {RESTAURANT} the hunt for the menu image src
       const facebookImageUrl = await page.$$(paramFacebookImageUrlSelector)
       for (let i = 0; i < facebookImageUrl.length; i++) {
         let imageUrl = await page.evaluate(el => el.src, facebookImageUrl[i])
@@ -183,26 +144,16 @@ async function scrapeMenu() {
               restaurantDailyArray.push(restaurantDaily[l])
             }
             paramValueString = restaurantDailyArray.join(', ')
-            console.log('*' + restaurantName + '* \n' + '-'.repeat(restaurantName.length))
+            console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
             console.log('• ' + dayNames[today] + ': ' + paramValueString + '\n')
             // @ {RESTAURANT} object
-            restaurantObj = {
-              fallback: 'Please open it on a device that supports formatted messages.',
-              pretext: '...',
-              color: paramColor,
-              author_name: paramTitleString.toUpperCase(),
-              author_link: paramUrl,
-              author_icon: paramIcon,
-              fields: [
-                {
-                  title: paramTitleString + ' menu (' + dayNames[today] + '):',
-                  value: paramValueString,
-                  short: false
-                }
-              ],
-              footer: 'scraped by DailyMenu',
-              ts: Math.floor(Date.now() / 1000)
-            }
+            let restaurantObj = new RestaurantMenuOutput(
+              paramColor,
+              paramTitleString,
+              paramUrl,
+              paramIcon,
+              paramValueString
+            )
             finalJSON.attachments.push(restaurantObj)
 
             break forlabelRestaurant
@@ -373,23 +324,7 @@ async function scrapeMenu() {
               console.log(paramValueString)
           }
           // @ NOKEDLI object
-          nokedliObj = {
-            fallback: 'Please open it on a device that supports formatted messages.',
-            pretext: '...',
-            color: paramColor,
-            author_name: paramTitleString.toUpperCase(),
-            author_link: paramUrl,
-            author_icon: paramIcon,
-            fields: [
-              {
-                title: paramTitleString + ' menu (' + dayNames[today] + '):',
-                value: paramValueString,
-                short: false
-              }
-            ],
-            footer: 'scraped by DailyMenu',
-            ts: Math.floor(Date.now() / 1000)
-          }
+          let nokedliObj = new RestaurantMenuOutput(paramColor, paramTitleString, paramUrl, paramIcon, paramValueString)
           finalJSON.attachments.push(nokedliObj)
         } catch (e) {
           console.error(e)
@@ -555,23 +490,7 @@ async function scrapeMenu() {
       console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
       console.log(paramValueString)
       // @ BODZA object
-      bodzaObj = {
-        fallback: 'Please open it on a device that supports formatted messages.',
-        pretext: '...',
-        color: paramColor,
-        author_name: paramTitleString.toUpperCase(),
-        author_link: paramUrl,
-        author_icon: paramIcon,
-        fields: [
-          {
-            title: paramTitleString + ' menu (' + dayNames[today] + '):',
-            value: paramValueString,
-            short: false
-          }
-        ],
-        footer: 'scraped by DailyMenu',
-        ts: Math.floor(Date.now() / 1000)
-      }
+      let bodzaObj = new RestaurantMenuOutput(paramColor, paramTitleString, paramUrl, paramIcon, paramValueString)
       finalJSON.attachments.push(bodzaObj)
     } catch (e) {
       console.error(e)
@@ -623,23 +542,7 @@ async function scrapeMenu() {
         console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
         console.log(paramValueString)
         // @ YAMATO object
-        yamatoObj = {
-          fallback: 'Please open it on a device that supports formatted messages.',
-          pretext: '...',
-          color: paramColor,
-          author_name: paramTitleString.toUpperCase(),
-          author_link: paramUrl,
-          author_icon: paramIcon,
-          fields: [
-            {
-              title: paramTitleString + ' menu (' + dayNames[today] + '):',
-              value: paramValueString,
-              short: false
-            }
-          ],
-          footer: 'scraped by DailyMenu',
-          ts: Math.floor(Date.now() / 1000)
-        }
+        let yamatoObj = new RestaurantMenuOutput(paramColor, paramTitleString, paramUrl, paramIcon, paramValueString)
         finalJSON.attachments.push(yamatoObj)
       }
     } catch (e) {
@@ -708,23 +611,7 @@ async function scrapeMenu() {
         console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
         console.log(paramValueString)
         // @ VIAN object
-        vianObj = {
-          fallback: 'Please open it on a device that supports formatted messages.',
-          pretext: '...',
-          color: paramColor,
-          author_name: paramTitleString.toUpperCase(),
-          author_link: paramUrl,
-          author_icon: paramIcon,
-          fields: [
-            {
-              title: paramTitleString + ' menu (' + dayNames[today] + '):',
-              value: paramValueString,
-              short: false
-            }
-          ],
-          footer: 'scraped by DailyMenu',
-          ts: Math.floor(Date.now() / 1000)
-        }
+        let vianObj = new RestaurantMenuOutput(paramColor, paramTitleString, paramUrl, paramIcon, paramValueString)
         finalJSON.attachments.push(vianObj)
       }
     } catch (e) {
@@ -764,23 +651,7 @@ async function scrapeMenu() {
       console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
       console.log(paramValueString)
       // @ A-PECSENYES object
-      pecsenyesObj = {
-        fallback: 'Please open it on a device that supports formatted messages.',
-        pretext: '...',
-        color: paramColor,
-        author_name: paramTitleString.toUpperCase(),
-        author_link: paramUrl,
-        author_icon: paramIcon,
-        fields: [
-          {
-            title: paramTitleString + ' menu (' + dayNames[today] + '):',
-            value: paramValueString,
-            short: false
-          }
-        ],
-        footer: 'scraped by DailyMenu',
-        ts: Math.floor(Date.now() / 1000)
-      }
+      let pecsenyesObj = new RestaurantMenuOutput(paramColor, paramTitleString, paramUrl, paramIcon, paramValueString)
       finalJSON.attachments.push(pecsenyesObj)
     } catch (e) {
       console.error(e)
@@ -840,23 +711,7 @@ async function scrapeMenu() {
       console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
       console.log(paramValueString)
       // @ KORHELY object
-      korhelyObj = {
-        fallback: 'Please open it on a device that supports formatted messages.',
-        pretext: '...',
-        color: paramColor,
-        author_name: paramTitleString.toUpperCase(),
-        author_link: paramUrl,
-        author_icon: paramIcon,
-        fields: [
-          {
-            title: paramTitleString + ' menu (' + dayNames[today] + '):',
-            value: paramValueString,
-            short: false
-          }
-        ],
-        footer: 'scraped by DailyMenu',
-        ts: Math.floor(Date.now() / 1000)
-      }
+      let korhelyObj = new RestaurantMenuOutput(paramColor, paramTitleString, paramUrl, paramIcon, paramValueString)
       finalJSON.attachments.push(korhelyObj)
     } catch (e) {
       console.error(e)
@@ -918,23 +773,13 @@ async function scrapeMenu() {
         console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
         console.log(paramValueString)
         // @ KETSZERECSEN object
-        ketszerecsenObj = {
-          fallback: 'Please open it on a device that supports formatted messages.',
-          pretext: '...',
-          color: paramColor,
-          author_name: paramTitleString.toUpperCase(),
-          author_link: paramUrl,
-          author_icon: paramIcon,
-          fields: [
-            {
-              title: paramTitleString + ' menu (' + dayNames[today] + '):',
-              value: paramValueString,
-              short: false
-            }
-          ],
-          footer: 'scraped by DailyMenu',
-          ts: Math.floor(Date.now() / 1000)
-        }
+        let ketszerecsenObj = new RestaurantMenuOutput(
+          paramColor,
+          paramTitleString,
+          paramUrl,
+          paramIcon,
+          paramValueString
+        )
         finalJSON.attachments.push(ketszerecsenObj)
       }
     } catch (e) {
@@ -974,23 +819,7 @@ async function scrapeMenu() {
       console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
       console.log(paramValueString)
       // @ FRUCCOLA object
-      fruccolaObj = {
-        fallback: 'Please open it on a device that supports formatted messages.',
-        pretext: '...',
-        color: paramColor,
-        author_name: paramTitleString.toUpperCase(),
-        author_link: paramUrl,
-        author_icon: paramIcon,
-        fields: [
-          {
-            title: paramTitleString + ' menu (' + dayNames[today] + '):',
-            value: paramValueString,
-            short: false
-          }
-        ],
-        footer: 'scraped by DailyMenu',
-        ts: Math.floor(Date.now() / 1000)
-      }
+      let fruccolaObj = new RestaurantMenuOutput(paramColor, paramTitleString, paramUrl, paramIcon, paramValueString)
       finalJSON.attachments.push(fruccolaObj)
     } catch (e) {
       console.error(e)
@@ -1033,23 +862,7 @@ async function scrapeMenu() {
       console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
       console.log(paramValueString)
       // @ KAMRA object
-      kamraObj = {
-        fallback: 'Please open it on a device that supports formatted messages.',
-        pretext: '...',
-        color: paramColor,
-        author_name: paramTitleString.toUpperCase(),
-        author_link: paramUrl,
-        author_icon: paramIcon,
-        fields: [
-          {
-            title: paramTitleString + ' menu (' + dayNames[today] + '):',
-            value: paramValueString,
-            short: false
-          }
-        ],
-        footer: 'scraped by DailyMenu',
-        ts: Math.floor(Date.now() / 1000)
-      }
+      let kamraObj = new RestaurantMenuOutput(paramColor, paramTitleString, paramUrl, paramIcon, paramValueString)
       finalJSON.attachments.push(kamraObj)
     } catch (e) {
       console.error(e)
@@ -1088,23 +901,7 @@ async function scrapeMenu() {
       console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
       console.log(paramValueString)
       // @ ROZA object
-      rozaObj = {
-        fallback: 'Please open it on a device that supports formatted messages.',
-        pretext: '...',
-        color: paramColor,
-        author_name: paramTitleString.toUpperCase(),
-        author_link: paramUrl,
-        author_icon: paramIcon,
-        fields: [
-          {
-            title: paramTitleString + ' menu (' + dayNames[today] + '):',
-            value: paramValueString,
-            short: false
-          }
-        ],
-        footer: 'scraped by DailyMenu',
-        ts: Math.floor(Date.now() / 1000)
-      }
+      let rozaObj = new RestaurantMenuOutput(paramColor, paramTitleString, paramUrl, paramIcon, paramValueString)
       finalJSON.attachments.push(rozaObj)
     } catch (e) {
       console.error(e)
@@ -1159,23 +956,7 @@ async function scrapeMenu() {
         console.log('• ' + dayNames[today] + ': ' + paramValueString)
       }
       // @ SUPPÉ object
-      suppeObj = {
-        fallback: 'Please open it on a device that supports formatted messages.',
-        pretext: '...',
-        color: paramColor,
-        author_name: paramTitleString.toUpperCase(),
-        author_link: paramUrl,
-        author_icon: paramIcon,
-        fields: [
-          {
-            title: paramTitleString + ' menu (' + dayNames[today] + '):',
-            value: paramValueString,
-            short: false
-          }
-        ],
-        footer: 'scraped by DailyMenu',
-        ts: Math.floor(Date.now() / 1000)
-      }
+      let suppeObj = new RestaurantMenuOutput(paramColor, paramTitleString, paramUrl, paramIcon, paramValueString)
       finalJSON.attachments.push(suppeObj)
     } catch (e) {
       console.error(e)
@@ -1208,30 +989,25 @@ async function scrapeMenu() {
     console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
     console.log(paramValueString)
     // @ KARCSI object
-    karcsiObj = {
-      fallback: 'Please open it on a device that supports formatted messages.',
-      pretext: '...',
-      color: paramColor,
-      author_name: paramTitleString.toUpperCase(),
-      author_link: paramUrl,
-      author_icon: paramIcon,
-      fields: [
-        {
-          title: paramTitleString + ' menu (' + dayNames[today] + '):',
-          value: paramValueString,
-          short: false
-        }
-      ],
-      footer: 'scraped by DailyMenu',
-      ts: Math.floor(Date.now() / 1000)
-    }
+    let karcsiObj = new RestaurantMenuOutput(paramColor, paramTitleString, paramUrl, paramIcon, paramValueString)
     finalJSON.attachments.push(karcsiObj)
   }
   await karcsi()
 
-  // POST the final JSON to webhook
+  // prepare output by stringifying the object
   finalJSON = JSON.stringify(finalJSON)
   console.log(finalJSON)
+
+  // the final countdown (before post the actual menu to webhooks)
+  const countdownto = 5
+  console.log('\nWARNING: the output will be posted to slack in' + countdownto + ' seconds!')
+  for (let i = countdownto; i > 0; i--) {
+    await page.waitFor(1000)
+    console.log(i + '\n...')
+  }
+  console.log('POST')
+
+  // POST the final JSON to webhook
   request(
     {
       url: process.env.WEBHOOK_URL_PROD,
