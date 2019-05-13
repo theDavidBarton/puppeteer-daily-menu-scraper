@@ -36,25 +36,25 @@ async function scrapeMenu() {
 
   // replace pairs for typical OCR errors in Hungarian dish names
   let replacementMap = [
+    [/¿/g, 'á'],
+    [/c,s/g, 'cs'],
+    [/c.sirkf.|c:s1rkf./g, 'csirke'],
+    [/fóétel/g, 'főétel'],
+    [/fustblt|fostólt/g, 'füstölt'],
+    [/hcs|11ts/g, 'hús'],
+    [/hagvm/g, 'hagym'],
+    [/ggv/g, 'ggy'],
+    [/gulv/g, 'guly'],
+    [/gyijmolcs|gvümõlcs/g, 'gyümölcs'],
+    [/kórte/g, 'körte'],
     [/i\.\.|i\.|1\./g, 'l'],
     [/\/eves/g, 'leves'],
-    [/zóld/g, 'zöld'],
-    [/fustblt|fostólt/g, 'füstölt'],
-    [/gyijmolcs|gvümõlcs/g, 'gyümölcs'],
-    [/c.sirkf.|c:s1rkf./g, 'csirke'],
     [/\/VaCeďZö|\/VoCeďZö/g, 'nokedli'],
-    [/kórte/g, 'körte'],
-    [/¿/g, 'á'],
-    [/pbrkblt/g, 'pörkölt'],
-    [/fóétel/g, 'főétel'],
-    [/tóltve/g, 'töltve'],
-    [/siilt/g, 'sült'],
-    [/hagvm/g, 'hagym'],
-    [/gulv/g, 'guly'],
-    [/c,s/g, 'cs'],
     [/0s/g, 'ös'],
-    [/ggv/g, 'ggy'],
-    [/hcs/g, 'hús']
+    [/pbrkblt/g, 'pörkölt'],
+    [/siilt/g, 'sült'],
+    [/tóltve/g, 'töltve'],
+    [/zóld/g, 'zöld']
   ]
 
   // this will be the object we update with each restaurant's daily menu
@@ -63,10 +63,7 @@ async function scrapeMenu() {
     attachments: []
   }
 
-  // object prototype for the restaurant daily menu outputs
-  let menuObjProto
-
-  // constructor for menuObjProto prototype
+  // constructor for menu object
   let RestaurantMenuOutput = function(color, titleString, url, icon, valueString) {
     this.fallback = 'Please open it on a device that supports formatted messages.'
     this.pretext = '...'
@@ -84,8 +81,6 @@ async function scrapeMenu() {
     this.footer = 'scraped by DailyMenu'
     this.ts = Math.floor(Date.now() / 1000)
   }
-
-  RestaurantMenuOutput.prototype = menuObjProto
 
   // function for @ {RESTAURANT}s with only facebook image menus
   async function ocrFacebookImage(

@@ -1,24 +1,27 @@
 let replacementMap = [
-  ['i\.\.|i\.|1\.', 'l'],
-  ['\/eves', 'leves'],
-  ['zóld', 'zöld'],
-  ['fustblt|fostólt', 'füstölt'],
-  ['gyijmolcs|gvümõlcs', 'gyümölcs'],
-  ['c.sirkf.|c:s1rkf.', 'csirke'],
-  ['\/VaCeďZö|\/VoCeďZö', 'nokedli'],
-  ['kórte', 'körte'],
-  ['¿', 'á'],
-  ['pbrkblt', 'pörkölt'],
-  ['fóétel', 'főétel'],
-  ['tóltve', 'töltve'],
-  ['siilt', 'sült'],
-  ['hagvm', 'hagym'],
-  ['gulv', 'guly'],
-  ['c,s', 'cs'],
-  ['0s', 'ös'],
-  ['ggv', 'ggy'],
-  ['hcs', 'hús']
+  ["¿", "á"],
+  ["c,s", "cs"],
+  ["c.sirkf.|c:s1rkf.", "csirke"],
+  ["fóétel", "főétel"],
+  ["fustblt|fostólt", "füstölt"],
+  ["hcs|11ts", "hús"],
+  ["hagvm", "hagym"],
+  ["ggv", "ggy"],
+  ["gulv", "guly"],
+  ["gyijmolcs|gvümõlcs", "gyümölcs"],
+  ["kórte", "körte"],
+  ["i\\.\\.|i\\.|1\\.", "l"],
+  ["\\/eves", "leves"],
+  ["\\/VaCeďZö|\\/VoCeďZö", "nokedli"],
+  ["0s", "ös"],
+  ["pbrkblt", "pörkölt"],
+  ["siilt", "sült"],
+  ["tóltve", "töltve"],
+  ["zóld", "zöld"]
 ]
+
+console.log(replacementMap[13][0])
+console.log(new RegExp(replacementMap[13][0])+'g', replacementMap[13][1])
 
 let str1 = 'A mai \/eves hagvm gulv¿s'
 let str2
