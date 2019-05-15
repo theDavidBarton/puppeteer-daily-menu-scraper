@@ -1,0 +1,23 @@
+[
+  ["¿", "á"],
+  ["c,s", "cs"],
+  ["c.sirkf.|c:s1rkf.", "csirke"],
+  ["é\\.", "é"],
+  ["fóétel", "főétel"],
+  ["fustblt|fostólt", "füstölt"],
+  ["hcs|11ts", "hús"],
+  ["hagvm", "hagym"],
+  ["ggv", "ggy"],
+  ["gulv", "guly"],
+  ["gyijmolcs|gvümõlcs", "gyümölcs"],
+  ["kórte", "körte"],
+  ["i\\.\\.|i\\.|1\\.", "l"],
+  ["\\/eves", "leves"],
+  ["\\/VaCeďZö|\\/VoCeďZö", "nokedli"],
+  ["0s", "ös"],
+  ["pbrkblt", "pörkölt"],
+  ["siilt", "sült"],
+  ["tóltve", "töltve"],
+  ["zóld", "zöld"],
+  ["t;", "u"]
+]

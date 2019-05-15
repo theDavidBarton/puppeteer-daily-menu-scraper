@@ -4,6 +4,7 @@ const ocrSpaceApi = require('ocr-space-api')
 const fs = require('fs')
 const request = require('request')
 const compressImages = require('compress-images')
+const replacementMap = require('./replacementMap.json') // replace pairs for typical OCR errors in Hungarian dish names
 
 // get Day of Week
 const today = Number(moment().format('d'))
@@ -34,39 +35,13 @@ async function scrapeMenu() {
     }
   })
 
-  // replace pairs for typical OCR errors in Hungarian dish names
-  let replacementMap = [
-    [/i\.\.|i\.|1\./g, 'l'],
-    [/\/eves/g, 'leves'],
-    [/zóld/g, 'zöld'],
-    [/fustblt|fostólt/g, 'füstölt'],
-    [/gyijmolcs|gvümõlcs/g, 'gyümölcs'],
-    [/c.sirkf.|c:s1rkf./g, 'csirke'],
-    [/\/VaCeďZö|\/VoCeďZö/g, 'nokedli'],
-    [/kórte/g, 'körte'],
-    [/¿/g, 'á'],
-    [/pbrkblt/g, 'pörkölt'],
-    [/fóétel/g, 'főétel'],
-    [/tóltve/g, 'töltve'],
-    [/siilt/g, 'sült'],
-    [/hagvm/g, 'hagym'],
-    [/gulv/g, 'guly'],
-    [/c,s/g, 'cs'],
-    [/0s/g, 'ös'],
-    [/ggv/g, 'ggy'],
-    [/hcs/g, 'hús']
-  ]
-
   // this will be the object we update with each restaurant's daily menu
   let finalJSON = {
     text: '*' + dayNames[today].toUpperCase() + '* ' + todayFormatted + '\n',
     attachments: []
   }
 
-  // object prototype for the restaurant daily menu outputs
-  let menuObjProto
-
-  // constructor for menuObjProto prototype
+  // constructor for menu object
   let RestaurantMenuOutput = function(color, titleString, url, icon, valueString) {
     this.fallback = 'Please open it on a device that supports formatted messages.'
     this.pretext = '...'
@@ -84,8 +59,6 @@ async function scrapeMenu() {
     this.footer = 'scraped by DailyMenu'
     this.ts = Math.floor(Date.now() / 1000)
   }
-
-  RestaurantMenuOutput.prototype = menuObjProto
 
   // function for @ {RESTAURANT}s with only facebook image menus
   async function ocrFacebookImage(
@@ -135,7 +108,7 @@ async function scrapeMenu() {
               restaurantDaily = restaurantDaily
                 .toString()
                 .toLowerCase()
-                .replace(replacementMap[k][0], replacementMap[k][1])
+                .replace(new RegExp(replacementMap[k][0], 'g'), replacementMap[k][1])
             }
             restaurantDaily = restaurantDaily.split(/\r\n/)
 
