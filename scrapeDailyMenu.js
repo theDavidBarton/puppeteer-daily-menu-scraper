@@ -4,6 +4,7 @@ const ocrSpaceApi = require('ocr-space-api')
 const fs = require('fs')
 const request = require('request')
 const compressImages = require('compress-images')
+const replacementMap = require('./replacementMap.json') // replace pairs for typical OCR errors in Hungarian dish names
 
 // get Day of Week
 const today = Number(moment().format('d'))
@@ -33,29 +34,6 @@ async function scrapeMenu() {
       request.continue()
     }
   })
-
-  // replace pairs for typical OCR errors in Hungarian dish names
-  let replacementMap = [
-    [/¿/g, 'á'],
-    [/c,s/g, 'cs'],
-    [/c.sirkf.|c:s1rkf./g, 'csirke'],
-    [/fóétel/g, 'főétel'],
-    [/fustblt|fostólt/g, 'füstölt'],
-    [/hcs|11ts/g, 'hús'],
-    [/hagvm/g, 'hagym'],
-    [/ggv/g, 'ggy'],
-    [/gulv/g, 'guly'],
-    [/gyijmolcs|gvümõlcs/g, 'gyümölcs'],
-    [/kórte/g, 'körte'],
-    [/i\.\.|i\.|1\./g, 'l'],
-    [/\/eves/g, 'leves'],
-    [/\/VaCeďZö|\/VoCeďZö/g, 'nokedli'],
-    [/0s/g, 'ös'],
-    [/pbrkblt/g, 'pörkölt'],
-    [/siilt/g, 'sült'],
-    [/tóltve/g, 'töltve'],
-    [/zóld/g, 'zöld']
-  ]
 
   // this will be the object we update with each restaurant's daily menu
   let finalJSON = {
@@ -130,7 +108,7 @@ async function scrapeMenu() {
               restaurantDaily = restaurantDaily
                 .toString()
                 .toLowerCase()
-                .replace(replacementMap[k][0], replacementMap[k][1])
+                .replace(new RegExp(replacementMap[k][0], 'g'), replacementMap[k][1])
             }
             restaurantDaily = restaurantDaily.split(/\r\n/)
 

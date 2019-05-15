@@ -2,6 +2,7 @@
   ["¿", "á"],
   ["c,s", "cs"],
   ["c.sirkf.|c:s1rkf.", "csirke"],
+  ["é\\.", "é"],
   ["fóétel", "főétel"],
   ["fustblt|fostólt", "füstölt"],
   ["hcs|11ts", "hús"],
@@ -17,5 +18,6 @@
   ["pbrkblt", "pörkölt"],
   ["siilt", "sült"],
   ["tóltve", "töltve"],
-  ["zóld", "zöld"]
+  ["zóld", "zöld"],
+  ["t;", "u"]
 ]
