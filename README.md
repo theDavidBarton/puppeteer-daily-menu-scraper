@@ -2,7 +2,7 @@
 
 A sandbox repository for **Puppeteer** (pptr), the NodeJs library made by GoogleChromeLabs to interact with webapps and browser components through headless Chrome.
 
-The actual version of pptr is v1.15.0
+The actual version of pptr is v1.16.0
 
 ### What can you find here?
 
