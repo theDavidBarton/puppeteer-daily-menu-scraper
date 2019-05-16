@@ -20,7 +20,7 @@ for (let i = 0; i < 7; i++) {
 
 console.log('*' + dayNames[today].toUpperCase() + '*\n' + '='.repeat(dayNames[today].length))
 
-// scraper browser instance
+// scraper browser instance - function that wraps all the scrapers
 async function scrapeMenu() {
   const browser = await puppeteer.launch({ headless: true })
   const page = await browser.newPage()
@@ -35,7 +35,7 @@ async function scrapeMenu() {
     }
   })
 
-  // this will be the object we update with each restaurant's daily menu
+  // this will be the object we extend ('attachments') with each daily menu
   let finalJSON = {
     text: '*' + dayNames[today].toUpperCase() + '* ' + todayFormatted + '\n',
     attachments: []
@@ -60,7 +60,7 @@ async function scrapeMenu() {
     this.ts = Math.floor(Date.now() / 1000)
   }
 
-  // function for @ {RESTAURANT}s with only facebook image menus
+  // @ {RESTAURANT}s with only facebook image menus
   async function ocrFacebookImage(
     paramColor,
     paramTitleString,
@@ -153,7 +153,8 @@ async function scrapeMenu() {
     * OCR the table
     */
 
-    let paramColor = '#aa2020'
+    // @ NOKEDLI parameters
+    let paramColor = '#f9c32c'
     let paramTitleString = 'Nokedli'
     let paramUrl = 'http://nokedlikifozde.hu/'
     let paramIcon =
@@ -191,119 +192,116 @@ async function scrapeMenu() {
     // @ NOKEDLI reduce image size
     let input = 'tmp/input/weeklyNokedli.jpg'
     let output = 'tmp/output/'
-    compressImages(
-      input,
-      output,
-      { compress_force: false, statistic: false, autoupdate: true },
-      false,
-      { jpg: { engine: 'mozjpeg', command: ['-quality', '60'] } },
-      { png: { engine: 'pngquant', command: ['--quality=20-50'] } },
-      { svg: { engine: 'svgo', command: '--multipass' } },
-      { gif: { engine: 'gifsicle', command: ['--colors', '64', '--use-col=web'] } },
-      async function(error, completed) {
-        // @ NOKEDLI OCR reduced image
-        const imagePath = 'tmp/output/weeklyNokedli.jpg'
-        try {
-          let parsedResult = await ocrSpaceApi.parseImageFromLocalFile(imagePath, {
-            apikey: process.env.OCR_API_KEY, // add app.env to your environment variables, source: https://hackernoon.com/how-to-use-environment-variables-keep-your-secret-keys-safe-secure-8b1a7877d69c
-            language: 'hun',
-            imageFormat: 'image/png',
-            scale: true,
-            isOverlayRequired: true
-          })
+    // the parameters for compress-images library
+    let compressSettings = { compress_force: false, statistic: false, autoupdate: true }
+    let jpg = { jpg: { engine: 'mozjpeg', command: ['-quality', '60'] } }
+    let png = { png: { engine: 'pngquant', command: ['--quality=20-50'] } }
+    let svg = { svg: { engine: 'svgo', command: '--multipass' } }
+    let gif = { gif: { engine: 'gifsicle', command: ['--colors', '64', '--use-col=web'] } }
 
-          let textOverlayLinesCount = parsedResult.ocrParsedResult.ParsedResults[0].TextOverlay.Lines.length // text group count
-          let nokedliMonday = []
-          let nokedliMondayStr = []
-          let nokedliTuesday = []
-          let nokedliTuesdayStr = []
-          let nokedliWednesday = []
-          let nokedliWednesdayStr = []
-          let nokedliThursday = []
-          let nokedliThursdayStr = []
-          let nokedliFriday = []
-          let nokedliFridayStr = []
+    compressImages(input, output, compressSettings, false, jpg, png, svg, gif, async function(error, completed) {
+      // @ NOKEDLI OCR reduced image
+      const imagePath = 'tmp/output/weeklyNokedli.jpg'
+      try {
+        let parsedResult = await ocrSpaceApi.parseImageFromLocalFile(imagePath, {
+          apikey: process.env.OCR_API_KEY, // add app.env to your environment variables, source: https://hackernoon.com/how-to-use-environment-variables-keep-your-secret-keys-safe-secure-8b1a7877d69c
+          language: 'hun',
+          imageFormat: 'image/png',
+          scale: true,
+          isOverlayRequired: true
+        })
 
-          // checks word coordinates against a predefined map of the table
-          for (let i = 0; i < textOverlayLinesCount; i++) {
-            let textOverlayWordsCount = parsedResult.ocrParsedResult.ParsedResults[0].TextOverlay.Lines[i].Words.length
-            for (let j = 0; j < textOverlayWordsCount; j++) {
-              let wordLeft = parsedResult.ocrParsedResult.ParsedResults[0].TextOverlay.Lines[i].Words[0].Left
-              let wordTop = parsedResult.ocrParsedResult.ParsedResults[0].TextOverlay.Lines[i].Words[0].Top
-              let wordText = parsedResult.ocrParsedResult.ParsedResults[0].TextOverlay.Lines[i].Words[j].WordText
-              if (wordTop > 520 && wordTop < 1930) {
-                monday: if (wordLeft > 780 && wordLeft < 980) {
-                  nokedliMonday.push(wordText)
-                  nokedliMondayStr = nokedliMonday.join(' ').split(/(?= [A-ZÁÍŰŐÜÖÚÓÉ])/g)
-                  for (let k = 0; k < nokedliMondayStr.length; k++) {
-                    nokedliMondayStr[k] = nokedliMondayStr[k].trim()
-                  }
+        let textOverlayLinesCount = parsedResult.ocrParsedResult.ParsedResults[0].TextOverlay.Lines.length // text group count
+        let nokedliMonday = []
+        let nokedliMondayStr = []
+        let nokedliTuesday = []
+        let nokedliTuesdayStr = []
+        let nokedliWednesday = []
+        let nokedliWednesdayStr = []
+        let nokedliThursday = []
+        let nokedliThursdayStr = []
+        let nokedliFriday = []
+        let nokedliFridayStr = []
+
+        // checks word coordinates against a predefined map of the table
+        for (let i = 0; i < textOverlayLinesCount; i++) {
+          let textOverlayWordsCount = parsedResult.ocrParsedResult.ParsedResults[0].TextOverlay.Lines[i].Words.length
+          for (let j = 0; j < textOverlayWordsCount; j++) {
+            let wordLeft = parsedResult.ocrParsedResult.ParsedResults[0].TextOverlay.Lines[i].Words[0].Left
+            let wordTop = parsedResult.ocrParsedResult.ParsedResults[0].TextOverlay.Lines[i].Words[0].Top
+            let wordText = parsedResult.ocrParsedResult.ParsedResults[0].TextOverlay.Lines[i].Words[j].WordText
+            if (wordTop > 520 && wordTop < 1930) {
+              monday: if (wordLeft > 780 && wordLeft < 980) {
+                nokedliMonday.push(wordText)
+                nokedliMondayStr = nokedliMonday.join(' ').split(/(?= [A-ZÁÍŰŐÜÖÚÓÉ])/g)
+                for (let k = 0; k < nokedliMondayStr.length; k++) {
+                  nokedliMondayStr[k] = nokedliMondayStr[k].trim()
                 }
-                tuesday: if (wordLeft > 1310 && wordLeft < 1520) {
-                  nokedliTuesday.push(wordText)
-                  nokedliTuesdayStr = nokedliTuesday.join(' ').split(/(?= [A-ZÁÍŰŐÜÖÚÓÉ])/g)
-                  for (let k = 0; k < nokedliTuesdayStr.length; k++) {
-                    nokedliTuesdayStr[k] = nokedliTuesdayStr[k].trim()
-                  }
+              }
+              tuesday: if (wordLeft > 1310 && wordLeft < 1520) {
+                nokedliTuesday.push(wordText)
+                nokedliTuesdayStr = nokedliTuesday.join(' ').split(/(?= [A-ZÁÍŰŐÜÖÚÓÉ])/g)
+                for (let k = 0; k < nokedliTuesdayStr.length; k++) {
+                  nokedliTuesdayStr[k] = nokedliTuesdayStr[k].trim()
                 }
-                wednesday: if (wordLeft > 1815 && wordLeft < 2060) {
-                  nokedliWednesday.push(wordText)
-                  nokedliWednesdayStr = nokedliWednesday.join(' ').split(/(?= [A-ZÁÍŰŐÜÖÚÓÉ])/g)
-                  for (let k = 0; k < nokedliWednesdayStr.length; k++) {
-                    nokedliWednesdayStr[k] = nokedliWednesdayStr[k].trim()
-                  }
+              }
+              wednesday: if (wordLeft > 1815 && wordLeft < 2060) {
+                nokedliWednesday.push(wordText)
+                nokedliWednesdayStr = nokedliWednesday.join(' ').split(/(?= [A-ZÁÍŰŐÜÖÚÓÉ])/g)
+                for (let k = 0; k < nokedliWednesdayStr.length; k++) {
+                  nokedliWednesdayStr[k] = nokedliWednesdayStr[k].trim()
                 }
-                thursday: if (wordLeft > 2345 && wordLeft < 2620) {
-                  nokedliThursday.push(wordText)
-                  nokedliThursdayStr = nokedliThursday.join(' ').split(/(?= [A-ZÁÍŰŐÜÖÚÓÉ])/g)
-                  for (let k = 0; k < nokedliThursdayStr.length; k++) {
-                    nokedliThursdayStr[k] = nokedliThursdayStr[k].trim()
-                  }
+              }
+              thursday: if (wordLeft > 2345 && wordLeft < 2620) {
+                nokedliThursday.push(wordText)
+                nokedliThursdayStr = nokedliThursday.join(' ').split(/(?= [A-ZÁÍŰŐÜÖÚÓÉ])/g)
+                for (let k = 0; k < nokedliThursdayStr.length; k++) {
+                  nokedliThursdayStr[k] = nokedliThursdayStr[k].trim()
                 }
-                friday: if (wordLeft > 2880 && wordLeft < 3110) {
-                  nokedliFriday.push(wordText)
-                  nokedliFridayStr = nokedliFriday.join(' ').split(/(?= [A-ZÁÍŰŐÜÖÚÓÉ])/g)
-                  for (let k = 0; k < nokedliFridayStr.length; k++) {
-                    nokedliFridayStr[k] = nokedliFridayStr[k].trim()
-                  }
+              }
+              friday: if (wordLeft > 2880 && wordLeft < 3110) {
+                nokedliFriday.push(wordText)
+                nokedliFridayStr = nokedliFriday.join(' ').split(/(?= [A-ZÁÍŰŐÜÖÚÓÉ])/g)
+                for (let k = 0; k < nokedliFridayStr.length; k++) {
+                  nokedliFridayStr[k] = nokedliFridayStr[k].trim()
                 }
               }
             }
           }
-          console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
-          switch (today) {
-            case 1:
-              paramValueString = '• Daily menu: ' + nokedliMondayStr.join(', ') + '\n'
-              console.log(paramValueString)
-              break
-            case 2:
-              paramValueString = '• Daily menu: ' + nokedliTuesdayStr.join(', ') + '\n'
-              console.log(paramValueString)
-              break
-            case 3:
-              paramValueString = '• Daily menu: ' + nokedliWednesdayStr.join(', ') + '\n'
-              console.log(paramValueString)
-              break
-            case 4:
-              paramValueString = '• Daily menu: ' + nokedliThursdayStr.join(', ') + '\n'
-              console.log(paramValueString)
-              break
-            case 5:
-              paramValueString = '• Daily menu: ' + nokedliFridayStr.join(', ') + '\n'
-              console.log(paramValueString)
-              break
-            default:
-              paramValueString = 'weekend work, eh?\n'
-              console.log(paramValueString)
-          }
-          // @ NOKEDLI object
-          let nokedliObj = new RestaurantMenuOutput(paramColor, paramTitleString, paramUrl, paramIcon, paramValueString)
-          finalJSON.attachments.push(nokedliObj)
-        } catch (e) {
-          console.error(e)
         }
+        console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
+        switch (today) {
+          case 1:
+            paramValueString = '• Daily menu: ' + nokedliMondayStr.join(', ') + '\n'
+            console.log(paramValueString)
+            break
+          case 2:
+            paramValueString = '• Daily menu: ' + nokedliTuesdayStr.join(', ') + '\n'
+            console.log(paramValueString)
+            break
+          case 3:
+            paramValueString = '• Daily menu: ' + nokedliWednesdayStr.join(', ') + '\n'
+            console.log(paramValueString)
+            break
+          case 4:
+            paramValueString = '• Daily menu: ' + nokedliThursdayStr.join(', ') + '\n'
+            console.log(paramValueString)
+            break
+          case 5:
+            paramValueString = '• Daily menu: ' + nokedliFridayStr.join(', ') + '\n'
+            console.log(paramValueString)
+            break
+          default:
+            paramValueString = 'weekend work, eh?\n'
+            console.log(paramValueString)
+        }
+        // @ NOKEDLI object
+        let nokedliObj = new RestaurantMenuOutput(paramColor, paramTitleString, paramUrl, paramIcon, paramValueString)
+        finalJSON.attachments.push(nokedliObj)
+      } catch (e) {
+        console.error(e)
       }
-    )
+    })
   }
   await nokedli()
 
@@ -319,6 +317,7 @@ async function scrapeMenu() {
     * this daily menu relies on if a menu (recognizable for OCR) is available among timeline photos
     */
 
+    // @ PESTI DISZNO parameters
     let color = '#000000'
     let titleString = 'Pesti Diszno'
     let url = 'https://www.facebook.com/pg/PestiDiszno/posts/'
@@ -354,6 +353,7 @@ async function scrapeMenu() {
     * this daily menu relies on if a menu (recognizable for OCR) is available among timeline photos
     */
 
+    // @ INCOGNITO parameters
     let color = '#cc2c2c'
     let titleString = 'Incognito'
     let url = 'https://www.facebook.com/pg/cafeincognito/posts/'
@@ -397,6 +397,7 @@ async function scrapeMenu() {
     * this daily menu relies on if a menu (recognizable for OCR) is available among timeline photos
     */
 
+    // @ KATA parameters
     let color = '#3C5A99'
     let titleString = 'Kata (Chagall)'
     let url = 'https://www.facebook.com/pg/katarestaurantbudapest/posts/'
@@ -431,16 +432,17 @@ async function scrapeMenu() {
 
   async function drop() {
     /*
-  @ DROP
-  ---------------------------------------
-  contact info:
-  * Address: Budapest, 1065, Hajós u. 27.
-  * Phone: +36 1 235 0468
-  ---------------------------------------
-  description:
-  * this daily menu relies on if a menu (recognizable for OCR) is available among timeline photos
-  */
+    @ DROP
+    ---------------------------------------
+    contact info:
+    * Address: Budapest, 1065, Hajós u. 27.
+    * Phone: +36 1 235 0468
+    ---------------------------------------
+    description:
+    * this daily menu relies on if a menu (recognizable for OCR) is available among timeline photos
+    */
 
+    // @ DROP parameters
     let color = '#d3cd78'
     let titleString = 'Drop Restaurant'
     let url = 'https://www.facebook.com/pg/droprestaurant/posts/'
@@ -508,6 +510,7 @@ async function scrapeMenu() {
     -----------------------------------------
     */
 
+    // @ BODZA parameters
     let paramColor = '#c7ef81'
     let paramTitleString = 'Bodza bistro'
     let paramUrl = 'http://bodzabistro.hu/heti-menu/'
@@ -563,6 +566,7 @@ async function scrapeMenu() {
     * yamato: is the text inside selector (actual menu), and also the final cleaned text to be displayed in output
     */
 
+    // @ YAMATO parameters
     let paramColor = '#cca92b'
     let paramTitleString = 'Yamato'
     let paramUrl = 'https://www.wasabi.hu/napimenu.php?source=yamato&lang=hu'
@@ -616,6 +620,7 @@ async function scrapeMenu() {
     * vian[1-2]: is the text inside selector (actual menu) to be displayed in output
     */
 
+    // @ VIAN parameters
     let paramColor = '#cc2b2b'
     let paramTitleString = 'Cafe Vian'
     let paramUrl = 'http://www.cafevian.com/ebedmenue'
@@ -672,45 +677,6 @@ async function scrapeMenu() {
   }
   await vian()
 
-  async function aPecsenyes() {
-    /*
-    @ A-PECSENYES
-    ------------------------------------------
-    contact info:
-    * Address: 1051 Budapest, Sas utca 25.
-    * Phone: 36-1-610-0645
-    -----------------------------------------
-    */
-
-    let paramColor = '#a3c643'
-    let paramTitleString = 'A-Pecsenyés'
-    let paramUrl = 'http://www.napimenu.hu/budapest/adatlap/a-pecsenyes'
-    let paramIcon = 'https://apecsenyes.hu/wp-content/uploads/2018/02/a_pecsenyes_logo_intro.png'
-    let paramValueString
-    let dailyPecsenyes
-
-    // @ A-PECSENYES selector
-    const dailyPecsenyesSelector = '#tabsContent1 > div'
-
-    try {
-      await page.goto(paramUrl, { waitUntil: 'networkidle2' })
-      // @ A-PECSENYES Daily
-      dailyPecsenyes = await page.evaluate(el => el.innerText, await page.$(dailyPecsenyesSelector))
-      dailyPecsenyes = dailyPecsenyes.replace(/(\n)/gm, ', ')
-      dailyPecsenyes = dailyPecsenyes.replace('Napi ebéd menü A-Pecsenyés, ', '')
-
-      paramValueString = '• Daily menu: ' + dailyPecsenyes + '\n'
-      console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
-      console.log(paramValueString)
-      // @ A-PECSENYES object
-      let pecsenyesObj = new RestaurantMenuOutput(paramColor, paramTitleString, paramUrl, paramIcon, paramValueString)
-      finalJSON.attachments.push(pecsenyesObj)
-    } catch (e) {
-      console.error(e)
-    }
-  }
-  await aPecsenyes()
-
   async function korhely() {
     /*
     @ KORHELY
@@ -721,6 +687,7 @@ async function scrapeMenu() {
     ---------------------------------------------
     */
 
+    // @ KORHELY parameters
     let paramColor = '#c6b443'
     let paramTitleString = 'Korhely'
     let paramUrl = 'http://www.korhelyfaloda.hu/menu'
@@ -784,6 +751,7 @@ async function scrapeMenu() {
     * ketszerecsen[1-2]: is the text inside selector (actual menu) to be displayed in output
     */
 
+    // @ KETSZERECSEN parameters
     let paramColor = '#000000'
     let paramTitleString = 'Két Szerecsen Bisztro'
     let paramUrl = 'https://ketszerecsen.hu/#daily'
@@ -850,6 +818,7 @@ async function scrapeMenu() {
     ----------------------------------------------
     */
 
+    // @ FRUCCOLA parameters
     let paramColor = '#40ae49'
     let paramTitleString = 'Fruccola (Arany Janos utca)'
     let paramUrl = 'http://fruccola.hu/hu'
@@ -889,6 +858,7 @@ async function scrapeMenu() {
     -----------------------------------------
     */
 
+    // @ KAMRA parameters
     let paramColor = '#fc594e'
     let paramTitleString = 'Kamra Ételbár'
     let paramUrl = 'http://www.kamraetelbar.hu/kamra_etelbar_mai_menu.html'
@@ -932,6 +902,7 @@ async function scrapeMenu() {
     -----------------------------------------
     */
 
+    // @ ROZA parameters
     let paramColor = '#fced4e'
     let paramTitleString = 'Róza Soup Restaurant'
     let paramUrl = 'https://www.facebook.com/pg/rozafinomitt/posts/'
@@ -975,6 +946,7 @@ async function scrapeMenu() {
     * replace redundant string patterns with regex
     */
 
+    // @ SUPPÉ parameters
     let paramColor = '#b5dd8d'
     let paramTitleString = 'Bistro Suppé'
     let paramUrl = 'https://www.facebook.com/pg/bistrosuppe/posts/'
@@ -1026,6 +998,7 @@ async function scrapeMenu() {
     -----------------------------------------
     */
 
+    // @ KARCSI parameters
     let paramColor = '#ffba44'
     let paramTitleString = 'Karcsi Vendéglö'
     let paramUrl = 'http://karcsibacsivendeglo.com/letoltes/napi_menu.pdf'
@@ -1052,7 +1025,7 @@ async function scrapeMenu() {
 
   // the final countdown (before post the actual menu to webhooks)
   const countdownto = 5
-  console.log('\nWARNING: the output will be posted to slack in' + countdownto + ' seconds!')
+  console.log('\nWARNING: the output will be posted to slack in ' + countdownto + ' seconds!')
   for (let i = countdownto; i > 0; i--) {
     await page.waitFor(1000)
     console.log(i + '\n...')
