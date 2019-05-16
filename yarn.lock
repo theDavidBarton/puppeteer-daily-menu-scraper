@@ -4279,6 +4279,7 @@ punycode@^2.1.0, punycode@^2.1.1:
 puppeteer-firefox@^0.5.0:
   version "0.5.0"
   resolved "https://registry.yarnpkg.com/puppeteer-firefox/-/puppeteer-firefox-0.5.0.tgz#5800e48cbbe135adae5fbf3032114064a612d87a"
+  integrity sha512-80wl29/Lb0URQ1f77yVXfq+cxCW30Q+1GbpRb32HbzTR9/amOn6D5G99xo8OsDJ6kIfuLyYTLj6HZgwMuDPBBQ==
   dependencies:
     debug "^4.1.0"
     extract-zip "^1.6.6"
@@ -4289,9 +4290,10 @@ puppeteer-firefox@^0.5.0:
     rimraf "^2.6.1"
     ws "^6.1.0"
 
-puppeteer@^1.15.0:
-  version "1.15.0"
-  resolved "https://registry.yarnpkg.com/puppeteer/-/puppeteer-1.15.0.tgz#1680fac13e51f609143149a5b7fa99eec392b34f"
+puppeteer@^1.16.0:
+  version "1.16.0"
+  resolved "https://registry.yarnpkg.com/puppeteer/-/puppeteer-1.16.0.tgz#4b763d9ff4e69a4bb7a031c3393534214d54f27e"
+  integrity sha512-7hcmbUw+6INffSPBdnO8KSjJRg2bLRoI7EeZMf5MHdV5kpyYMeoMR5w8AIiZbKIhYGwrXlbgvO7gFTsXNHShuQ==
   dependencies:
     debug "^4.1.0"
     extract-zip "^1.6.6"
