@@ -62,6 +62,14 @@ async function scrapeMenu() {
     this.ts = Math.floor(Date.now() / 1000)
   }
 
+  // general checking if menu is up-to-date
+  async function checkDate(selectTheWhole) {
+    selector = selectTheWhole
+    const theWhole = await page.evaluate(el => el.textContent, await page.$(selectTheWhole))
+    let actualDateString = theWhole.match(/([12]\d{3}.(0[1-9]|1[0-2]).(0[1-9]|[12]\d|3[01]))./gm)
+    console.log(actualDateString)
+  }
+
   // @ {RESTAURANT}s with only facebook image menus
   async function ocrFacebookImage(
     paramColor,
@@ -519,6 +527,7 @@ async function scrapeMenu() {
     let paramIcon = 'http://bodzabistro.hu/wp-content/uploads/2016/03/nevtelen-1.png'
     let paramSelector = '.container'
     let paramValueString
+    let bodzaDaily
 
     try {
       await page.goto(paramUrl, { waitUntil: 'domcontentloaded', timeout: 0 })
@@ -526,9 +535,8 @@ async function scrapeMenu() {
       let bodzaBlock = await page.$$(paramSelector)
       // @ BODZA Monday-Friday
       forlabelBodza: for (let i = 0; i < bodzaBlock.length; i++) {
-        let bodzaItemContent = await page.evaluate(el => el.textContent, (await page.$$(paramSelector))[i])
-        if (bodzaItemContent.match(todayDotSeparated)) {
-          bodzaDaily = bodzaItemContent
+        bodzaDaily = await page.evaluate(el => el.textContent, (await page.$$(paramSelector))[i])
+        if (bodzaDaily.match(todayDotSeparated)) {
           bodzaDaily = bodzaDaily
             .replace(/(\n)/gm, ' ')
             .replace(/\s\s+/gm, ' ')
