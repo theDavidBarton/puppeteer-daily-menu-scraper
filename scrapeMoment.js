@@ -13,7 +13,7 @@ const todayDotSeparated = moment(now, 'YYYY-MM-DD')
 // const todayMinusOne = moment(todayFormatted, 'LLLL').subtract(1, 'day').format('LLLL')
 =======
 const todayFormatted = moment().format('LLLL')
-const todayDotSeparated = moment('2017-01-11', 'YYYY-MM-DD')
+const todayDotSeparated = moment('2019-05-17', 'YYYY-MM-DD')
   .locale('hu')
   .format('L')
 const todayMinusOne = moment(todayFormatted, 'LLLL')
@@ -33,10 +33,11 @@ async function momentJs() {
 
   // general checking if menu is up-to-date
   let found
-  async function checkDateForWeekly(selectTheWhole) {
+  async function checkDateForWeekly(selectTheWhole, dateRegex) {
     let selector = selectTheWhole
-    const theWhole = await page.evaluate(el => el.textContent, selectTheWhole)
-    let actualDateStrings = theWhole.match(/([12]\d{3}.(0[1-9]|1[0-2]).(0[1-9]|[12]\d|3[01]))/gm)
+    //const theWhole = await page.evaluate(el => el.textContent, selectTheWhole)
+    const theWhole = '2019. 05. 13.  - HÉTFÕMiso leves  tengergyümölcseivelSushi: Füstölt tofu nigiri, lazac makiPad prik kaeng csirkeSzójababcsíra salátaMochi2019. 05. 14. - KEDDThai curry leves  csirkévelSushi: polip nigiri, tamago nigiri, avokádó gunkanTon katsu szezámos rizzselKáposzta salátaMatcha sajttorta2019. 05. 15. - SZERDASukiyaki leves  csirkévelSushi, maki: hátszín retekcsíraÁzsiai bbq oldalas tojásos rizzselKaktugiRopogós tortilla mangó öntettel2019. 05. 16. - CSÜTÖRTÖKMiso levesSushi, maki:  Vöröstonhal, enoki gombaBio algás pad thai  tészta, marhahátszínnelOi kimchiBelga csokoládé  torta2019. 05. 17. - PÉNTEKRamen leves fõtt  császárralLazac donburiPhuket marha, szezámos rizzselKimchiMandulás túrógolyó'
+    let actualDateStrings = theWhole.match(dateRegex)
     found = false
     console.log(actualDateStrings)
     for (let i = 0; i < actualDateStrings.length; i++) {
@@ -67,7 +68,7 @@ async function momentJs() {
   const numberOfDaysOpened = (await page.$$('.menu-list__title')).length
   console.log('Days opened this week: ' + numberOfDaysOpened + '\n')
 
-  await checkDateForWeekly((await page.$$('.page__content'))[0])
+  await checkDateForWeekly((await page.$$('.page__content'))[0], /([12]\d{3}. (0[1-9]|1[0-2]). (0[1-9]|[12]\d|3[01]))/gm)
 console.log(found)
   for (let i = 0; i < numberOfDaysOpened; i++) {
     const daySelector = (await page.$$('.menu-list__title'))[i]
