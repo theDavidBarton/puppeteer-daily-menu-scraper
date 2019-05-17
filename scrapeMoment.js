@@ -26,6 +26,7 @@ async function momentJs() {
   // general checking if menu is up-to-date
   async function checkDateForWeekly(selectTheWhole) {
     let selector = selectTheWhole
+    let found = false
     const theWhole = await page.evaluate(el => el.textContent, selectTheWhole)
     let actualDateStrings = theWhole.match(/([12]\d{3}.(0[1-9]|1[0-2]).(0[1-9]|[12]\d|3[01]))/gm)
     console.log(actualDateStrings)
@@ -33,13 +34,15 @@ async function momentJs() {
       actualDateStrings[i] = moment(actualDateStrings[i], 'YYYY-MM-DD')
         .locale('hu')
         .format('L')
-      if (!actualDateStrings[i].match(todayDotSeparated)) {
-        console.log(actualDateStrings[i] + ' DOESN\'T matches today! ' + todayDotSeparated)
-      } else if (actualDateStrings[i].match(todayDotSeparated)) {
-        console.log(actualDateStrings[i] + ' matches today! ' + todayDotSeparated)
-      } else {
-        console.log('haven\'t found what I\'m looking for')
+      if (actualDateStrings[i].match(todayDotSeparated)) {
+        console.log(actualDateStrings[i] + i + ' matches today! ' + todayDotSeparated)
+        found = true
       }
+    }
+    if (found === false) {
+      console.log('no luck buddy!')
+    } else {
+      console.log('this is your lucky day')
     }
   }
 
