@@ -7,8 +7,10 @@ const compressImages = require('compress-images')
 const replacementMap = require('./replacementMap.json') // replace pairs for typical OCR errors in Hungarian dish names
 
 // get Day of Week
+const now = moment()
 const today = Number(moment().format('d'))
 const todayFormatted = moment().format('LLLL')
+const todayDotSeparated = moment(now, 'YYYY-MM-DD').locale('hu').format('L') // e.g. 2019.05.17. (default format for Hungarian)
 const todayMinusOne = moment(todayFormatted, 'LLLL')
   .subtract(1, 'day')
   .format('LLLL')
@@ -515,7 +517,6 @@ async function scrapeMenu() {
     let paramTitleString = 'Bodza bistro'
     let paramUrl = 'http://bodzabistro.hu/heti-menu/'
     let paramIcon = 'http://bodzabistro.hu/wp-content/uploads/2016/03/nevtelen-1.png'
-    let paramDaysRegexArray = ['', /Hétfő/g, /Kedd/g, /Szerda/g, /Csütörtök/g, /Péntek/g]
     let paramSelector = '.container'
     let paramValueString
 
@@ -526,7 +527,7 @@ async function scrapeMenu() {
       // @ BODZA Monday-Friday
       forlabelBodza: for (let i = 0; i < bodzaBlock.length; i++) {
         let bodzaItemContent = await page.evaluate(el => el.textContent, (await page.$$(paramSelector))[i])
-        if (bodzaItemContent.match(paramDaysRegexArray[today])) {
+        if (bodzaItemContent.match(todayDotSeparated)) {
           bodzaDaily = bodzaItemContent
           bodzaDaily = bodzaDaily
             .replace(/(\n)/gm, ' ')
