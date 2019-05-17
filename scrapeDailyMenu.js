@@ -66,21 +66,25 @@ async function scrapeMenu() {
 
   // general checking if menu is up-to-date
   let found
-  async function checkDateForWeekly(selectTheWhole) {
-    let selector = selectTheWhole
-    const theWhole = await page.evaluate(el => el.textContent, selectTheWhole)
-    console.log(theWhole)
-    let actualDateStrings = theWhole.match(/([12]\d{3}.(0[1-9]|1[0-2]).(0[1-9]|[12]\d|3[01]))/gm)
-    found = false
-    for (let i = 0; i < actualDateStrings.length; i++) {
-      actualDateStrings[i] = moment(actualDateStrings[i], 'YYYY-MM-DD')
-        .locale('hu')
-        .format('L')
-      if (actualDateStrings[i].match(todayDotSeparated)) {
-        found = true
+  async function checkDateForWeekly(selectTheWhole, dateRegex) {
+    try {
+      let selector = selectTheWhole
+      const theWhole = await page.evaluate(el => el.textContent, selectTheWhole)
+      console.log(theWhole)
+      let actualDateStrings = theWhole.match(dateRegex)
+      found = false
+      for (let i = 0; i < actualDateStrings.length; i++) {
+        actualDateStrings[i] = moment(actualDateStrings[i], 'YYYY-MM-DD')
+          .locale('hu')
+          .format('L')
+        if (actualDateStrings[i].match(todayDotSeparated)) {
+          found = true
+        }
       }
+      return found
+    } catch (e) {
+      console.error(e)
     }
-    return found
   }
 
   // @ {RESTAURANT}s with only facebook image menus
@@ -608,7 +612,7 @@ async function scrapeMenu() {
 
     try {
       await page.goto(paramUrl, { waitUntil: 'networkidle2', timout: 0 })
-      await checkDateForWeekly(await page.$('body'))
+      await checkDateForWeekly(await page.$('body'), /([12]\d{3}. (0[1-9]|1[0-2]). (0[1-9]|[12]\d|3[01]))/gm)
       if (value === false) {
         console.log('Menu is outdated')
       } else {
