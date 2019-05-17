@@ -10,7 +10,9 @@ const replacementMap = require('./replacementMap.json') // replace pairs for typ
 const now = moment()
 const today = Number(moment().format('d'))
 const todayFormatted = moment().format('LLLL')
-const todayDotSeparated = moment(now, 'YYYY-MM-DD').locale('hu').format('L') // e.g. 2019.05.17. (default format for Hungarian)
+const todayDotSeparated = moment(now, 'YYYY-MM-DD')
+  .locale('hu')
+  .format('L') // e.g. 2019.05.17. (default format for Hungarian)
 const todayMinusOne = moment(todayFormatted, 'LLLL')
   .subtract(1, 'day')
   .format('LLLL')
@@ -63,11 +65,22 @@ async function scrapeMenu() {
   }
 
   // general checking if menu is up-to-date
-  async function checkDate(selectTheWhole) {
-    selector = selectTheWhole
-    const theWhole = await page.evaluate(el => el.textContent, await page.$(selectTheWhole))
-    let actualDateString = theWhole.match(/([12]\d{3}.(0[1-9]|1[0-2]).(0[1-9]|[12]\d|3[01]))./gm)
-    console.log(actualDateString)
+  let found
+  async function checkDateForWeekly(selectTheWhole) {
+    let selector = selectTheWhole
+    const theWhole = await page.evaluate(el => el.textContent, selectTheWhole)
+    console.log(theWhole)
+    let actualDateStrings = theWhole.match(/([12]\d{3}.(0[1-9]|1[0-2]).(0[1-9]|[12]\d|3[01]))/gm)
+    found = false
+    for (let i = 0; i < actualDateStrings.length; i++) {
+      actualDateStrings[i] = moment(actualDateStrings[i], 'YYYY-MM-DD')
+        .locale('hu')
+        .format('L')
+      if (actualDateStrings[i].match(todayDotSeparated)) {
+        found = true
+      }
+    }
+    return found
   }
 
   // @ {RESTAURANT}s with only facebook image menus
@@ -595,20 +608,25 @@ async function scrapeMenu() {
 
     try {
       await page.goto(paramUrl, { waitUntil: 'networkidle2', timout: 0 })
-      // @ YAMATO Monday-Friday
-      for (let i = today; i < today + 1; i++) {
-        if ((await page.$(yamatoArray[i])) !== null) {
-          yamato = await page.evaluate(el => el.innerText, await page.$(yamatoArray[i]))
-          yamato = yamato.replace(/(\n)/gm, ', ')
-        } else {
-          yamato = '♪"No Milk Today"♫'
+      await checkDateForWeekly(await page.$('body'))
+      if (value === false) {
+        console.log('Menu is outdated')
+      } else {
+        // @ YAMATO Monday-Friday
+        for (let i = today; i < today + 1; i++) {
+          if ((await page.$(yamatoArray[i])) !== null) {
+            yamato = await page.evaluate(el => el.innerText, await page.$(yamatoArray[i]))
+            yamato = yamato.replace(/(\n)/gm, ', ')
+          } else {
+            yamato = '♪"No Milk Today"♫'
+          }
+          paramValueString = '• Daily menu: ' + yamato + '\n'
+          console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
+          console.log(paramValueString)
+          // @ YAMATO object
+          let yamatoObj = new RestaurantMenuOutput(paramColor, paramTitleString, paramUrl, paramIcon, paramValueString)
+          finalJSON.attachments.push(yamatoObj)
         }
-        paramValueString = '• Daily menu: ' + yamato + '\n'
-        console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
-        console.log(paramValueString)
-        // @ YAMATO object
-        let yamatoObj = new RestaurantMenuOutput(paramColor, paramTitleString, paramUrl, paramIcon, paramValueString)
-        finalJSON.attachments.push(yamatoObj)
       }
     } catch (e) {
       console.error(e)
