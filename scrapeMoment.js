@@ -5,13 +5,6 @@ const moment = require('moment')
 // get Day of Week
 // const today = Number(moment().format('d'))
 const now = moment()
-<<<<<<< HEAD
-// const todayFormatted = moment().format('LLLL')
-const todayDotSeparated = moment(now, 'YYYY-MM-DD')
-  .locale('hu')
-  .format('L')
-// const todayMinusOne = moment(todayFormatted, 'LLLL').subtract(1, 'day').format('LLLL')
-=======
 const todayFormatted = moment().format('LLLL')
 const todayDotSeparated = moment('2019-05-17', 'YYYY-MM-DD')
   .locale('hu')
@@ -19,7 +12,6 @@ const todayDotSeparated = moment('2019-05-17', 'YYYY-MM-DD')
 const todayMinusOne = moment(todayFormatted, 'LLLL')
   .subtract(1, 'day')
   .format('LLLL')
->>>>>>> first try
 const dayNames = []
 for (let i = 0; i < 7; i++) {
   let day = moment(i, 'd').format('dddd')
@@ -34,8 +26,7 @@ async function momentJs() {
   // general checking if menu is up-to-date
   let found
   async function checkDateForWeekly(selectTheWhole, dateRegex) {
-    let selector = selectTheWhole
-    //const theWhole = await page.evaluate(el => el.textContent, selectTheWhole)
+    // const theWhole = await page.evaluate(el => el.textContent, selectTheWhole)
     const theWhole = '2019. 05. 13.  - HÉTFÕMiso leves  tengergyümölcseivelSushi: Füstölt tofu nigiri, lazac makiPad prik kaeng csirkeSzójababcsíra salátaMochi2019. 05. 14. - KEDDThai curry leves  csirkévelSushi: polip nigiri, tamago nigiri, avokádó gunkanTon katsu szezámos rizzselKáposzta salátaMatcha sajttorta2019. 05. 15. - SZERDASukiyaki leves  csirkévelSushi, maki: hátszín retekcsíraÁzsiai bbq oldalas tojásos rizzselKaktugiRopogós tortilla mangó öntettel2019. 05. 16. - CSÜTÖRTÖKMiso levesSushi, maki:  Vöröstonhal, enoki gombaBio algás pad thai  tészta, marhahátszínnelOi kimchiBelga csokoládé  torta2019. 05. 17. - PÉNTEKRamen leves fõtt  császárralLazac donburiPhuket marha, szezámos rizzselKimchiMandulás túrógolyó'
     let actualDateStrings = theWhole.match(dateRegex)
     found = false
