@@ -112,10 +112,7 @@ async function scrapeMenu() {
     } catch (e) {
       console.error(e)
     }
-    /*
-     * @ {RESTAURANT} OCR
-     * https://ocr.space/ocrapi#PostParameters
-     */
+    // @ {RESTAURANT} OCR https://ocr.space/ocrapi#PostParameters
     try {
       forlabelRestaurant: for (let i = 0; i < imageUrlArray.length; i++) {
         let parsedResult = await ocrSpaceApi.parseImageFromUrl(imageUrlArray[i], {
@@ -256,40 +253,44 @@ async function scrapeMenu() {
             let wordLeft = parsedResult.ocrParsedResult.ParsedResults[0].TextOverlay.Lines[i].Words[0].Left
             let wordTop = parsedResult.ocrParsedResult.ParsedResults[0].TextOverlay.Lines[i].Words[0].Top
             let wordText = parsedResult.ocrParsedResult.ParsedResults[0].TextOverlay.Lines[i].Words[j].WordText
+            // format text and replace faulty string parts
+            for (let k = 0; k < replacementMap.length; k++) {
+              wordText = wordText.replace(new RegExp(replacementMap[k][0], 'g'), replacementMap[k][1])
+            }
             if (wordTop > 520 && wordTop < 1930) {
               monday: if (wordLeft > 780 && wordLeft < 980) {
                 nokedliMonday.push(wordText)
                 nokedliMondayStr = nokedliMonday.join(' ').split(/(?= [A-ZÁÍŰŐÜÖÚÓÉ])/g)
-                for (let k = 0; k < nokedliMondayStr.length; k++) {
-                  nokedliMondayStr[k] = nokedliMondayStr[k].trim()
+                for (let l = 0; l < nokedliMondayStr.length; l++) {
+                  nokedliMondayStr[l] = nokedliMondayStr[l].trim()
                 }
               }
               tuesday: if (wordLeft > 1310 && wordLeft < 1520) {
                 nokedliTuesday.push(wordText)
                 nokedliTuesdayStr = nokedliTuesday.join(' ').split(/(?= [A-ZÁÍŰŐÜÖÚÓÉ])/g)
-                for (let k = 0; k < nokedliTuesdayStr.length; k++) {
-                  nokedliTuesdayStr[k] = nokedliTuesdayStr[k].trim()
+                for (let l = 0; l < nokedliTuesdayStr.length; l++) {
+                  nokedliTuesdayStr[l] = nokedliTuesdayStr[l].trim()
                 }
               }
               wednesday: if (wordLeft > 1815 && wordLeft < 2060) {
                 nokedliWednesday.push(wordText)
                 nokedliWednesdayStr = nokedliWednesday.join(' ').split(/(?= [A-ZÁÍŰŐÜÖÚÓÉ])/g)
-                for (let k = 0; k < nokedliWednesdayStr.length; k++) {
-                  nokedliWednesdayStr[k] = nokedliWednesdayStr[k].trim()
+                for (let l = 0; l < nokedliWednesdayStr.length; l++) {
+                  nokedliWednesdayStr[l] = nokedliWednesdayStr[l].trim()
                 }
               }
               thursday: if (wordLeft > 2345 && wordLeft < 2620) {
                 nokedliThursday.push(wordText)
                 nokedliThursdayStr = nokedliThursday.join(' ').split(/(?= [A-ZÁÍŰŐÜÖÚÓÉ])/g)
-                for (let k = 0; k < nokedliThursdayStr.length; k++) {
-                  nokedliThursdayStr[k] = nokedliThursdayStr[k].trim()
+                for (let l = 0; l < nokedliThursdayStr.length; l++) {
+                  nokedliThursdayStr[l] = nokedliThursdayStr[l].trim()
                 }
               }
               friday: if (wordLeft > 2880 && wordLeft < 3110) {
                 nokedliFriday.push(wordText)
                 nokedliFridayStr = nokedliFriday.join(' ').split(/(?= [A-ZÁÍŰŐÜÖÚÓÉ])/g)
-                for (let k = 0; k < nokedliFridayStr.length; k++) {
-                  nokedliFridayStr[k] = nokedliFridayStr[k].trim()
+                for (let l = 0; l < nokedliFridayStr.length; l++) {
+                  nokedliFridayStr[l] = nokedliFridayStr[l].trim()
                 }
               }
             }
