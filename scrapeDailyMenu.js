@@ -694,7 +694,6 @@ async function scrapeMenu() {
   }
   await yamato()
 
->>>>>>> 0a65f50533065bfad8d5232ac5ccc936db2695ef
   async function vian() {
     /*
     @ VIAN
