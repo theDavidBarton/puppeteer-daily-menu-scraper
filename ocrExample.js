@@ -34,15 +34,13 @@ let restaurantDaysRegex = [
 let paramMenuHandleRegex = /Szerda/gi
 let paramValueString
 let restaurantParsedText
-let imageUrlArray = []
+// let imageUrlArray = []
 let restaurantDailyArray = []
 
 // get Day of Week
 const today = Number(moment().format('d'))
-const todayFormatted = moment().format('LLLL')
-const todayMinusOne = moment(todayFormatted, 'LLLL')
-  .subtract(1, 'day')
-  .format('LLLL')
+// const todayFormatted = moment().format('LLLL')
+// const todayMinusOne = moment(todayFormatted, 'LLLL').subtract(1, 'day').format('LLLL')
 const dayNames = []
 for (let i = 0; i < 7; i++) {
   let day = moment(i, 'd').format('dddd')
@@ -75,42 +73,42 @@ switch (today) {
   default:
     startLine = 1
     endLine = 14
-  }
+}
 
-  // function for @ {RESTAURANT}s with only facebook image menus
-  async function ocrFacebookImage() {
-    try {
-        let parsedResult = await ocrSpaceApi.parseImageFromUrl(imageUrl, {
-          apikey: process.env.OCR_API_KEY, // add app.env to your environment variables, see README.md
-          imageFormat: 'image/png',
-          scale: true,
-          isOverlayRequired: true
-        })
-        restaurantParsedText = parsedResult.parsedText
-        console.log(restaurantParsedText)
-        if (restaurantParsedText.match(paramMenuHandleRegex)) {
-          // @ {RESTAURANT} Monday-Friday
-          for (let j = today; j < today + 1; j++) {
-            let restaurantDaily = restaurantParsedText.match(restaurantDaysRegex[j])
-            // format text and replace faulty string parts
-            for (let k = 0; k < replacementMap.length; k++) {
-              restaurantDaily = restaurantDaily
-                .toString()
-                .toLowerCase()
-                .replace(replacementMap[k][0], replacementMap[k][1])
-            }
-            restaurantDaily = restaurantDaily.split(/\r\n/)
-console.log(restaurantDaily)
-            for (let l = startLine; l < endLine + 1; l++) {
-              restaurantDaily[l] = restaurantDaily[l].trim()
-              restaurantDailyArray.push(restaurantDaily[l])
-            }
-            paramValueString = restaurantDailyArray.join(', ')
-            console.log('• ' + dayNames[today] + ': ' + paramValueString + '\n')
-          }
+// function for @ {RESTAURANT}s with only facebook image menus
+async function ocrFacebookImage() {
+  try {
+    let parsedResult = await ocrSpaceApi.parseImageFromUrl(imageUrl, {
+      apikey: process.env.OCR_API_KEY, // add app.env to your environment variables, see README.md
+      imageFormat: 'image/png',
+      scale: true,
+      isOverlayRequired: true
+    })
+    restaurantParsedText = parsedResult.parsedText
+    console.log(restaurantParsedText)
+    if (restaurantParsedText.match(paramMenuHandleRegex)) {
+      // @ {RESTAURANT} Monday-Friday
+      for (let j = today; j < today + 1; j++) {
+        let restaurantDaily = restaurantParsedText.match(restaurantDaysRegex[j])
+        // format text and replace faulty string parts
+        for (let k = 0; k < replacementMap.length; k++) {
+          restaurantDaily = restaurantDaily
+            .toString()
+            .toLowerCase()
+            .replace(replacementMap[k][0], replacementMap[k][1])
         }
-    } catch (e) {
-      console.error(e)
+        restaurantDaily = restaurantDaily.split(/\r\n/)
+        console.log(restaurantDaily)
+        for (let l = startLine; l < endLine + 1; l++) {
+          restaurantDaily[l] = restaurantDaily[l].trim()
+          restaurantDailyArray.push(restaurantDaily[l])
+        }
+        paramValueString = restaurantDailyArray.join(', ')
+        console.log('• ' + dayNames[today] + ': ' + paramValueString + '\n')
+      }
     }
+  } catch (e) {
+    console.error(e)
+  }
 }
 ocrFacebookImage()

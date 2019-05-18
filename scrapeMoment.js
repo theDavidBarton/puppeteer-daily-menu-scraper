@@ -3,13 +3,13 @@ const puppeteer = require('puppeteer')
 const moment = require('moment')
 
 // get Day of Week
-const today = Number(moment().format('d'))
+// const today = Number(moment().format('d'))
 const now = moment()
-const todayFormatted = moment().format('LLLL')
-const todayDotSeparated = moment(now, 'YYYY-MM-DD').locale('hu').format('L')
-const todayMinusOne = moment(todayFormatted, 'LLLL')
-  .subtract(1, 'day')
-  .format('LLLL')
+// const todayFormatted = moment().format('LLLL')
+const todayDotSeparated = moment(now, 'YYYY-MM-DD')
+  .locale('hu')
+  .format('L')
+// const todayMinusOne = moment(todayFormatted, 'LLLL').subtract(1, 'day').format('LLLL')
 const dayNames = []
 for (let i = 0; i < 7; i++) {
   let day = moment(i, 'd').format('dddd')
@@ -35,7 +35,9 @@ async function momentJs() {
     let dayTextContent = await page.evaluate(el => el.textContent, daySelector)
     dayTextContent = dayTextContent.replace(/(\.)$/g, '').replace(/(\.)/g, '-')
     console.log('#' + (i + 1) + ' ' + dayTextContent)
-    const dayTextDate = moment(dayTextContent, 'YYYY-MM-DD').add(0, 'days').format('L')
+    const dayTextDate = moment(dayTextContent, 'YYYY-MM-DD')
+      .add(0, 'days')
+      .format('L')
     console.log(dayTextDate + '\n')
   }
 
