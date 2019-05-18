@@ -10,7 +10,9 @@ const replacementMap = require('./replacementMap.json') // replace pairs for typ
 const now = moment()
 const today = Number(moment().format('d'))
 const todayFormatted = moment().format('LLLL')
-const todayDotSeparated = moment(now, 'YYYY-MM-DD').locale('hu').format('L') // e.g. 2019.05.17. (default format for Hungarian)
+const todayDotSeparated = moment(now, 'YYYY-MM-DD')
+  .locale('hu')
+  .format('L') // e.g. 2019.05.17. (default format for Hungarian)
 const todayMinusOne = moment(todayFormatted, 'LLLL')
   .subtract(1, 'day')
   .format('LLLL')
@@ -60,6 +62,30 @@ async function scrapeMenu() {
     ]
     this.footer = 'scraped by DailyMenu'
     this.ts = Math.floor(Date.now() / 1000)
+  }
+
+  // general checking if menu is up-to-date
+  let found
+  async function checkDateForWeekly(selectTheWhole) {
+    try {
+      let selector = selectTheWhole
+      found = false
+      const theWhole = await page.evaluate(el => el.textContent, selectTheWhole)
+      let actualDateStrings = theWhole.match(
+        /([12]\d{3}.(0[1-9]|1[0-2]).(0[1-9]|[12]\d|3[01]))|([12]\d{3}. (0[1-9]|1[0-2]). (0[1-9]|[12]\d|3[01]))/gm
+      )
+      for (let i = 0; i < actualDateStrings.length; i++) {
+        actualDateStrings[i] = moment(actualDateStrings[i], 'YYYY-MM-DD')
+          .locale('hu')
+          .format('L')
+        if (actualDateStrings[i].match(todayDotSeparated)) {
+          found = true
+        }
+      }
+    } catch (e) {
+      console.error(e)
+    }
+    return found
   }
 
   // @ {RESTAURANT}s with only facebook image menus
@@ -519,6 +545,7 @@ async function scrapeMenu() {
     let paramIcon = 'http://bodzabistro.hu/wp-content/uploads/2016/03/nevtelen-1.png'
     let paramSelector = '.container'
     let paramValueString
+    let bodzaDaily
 
     try {
       await page.goto(paramUrl, { waitUntil: 'domcontentloaded', timeout: 0 })
@@ -526,9 +553,8 @@ async function scrapeMenu() {
       let bodzaBlock = await page.$$(paramSelector)
       // @ BODZA Monday-Friday
       forlabelBodza: for (let i = 0; i < bodzaBlock.length; i++) {
-        let bodzaItemContent = await page.evaluate(el => el.textContent, (await page.$$(paramSelector))[i])
-        if (bodzaItemContent.match(todayDotSeparated)) {
-          bodzaDaily = bodzaItemContent
+        bodzaDaily = await page.evaluate(el => el.textContent, (await page.$$(paramSelector))[i])
+        if (bodzaDaily.match(todayDotSeparated)) {
           bodzaDaily = bodzaDaily
             .replace(/(\n)/gm, ' ')
             .replace(/\s\s+/gm, ' ')
@@ -587,9 +613,10 @@ async function scrapeMenu() {
 
     try {
       await page.goto(paramUrl, { waitUntil: 'networkidle2', timout: 0 })
+      await checkDateForWeekly(await page.$('body'))
       // @ YAMATO Monday-Friday
       for (let i = today; i < today + 1; i++) {
-        if ((await page.$(yamatoArray[i])) !== null) {
+        if ((await page.$(yamatoArray[i])) !== null && found === true) {
           yamato = await page.evaluate(el => el.innerText, await page.$(yamatoArray[i]))
           yamato = yamato.replace(/(\n)/gm, ', ')
         } else {
