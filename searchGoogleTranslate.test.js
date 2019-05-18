@@ -1,5 +1,7 @@
-// jest structure sceleton
-// increase the default (5000 ms) timeout to 30 secs
+/*
+ * jest structure sceleton
+ * increase the default (5000 ms) timeout to 30 secs
+ */
 jest.setTimeout(30000)
 
 const puppeteer = require('puppeteer')
@@ -23,8 +25,10 @@ describe('Google Translate (FR)', function() {
     const title = await page.title()
     expect(title).toBe('Google Traduction')
   })
-  // test #1 ends
-  // test #2 starts
+  /*
+   * test #1 ends
+   * test #2 starts
+   */
   test('"puppeteer" (EN) word typed and translated to "marionnettiste" (FR)', async function() {
     await page.waitFor(500)
     await page.keyboard.type('puppeteer')

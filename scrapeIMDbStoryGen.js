@@ -25,16 +25,18 @@ async function scrapeIMDbStoryGen() {
       if (urlOnIMDb.includes('/title/') && titleOnIMDb !== '') {
         urls.push(urlOnIMDb)
         titles.push(titleOnIMDb)
-        // optional listing of all movie tiles and IMDb links
-        // console.log('• ' + titleOnIMDb + '\n• IMDb url: ' + urlOnIMDb + '\n')
+        /*
+         * optional listing of all movie tiles and IMDb links
+         * console.log('• ' + titleOnIMDb + '\n• IMDb url: ' + urlOnIMDb + '\n')
+         */
       }
     }
   }
+  const random = Math.floor(Math.random() * urls.length)
 
   // try scraping movie plots until it finds one which have actor names in it
   do {
     do {
-      var random = Math.floor(Math.random() * urls.length) // the only var : required outside of its scope
       console.log('Chosen movie: ' + titles[random])
       await page.goto(urls[random] + '/plotsummary#synopsis', {
         waitUntil: 'domcontentloaded',
@@ -42,14 +44,15 @@ async function scrapeIMDbStoryGen() {
       })
       plot = await page.evaluate(el => el.textContent, (await page.$$('#plot-synopsis-content'))[0])
       plot = plot.trim()
-      if (!plot.includes("It looks like we don't have a Synopsis for this title yet. ")) {
+      if (!plot.includes('It looks like we don\'t have a Synopsis for this title yet. ')) {
         // print a spoiler free shortened plot summary
         console.log(plot.substring(0, 2500) + '...')
       } else {
         console.log('THERE IS NO PLOT AVAILABLE')
       }
-    } while (plot.includes("It looks like we don't have a Synopsis for this title yet. "))
+    } while (plot.includes('It looks like we don\'t have a Synopsis for this title yet. '))
 
+    console.log(random)
     // matching as much as possible actor names based on IMDb patterns, regex source: https://stackoverflow.com/questions/7653942/find-names-with-regular-expression
     actorNames = plot.match(
       /\(([A-Z]([a-z]+|\.)(?:\s+[A-Z]([a-z]+|\.))*(?:\s+[a-z][a-z\-]+){0,2}\s+[A-Z]([a-z]+|\.)+)\)/gm
@@ -72,8 +75,10 @@ async function scrapeIMDbStoryGen() {
   let castListExists = (await page.$$('tr > td'))[2]
   let castCount = (await page.$$('.character')).length
   if (castListExists !== null) {
-    // get as many actor names as possible
-    // (as the actor names are incremented in +=4 step the "castCount * 3" formula ensures not to run over on the actor list)
+    /*
+     * get as many actor names as possible
+     * (as the actor names are incremented in +=4 step the "castCount * 3" formula ensures not to run over on the actor list)
+     */
     for (let i = 2; i < castCount * 3; i += 4) {
       let castMemberSelector = (await page.$$('tr > td'))[i]
       let castMemberName = await page.evaluate(el => el.textContent, castMemberSelector)
