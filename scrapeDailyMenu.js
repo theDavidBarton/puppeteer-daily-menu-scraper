@@ -673,10 +673,10 @@ async function scrapeMenu() {
     ]
 
     try {
-      await page.goto(paramUrl, { waitUntil: 'networkidle2', timeout: 0 })
+      await page.goto(paramUrl, { waitUntil: 'domcontentloaded', timeout: 0 })
       let linkSelectorVian = '#TPASection_jkic76naiframe'
-      const linkVian = await page.evaluate(el => el.src, await page.$(linkSelectorVian))
-      await page.goto(linkVian, { waitUntil: 'networkidle2', timeout: 0 })
+      const linkVian = await page.evaluate(el => el.src, (await page.$$(linkSelectorVian))[0])
+      await page.goto(linkVian, { waitUntil: 'domcontentloaded', timeout: 0 })
     } catch (e) {
       console.error(e)
     }
