@@ -635,65 +635,6 @@ async function scrapeMenu() {
   }
   await yamato()
 
-  async function yamato() {
-    /*
-    @ YAMATO
-    ---------------------------------------
-    contact info:
-    * Address: Budapest, 1066, JÓKAI U. 30.
-    * Phone: +36(70)681-75-44
-    ---------------------------------------
-    description:
-    * yamatoArray: contains selectors for tha days of the week
-    * yamato: is the text inside selector (actual menu), and also the final cleaned text to be displayed in output
-    */
-
-    // @ YAMATO parameters
-    let paramColor = '#cca92b'
-    let paramTitleString = 'Yamato'
-    let paramUrl = 'https://www.wasabi.hu/napimenu.php?source=yamato&lang=hu'
-    let paramIcon = 'http://yamatorestaurant.hu/wp-content/uploads/2014/12/yamato_logo_retina.png'
-    let paramValueString
-    let yamato
-
-    // @ YAMATO selectors
-    let yamatoArray = [
-      '',
-      'body > div > h6:nth-child(2)',
-      'body > div > h6:nth-child(4)',
-      'body > div > h6:nth-child(6)',
-      'body > div > h6:nth-child(8)',
-      'body > div > h6:nth-child(10)'
-    ]
-
-    try {
-      await page.goto(paramUrl, { waitUntil: 'networkidle2', timout: 0 })
-      await checkDateForWeekly(await page.$('body'), /([12]\d{3}. (0[1-9]|1[0-2]). (0[1-9]|[12]\d|3[01]))/gm)
-      if (value === false) {
-        console.log('Menu is outdated')
-      } else {
-        // @ YAMATO Monday-Friday
-        for (let i = today; i < today + 1; i++) {
-          if ((await page.$(yamatoArray[i])) !== null) {
-            yamato = await page.evaluate(el => el.innerText, await page.$(yamatoArray[i]))
-            yamato = yamato.replace(/(\n)/gm, ', ')
-          } else {
-            yamato = '♪"No Milk Today"♫'
-          }
-          paramValueString = '• Daily menu: ' + yamato + '\n'
-          console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
-          console.log(paramValueString)
-          // @ YAMATO object
-          let yamatoObj = new RestaurantMenuOutput(paramColor, paramTitleString, paramUrl, paramIcon, paramValueString)
-          finalJSON.attachments.push(yamatoObj)
-        }
-      }
-    } catch (e) {
-      console.error(e)
-    }
-  }
-  await yamato()
-
   async function vian() {
     /*
     @ VIAN
