@@ -8,9 +8,9 @@ const replacementMap = require('./replacementMap.json') // replace pairs for typ
 
 // get Day of Week
 const now = moment()
-const today = 5//Number(moment().format('d')) // ⚠️
+const today = Number(moment().format('d'))
 const todayFormatted = moment().format('LLLL')
-const todayDotSeparated = moment('2019.05.17.', 'YYYY-MM-DD').locale('hu').format('L') // // ⚠️ e.g. 2019.05.17. (default format for Hungarian)
+const todayDotSeparated = moment(now, 'YYYY-MM-DD').locale('hu').format('L') // e.g. 2019.05.17. (default format for Hungarian)
 const dayNames = []
 for (let i = 0; i < 7; i++) {
   let day = moment(i, 'd').format('dddd')
@@ -645,10 +645,10 @@ async function scrapeMenu() {
     ]
 
     try {
-      await page.goto(paramUrl, { waitUntil: 'networkidle2', timeout: 0 })
+      await page.goto(paramUrl, { waitUntil: 'domcontentloaded', timeout: 0 })
       let linkSelectorVian = '#TPASection_jkic76naiframe'
       const linkVian = await page.evaluate(el => el.src, (await page.$$(linkSelectorVian))[0])
-      await page.goto(linkVian, { waitUntil: 'networkidle2', timeout: 0 })
+      await page.goto(linkVian, { waitUntil: 'domcontentloaded', timeout: 0 })
     } catch (e) {
       console.error(e)
     }
