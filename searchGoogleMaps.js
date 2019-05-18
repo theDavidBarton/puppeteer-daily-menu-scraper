@@ -1,4 +1,4 @@
-// Be careful! There is a crocodile in the basement.
+// be careful! There is a crocodile in the basement.
 const puppeteer = require('puppeteer')
 async function testGoogleMaps() {
   const browser = await puppeteer.launch({ headless: false, slowMo: 20 })
@@ -30,5 +30,7 @@ async function testGoogleMaps() {
   await browser.close()
 }
 testGoogleMaps()
-//--------------
-//  🐊
+/*
+ * --------------
+ *  🐊
+ */

@@ -1,7 +1,8 @@
 const ocrSpaceApi = require('ocr-space-api')
 const moment = require('moment')
 
-const imageUrl = 'https://scontent.fbud1-1.fna.fbcdn.net/v/t1.0-0/p480x480/60282129_2314959118563301_6447557209143377920_n.png?_nc_cat=102&_nc_ht=scontent.fbud1-1.fna&oh=bbf09fddef07d64a8573b720943b8adc&oe=5D76D20F'
+const imageUrl =
+  'https://scontent.fbud1-1.fna.fbcdn.net/v/t1.0-0/p480x480/60282129_2314959118563301_6447557209143377920_n.png?_nc_cat=102&_nc_ht=scontent.fbud1-1.fna&oh=bbf09fddef07d64a8573b720943b8adc&oe=5D76D20F'
 let replacementMap = [
   ['i..', 'l'],
   ['i.', 'l'],
@@ -25,7 +26,7 @@ let replacementMap = [
 
 let restaurantDaysRegex = [
   '',
-  /\bPÉNT((.*\r\n){15})/gi, //|([ti](.*)[éd](.*)[a])((.*\r\n){4})
+  /\bPÉNT((.*\r\n){15})/gi, // |([ti](.*)[éd](.*)[a])((.*\r\n){4})
   /\bPÉNT((.*\r\n){15})/gi,
   /\bPÉNT((.*\r\n){15})/gi,
   /\bPÉNT((.*\r\n){15})/gi,
@@ -39,8 +40,10 @@ let restaurantDailyArray = []
 
 // get Day of Week
 const today = Number(moment().format('d'))
-// const todayFormatted = moment().format('LLLL')
-// const todayMinusOne = moment(todayFormatted, 'LLLL').subtract(1, 'day').format('LLLL')
+/*
+ * const todayFormatted = moment().format('LLLL')
+ * const todayMinusOne = moment(todayFormatted, 'LLLL').subtract(1, 'day').format('LLLL')
+ */
 const dayNames = []
 for (let i = 0; i < 7; i++) {
   let day = moment(i, 'd').format('dddd')

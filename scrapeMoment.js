@@ -2,16 +2,15 @@
 const puppeteer = require('puppeteer')
 const moment = require('moment')
 
-// get Day of Week
-// const today = Number(moment().format('d'))
-const now = moment()
-const todayFormatted = moment().format('LLLL')
+/*
+ * get Day of Week
+ * const today = Number(moment().format('d'))
+ * const now = moment()
+ * const todayFormatted = now.format('LLLL')
+ */
 const todayDotSeparated = moment('2019-05-17', 'YYYY-MM-DD')
   .locale('hu')
   .format('L')
-const todayMinusOne = moment(todayFormatted, 'LLLL')
-  .subtract(1, 'day')
-  .format('LLLL')
 const dayNames = []
 for (let i = 0; i < 7; i++) {
   let day = moment(i, 'd').format('dddd')
@@ -25,7 +24,6 @@ async function momentJs() {
 
   // general checking if menu is up-to-date
   async function checkDateForWeekly(selectTheWhole) {
-    let selector = selectTheWhole
     let found = false
     const theWhole = await page.evaluate(el => el.textContent, selectTheWhole)
     let actualDateStrings = theWhole.match(/([12]\d{3}.(0[1-9]|1[0-2]).(0[1-9]|[12]\d|3[01]))/gm)
