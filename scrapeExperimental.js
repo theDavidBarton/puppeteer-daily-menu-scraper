@@ -14,7 +14,7 @@ async function scrapePage() {
   let linkText = await page.evaluate(el => el.innerHTML, await page.$('body > header > h1 > span > a'))
   console.log(linkText)
   expect(linkText).toBe('vol pas cher')
-  console.log("it's a match")
+  console.log('it\'s a match')
   let bodyHTML = await page.evaluate(() => document.body.innerHTML)
   console.log(bodyHTML)
 
