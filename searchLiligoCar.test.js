@@ -13,29 +13,31 @@ beforeAll(async function() {
 })
 
 /*
-   -----------------------------------
-   TEST VALUES
-   -----------------------------------
-  */
+ * -----------------------------------
+ * TEST VALUES
+ * -----------------------------------
+ */
 
 const urlCarEntrypage = 'http://www.liligo.fr/location-voiture.html'
 const carEntryPageTitlePart = 'LILIGO.com'
-const carRedirectPageTitlePart = 'Redirection'
+// const carRedirectPageTitlePart = 'Redirection'
 const carPickupTypeLetters = 'Marr'
 const carPickupContentToBe = 'Marrakech, Menara Airport - Maroc'
 const pickupHeaderContentToBe = 'Marrakech'
 
 /*
-   -----------------------------------
-   SELECTORS
-   -----------------------------------
-  */
+ * -----------------------------------
+ * SELECTORS
+ * -----------------------------------
+ */
 
 const carPickup = '#car-pickup'
-const complocFirst = '#liligo_cl2_item_0'
+// const complocFirst = '#liligo_cl2_item_0'
 const complocSecond = '#liligo_cl2_item_1'
-const carPickupDate = '.car-date-and-time'
-const carDropoffDate = '.car-date-and-time'
+/*
+ * const carPickupDate = '.car-date-and-time'
+ * const carDropoffDate = '.car-date-and-time'
+ */
 const deselectComparesite = '.hp-searchform-comparesite-selectnone'
 const carSubmit = '#car-submit'
 
@@ -48,14 +50,14 @@ const pickupHeaderSelectorInside = '.results-header-code'
 
 describe('Liligo Car search', function() {
   test('GIVEN I am on the SEO page: ' + urlCarEntrypage, async function() {
-    await page.goto(urlCarEntrypage, { waitUntil: 'domcontentloaded', timeout: 0 }) // Firefox: remove "{ waitUntil: 'networkidle2', timeout: 0 }"
+    await page.goto(urlCarEntrypage, { waitUntil: 'domcontentloaded', timeout: 0 }) // firefox: remove "{ waitUntil: 'networkidle2', timeout: 0 }"
   })
 
   /*
-   -----------------------------------
-   LOCATIONS
-   -----------------------------------
-  */
+   * -----------------------------------
+   * LOCATIONS
+   * -----------------------------------
+   */
 
   test('AND page title contains ' + carEntryPageTitlePart, async function() {
     let carEntryPageTitle = await page.title()
@@ -75,10 +77,10 @@ describe('Liligo Car search', function() {
   })
 
   /*
-   -----------------------------------
-   CLICKOUT (promise.race)
-   -----------------------------------
-  */
+   * -----------------------------------
+   * CLICKOUT (promise.race)
+   * -----------------------------------
+   */
 
   test('AND I clickout from homepage searchform', async function() {
     await Promise.race([page.waitForSelector(clickoutHome), page.waitForSelector(clickoutSeo)])
@@ -100,10 +102,10 @@ describe('Liligo Car search', function() {
   })
 
   /*
-   -----------------------------------
-   RESULT PAGE
-   -----------------------------------
-  */
+   * -----------------------------------
+   * RESULT PAGE
+   * -----------------------------------
+   */
 
   test('THEN resultpage appears', async function() {
     await page.waitForSelector(carResultItem)

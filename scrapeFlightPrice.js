@@ -8,8 +8,8 @@ async function testFlightRp() {
   await page.setViewport({ width: 1024, height: 768 })
 
   /*
-  SELECTORS LILIGO
-  */
+   * selectors liligo
+   */
   const resultDetailsButton = '.travel-details-button'
   const cta = '.cta'
   const price = 'div.booking > div.price'
@@ -20,18 +20,22 @@ async function testFlightRp() {
   const outboundDuration = 'div.outbound > div.timing > div.center > div.duration'
   const inboundDuration = 'div.return > div.timing > div.center > div.duration'
   /*
-  SELECTORS OTHER
-  */
+   * selectors other
+   */
   const priceOther = 'tr.flexifare__price-row > td:nth-child(3) > span.flexifare__th'
-  const outboundDepOther = 'div:nth-child(1) > div.jcw-way-view__details-container > div > div.jcw-way-view__departure-container > div > div.jcw-way-view__departure-time'
-  const outboundArrOther = 'div:nth-child(1) > div.jcw-way-view__details-container > div > div.jcw-way-view__arrival-container > div > div.jcw-way-view__arrival-time'
-  const inboundDepOther = 'div:nth-child(2) > div.jcw-way-view__details-container > div > div.jcw-way-view__departure-container > div > div.jcw-way-view__departure-time'
-  const inboundArrOther = 'div:nth-child(2) > div.jcw-way-view__details-container > div > div.jcw-way-view__arrival-container > div > div.jcw-way-view__arrival-time'
+  const outboundDepOther =
+    'div:nth-child(1) > div.jcw-way-view__details-container > div > div.jcw-way-view__departure-container > div > div.jcw-way-view__departure-time'
+  const outboundArrOther =
+    'div:nth-child(1) > div.jcw-way-view__details-container > div > div.jcw-way-view__arrival-container > div > div.jcw-way-view__arrival-time'
+  const inboundDepOther =
+    'div:nth-child(2) > div.jcw-way-view__details-container > div > div.jcw-way-view__departure-container > div > div.jcw-way-view__departure-time'
+  const inboundArrOther =
+    'div:nth-child(2) > div.jcw-way-view__details-container > div > div.jcw-way-view__arrival-container > div > div.jcw-way-view__arrival-time'
   const outboundDurationOther = 'div:nth-child(1) > div.jcw-way-view__duration-container.hidden-xs.hidden-sm > div'
   const inboundDurationOther = 'div:nth-child(2) > div.jcw-way-view__duration-container.hidden-xs.hidden-sm > div'
   /*
-  PARAMETERS
-  */
+   * parameters
+   */
   let environment = 'https://' // https://, https://admin.
   let marketBaseUrl = 'flights-results.liligo.fr' // flights-results. --> FR, US
   let fromLocation = 'PAR'
@@ -50,7 +54,7 @@ async function testFlightRp() {
   let infants = '0'
 
   let tripType = 'roundTrip' // roundTrip, oneWay
-  let airClass = 'EC' // EC, PC, BC, FC
+  let airClass = 'EC' // _EC, PC, BC, FC
   let rpFilter = 'LAS'
 
   let urlStructure =
@@ -214,6 +218,15 @@ async function testFlightRp() {
   let inboundDurationFirstContentOther = await page.evaluate(el => el.textContent, inboundDurationFirstOther)
   const priceFirstOther = (await page.$$(priceOther))[0]
   let priceFirstContentOther = await page.evaluate(el => el.textContent, priceFirstOther)
+  console.log(
+    outboundDepFirstContentOther +
+      outboundArrFirstContentOther +
+      inboundDepFirstContentOther +
+      inboundArrFirstContentOther +
+      outboundDurationFirstContentOther +
+      inboundDurationFirstContentOther +
+      priceFirstContentOther
+  )
 
   expect(outboundDepFirstOther).toBe(outboundDepFirst)
 

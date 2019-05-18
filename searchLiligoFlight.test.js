@@ -3,34 +3,33 @@ jest.setTimeout(30000)
 const puppeteer = require('puppeteer')
 // const puppeteerFirefox = require('puppeteer-firefox')
 
-let browser, page, navigationPromise
+let browser, page
 
 beforeAll(async function() {
   browser = await puppeteer.launch({ headless: false, slowMo: 20 })
   page = await browser.newPage()
-  navigationPromise = page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 0 }) // for Firefox: remove "{ waitUntil: '...', timeout: x }"
   await page.setViewport({ width: 1024, height: 768 })
 })
 
 /*
-   -----------------------------------
-   TEST VALUES
-   -----------------------------------
-  */
+ * -----------------------------------
+ * TEST VALUES
+ * -----------------------------------
+ */
 
 const urlHomepage = 'http://www.liligo.fr/'
 const homePageTitlePart = 'LILIGO.com'
-const flightRedirectPageTitlePart = 'liligo.com'
+// const flightRedirectPageTitlePart = 'liligo.com'
 const flightFromTypeLetters = 'San f'
 const flightToTypeLetters = 'Par'
 const flightFromContentToBe = 'San Francisco,  CA, Etats-Unis (SFO)'
 const flightToContentToBe = 'Paris, France (CDG)'
 
 /*
-   -----------------------------------
-   SELECTORS
-   -----------------------------------
-  */
+ * -----------------------------------
+ * SELECTORS
+ * -----------------------------------
+ */
 
 const flightFrom = '#air-from'
 const flightTo = '#air-to'
@@ -72,10 +71,10 @@ describe('Liligo Flight search', function() {
   })
 
   /*
-   -----------------------------------
-   LOCATIONS
-   -----------------------------------
-  */
+   * -----------------------------------
+   * LOCATIONS
+   * -----------------------------------
+   */
 
   test('AND page title contains' + homePageTitlePart, async function() {
     let homePageTitle = await page.title()
@@ -90,8 +89,10 @@ describe('Liligo Flight search', function() {
     await page.waitForSelector(complocFirst)
     await page.click(complocFirst)
     let flightFromContent = await page.evaluate(el => el.value, await page.$(flightFrom))
-    // prepare arrays from route location elements for result page validation
-    // expected format: [ 'San Francisco', ' CA', 'Etats-Unis (SFO)' ]
+    /*
+     * prepare arrays from route location elements for result page validation
+     * expected format: [ 'San Francisco', ' CA', 'Etats-Unis (SFO)' ]
+     */
     flightFromContentArray = flightFromContent.split(', ')
     expect(flightFromContent).toBe(flightFromContentToBe)
   })
@@ -103,26 +104,30 @@ describe('Liligo Flight search', function() {
     await page.keyboard.press('ArrowDown')
     await page.keyboard.press('Enter')
     let flightToContent = await page.evaluate(el => el.value, await page.$(flightTo))
-    // prepare arrays from route location elements for result page validation
-    // expected format: [ 'San Francisco', ' CA', 'Etats-Unis (SFO)' ]
+    /*
+     * prepare arrays from route location elements for result page validation
+     * expected format: [ 'San Francisco', ' CA', 'Etats-Unis (SFO)' ]
+     */
     flightToContentArray = flightToContent.split(', ')
     expect(flightToContent).toBe(flightToContentToBe)
   })
 
   /*
-   -----------------------------------
-   DATE PICKER
-   -----------------------------------
-  */
+   * -----------------------------------
+   * DATE PICKER
+   * -----------------------------------
+   */
 
   test('AND default departure date is evaluated', async function() {
     await page.waitForSelector(flightDepartureDate)
     let flightDepartureDateContent = await page.evaluate(el => el.innerText, await page.$(flightDepartureDate))
+    console.log(flightDepartureDateContent)
   })
 
   test('AND default return date  is evaluated', async function() {
     await page.waitForSelector(flightReturnDate)
     let flightReturnDateContent = await page.evaluate(el => el.innerText, await page.$(flightReturnDate))
+    console.log(flightReturnDateContent)
   })
 
   test('AND I select departure date', async function() {
@@ -161,10 +166,10 @@ describe('Liligo Flight search', function() {
   })
 
   /*
-   -----------------------------------
-   CLICKOUT (promise.race)
-   -----------------------------------
-  */
+   * -----------------------------------
+   * CLICKOUT (promise.race)
+   * -----------------------------------
+   */
 
   test('AND I clickout from searchform', async function() {
     await Promise.race([page.waitForSelector(clickoutHome), page.waitForSelector(clickoutSeo)])
@@ -186,10 +191,10 @@ describe('Liligo Flight search', function() {
   })
 
   /*
-   -----------------------------------
-   RESULT PAGE
-   -----------------------------------
-  */
+   * -----------------------------------
+   * RESULT PAGE
+   * -----------------------------------
+   */
 
   test('THEN resultpage appears', async function() {
     await page.waitForSelector(resultDetailsButton)
@@ -301,14 +306,14 @@ describe('Liligo Flight search', function() {
   })
 
   /*
-  -----------------------------------
-  REDIRECT PAGE
-  -----------------------------------
-  */
+   * -----------------------------------
+   * REDIRECT PAGE
+   * -----------------------------------
+   */
 
-  test("THEN I see a redirection to partner's site", async function() {
+  test('THEN I see a redirection to partner\'s site', async function() {
     await page.waitFor(1000)
-    let redirectPageTitle = await page.title()
+    // let redirectPageTitle = await page.title()
   })
 
   test('AND I close the new tab', async function() {

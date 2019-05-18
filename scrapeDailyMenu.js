@@ -10,7 +10,9 @@ const replacementMap = require('./replacementMap.json') // replace pairs for typ
 const now = moment()
 const today = 5//Number(moment().format('d')) // ⚠️
 const todayFormatted = moment().format('LLLL')
-const todayDotSeparated = moment('2019.05.17.', 'YYYY-MM-DD').locale('hu').format('L') // // ⚠️ e.g. 2019.05.17. (default format for Hungarian)
+const todayDotSeparated = moment(now, 'YYYY-MM-DD')
+  .locale('hu')
+  .format('L') // e.g. 2019.05.17. (default format for Hungarian)
 const dayNames = []
 for (let i = 0; i < 7; i++) {
   let day = moment(i, 'd').format('dddd')
@@ -59,6 +61,29 @@ async function scrapeMenu() {
     this.ts = Math.floor(Date.now() / 1000)
   }
 
+  // general checking if menu is up-to-date
+  let found
+  async function checkDateForWeekly(selectTheWhole) {
+    try {
+      found = false
+      const theWhole = await page.evaluate(el => el.textContent, selectTheWhole)
+      let actualDateStrings = theWhole.match(
+        /([12]\d{3}.(0[1-9]|1[0-2]).(0[1-9]|[12]\d|3[01]))|([12]\d{3}. (0[1-9]|1[0-2]). (0[1-9]|[12]\d|3[01]))/gm
+      )
+      for (let i = 0; i < actualDateStrings.length; i++) {
+        actualDateStrings[i] = moment(actualDateStrings[i], 'YYYY-MM-DD')
+          .locale('hu')
+          .format('L')
+        if (actualDateStrings[i].match(todayDotSeparated)) {
+          found = true
+        }
+      }
+    } catch (e) {
+      console.error(e)
+    }
+    return found
+  }
+
   // @ {RESTAURANT}s with only facebook image menus
   async function ocrFacebookImage(
     paramColor,
@@ -87,8 +112,10 @@ async function scrapeMenu() {
     } catch (e) {
       console.error(e)
     }
-    // @ {RESTAURANT} OCR
-    // https://ocr.space/ocrapi#PostParameters
+    /*
+     * @ {RESTAURANT} OCR
+     * https://ocr.space/ocrapi#PostParameters
+     */
     try {
       forlabelRestaurant: for (let i = 0; i < imageUrlArray.length; i++) {
         let parsedResult = await ocrSpaceApi.parseImageFromUrl(imageUrlArray[i], {
@@ -139,18 +166,18 @@ async function scrapeMenu() {
 
   async function nokedli() {
     /*
-    @ NOKEDLI
-    ------------------------------------------
-    contact info:
-    * Address: Budapest, Weiner Leó u. 17, 1065
-    * Phone: (20) 499 5832
-    -----------------------------------------
-    imageSelector --> imageNokedliSelector
-    * store src
-    * trim thumbnail sub for normal sized image
-    * download and reduce image size
-    * OCR the table
-    */
+     * @ NOKEDLI
+     * ------------------------------------------
+     * contact info:
+     * Address: Budapest, Weiner Leó u. 17, 1065
+     * Phone: (20) 499 5832
+     * -----------------------------------------
+     * imageSelector --> imageNokedliSelector
+     * store src
+     * trim thumbnail sub for normal sized image
+     * download and reduce image size
+     * OCR the table
+     */
 
     // @ NOKEDLI parameters
     let paramColor = '#f9c32c'
@@ -306,15 +333,15 @@ async function scrapeMenu() {
 
   async function pestiDiszno() {
     /*
-    @ PESTI DISZNO
-    ---------------------------------------
-    contact info:
-    * Budapest, Nagymező u. 19, 1063
-    * Phone: +36 (1) 951 4061
-    ---------------------------------------
-    description:
-    * this daily menu relies on if a menu (recognizable for OCR) is available among timeline photos
-    */
+     * @ PESTI DISZNO
+     * ---------------------------------------
+     * contact info:
+     * Budapest, Nagymező u. 19, 1063
+     * Phone: +36 (1) 951 4061
+     * ---------------------------------------
+     * description:
+     * this daily menu relies on if a menu (recognizable for OCR) is available among timeline photos
+     */
 
     // @ PESTI DISZNO parameters
     let color = '#000000'
@@ -343,14 +370,14 @@ async function scrapeMenu() {
 
   async function incognito() {
     /*
-    @ INCOGNITO
-    ---------------------------------------
-    contact info:
-    * Address: Budapest, Liszt tér
-    ---------------------------------------
-    description:
-    * this daily menu relies on if a menu (recognizable for OCR) is available among timeline photos
-    */
+     * @ INCOGNITO
+     * ---------------------------------------
+     * contact info:
+     * Address: Budapest, Liszt tér
+     * ---------------------------------------
+     * description:
+     * this daily menu relies on if a menu (recognizable for OCR) is available among timeline photos
+     */
 
     // @ INCOGNITO parameters
     let color = '#cc2c2c'
@@ -386,15 +413,15 @@ async function scrapeMenu() {
 
   async function kata() {
     /*
-    @ KATA
-    ---------------------------------------
-    contact info:
-    * Address: Budapest, 1065, Hajós u. 27.
-    * Phone: +36(1) 302 4614
-    ---------------------------------------
-    description:
-    * this daily menu relies on if a menu (recognizable for OCR) is available among timeline photos
-    */
+     * @ KATA
+     * ---------------------------------------
+     * contact info:
+     * Address: Budapest, 1065, Hajós u. 27.
+     * Phone: +36(1) 302 4614
+     * ---------------------------------------
+     * description:
+     * this daily menu relies on if a menu (recognizable for OCR) is available among timeline photos
+     */
 
     // @ KATA parameters
     let color = '#3C5A99'
@@ -431,15 +458,15 @@ async function scrapeMenu() {
 
   async function drop() {
     /*
-    @ DROP
-    ---------------------------------------
-    contact info:
-    * Address: Budapest, 1065, Hajós u. 27.
-    * Phone: +36 1 235 0468
-    ---------------------------------------
-    description:
-    * this daily menu relies on if a menu (recognizable for OCR) is available among timeline photos
-    */
+     * @ DROP
+     * ---------------------------------------
+     * contact info:
+     * Address: Budapest, 1065, Hajós u. 27.
+     * Phone: +36 1 235 0468
+     * ---------------------------------------
+     * description:
+     * this daily menu relies on if a menu (recognizable for OCR) is available among timeline photos
+     */
 
     // @ DROP parameters
     let color = '#d3cd78'
@@ -501,13 +528,13 @@ async function scrapeMenu() {
 
   async function bodza() {
     /*
-    @ BODZA BISTRO
-    ------------------------------------------
-    contact info:
-    * Address: Budapest, Bajcsy-Zsilinszky út 12, 1051
-    * Phone: 06 (30) 515-52-34
-    -----------------------------------------
-    */
+     * @ BODZA BISTRO
+     * ------------------------------------------
+     * contact info:
+     * Address: Budapest, Bajcsy-Zsilinszky út 12, 1051
+     * Phone: 06 (30) 515-52-34
+     * -----------------------------------------
+     */
 
     // @ BODZA parameters
     let paramColor = '#c7ef81'
@@ -516,6 +543,7 @@ async function scrapeMenu() {
     let paramIcon = 'http://bodzabistro.hu/wp-content/uploads/2016/03/nevtelen-1.png'
     let paramSelector = '.container'
     let paramValueString
+    let bodzaDaily
 
     try {
       await page.goto(paramUrl, { waitUntil: 'domcontentloaded', timeout: 0 })
@@ -523,9 +551,8 @@ async function scrapeMenu() {
       let bodzaBlock = await page.$$(paramSelector)
       // @ BODZA Monday-Friday
       forlabelBodza: for (let i = 0; i < bodzaBlock.length; i++) {
-        let bodzaItemContent = await page.evaluate(el => el.textContent, (await page.$$(paramSelector))[i])
-        if (bodzaItemContent.match(todayDotSeparated)) {
-          bodzaDaily = bodzaItemContent
+        bodzaDaily = await page.evaluate(el => el.textContent, (await page.$$(paramSelector))[i])
+        if (bodzaDaily.match(todayDotSeparated)) {
           bodzaDaily = bodzaDaily
             .replace(/(\n)/gm, ' ')
             .replace(/\s\s+/gm, ' ')
@@ -553,16 +580,16 @@ async function scrapeMenu() {
 
   async function yamato() {
     /*
-    @ YAMATO
-    ---------------------------------------
-    contact info:
-    * Address: Budapest, 1066, JÓKAI U. 30.
-    * Phone: +36(70)681-75-44
-    ---------------------------------------
-    description:
-    * yamatoArray: contains selectors for tha days of the week
-    * yamato: is the text inside selector (actual menu), and also the final cleaned text to be displayed in output
-    */
+     * @ YAMATO
+     * ---------------------------------------
+     * contact info:
+     * Address: Budapest, 1066, JÓKAI U. 30.
+     * Phone: +36(70)681-75-44
+     * ---------------------------------------
+     * description:
+     * yamatoArray: contains selectors for tha days of the week
+     * yamato: is the text inside selector (actual menu), and also the final cleaned text to be displayed in output
+     */
 
     // @ YAMATO parameters
     let paramColor = '#cca92b'
@@ -584,9 +611,10 @@ async function scrapeMenu() {
 
     try {
       await page.goto(paramUrl, { waitUntil: 'networkidle2', timout: 0 })
+      await checkDateForWeekly(await page.$('body'))
       // @ YAMATO Monday-Friday
       for (let i = today; i < today + 1; i++) {
-        if ((await page.$(yamatoArray[i])) !== null) {
+        if ((await page.$(yamatoArray[i])) !== null && found === true) {
           yamato = await page.evaluate(el => el.innerText, await page.$(yamatoArray[i]))
           yamato = yamato.replace(/(\n)/gm, ', ')
         } else {
@@ -607,16 +635,16 @@ async function scrapeMenu() {
 
   async function vian() {
     /*
-    @ VIAN
-    ------------------------------------------
-    contact info:
-    * Address: Budapest, Liszt Ferenc tér 9, 1061
-    * Phone: (1) 268 1154
-    -----------------------------------------
-    description:
-    * vianArray[1-2]: contains selectors for tha days of the week
-    * vian[1-2]: is the text inside selector (actual menu) to be displayed in output
-    */
+     * @ VIAN
+     * ------------------------------------------
+     * contact info:
+     * Address: Budapest, Liszt Ferenc tér 9, 1061
+     * Phone: (1) 268 1154
+     * -----------------------------------------
+     * description:
+     * vianArray[1-2]: contains selectors for tha days of the week
+     * vian[1-2]: is the text inside selector (actual menu) to be displayed in output
+     */
 
     // @ VIAN parameters
     let paramColor = '#cc2b2b'
@@ -677,13 +705,13 @@ async function scrapeMenu() {
 
   async function korhely() {
     /*
-    @ KORHELY
-    ---------------------------------------------
-    contact info:
-    * Address: Budapest, Liszt Ferenc tér 7, 1061
-    * Phone: (1) 321 0280
-    ---------------------------------------------
-    */
+     * @ KORHELY
+     * ---------------------------------------------
+     * contact info:
+     * Address: Budapest, Liszt Ferenc tér 7, 1061
+     * Phone: (1) 321 0280
+     * ---------------------------------------------
+     */
 
     // @ KORHELY parameters
     let paramColor = '#c6b443'
@@ -738,16 +766,16 @@ async function scrapeMenu() {
 
   async function ketszerecsen() {
     /*
-    @ KETSZERECSEN
-    ------------------------------------------
-    contact info:
-    * Address: Budapest, Nagymező u. 14, 1065
-    * Phone: (1) 343 1984
-    -----------------------------------------
-    description:
-    * ketszerecsenArray[1-2]: contains selectors for tha days of the week
-    * ketszerecsen[1-2]: is the text inside selector (actual menu) to be displayed in output
-    */
+     * @ KETSZERECSEN
+     * ------------------------------------------
+     * contact info:
+     * Address: Budapest, Nagymező u. 14, 1065
+     * Phone: (1) 343 1984
+     * -----------------------------------------
+     * description:
+     * ketszerecsenArray[1-2]: contains selectors for tha days of the week
+     * ketszerecsen[1-2]: is the text inside selector (actual menu) to be displayed in output
+     */
 
     // @ KETSZERECSEN parameters
     let paramColor = '#000000'
@@ -808,13 +836,13 @@ async function scrapeMenu() {
 
   async function fruccola() {
     /*
-    @ FRUCCOLA
-    ----------------------------------------------
-    contact info:
-    * Address: Budapest, Arany János u. 32, 1051
-    * Phone: (1) 430 6125
-    ----------------------------------------------
-    */
+     * @ FRUCCOLA
+     * ----------------------------------------------
+     * contact info:
+     * Address: Budapest, Arany János u. 32, 1051
+     * Phone: (1) 430 6125
+     * ----------------------------------------------
+     */
 
     // @ FRUCCOLA parameters
     let paramColor = '#40ae49'
@@ -848,13 +876,13 @@ async function scrapeMenu() {
 
   async function kamra() {
     /*
-    @ KAMRA
-    ------------------------------------------
-    contact info:
-    * Address: Budapest, Hercegprímás u. 19, 1051
-    * Phone: (20) 436 9968
-    -----------------------------------------
-    */
+     * @ KAMRA
+     * ------------------------------------------
+     * contact info:
+     * Address: Budapest, Hercegprímás u. 19, 1051
+     * Phone: (20) 436 9968
+     * -----------------------------------------
+     */
 
     // @ KAMRA parameters
     let paramColor = '#fc594e'
@@ -892,13 +920,13 @@ async function scrapeMenu() {
 
   async function roza() {
     /*
-    @ ROZA
-    ------------------------------------------
-    contact info:
-    * Address: Budapest, Jókai u. 22, 1066
-    * Phone: (30) 611 4396
-    -----------------------------------------
-    */
+     * @ ROZA
+     * ------------------------------------------
+     * contact info:
+     * Address: Budapest, Jókai u. 22, 1066
+     * Phone: (30) 611 4396
+     * -----------------------------------------
+     */
 
     // @ ROZA parameters
     let paramColor = '#fced4e'
@@ -932,17 +960,17 @@ async function scrapeMenu() {
 
   async function suppe() {
     /*
-    @ SUPPÉ bistro
-    ---------------------------------------
-    contact info:
-    * Address: Hajós u. 19 (19.45 mi), Budapest, Hungary 1065
-    * Phone: (70) 336 0822
-    ---------------------------------------
-    Description:
-    * scrape facebook posts based on xpath patterns
-    * todo: avoid xpath and use selectors
-    * replace redundant string patterns with regex
-    */
+     * @ SUPPÉ bistro
+     * ---------------------------------------
+     * contact info:
+     * Address: Hajós u. 19 (19.45 mi), Budapest, Hungary 1065
+     * Phone: (70) 336 0822
+     * ---------------------------------------
+     * Description:
+     * scrape facebook posts based on xpath patterns
+     * todo: avoid xpath and use selectors
+     * replace redundant string patterns with regex
+     */
 
     // @ SUPPÉ parameters
     let paramColor = '#b5dd8d'
@@ -955,8 +983,10 @@ async function scrapeMenu() {
 
     try {
       await page.goto(paramUrl, { waitUntil: 'networkidle2' })
-      // @ SUPPÉ selector, source: https://stackoverflow.com/questions/48448586/how-to-use-xpath-in-chrome-headlesspuppeteer-evaluate
-      // @ SUPPÉ Daily
+      /*
+       * @ SUPPÉ selector, source: https://stackoverflow.com/questions/48448586/how-to-use-xpath-in-chrome-headlesspuppeteer-evaluate
+       * @ SUPPÉ Daily
+       */
       const dailySuppeIncludes = (await page.$x('//span[contains(text(), "Sziasztok")]'))[0]
       dailySuppe = await page.evaluate(el => el.textContent, dailySuppeIncludes)
       dailySuppe = dailySuppe.replace(/Sziasztok, |, kellemes hétvégét!|, szép napot!|, várunk Titeket!/gi, '')
@@ -988,13 +1018,13 @@ async function scrapeMenu() {
 
   async function karcsi() {
     /*
-    @ KARCSI
-    ------------------------------------------
-    contact info:
-    * Address: Budapest, Jókai u. 20, 1066
-    * Phone: (1) 312 0557
-    -----------------------------------------
-    */
+     * @ KARCSI
+     * ------------------------------------------
+     * contact info:
+     * Address: Budapest, Jókai u. 20, 1066
+     * Phone: (1) 312 0557
+     * -----------------------------------------
+     */
 
     // @ KARCSI parameters
     let paramColor = '#ffba44'
@@ -1004,7 +1034,6 @@ async function scrapeMenu() {
       'https://scontent.fbud1-1.fna.fbcdn.net/v/t1.0-1/c28.22.275.275a/p320x320/579633_527729393935258_751578746_n.png?_nc_cat=111&_nc_ht=scontent.fbud1-1.fna&oh=73791f008083bd39a006894bc54655d3&oe=5D61492B'
     let paramValueString
     let weeklyKarcsi
-
     // @ KARCSI weekly
     weeklyKarcsi = 'http://karcsibacsivendeglo.com/letoltes/napi_menu.pdf'
 
@@ -1030,7 +1059,7 @@ async function scrapeMenu() {
   }
   console.log('POST')
 
-  // POST the final JSON to webhook
+  // _POST the final JSON to webhook
   request(
     {
       url: process.env.WEBHOOK_URL_PROD,
