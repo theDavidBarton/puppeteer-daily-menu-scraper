@@ -10,7 +10,9 @@ const replacementMap = require('./replacementMap.json') // replace pairs for typ
 const now = moment()
 const today = Number(moment().format('d'))
 const todayFormatted = moment().format('LLLL')
-const todayDotSeparated = moment(now, 'YYYY-MM-DD').locale('hu').format('L') // e.g. 2019.05.17. (default format for Hungarian)
+const todayDotSeparated = moment(now, 'YYYY-MM-DD')
+  .locale('hu')
+  .format('L') // e.g. 2019.05.17. (default format for Hungarian)
 const todayMinusOne = moment(todayFormatted, 'LLLL')
   .subtract(1, 'day')
   .format('LLLL')
@@ -63,12 +65,83 @@ async function scrapeMenu() {
   }
 
   // general checking if menu is up-to-date
-  async function checkDate(selectTheWhole) {
-    selector = selectTheWhole
-    const theWhole = await page.evaluate(el => el.textContent, await page.$(selectTheWhole))
-    let actualDateString = theWhole.match(/([12]\d{3}.(0[1-9]|1[0-2]).(0[1-9]|[12]\d|3[01]))./gm)
-    console.log(actualDateString)
+  let found
+  async function checkDateForWeekly(selectTheWhole) {
+    try {
+      let selector = selectTheWhole
+      found = false
+      const theWhole = await page.evaluate(el => el.textContent, selectTheWhole)
+      let actualDateStrings = theWhole.match(
+        /([12]\d{3}.(0[1-9]|1[0-2]).(0[1-9]|[12]\d|3[01]))|([12]\d{3}. (0[1-9]|1[0-2]). (0[1-9]|[12]\d|3[01]))/gm
+      )
+      for (let i = 0; i < actualDateStrings.length; i++) {
+        actualDateStrings[i] = moment(actualDateStrings[i], 'YYYY-MM-DD')
+          .locale('hu')
+          .format('L')
+        if (actualDateStrings[i].match(todayDotSeparated)) {
+          found = true
+        }
+      }
+    } catch (e) {
+      console.error(e)
+    }
+    return found
   }
+
+  async function yamato() {
+    /*
+    @ YAMATO
+    ---------------------------------------
+    contact info:
+    * Address: Budapest, 1066, JÓKAI U. 30.
+    * Phone: +36(70)681-75-44
+    ---------------------------------------
+    description:
+    * yamatoArray: contains selectors for tha days of the week
+    * yamato: is the text inside selector (actual menu), and also the final cleaned text to be displayed in output
+    */
+
+    // @ YAMATO parameters
+    let paramColor = '#cca92b'
+    let paramTitleString = 'Yamato'
+    let paramUrl = 'https://www.wasabi.hu/napimenu.php?source=yamato&lang=hu'
+    let paramIcon = 'http://yamatorestaurant.hu/wp-content/uploads/2014/12/yamato_logo_retina.png'
+    let paramValueString
+    let yamato
+
+    // @ YAMATO selectors
+    let yamatoArray = [
+      '',
+      'body > div > h6:nth-child(2)',
+      'body > div > h6:nth-child(4)',
+      'body > div > h6:nth-child(6)',
+      'body > div > h6:nth-child(8)',
+      'body > div > h6:nth-child(10)'
+    ]
+
+    try {
+      await page.goto(paramUrl, { waitUntil: 'networkidle2', timout: 0 })
+      await checkDateForWeekly(await page.$('body'))
+      // @ YAMATO Monday-Friday
+      for (let i = today; i < today + 1; i++) {
+        if ((await page.$(yamatoArray[i])) !== null && found === true) {
+          yamato = await page.evaluate(el => el.innerText, await page.$(yamatoArray[i]))
+          yamato = yamato.replace(/(\n)/gm, ', ')
+        } else {
+          yamato = '♪"No Milk Today"♫'
+        }
+        paramValueString = '• Daily menu: ' + yamato + '\n'
+        console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
+        console.log(paramValueString)
+        // @ YAMATO object
+        let yamatoObj = new RestaurantMenuOutput(paramColor, paramTitleString, paramUrl, paramIcon, paramValueString)
+        finalJSON.attachments.push(yamatoObj)
+      }
+    } catch (e) {
+      console.error(e)
+    }
+  }
+  await yamato()
 
   // @ {RESTAURANT}s with only facebook image menus
   async function ocrFacebookImage(
@@ -561,60 +634,6 @@ async function scrapeMenu() {
     }
   }
   await bodza()
-
-  async function yamato() {
-    /*
-    @ YAMATO
-    ---------------------------------------
-    contact info:
-    * Address: Budapest, 1066, JÓKAI U. 30.
-    * Phone: +36(70)681-75-44
-    ---------------------------------------
-    description:
-    * yamatoArray: contains selectors for tha days of the week
-    * yamato: is the text inside selector (actual menu), and also the final cleaned text to be displayed in output
-    */
-
-    // @ YAMATO parameters
-    let paramColor = '#cca92b'
-    let paramTitleString = 'Yamato'
-    let paramUrl = 'https://www.wasabi.hu/napimenu.php?source=yamato&lang=hu'
-    let paramIcon = 'http://yamatorestaurant.hu/wp-content/uploads/2014/12/yamato_logo_retina.png'
-    let paramValueString
-    let yamato
-
-    // @ YAMATO selectors
-    let yamatoArray = [
-      '',
-      'body > div > h6:nth-child(2)',
-      'body > div > h6:nth-child(4)',
-      'body > div > h6:nth-child(6)',
-      'body > div > h6:nth-child(8)',
-      'body > div > h6:nth-child(10)'
-    ]
-
-    try {
-      await page.goto(paramUrl, { waitUntil: 'networkidle2', timout: 0 })
-      // @ YAMATO Monday-Friday
-      for (let i = today; i < today + 1; i++) {
-        if ((await page.$(yamatoArray[i])) !== null) {
-          yamato = await page.evaluate(el => el.innerText, await page.$(yamatoArray[i]))
-          yamato = yamato.replace(/(\n)/gm, ', ')
-        } else {
-          yamato = '♪"No Milk Today"♫'
-        }
-        paramValueString = '• Daily menu: ' + yamato + '\n'
-        console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
-        console.log(paramValueString)
-        // @ YAMATO object
-        let yamatoObj = new RestaurantMenuOutput(paramColor, paramTitleString, paramUrl, paramIcon, paramValueString)
-        finalJSON.attachments.push(yamatoObj)
-      }
-    } catch (e) {
-      console.error(e)
-    }
-  }
-  await yamato()
 
   async function vian() {
     /*
