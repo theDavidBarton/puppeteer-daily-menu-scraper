@@ -5,17 +5,19 @@ const moment = require('moment')
 // get Day of Week
 // const today = Number(moment().format('d'))
 const now = moment()
-// const todayFormatted = moment().format('LLLL')
-const todayDotSeparated = moment(now, 'YYYY-MM-DD')
+const todayFormatted = moment().format('LLLL')
+const todayDotSeparated = moment('2019-05-17', 'YYYY-MM-DD')
   .locale('hu')
   .format('L')
-// const todayMinusOne = moment(todayFormatted, 'LLLL').subtract(1, 'day').format('LLLL')
+const todayMinusOne = moment(todayFormatted, 'LLLL')
+  .subtract(1, 'day')
+  .format('LLLL')
 const dayNames = []
 for (let i = 0; i < 7; i++) {
   let day = moment(i, 'd').format('dddd')
   dayNames.push(day)
 }
-console.log('ezt skubizd hapsikám: ' + todayDotSeparated)
+console.log('dotsep: ' + todayDotSeparated)
 
 async function momentJs() {
   const browser = await puppeteer.launch({ headless: true })
@@ -42,6 +44,7 @@ async function momentJs() {
     } else {
       console.log('this is your lucky day')
     }
+    return found
   }
 
   moment.locale('hu')
