@@ -3,8 +3,13 @@
 A sandbox repository for **Puppeteer** (pptr), the NodeJs library made by GoogleChromeLabs to interact with webapps and browser components through headless Chrome.
 
 Currently the project's main js contains one headless Chrome instance with multiple async functions scraping daily and weekly menus (Monday to Friday) of restaurants from downtown of Budapest (Hungary).
-So far the scrapers are diverse: (1) harvests facebook posts for images, then OCR their content; (2) OCR menus uploaded in jpg image and table format; (3) scrape regular restaurant websites and get content via DOM and also scraping facebook post texts based on regex patterns.
+
+So far the scrapers are diverse: **(1)** harvests facebook posts for images, then OCR their content; **(2)** OCR menus uploaded in jpg image and table format; **(3)** scrape regular restaurant websites and get content via DOM and **(4)** also scraping facebook post texts based on regex patterns.
+
 The final output is stored in JSON and posted to slack via webhooks.
+
+###### KEYWORDS: [puppeteer](https://github.com/search?q=puppeteer) | [OCR](https://github.com/search?q=ocr) | [scraping](https://github.com/search?q=scraping) | [webhooks](https://github.com/search?q=webhooks)
+
 
 The actual version of pptr is v1.16.0
 
@@ -52,5 +57,3 @@ $ node scrapeDailyMenu.js
 [GitHub Puppeteer](https://github.com/GoogleChrome/puppeteer)
 
 [Slightly better examples than mine](https://github.com/GoogleChromeLabs/puppeteer-examples)
-
-[StackOverFlow](https://stackoverflow.com/questions/tagged/puppeteer)
