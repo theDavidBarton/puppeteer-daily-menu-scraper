@@ -510,23 +510,23 @@ async function scrapeMenu() {
         break
       case 2:
         startLine = 3
-        endLine = 5
+        endLine = 4
         break
       case 3:
-        startLine = 6
-        endLine = 8
+        startLine = 5
+        endLine = 7
         break
       case 4:
-        startLine = 9
-        endLine = 11
+        startLine = 8
+        endLine = 10
         break
       case 5:
-        startLine = 12
-        endLine = 14
+        startLine = 11
+        endLine = 12
         break
       default:
         startLine = 1
-        endLine = 14
+        endLine = 12
     }
 
     await ocrFacebookImage(
