@@ -11,21 +11,13 @@ const options = {
     isOverlayRequired: 'true',
     url: 'http://karcsibacsivendeglo.com/letoltes/napi_menu.pdf',
     scale: 'true',
-    isTable: 'true',
-    issearchablepdfhidetextlayer: 'false'
+    isTable: 'true'
   }
 }
-async function requestWrapper() {
-  let parsedResult
-  request(options, function(error, response, body) {
-    parsedResult = JSON.parse(response.body).ParsedResults[0].ParsedText
-    console.log('#1 ' + parsedResult)
-    return parsedResult
-  })
-}
 
-requestWrapper().then(x => {
-  console.log('HÉLÓTA')
-  console.log(x)
-  console.log('HÉLÓTA 2' + parsedResult)
-})
+let parsedResult
+request(options, function(error, response, body) {
+  parsedResult = JSON.parse(response.body).ParsedResults[0].ParsedText
+  console.log('#1 ' + parsedResult)
+  return parsedResult
+  })
