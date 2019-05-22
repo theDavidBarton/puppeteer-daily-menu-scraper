@@ -20,4 +20,6 @@ request(options, function(error, response, body) {
   parsedResult = JSON.parse(response.body).ParsedResults[0].ParsedText
   console.log('#1 ' + parsedResult)
   return parsedResult
-  })
+})
+
+console.log('#2 ' + parsedResult) // undefined due to it doesn't wait for the result of request
