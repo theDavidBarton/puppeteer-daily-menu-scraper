@@ -9,11 +9,14 @@ const options = {
   formData: {
     language: 'hun',
     isOverlayRequired: 'true',
-    url: 'http://karcsibacsivendeglo.com/letoltes/napi_menu.pdf',
+    url:
+      'https://scontent-vie1-1.xx.fbcdn.net/v/t1.0-0/p526x296/60641908_2277309742291711_5754122494252417024_n.jpg?_nc_cat=105&_nc_ht=scontent-vie1-1.xx&oh=bb2367bcf6c76ca142acaa49bf784f7c&oe=5D51BC3C',
     scale: 'true',
     isTable: 'true'
   }
 }
+
+// const requestPromise = util.promisify(request)
 
 let parsedResult
 request(options, function(error, response, body) {
@@ -21,5 +24,8 @@ request(options, function(error, response, body) {
   console.log('#1 ' + parsedResult)
   return parsedResult
 })
+// console.log(typeof parsedResult)
 
-console.log('#2 ' + parsedResult) // undefined due to it doesn't wait for the result of request
+setTimeout(function() {
+  console.log('#' + 2 + ' ' + parsedResult)
+}, 20000)
