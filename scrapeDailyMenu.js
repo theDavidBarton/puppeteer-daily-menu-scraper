@@ -395,7 +395,7 @@ async function scrapeMenu() {
     let url = 'https://www.facebook.com/pg/PestiDiszno/posts/'
     let icon = 'http://www.pestidiszno.hu/img/pdlogob2.png'
     let daysRegexArray = ['', /[^%]*/g, /[^%]*/g, /[^%]*/g, /[^%]*/g, /[^%]*/g]
-    let facebookImageUrlSelector = '.scaledImageFitHeight'
+    let facebookImageUrlSelector = 'img[class^="scaledImageFit"]'
     let menuHandleRegex = /fogás/gi
     let startLine = 3
     let endLine = 17
