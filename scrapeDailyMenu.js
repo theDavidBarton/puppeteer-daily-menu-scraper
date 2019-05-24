@@ -113,10 +113,10 @@ async function scrapeMenu() {
     paramEndLine
   ) {
     let paramValueString
-    let restaurantParsedText
     let restaurantDaysRegex = paramDaysRegexArray
     let imageUrlArray = []
     let restaurantDailyArray = []
+    let parsedResult
     try {
       await page.goto(paramUrl, { waitUntil: 'domcontentloaded' })
       // @ {RESTAURANT} the hunt for the menu image src
@@ -129,19 +129,48 @@ async function scrapeMenu() {
       console.error(e)
     }
     // @ {RESTAURANT} OCR https://ocr.space/ocrapi#PostParameters
-    try {
-      forlabelRestaurant: for (let i = 0; i < imageUrlArray.length; i++) {
-        let parsedResult = await ocrSpaceApi.parseImageFromUrl(imageUrlArray[i], {
-          apikey: process.env.OCR_API_KEY, // add app.env to your environment variables, see README.md
-          imageFormat: 'image/png',
-          scale: true,
-          isOverlayRequired: true
+    forlabelRestaurant: for (let i = 0; i < imageUrlArray.length; i++) {
+      const options = {
+        method: 'POST',
+        url: 'https://api.ocr.space/parse/image',
+        headers: {
+          apikey: process.env.OCR_API_KEY
+        },
+        formData: {
+          language: 'hun',
+          isOverlayRequired: 'true',
+          url: imageUrlArray[i],
+          scale: 'true',
+          isTable: 'true'
+        }
+      }
+      // (I.) promise to return the parsedResult for processing
+      function ocrRequest() {
+        return new Promise(function(resolve, reject) {
+          request(options, function(error, response, body) {
+            try {
+              resolve(JSON.parse(body).ParsedResults[0].ParsedText)
+            } catch (e) {
+              reject(e)
+            }
+          })
         })
-        restaurantParsedText = parsedResult.parsedText
-        if (restaurantParsedText.match(paramMenuHandleRegex)) {
+      }
+      // (II.)
+      async function ocrResponse() {
+        try {
+          parsedResult = await ocrRequest()
+        } catch (e) {
+          console.error(e)
+        }
+      }
+      try {
+        // (III.)
+        await ocrResponse()
+        if (await parsedResult.match(paramMenuHandleRegex)) {
           // @ {RESTAURANT} Monday-Friday
           for (let j = today; j < today + 1; j++) {
-            let restaurantDaily = restaurantParsedText.match(restaurantDaysRegex[j])
+            let restaurantDaily = parsedResult.match(restaurantDaysRegex[j])
             // format text and replace faulty string parts
             for (let k = 0; k < replacementMap.length; k++) {
               restaurantDaily = restaurantDaily
@@ -171,9 +200,9 @@ async function scrapeMenu() {
             break forlabelRestaurant
           }
         }
+      } catch (e) {
+        console.error(e)
       }
-    } catch (e) {
-      console.error(e)
     }
   }
 
@@ -492,42 +521,17 @@ async function scrapeMenu() {
     let icon = 'http://droprestaurant.com/public/wp-content/uploads/2015/07/logo-header.png'
     let daysRegexArray = [
       '',
-      /\bPÉNT((.*\r\n){15})/gi,
-      /\bPÉNT((.*\r\n){15})/gi,
-      /\bPÉNT((.*\r\n){15})/gi,
-      /\bPÉNT((.*\r\n){15})/gi,
-      /\bPÉNT((.*\r\n){15})/gi
+      /^((.*\r\n){4})/gi,
+      /\bKEDD((.*\r\n){2})/gi,
+      /\bSZERD((.*\r\n){2})/gi,
+      /\bCSÜT((.*\r\n){2})/gi,
+      /\bPÉNT((.*\r\n){2})/gi
     ]
     let facebookImageUrlSelector = '.scaledImageFitWidth'
     let menuHandleRegex = /Szerda/gi
     // this OCR-d menu is totally unrelaible and cannot be regexed smartly, a short term solution is a switch with predefined line numbers
-    let startLine
-    let endLine
-    switch (today) {
-      case 1:
-        startLine = 1
-        endLine = 2
-        break
-      case 2:
-        startLine = 3
-        endLine = 4
-        break
-      case 3:
-        startLine = 5
-        endLine = 7
-        break
-      case 4:
-        startLine = 8
-        endLine = 10
-        break
-      case 5:
-        startLine = 11
-        endLine = 12
-        break
-      default:
-        startLine = 1
-        endLine = 12
-    }
+    let startLine = 0
+    let endLine = 2
 
     await ocrFacebookImage(
       color,
