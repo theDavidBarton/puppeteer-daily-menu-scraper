@@ -268,7 +268,7 @@ async function scrapeMenu() {
     let gif = { gif: { engine: 'gifsicle', command: ['--colors', '64', '--use-col=web'] } }
 
     compressImages(input, output, compressSettings, false, jpg, png, svg, gif, async function(error, completed) {
-      // @ NOKEDLI OCR reduced image
+      // @ NOKEDLI OCR reduced image to be replaced
       const imagePath = 'tmp/output/weeklyNokedli.jpg'
       try {
         let parsedResult = await ocrSpaceApi.parseImageFromLocalFile(imagePath, {
