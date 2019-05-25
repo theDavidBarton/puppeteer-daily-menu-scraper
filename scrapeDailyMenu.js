@@ -16,7 +16,6 @@
 
 const puppeteer = require('puppeteer')
 const moment = require('moment')
-const ocrSpaceApi = require('ocr-space-api')
 const fs = require('fs')
 const request = require('request')
 const compressImages = require('compress-images')
@@ -229,6 +228,7 @@ async function scrapeMenu() {
       'https://scontent.fbud1-1.fna.fbcdn.net/v/t1.0-1/p320x320/969066_507629642637360_22543675_n.jpg?_nc_cat=108&_nc_ht=scontent.fbud1-1.fna&oh=a2e8efd55605ba9b7b63553dc54c23ca&oe=5D6F4115'
     let paramValueString
     let weeklyNokedli
+    let parsedResult
 
     // @ NOKEDLI selector
     const imageNokedliSelector = '.aligncenter'
@@ -268,18 +268,48 @@ async function scrapeMenu() {
     let gif = { gif: { engine: 'gifsicle', command: ['--colors', '64', '--use-col=web'] } }
 
     compressImages(input, output, compressSettings, false, jpg, png, svg, gif, async function(error, completed) {
-      // @ NOKEDLI OCR reduced image
+      // @ NOKEDLI OCR reduced image (plus base64 for better performance)
       const imagePath = 'tmp/output/weeklyNokedli.jpg'
-      try {
-        let parsedResult = await ocrSpaceApi.parseImageFromLocalFile(imagePath, {
-          apikey: process.env.OCR_API_KEY, // add app.env to your environment variables, source: https://hackernoon.com/how-to-use-environment-variables-keep-your-secret-keys-safe-secure-8b1a7877d69c
+      const imageAsBase64 = await fs.readFileSync(imagePath, 'base64')
+      const optionsNokedli = {
+        method: 'POST',
+        url: 'https://api.ocr.space/parse/image',
+        headers: {
+          apikey: process.env.OCR_API_KEY
+        },
+        formData: {
           language: 'hun',
-          imageFormat: 'image/png',
-          scale: true,
-          isOverlayRequired: true
+          isOverlayRequired: 'true',
+          base64image: 'data:image/jpg;base64,' + imageAsBase64,
+          scale: 'true',
+          isTable: 'true'
+        }
+      }
+      // (I.) promise to return the parsedResult for processing
+      function ocrRequest() {
+        return new Promise(function(resolve, reject) {
+          request(optionsNokedli, function(error, response, body) {
+            try {
+              resolve(JSON.parse(body).ParsedResults[0])
+            } catch (e) {
+              reject(e)
+            }
+          })
         })
+      }
+      // (II.)
+      async function ocrResponse() {
+        try {
+          parsedResult = await ocrRequest()
+        } catch (e) {
+          console.error(e)
+        }
+      }
+      try {
+        // (III.)
+        await ocrResponse()
 
-        let textOverlayLinesCount = parsedResult.ocrParsedResult.ParsedResults[0].TextOverlay.Lines.length // text group count
+        let textOverlayLinesCount = parsedResult.TextOverlay.Lines.length // text group count
         let nokedliMonday = []
         let nokedliMondayStr = []
         let nokedliTuesday = []
@@ -293,11 +323,11 @@ async function scrapeMenu() {
 
         // checks word coordinates against a predefined map of the table
         for (let i = 0; i < textOverlayLinesCount; i++) {
-          let textOverlayWordsCount = parsedResult.ocrParsedResult.ParsedResults[0].TextOverlay.Lines[i].Words.length
+          let textOverlayWordsCount = parsedResult.TextOverlay.Lines[i].Words.length
           for (let j = 0; j < textOverlayWordsCount; j++) {
-            let wordLeft = parsedResult.ocrParsedResult.ParsedResults[0].TextOverlay.Lines[i].Words[0].Left
-            let wordTop = parsedResult.ocrParsedResult.ParsedResults[0].TextOverlay.Lines[i].Words[0].Top
-            let wordText = parsedResult.ocrParsedResult.ParsedResults[0].TextOverlay.Lines[i].Words[j].WordText
+            let wordLeft = parsedResult.TextOverlay.Lines[i].Words[0].Left
+            let wordTop = parsedResult.TextOverlay.Lines[i].Words[0].Top
+            let wordText = parsedResult.TextOverlay.Lines[i].Words[j].WordText
             // format text and replace faulty string parts
             for (let k = 0; k < replacementMap.length; k++) {
               wordText = wordText.replace(new RegExp(replacementMap[k][0], 'g'), replacementMap[k][1])
@@ -310,14 +340,14 @@ async function scrapeMenu() {
                   nokedliMondayStr[l] = nokedliMondayStr[l].trim()
                 }
               }
-              tuesday: if (wordLeft > 1310 && wordLeft < 1520) {
+              tuesday: if (wordLeft > 1310 && wordLeft < 1546) {
                 nokedliTuesday.push(wordText)
                 nokedliTuesdayStr = nokedliTuesday.join(' ').split(/(?= [A-ZÁÍŰŐÜÖÚÓÉ])/g)
                 for (let l = 0; l < nokedliTuesdayStr.length; l++) {
                   nokedliTuesdayStr[l] = nokedliTuesdayStr[l].trim()
                 }
               }
-              wednesday: if (wordLeft > 1815 && wordLeft < 2060) {
+              wednesday: if (wordLeft > 1815 && wordLeft < 2090) {
                 nokedliWednesday.push(wordText)
                 nokedliWednesdayStr = nokedliWednesday.join(' ').split(/(?= [A-ZÁÍŰŐÜÖÚÓÉ])/g)
                 for (let l = 0; l < nokedliWednesdayStr.length; l++) {
