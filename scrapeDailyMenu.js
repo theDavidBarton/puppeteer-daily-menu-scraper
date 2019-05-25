@@ -268,7 +268,7 @@ async function scrapeMenu() {
     let gif = { gif: { engine: 'gifsicle', command: ['--colors', '64', '--use-col=web'] } }
 
     compressImages(input, output, compressSettings, false, jpg, png, svg, gif, async function(error, completed) {
-      // @ NOKEDLI OCR reduced image to be replaced
+      // @ NOKEDLI OCR reduced image (plus base64 for better performance)
       const imagePath = 'tmp/output/weeklyNokedli.jpg'
       const imageAsBase64 = await fs.readFileSync(imagePath, 'base64')
       const optionsNokedli = {
