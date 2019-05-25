@@ -178,7 +178,7 @@ async function scrapeMenu() {
                 .toLowerCase()
                 .replace(new RegExp(replacementMap[k][0], 'g'), replacementMap[k][1])
             }
-            restaurantDaily = restaurantDaily.split(/\r\n/)
+            restaurantDaily = restaurantDaily.split(/\r?\n/)
 
             for (let l = paramStartLine; l < paramEndLine + 1; l++) {
               restaurantDaily[l] = restaurantDaily[l].trim()
@@ -432,11 +432,11 @@ async function scrapeMenu() {
     let icon = 'https://www.copper-state.com/wp-content/uploads/2016/02/google_incognito_mode_400.jpg'
     let daysRegexArray = [
       '',
-      /\bHÉT((.*\r\n){3})/gi,
-      /\bKED((.*\r\n){3})/gi,
-      /\bSZERD((.*\r\n){3})/gi,
-      /\bCSOT((.*\r\n){3})|\bCSU((.*\r\n){3})|\bCSÜ((.*\r\n){3})|\bCsiitörtök((.*\r\n){3})|törtök((.*\r\n){3})/gi,
-      /\bPÉNT((.*\r\n){3})/gi
+      /\bHÉT((.*\r?\n){3})/gi,
+      /\bKED((.*\r?\n){3})/gi,
+      /\bSZERD((.*\r?\n){3})/gi,
+      /\bCSOT((.*\r?\n){3})|\bCSU((.*\r?\n){3})|\bCSÜ((.*\r?\n){3})|\bCsiitörtök((.*\r?\n){3})|törtök((.*\r?\n){3})/gi,
+      /\bPÉNT((.*\r?\n){3})/gi
     ]
     let facebookImageUrlSelector = '.scaledImageFitWidth'
     let menuHandleRegex = /Heti menü/gi
@@ -477,11 +477,11 @@ async function scrapeMenu() {
       'https://scontent-vie1-1.xx.fbcdn.net/v/t1.0-1/p200x200/54435606_326369938082271_8203013160240676864_n.jpg?_nc_cat=102&_nc_ht=scontent-vie1-1.xx&oh=f5ccb50053c0d9174c10d71ab0097807&oe=5D2A4D25'
     let daysRegexArray = [
       '',
-      /\bHÉT((.*\r\n){3})/gi,
-      /\bKED((.*\r\n){3})/gi,
-      /\bSZERD((.*\r\n){3})/gi,
-      /\bCSOT((.*\r\n){3})|\bCSU((.*\r\n){3})|\bCSÜ((.*\r\n){3})/gi,
-      /\bPÉNT((.*\r\n){3})/gi
+      /\bHÉT((.*\r?\n){3})/gi,
+      /\bKED((.*\r?\n){3})/gi,
+      /\bSZERD((.*\r?\n){3})/gi,
+      /\bCSOT((.*\r?\n){3})|\bCSU((.*\r?\n){3})|\bCSÜ((.*\r?\n){3})/gi,
+      /\bPÉNT((.*\r?\n){3})/gi
     ]
     let facebookImageUrlSelector = '.scaledImageFitWidth'
     let menuHandleRegex = /espresso/gi
@@ -521,11 +521,11 @@ async function scrapeMenu() {
     let icon = 'http://droprestaurant.com/public/wp-content/uploads/2015/07/logo-header.png'
     let daysRegexArray = [
       '',
-      /^((.*\r\n){4})/gi,
-      /\bKEDD((.*\r\n){2})/gi,
-      /\bSZERD((.*\r\n){2})/gi,
-      /\bCSÜT((.*\r\n){2})/gi,
-      /\bPÉNT((.*\r\n){2})/gi
+      /^((.*\r?\n){4})/gi,
+      /\bKEDD((.*\r?\n){2})/gi,
+      /\bSZERD((.*\r?\n){2})/gi,
+      /\bCSÜT((.*\r?\n){2})/gi,
+      /\bPÉNT((.*\r?\n){2})/gi
     ]
     let facebookImageUrlSelector = '.scaledImageFitWidth'
     let menuHandleRegex = /Szerda/gi
@@ -575,7 +575,7 @@ async function scrapeMenu() {
         bodzaDaily = await page.evaluate(el => el.textContent, (await page.$$(paramSelector))[i])
         if (bodzaDaily.match(todayDotSeparated)) {
           bodzaDaily = bodzaDaily
-            .replace(/(\n)/gm, ' ')
+            .replace(/(\r?\n)/gm, ' ')
             .replace(/\s\s+/gm, ' ')
             .replace(/(.*)CHEF NAPI AJÁNLATA/g, '')
             .replace(/LEVESEK/g, '\n• Soups: ')
@@ -637,7 +637,7 @@ async function scrapeMenu() {
       for (let i = today; i < today + 1; i++) {
         if ((await page.$(yamatoArray[i])) !== null && found === true) {
           yamato = await page.evaluate(el => el.innerText, await page.$(yamatoArray[i]))
-          yamato = yamato.replace(/(\n)/gm, ', ')
+          yamato = yamato.replace(/(\r?\n)/gm, ', ')
         } else {
           yamato = '♪"No Milk Today"♫'
         }
