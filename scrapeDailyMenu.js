@@ -46,8 +46,6 @@ async function scrapeMenu() {
     browserWSEndpoint
   }
 
-  const nokedli = require('./scrapers/nokedli')
-
   // abort all images, source: https://github.com/GoogleChrome/puppeteer/blob/master/examples/block-images.js
   await page.setRequestInterception(true)
   page.on('request', request => {
@@ -212,6 +210,7 @@ async function scrapeMenu() {
     }
   }
 
+  const nokedli = require('./scrapers/nokedli')
   await nokedli.nokedli()
 
   async function pestiDiszno() {
