@@ -18,35 +18,27 @@ const compressImages = require('compress-images')
 const fs = require('fs')
 const puppeteer = require('puppeteer')
 const request = require('request')
-const replacementMap = require('../replacementMap.json')
-const main = require('./../scrapeDailyMenu')
+const replacementMap = require('./../replacementMap.json')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
 const today = require('./../scrapeDailyMenu').today
-const dayNames = require('./../scrapeDailyMenu').dayNames
+const finalJSON = require('./../scrapeDailyMenu').finalJSON
+const RestaurantMenuOutput = require('./../scrapeDailyMenu').RestaurantMenuOutput
 
-let RestaurantMenuOutput = function(color, titleString, url, icon, valueString) {
-  this.fallback = 'Please open it on a device that supports formatted messages.'
-  this.pretext = '...'
-  this.color = color
-  this.author_name = titleString.toUpperCase()
-  this.author_link = url
-  this.author_icon = icon
-  this.fields = [
-    {
-      title: titleString + ' menu (' + dayNames[today] + '):',
-      value: valueString,
-      short: false
-    }
-  ]
-  this.footer = 'scraped by DailyMenu'
-  this.ts = Math.floor(Date.now() / 1000)
-}
 
-async function nokedli() {
-  await console.log(main)
-
+async function scraper() {
   const browser = await puppeteer.connect({ browserWSEndpoint })
   const page = await browser.newPage()
+
+  // abort all images, source: https://github.com/GoogleChrome/puppeteer/blob/master/examples/block-images.js
+  await page.setRequestInterception(true)
+  page.on('request', request => {
+    if (request.resourceType() === 'image') {
+      request.abort()
+    } else {
+      request.continue()
+    }
+  })
+
   /*
    * @ NOKEDLI
    * ------------------------------------------
@@ -246,5 +238,8 @@ async function nokedli() {
       console.error(e)
     }
   })
+  await page.goto('about:blank')
+  await page.close()
+  await browser.disconnect()
 }
-module.exports.nokedli = nokedli
+module.exports.scraper = scraper
