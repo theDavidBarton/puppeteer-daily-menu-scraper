@@ -15,6 +15,7 @@
  */
 
 const ocrFacebookImage = require('./ocrFacebookImage')
+const today = require('./../scrapeDailyMenu').today
 
 
 async function scraper() {
@@ -36,7 +37,7 @@ async function scraper() {
   let icon = 'http://droprestaurant.com/public/wp-content/uploads/2015/07/logo-header.png'
   let daysRegexArray = [
     '',
-    /^((.*\r?\n){4})/gi,
+    /(Január|Február|Március|Április|Május|Június|Július|Augu|Szeptember|Október|November|December)((.*\r?\n){3})/gi,
     /\bKEDD((.*\r?\n){2})/gi,
     /\bSZERD((.*\r?\n){2})/gi,
     /\bCSÜT((.*\r?\n){2})/gi,
@@ -44,9 +45,16 @@ async function scraper() {
   ]
   let facebookImageUrlSelector = '.scaledImageFitWidth'
   let menuHandleRegex = /Szerda/gi
-  // this OCR-d menu is totally unrelaible and cannot be regexed smartly, a short term solution is a switch with predefined line numbers
-  let startLine = 0
-  let endLine = 2
+  let startLine
+  let endLine
+  // drop still has shady menu image so Monday has different pattern (see daysRegexArray)
+  if (today === 1) {
+    startLine = 1
+    endLine = 3
+  } else {
+    startLine = 0
+    endLine = 2
+  }
 
   await ocrFacebookImage.ocrFacebookImage(
     color,
