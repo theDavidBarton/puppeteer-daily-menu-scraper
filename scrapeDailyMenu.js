@@ -61,7 +61,7 @@ let RestaurantMenuOutput = function(color, titleString, url, icon, valueString) 
 
 // scraper browser instance - function that wraps all the scrapers
 async function scrapeMenu() {
-  const browser = await puppeteer.launch({ headless: false })
+  const browser = await puppeteer.launch({ headless: true })
   const browserWSEndpoint = await browser.wsEndpoint()
 
   // used outside of main script in the scrapers
