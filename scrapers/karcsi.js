@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+ const request = require('request')
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
 const RestaurantMenuOutput = require('./../scrapeDailyMenu').RestaurantMenuOutput
 
@@ -37,13 +38,54 @@ async function scraper() {
   let paramValueString
   let weeklyKarcsi
   // @ KARCSI weekly
-  weeklyKarcsi = 'http://karcsibacsivendeglo.com/letoltes/napi_menu.pdf'
+  let pdfUrl = 'http://karcsibacsivendeglo.com/letoltes/napi_menu.pdf'
 
+  const optionsKarcsi = {
+    method: 'POST',
+    url: 'https://api.ocr.space/parse/image',
+    headers: {
+      apikey: process.env.OCR_API_KEY
+    },
+    formData: {
+      language: 'hun',
+      isOverlayRequired: 'true',
+      url: pdfUrl,
+      scale: 'true',
+      isTable: 'true'
+    }
+  }
+  // (I.) promise to return the parsedResult for processing
+  function ocrRequest() {
+    return new Promise(function(resolve, reject) {
+      request(optionsKarcsi, function(error, response, body) {
+        try {
+          resolve(JSON.parse(body).ParsedResults[0].ParsedText)
+        } catch (e) {
+          reject(e)
+        }
+      })
+    })
+  }
+  // (II.)
+  async function ocrResponse() {
+    try {
+      parsedResult = await ocrRequest()
+    } catch (e) {
+      console.error(e)
+    }
+  }
+  try {
+    // (III.)
+    await ocrResponse()
+  console.log(parsedResult)
   paramValueString = '• Weekly menu: ' + weeklyKarcsi + '\n'
   console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
   console.log(paramValueString)
   // @ KARCSI object
   let karcsiObj = new RestaurantMenuOutput(paramColor, paramTitleString, paramUrl, paramIcon, paramValueString)
   finalJSON.attachments.push(karcsiObj)
+} catch (e) {
+  console.error(e)
+}
 }
 module.exports.scraper = scraper
