@@ -20,7 +20,6 @@ const today = require('./../scrapeDailyMenu').today
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
 const RestaurantMenuOutput = require('./../scrapeDailyMenu').RestaurantMenuOutput
 
-
 async function scraper() {
   /*
    * @ KARCSI
@@ -94,17 +93,34 @@ async function scraper() {
     console.log(parsedResult)
     for (let i = today; i < today + 1; i++) {
       karcsiDaily = parsedResult.match(karcsiDaysRegexArray[i])
+      karcsiWeekly = parsedResult.match(weeklyOfferRegex)
+      karcsiSoup = parsedResult.match(soupRegex)
       // format text and replace faulty string parts
       for (let j = 0; j < replacementMap.length; j++) {
+        karcsiWeekly = karcsiWeekly
+          .toString()
+          .toLowerCase()
+          .replace(/\bheti men.((.*\r?\n))|\bmen. 1((.*\r?\n))/gi, '')
+          .replace(/[0-9]+ ft/gi, '')
+          .replace(/\r?\n/g, ', ')
+          .replace(new RegExp(replacementMap[j][0], 'g'), replacementMap[j][1])
+        karcsiSoup = karcsiSoup
+          .toString()
+          .toLowerCase()
+          .replace(/\bheti men.((.*\r?\n))|\bmen. 1((.*\r?\n))/gi, '')
+          .replace(/[0-9]+ ft/gi, '')
+          .replace(/\r?\n/g, ', ')
+          .replace(new RegExp(replacementMap[j][0], 'g'), replacementMap[j][1])
         karcsiDaily = karcsiDaily
           .toString()
           .toLowerCase()
+          .replace(/\bheti men.((.*\r?\n))|\bmen. 1((.*\r?\n))/gi, '')
+          .replace(/[0-9]+ ft/gi, '')
+          .replace(/\r?\n/g, ', ')
           .replace(new RegExp(replacementMap[j][0], 'g'), replacementMap[j][1])
       }
     }
-    karcsiWeekly = parsedResult.match(weeklyOfferRegex)
-    karcsiSoup = parsedResult.match(soupRegex)
-    paramValueString = '• ' + karcsiWeekly + '\n• ' + karcsiSoup + karcsiDaily + '\n'
+    paramValueString = '• Weekly offer: ' + karcsiWeekly + '\n• Daily menu: ' + karcsiSoup + karcsiDaily + '\n'
     console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
     console.log(paramValueString)
     // @ KARCSI object

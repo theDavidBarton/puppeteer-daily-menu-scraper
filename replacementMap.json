@@ -6,7 +6,7 @@
   ["f\\.", "e"],
   ["é\\.", "é"],
   ["fóétel", "főétel"],
-  ["f.ze\\/ék|ii,'özei\\.é\\.k,", "főzelék"],
+  ["f.ze\\/ék|ii,'özei\\.é\\.k,|fózelék", "főzelék"],
   ["fustblt|fostólt|fústolt", "füstölt"],
   ["hcs|11ts", "hús"],
   ["hagvm|hac,ym|hagy\\.m", "hagym"],
