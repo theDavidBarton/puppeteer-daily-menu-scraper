@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
- const request = require('request')
+const request = require('request')
+const replacementMap = require('./../replacementMap.json')
+const today = require('./../scrapeDailyMenu').today
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
 const RestaurantMenuOutput = require('./../scrapeDailyMenu').RestaurantMenuOutput
 
@@ -36,9 +38,21 @@ async function scraper() {
   let paramIcon =
     'https://scontent.fbud1-1.fna.fbcdn.net/v/t1.0-1/c28.22.275.275a/p320x320/579633_527729393935258_751578746_n.png?_nc_cat=111&_nc_ht=scontent.fbud1-1.fna&oh=73791f008083bd39a006894bc54655d3&oe=5D61492B'
   let paramValueString
-  let weeklyKarcsi
   // @ KARCSI weekly
   let pdfUrl = 'http://karcsibacsivendeglo.com/letoltes/napi_menu.pdf'
+  let weeklyOfferRegex = /\bHETI MEN.:((.*\r?\n){3})/gi
+  let soupRegex = /\bMENÜ 1((.*\r?\n){2})/gi
+  let karcsiDaysRegexArray = [
+    '',
+    /\bHÉT((.*\r?\n))/gi,
+    /\bKED((.*\r?\n))/gi,
+    /\bSZERD((.*\r?\n))/gi,
+    /\bCSÜ((.*\r?\n))/gi,
+    /\bPÉNT((.*\r?\n))/gi
+  ]
+  let karcsiWeekly
+  let karcsiSoup
+  let karcsiDaily
 
   const optionsKarcsi = {
     method: 'POST',
@@ -77,15 +91,27 @@ async function scraper() {
   try {
     // (III.)
     await ocrResponse()
-  console.log(parsedResult)
-  paramValueString = '• Weekly menu: ' + weeklyKarcsi + '\n'
-  console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
-  console.log(paramValueString)
-  // @ KARCSI object
-  let karcsiObj = new RestaurantMenuOutput(paramColor, paramTitleString, paramUrl, paramIcon, paramValueString)
-  finalJSON.attachments.push(karcsiObj)
-} catch (e) {
-  console.error(e)
-}
+    console.log(parsedResult)
+    for (let i = today; i < today + 1; i++) {
+      karcsiDaily = parsedResult.match(karcsiDaysRegexArray[i])
+      // format text and replace faulty string parts
+      for (let j = 0; j < replacementMap.length; j++) {
+        karcsiDaily = karcsiDaily
+          .toString()
+          .toLowerCase()
+          .replace(new RegExp(replacementMap[j][0], 'g'), replacementMap[j][1])
+      }
+    }
+    karcsiWeekly = parsedResult.match(weeklyOfferRegex)
+    karcsiSoup = parsedResult.match(soupRegex)
+    paramValueString = '• ' + karcsiWeekly + '\n• ' + karcsiSoup + karcsiDaily + '\n'
+    console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
+    console.log(paramValueString)
+    // @ KARCSI object
+    let karcsiObj = new RestaurantMenuOutput(paramColor, paramTitleString, paramUrl, paramIcon, paramValueString)
+    finalJSON.attachments.push(karcsiObj)
+  } catch (e) {
+    console.error(e)
+  }
 }
 module.exports.scraper = scraper
