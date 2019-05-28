@@ -1,5 +1,4 @@
 [
-  ["\\s\\s+", " "],
   ["¿", "á"],
   ["c,s", "cs"],
   ["c.sirkf.|c:s1rkf.|cs.rke", "csirke"],
