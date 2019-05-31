@@ -15,7 +15,7 @@
  */
 
 const puppeteer = require('puppeteer')
-const request = require('request')
+const ocrSpaceApiSimple = require('./../lib/ocrSpaceApiSimple')
 const replacementMap = require('./../replacementMap.json')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
 const today = require('./../scrapeDailyMenu').today
@@ -81,29 +81,10 @@ async function ocrFacebookImage(
         isTable: 'true'
       }
     }
-    // (I.) promise to return the parsedResult for processing
-    function ocrRequest() {
-      return new Promise(function(resolve, reject) {
-        request(options, function(error, response, body) {
-          try {
-            resolve(JSON.parse(body).ParsedResults[0].ParsedText)
-          } catch (e) {
-            reject(e)
-          }
-        })
-      })
-    }
-    // (II.)
-    async function ocrResponse() {
-      try {
-        parsedResult = await ocrRequest()
-      } catch (e) {
-        console.error(e)
-      }
-    }
     try {
-      // (III.)
-      await ocrResponse()
+      parsedResult = await ocrSpaceApiSimple.ocrSpaceApiSimple(options)
+      parsedResult = parsedResult.ParsedText
+
       if (await parsedResult.match(paramMenuHandleRegex)) {
         // @ {RESTAURANT} Monday-Friday
         for (let j = today; j < today + 1; j++) {
