@@ -17,7 +17,7 @@
 const compressImages = require('compress-images')
 const fs = require('fs')
 const puppeteer = require('puppeteer')
-const request = require('request')
+const ocrSpaceApiSimple = require('./../lib/ocrSpaceApiSimple')
 const replacementMap = require('./../replacementMap.json')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
 const today = require('./../scrapeDailyMenu').today
@@ -104,7 +104,7 @@ async function scraper() {
     // @ NOKEDLI OCR reduced image (plus base64 for better performance)
     const imagePath = 'tmp/output/weeklyNokedli.jpg'
     const imageAsBase64 = await fs.readFileSync(imagePath, 'base64')
-    const optionsNokedli = {
+    const options = {
       method: 'POST',
       url: 'https://api.ocr.space/parse/image',
       headers: {
@@ -118,29 +118,8 @@ async function scraper() {
         isTable: 'true'
       }
     }
-    // (I.) promise to return the parsedResult for processing
-    function ocrRequest() {
-      return new Promise(function(resolve, reject) {
-        request(optionsNokedli, function(error, response, body) {
-          try {
-            resolve(JSON.parse(body).ParsedResults[0])
-          } catch (e) {
-            reject(e)
-          }
-        })
-      })
-    }
-    // (II.)
-    async function ocrResponse() {
-      try {
-        parsedResult = await ocrRequest()
-      } catch (e) {
-        console.error(e)
-      }
-    }
     try {
-      // (III.)
-      await ocrResponse()
+      parsedResult = await ocrSpaceApiSimple.ocrSpaceApiSimple(options)
 
       let textOverlayLinesCount = parsedResult.TextOverlay.Lines.length // text group count
       let nokedliMonday = []
