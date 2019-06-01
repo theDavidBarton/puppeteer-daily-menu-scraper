@@ -1,4 +1,5 @@
 {
+  "license": "Apache-2.0",
   "devDependencies": {
     "compress-images": "^1.5.2",
     "eslint": "^5.16.0",
