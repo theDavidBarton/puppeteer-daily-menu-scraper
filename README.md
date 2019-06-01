@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/theDavidBarton/puppeteer-daily-menu-scraper.svg?branch=master)](https://travis-ci.com/theDavidBarton/puppeteer-daily-menu-scraper)
+
 # Puppeteer Daily Menu Scraper
 
 A sandbox repository for **Puppeteer** (pptr), the NodeJs library made by GoogleChromeLabs to interact with webapps and browser components through headless Chrome.
@@ -20,7 +22,7 @@ The final output is stored in JSON and posted to slack via webhooks.
 
 ### Install packages
 
-Node v7.6.0 or greater is needed to run the scripts in this repo. And v8.9.4 or greater to run puppeteer with Firefox. *Note:* ESlint has issues with some older Node versions.
+Node v7.6.0 or greater is needed to run the scripts in this repo. And v8.9.4 or greater to run puppeteer with Firefox. *Note:* ESlint has issues with some older Node versions. Guaranteed: **Node 10.15.3**
 
 
 The actual version of pptr is v1.16.0
@@ -29,7 +31,7 @@ The actual version of pptr is v1.16.0
 
 ### Environment variables
 
-Create your own API key and put in a file `app.env` (gitignored) in the root folder. Store the webhooks urls for slack per environment.
+Create your own OCR API key and put in a file `app.env` (gitignored) in the root folder. Store the webhooks urls for slack per environment.
 
 ```shell_session
 # create your API key here: https://ocr.space/ocrapi#free
