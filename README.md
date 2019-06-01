@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/theDavidBarton/puppeteer-daily-menu-scraper.svg?branch=master)](https://travis-ci.com/theDavidBarton/puppeteer-daily-menu-scraper)
+
 # Puppeteer Daily Menu Scraper
 
 A sandbox repository for **Puppeteer** (pptr), the NodeJs library made by GoogleChromeLabs to interact with webapps and browser components through headless Chrome.
