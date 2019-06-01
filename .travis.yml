@@ -4,5 +4,10 @@ node_js:
 cache:
   directories:
     - node_modules
+install:
+  - yarn global add codecov
 script:
   - yarn lint .
+  - yarn test
+after_success:
+  - codecov
