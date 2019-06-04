@@ -61,15 +61,12 @@ async function scraper() {
     forlabelBodza: for (let i = 0; i < bodzaBlock.length; i++) {
       bodzaDaily = await page.evaluate(el => el.textContent, (await page.$$(paramSelector))[i])
       if (bodzaDaily.match(todayDotSeparated)) {
-        bodzaDaily = bodzaDaily
+        bodzaDaily = bodzaDaily.match(/(.*)CHEF NAPI AJÁNLATA(.*\r?\n){3}/gi)
+        bodzaDaily = bodzaDaily.join()
           .replace(/(\r?\n)/gm, ' ')
           .replace(/\s\s+/gm, ' ')
           .replace(/(.*)CHEF NAPI AJÁNLATA/g, '')
-          .replace(/LEVESEK/g, '\n• Soups: ')
-          .replace(/KÖRETEK, FELTÉTEK/g, '\n• Side dishes & toppings: ')
-          .replace(/LÁTVÁNYKONYHÁNK AJÁNLATA/g, '\n• Other than that: ')
-          .replace(/SALÁTABÁR/g, '\n• Salads: ')
-          .replace(/DESSZERTEK/g, '\n• Desserts: ')
+
         break forlabelBodza
       }
       bodzaDaily = '♪"No Milk Today"♫'
