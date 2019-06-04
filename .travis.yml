@@ -6,6 +6,6 @@ cache:
     - node_modules
 script:
   - yarn lint .
-  - yarn test --silent --detectOpenHandles
+  - yarn test --silent
 after_success:
   - codecov --disable=gcov

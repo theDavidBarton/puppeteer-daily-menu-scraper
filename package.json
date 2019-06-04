@@ -11,7 +11,7 @@
     "request": "^2.88.0"
   },
   "scripts": {
-    "test": "jest --verbose --runInBand",
+    "test": "jest --verbose --runInBand --detectOpenHandles",
     "lint": "eslint"
   },
   "jest": {
