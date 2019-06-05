@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/theDavidBarton/puppeteer-daily-menu-scraper.svg?branch=master)](https://travis-ci.com/theDavidBarton/puppeteer-daily-menu-scraper) [![codecov](https://codecov.io/gh/theDavidBarton/puppeteer-daily-menu-scraper/branch/master/graph/badge.svg)](https://codecov.io/gh/theDavidBarton/puppeteer-daily-menu-scraper)
+[![Build Status](https://travis-ci.com/theDavidBarton/puppeteer-daily-menu-scraper.svg?branch=master)](https://travis-ci.com/theDavidBarton/puppeteer-daily-menu-scraper) [![codecov](https://img.shields.io/codecov/c/github/theDavidBarton/puppeteer-daily-menu-scraper/master.svg)](https://codecov.io/gh/theDavidBarton/puppeteer-daily-menu-scraper)
 
 
 # Puppeteer Daily Menu Scraper
