@@ -18,7 +18,6 @@ const compressImages = require('compress-images')
 const fs = require('fs')
 const puppeteer = require('puppeteer')
 const ocrSpaceApiSimple = require('./../lib/ocrSpaceApiSimple')
-const responseStatusCheck = require('./../lib/responseStatusCheck')
 const replacementMap = require('./../replacementMap.json')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
 const today = require('./../scrapeDailyMenu').today
@@ -68,7 +67,6 @@ async function scraper() {
   const imageNokedliSelector = '.aligncenter'
 
   try {
-    await responseStatusCheck.responseStatusCheck(paramIcon) // check if icon still available
     await page.goto(paramUrl, { waitUntil: 'networkidle0' })
     // @ NOKEDLI weekly
     let imageSelector = imageNokedliSelector
