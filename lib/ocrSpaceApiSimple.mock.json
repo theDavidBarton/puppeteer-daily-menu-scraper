@@ -1,0 +1,20 @@
+{
+  "ParsedResults": [
+    {
+      "TextOverlay": {
+        "Lines": [],
+        "HasOverlay": false,
+        "Message": "Text overlay is not provided as it is not requested"
+      },
+      "TextOrientation": "0",
+      "FileParseExitCode": 1,
+      "ParsedText": "I ❤ \r\nGitHuB and coding in NodeJs \r\nthis response is coming from \r\nmock (via Nock). \r\n",
+      "ErrorMessage": "",
+      "ErrorDetails": ""
+    }
+  ],
+  "OCRExitCode": 1,
+  "IsErroredOnProcessing": false,
+  "ProcessingTimeInMilliseconds": "334",
+  "SearchablePDFURL": "Searchable PDF not generated as it was not requested."
+}
