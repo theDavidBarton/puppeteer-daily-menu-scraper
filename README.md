@@ -36,6 +36,9 @@ Create your own OCR API key and put in a file `app.env` (gitignored) in the root
 ```shell_session
 # create your API key here: https://ocr.space/ocrapi#free
 export OCR_API_KEY="******************"
+# mongoDb credentials
+export MONGO_USERNAME="**************"
+export MONGO_PASSWORD="**************"
 # slack webhooks
 export WEBHOOK_URL_TEST=https://hooks.slack.com/services/*********/*********/************************
 export WEBHOOK_URL_PROD=https://hooks.slack.com/services/*********/*********/************************
