@@ -35,6 +35,7 @@ async function scraper() {
   let titleString = 'Drop Restaurant'
   let url = 'https://www.facebook.com/pg/droprestaurant/posts/'
   let icon = 'http://droprestaurant.com/public/wp-content/uploads/2015/07/logo-header.png'
+  let addressString = 'Budapest, 1065, Hajós u. 27'
   let daysRegexArray = [
     '',
     /(Január|Február|Március|Április|Május|Június|Július|Augu|Szeptember|Október|November|December)((.*\r?\n){3})/gi,
@@ -61,6 +62,7 @@ async function scraper() {
     titleString,
     url,
     icon,
+    addressString,
     daysRegexArray,
     facebookImageUrlSelector,
     menuHandleRegex,

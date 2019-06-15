@@ -52,6 +52,7 @@ async function scraper() {
   let paramIcon = 'https://media-cdn.tripadvisor.com/media/photo-s/06/f5/9b/24/getlstd-property-photo.jpg'
   let paramValueString
   let paramPriceString
+  let paramAddressString = 'Budapest, Hercegprímás u. 19, 1051'
   let dailyKamra = []
 
   // @ KAMRA selectors
@@ -79,7 +80,8 @@ async function scraper() {
       paramUrl,
       paramIcon,
       paramValueString,
-      paramPriceString
+      paramPriceString,
+      paramAddressString
     )
     let kamraMongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramValueString)
     finalJSON.attachments.push(kamraObj)

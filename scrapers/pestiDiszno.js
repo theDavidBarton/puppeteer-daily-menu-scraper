@@ -34,6 +34,7 @@ async function scraper() {
   let titleString = 'Pesti Diszno'
   let url = 'https://www.facebook.com/pg/PestiDiszno/posts/'
   let icon = 'http://www.pestidiszno.hu/img/pdlogob2.png'
+  let addressString = 'Budapest, Nagymező u. 19, 1063'
   let daysRegexArray = ['', /[^%]*/g, /[^%]*/g, /[^%]*/g, /[^%]*/g, /[^%]*/g]
   let facebookImageUrlSelector = 'img[class^="scaledImageFit"]'
   let menuHandleRegex = /fogás/gi
@@ -45,6 +46,7 @@ async function scraper() {
     titleString,
     url,
     icon,
+    addressString,
     daysRegexArray,
     facebookImageUrlSelector,
     menuHandleRegex,

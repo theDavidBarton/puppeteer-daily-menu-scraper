@@ -54,6 +54,7 @@ async function scraper() {
   let paramSelector = '.container'
   let paramValueString
   let paramPriceString
+  let paramAddressString = 'Budapest, Bajcsy-Zsilinszky út 12, 1051'
   let bodzaDaily
 
   try {
@@ -86,7 +87,8 @@ async function scraper() {
       paramUrl,
       paramIcon,
       paramValueString,
-      paramPriceString
+      paramPriceString,
+      paramAddressString
     )
     let bodzaMongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramValueString)
     finalJSON.attachments.push(bodzaObj)

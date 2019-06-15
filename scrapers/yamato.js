@@ -57,6 +57,7 @@ async function scraper() {
   let paramIcon = 'http://yamatorestaurant.hu/wp-content/uploads/2014/12/yamato_logo_retina.png'
   let paramValueString
   let paramPriceString
+  let paramAddressString = 'Budapest, 1066, Jókai u. 30.'
   let yamato
 
   // @ YAMATO selectors
@@ -118,7 +119,8 @@ async function scraper() {
         paramUrl,
         paramIcon,
         paramValueString,
-        paramPriceString
+        paramPriceString,
+        paramAddressString
       )
       let yamatoMongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramValueString)
       finalJSON.attachments.push(yamatoObj)

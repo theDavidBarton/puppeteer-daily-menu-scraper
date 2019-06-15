@@ -17,15 +17,15 @@
 const puppeteer = require('puppeteer')
 const moment = require('moment')
 const request = require('request')
-const insertManyMongoDb = require('./lib/insertManyMongoDb')
+const mongoDbInsertMany = require('./lib/mongoDbInsertMany')
 
 // get Day of Week
 const now = moment()
-const today = 4//Number(moment().format('d'))
+const today = Number(moment().format('d'))
 const todayFormatted = moment().format('LLLL')
-const todayDotSeparated = '2019.06.13.'//moment(now, 'YYYY-MM-DD')
-  //.locale('hu')
-  //.format('L') // e.g. 2019.05.17. (default format for Hungarian)
+const todayDotSeparated = moment(now, 'YYYY-MM-DD')
+  .locale('hu')
+  .format('L') // e.g. 2019.05.17. (default format for Hungarian)
 const dayNames = []
 for (let i = 0; i < 7; i++) {
   let day = moment(i, 'd').format('dddd')
@@ -44,7 +44,7 @@ let finalJSON = {
 let finalMongoJSON = []
 
 // constructor for menu object
-let RestaurantMenuOutput = function(color, titleString, url, icon, valueString, priceString) {
+let RestaurantMenuOutput = function(color, titleString, url, icon, valueString, priceString, addressString) {
   this.fallback = 'Please open it on a device that supports formatted messages.'
   this.pretext = '...'
   this.color = color
@@ -58,8 +58,13 @@ let RestaurantMenuOutput = function(color, titleString, url, icon, valueString, 
       short: false
     },
     {
-      title: 'price',
-      value: priceString + ',- Ft',
+      title: 'price (HUF)',
+      value: priceString,
+      short: true
+    },
+    {
+      title: 'address',
+      value: addressString,
       short: true
     }
   ]
@@ -142,7 +147,7 @@ async function scrapeMenu() {
   // _POST the final JSON to webhook
   request(
     {
-      url: process.env.WEBHOOK_URL_TEST,
+      url: process.env.WEBHOOK_URL_PROD,
       method: 'POST',
       json: false,
       body: finalJSON
@@ -156,7 +161,7 @@ async function scrapeMenu() {
 
   // store the data to mongoDB
   try {
-    await insertManyMongoDb.insertManyMongoDb(finalMongoJSON)
+    await mongoDbInsertMany.mongoDbInsertMany(finalMongoJSON)
   } catch (e) {
     console.error(e)
   }

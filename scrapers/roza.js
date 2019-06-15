@@ -51,6 +51,7 @@ async function scraper() {
   let paramUrl = 'https://www.facebook.com/pg/rozafinomitt/posts/'
   let paramIcon =
     'https://scontent.fbud1-1.fna.fbcdn.net/v/t1.0-1/10394619_390942531075147_2725477335166513345_n.jpg?_nc_cat=108&_nc_ht=scontent.fbud1-1.fna&oh=e1e55fe2b089e8334deaef4895579833&oe=5D77E7B6'
+  let paramAddressString = 'Budapest, Jókai u. 22, 1066'
   let paramValueString
   let paramPriceString
   let dailyRoza
@@ -74,7 +75,8 @@ async function scraper() {
       paramUrl,
       paramIcon,
       paramValueString,
-      paramPriceString
+      paramPriceString,
+      paramAddressString
     )
     let rozaMongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramValueString)
     finalJSON.attachments.push(rozaObj)

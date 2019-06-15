@@ -56,6 +56,7 @@ async function scraper() {
   let paramIcon = 'https://static.wixstatic.com/media/d21995_af5b6ceedafd4913b3ed17f6377cdfa7~mv2.png'
   let paramValueString
   let paramPriceString
+  let paramAddressString = 'Budapest, Liszt Ferenc tér 9, 1061'
   let vian1, vian2
 
   // @ VIAN selectors [1: first course, 2: main course]
@@ -106,7 +107,8 @@ async function scraper() {
         paramUrl,
         paramIcon,
         paramValueString,
-        paramPriceString
+        paramPriceString,
+        paramAddressString
       )
       let vianMongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramValueString)
       finalJSON.attachments.push(vianObj)

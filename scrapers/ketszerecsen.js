@@ -57,6 +57,7 @@ async function scraper() {
     'https://images.deliveryhero.io/image/netpincer/caterer/sh-9a3e84d0-2e42-11e2-9d48-7a92eabdcf20/logo.png'
   let paramValueString
   let paramPriceString
+  let paramAddressString = 'Budapest, Nagymező u. 14, 1065'
   let ketszerecsen1, ketszerecsen2
 
   // @ KETSZERECSEN selectors [1: first course, 2: main course]
@@ -101,7 +102,8 @@ async function scraper() {
         paramUrl,
         paramIcon,
         paramValueString,
-        paramPriceString
+        paramPriceString,
+        paramAddressString
       )
       let ketszerecsenMongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramValueString)
       finalJSON.attachments.push(ketszerecsenObj)

@@ -40,6 +40,7 @@ async function scraper() {
     'https://scontent.fbud1-1.fna.fbcdn.net/v/t1.0-1/c28.22.275.275a/p320x320/579633_527729393935258_751578746_n.png?_nc_cat=111&_nc_ht=scontent.fbud1-1.fna&oh=73791f008083bd39a006894bc54655d3&oe=5D61492B'
   let paramValueString
   let paramPriceString = '1100'
+  let paramAddressString = 'Budapest, Jókai u. 20, 1066'
 
   // @ KARCSI weekly
   let pdfUrl = 'http://karcsibacsivendeglo.com/letoltes/napi_menu.pdf'
@@ -133,7 +134,8 @@ async function scraper() {
       paramUrl,
       paramIcon,
       paramValueString,
-      paramPriceString
+      paramPriceString,
+      paramAddressString
     )
     let karcsiMongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramValueString)
     finalJSON.attachments.push(karcsiObj)

@@ -52,6 +52,7 @@ async function scraper() {
   let paramIcon = 'https://etterem.hu/img/max960/p9787n/1393339359-3252.jpg'
   let paramValueString
   let paramPriceString
+  let paramAddressString = 'Budapest, Liszt Ferenc tér 7, 1061'
   let weeklySoupKorhely, weeklyMainKorhely, weeklyDessertKorhely
 
   // @ KORHELY selectors
@@ -98,7 +99,8 @@ async function scraper() {
       paramUrl,
       paramIcon,
       paramValueString,
-      paramPriceString
+      paramPriceString,
+      paramAddressString
     )
     let korhelyMongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramValueString)
     finalJSON.attachments.push(korhelyObj)

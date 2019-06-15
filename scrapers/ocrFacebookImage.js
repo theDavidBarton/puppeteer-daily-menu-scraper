@@ -33,6 +33,7 @@ async function ocrFacebookImage(
   paramTitleString,
   paramUrl,
   paramIcon,
+  paramAddressString,
   paramDaysRegexArray,
   paramFacebookImageUrlSelector,
   paramMenuHandleRegex,
@@ -117,7 +118,8 @@ async function ocrFacebookImage(
             paramUrl,
             paramIcon,
             paramValueString,
-            paramPriceString
+            paramPriceString,
+            paramAddressString
           )
           let restaurantMongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramValueString)
           finalJSON.attachments.push(restaurantObj)

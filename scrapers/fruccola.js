@@ -51,6 +51,7 @@ async function scraper() {
   let paramIcon = 'https://pbs.twimg.com/profile_images/295153467/fruccola_logo_rgb.png'
   let paramValueString
   let paramPriceString
+  let paramAddressString = 'Budapest, Arany János u. 32, 1051'
   let dailyFruccola1, dailyFruccola2
 
   // @ FRUCCOLA selectors
@@ -73,7 +74,8 @@ async function scraper() {
       paramUrl,
       paramIcon,
       paramValueString,
-      paramPriceString
+      paramPriceString,
+      paramAddressString
     )
     let fruccolaMongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramValueString)
     finalJSON.attachments.push(fruccolaObj)
