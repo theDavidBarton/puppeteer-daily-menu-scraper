@@ -34,6 +34,7 @@ async function scraper() {
   let url = 'https://www.facebook.com/pg/katarestaurantbudapest/posts/'
   let icon =
     'https://scontent-vie1-1.xx.fbcdn.net/v/t1.0-1/p200x200/54435606_326369938082271_8203013160240676864_n.jpg?_nc_cat=102&_nc_ht=scontent-vie1-1.xx&oh=f5ccb50053c0d9174c10d71ab0097807&oe=5D2A4D25'
+  let addressString = 'Budapest, 1065, Hajós u. 27.'
   let daysRegexArray = [
     '',
     /\bHÉT((.*\r?\n){3})/gi,
@@ -52,6 +53,7 @@ async function scraper() {
     titleString,
     url,
     icon,
+    addressString,
     daysRegexArray,
     facebookImageUrlSelector,
     menuHandleRegex,

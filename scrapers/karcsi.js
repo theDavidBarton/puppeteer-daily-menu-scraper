@@ -18,7 +18,9 @@ const request = require('request')
 const replacementMap = require('./../replacementMap.json')
 const today = require('./../scrapeDailyMenu').today
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
+const finalMongoJSON = require('./../scrapeDailyMenu').finalMongoJSON
 const RestaurantMenuOutput = require('./../scrapeDailyMenu').RestaurantMenuOutput
+const RestaurantMenuDb = require('./../scrapeDailyMenu').RestaurantMenuDb
 
 async function scraper() {
   /*
@@ -37,6 +39,9 @@ async function scraper() {
   let paramIcon =
     'https://scontent.fbud1-1.fna.fbcdn.net/v/t1.0-1/c28.22.275.275a/p320x320/579633_527729393935258_751578746_n.png?_nc_cat=111&_nc_ht=scontent.fbud1-1.fna&oh=73791f008083bd39a006894bc54655d3&oe=5D61492B'
   let paramValueString
+  let paramPriceString = '1100'
+  let paramAddressString = 'Budapest, Jókai u. 20, 1066'
+
   // @ KARCSI weekly
   let pdfUrl = 'http://karcsibacsivendeglo.com/letoltes/napi_menu.pdf'
   let weeklyOfferRegex = /\bHETI MEN.:((.*\r?\n){3})/gi
@@ -90,7 +95,6 @@ async function scraper() {
   try {
     // (III.)
     await ocrResponse()
-    console.log(parsedResult)
     for (let i = today; i < today + 1; i++) {
       karcsiDaily = parsedResult.match(karcsiDaysRegexArray[i])
       karcsiWeekly = parsedResult.match(weeklyOfferRegex)
@@ -124,8 +128,18 @@ async function scraper() {
     console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
     console.log(paramValueString)
     // @ KARCSI object
-    let karcsiObj = new RestaurantMenuOutput(paramColor, paramTitleString, paramUrl, paramIcon, paramValueString)
+    let karcsiObj = new RestaurantMenuOutput(
+      paramColor,
+      paramTitleString,
+      paramUrl,
+      paramIcon,
+      paramValueString,
+      paramPriceString,
+      paramAddressString
+    )
+    let karcsiMongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramValueString)
     finalJSON.attachments.push(karcsiObj)
+    finalMongoJSON.push(karcsiMongoObj)
   } catch (e) {
     console.error(e)
   }

@@ -22,8 +22,9 @@ const replacementMap = require('./../replacementMap.json')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
 const today = require('./../scrapeDailyMenu').today
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
+const finalMongoJSON = require('./../scrapeDailyMenu').finalMongoJSON
 const RestaurantMenuOutput = require('./../scrapeDailyMenu').RestaurantMenuOutput
-
+const RestaurantMenuDb = require('./../scrapeDailyMenu').RestaurantMenuDb
 
 async function scraper() {
   const browser = await puppeteer.connect({ browserWSEndpoint })
@@ -59,7 +60,9 @@ async function scraper() {
   let paramUrl = 'http://nokedlikifozde.hu/'
   let paramIcon =
     'https://scontent.fbud1-1.fna.fbcdn.net/v/t1.0-1/p320x320/969066_507629642637360_22543675_n.jpg?_nc_cat=108&_nc_ht=scontent.fbud1-1.fna&oh=a2e8efd55605ba9b7b63553dc54c23ca&oe=5D6F4115'
+  let paramAddressString = 'Budapest, Weiner Leó u. 17, 1065'
   let paramValueString
+  let paramPriceString = 'n/a'
   let weeklyNokedli
   let parsedResult
 
@@ -211,8 +214,18 @@ async function scraper() {
           console.log(paramValueString)
       }
       // @ NOKEDLI object
-      let nokedliObj = new RestaurantMenuOutput(paramColor, paramTitleString, paramUrl, paramIcon, paramValueString)
+      let nokedliObj = new RestaurantMenuOutput(
+        paramColor,
+        paramTitleString,
+        paramUrl,
+        paramIcon,
+        paramValueString,
+        paramPriceString,
+        paramAddressString
+      )
+      let nokedliMongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramValueString)
       finalJSON.attachments.push(nokedliObj)
+      finalMongoJSON.push(nokedliMongoObj)
     } catch (e) {
       console.error(e)
     }

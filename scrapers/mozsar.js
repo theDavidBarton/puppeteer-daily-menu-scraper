@@ -22,7 +22,7 @@ async function scraper() {
    * @ MOZSÁR BISZTRO
    * ---------------------------------------
    * contact info:
-   * Address: Budapest, Liszt tér
+   * Address: Budapest, Nagymező u. 21, 1065
    * ---------------------------------------
    * description:
    * this daily menu relies on if a menu (recognizable for OCR) is available among timeline photos
@@ -33,6 +33,7 @@ async function scraper() {
   let titleString = 'Mozsár Bisztro'
   let url = 'https://www.facebook.com/pg/MozsarBisztro/posts/'
   let icon = 'http://mozsarbisztro.hu/template/assets/images/demo-content/logo.png'
+  let addressString = 'Budapest, Nagymező u. 21, 1065'
   let daysRegexArray = [
     '',
     /\bHÉT((.*\r?\n){3})/gi,
@@ -51,6 +52,7 @@ async function scraper() {
     titleString,
     url,
     icon,
+    addressString,
     daysRegexArray,
     facebookImageUrlSelector,
     menuHandleRegex,

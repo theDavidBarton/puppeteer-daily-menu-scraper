@@ -16,12 +16,15 @@
 
 const puppeteer = require('puppeteer')
 const ocrSpaceApiSimple = require('./../lib/ocrSpaceApiSimple')
+const priceCatcher = require('./../lib/priceCatcher')
 const replacementMap = require('./../replacementMap.json')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
 const today = require('./../scrapeDailyMenu').today
 const dayNames = require('./../scrapeDailyMenu').dayNames
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
+const finalMongoJSON = require('./../scrapeDailyMenu').finalMongoJSON
 const RestaurantMenuOutput = require('./../scrapeDailyMenu').RestaurantMenuOutput
+const RestaurantMenuDb = require('./../scrapeDailyMenu').RestaurantMenuDb
 
 
 // @ {RESTAURANT}s with only facebook image menus
@@ -30,6 +33,7 @@ async function ocrFacebookImage(
   paramTitleString,
   paramUrl,
   paramIcon,
+  paramAddressString,
   paramDaysRegexArray,
   paramFacebookImageUrlSelector,
   paramMenuHandleRegex,
@@ -50,6 +54,7 @@ async function ocrFacebookImage(
   })
 
   let paramValueString
+  let paramPriceString
   let restaurantDaysRegex = paramDaysRegexArray
   let imageUrlArray = []
   let restaurantDailyArray = []
@@ -88,6 +93,7 @@ async function ocrFacebookImage(
       if (await parsedResult.match(paramMenuHandleRegex)) {
         // @ {RESTAURANT} Monday-Friday
         for (let j = today; j < today + 1; j++) {
+          paramPriceString = await priceCatcher.priceCatcher(parsedResult) // @ {RESTAURANT} price catch
           let restaurantDaily = parsedResult.match(restaurantDaysRegex[j])
           // format text and replace faulty string parts
           for (let k = 0; k < replacementMap.length; k++) {
@@ -111,9 +117,13 @@ async function ocrFacebookImage(
             paramTitleString,
             paramUrl,
             paramIcon,
-            paramValueString
+            paramValueString,
+            paramPriceString,
+            paramAddressString
           )
+          let restaurantMongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramValueString)
           finalJSON.attachments.push(restaurantObj)
+          finalMongoJSON.push(restaurantMongoObj)
 
           break forlabelRestaurant
         }

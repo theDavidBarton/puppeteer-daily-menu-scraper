@@ -15,9 +15,12 @@
  */
 
 const puppeteer = require('puppeteer')
+const priceCatcher = require('./../lib/priceCatcher')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
+const finalMongoJSON = require('./../scrapeDailyMenu').finalMongoJSON
 const RestaurantMenuOutput = require('./../scrapeDailyMenu').RestaurantMenuOutput
+const RestaurantMenuDb = require('./../scrapeDailyMenu').RestaurantMenuDb
 
 async function scraper() {
   const browser = await puppeteer.connect({ browserWSEndpoint })
@@ -48,9 +51,12 @@ async function scraper() {
   let paramUrl = 'http://www.korhelyfaloda.hu/menu'
   let paramIcon = 'https://etterem.hu/img/max960/p9787n/1393339359-3252.jpg'
   let paramValueString
+  let paramPriceString
+  let paramAddressString = 'Budapest, Liszt Ferenc tér 7, 1061'
   let weeklySoupKorhely, weeklyMainKorhely, weeklyDessertKorhely
 
   // @ KORHELY selectors
+  const summarySelector = '.MenusNavigation_description'
   const weeklySoupKorhelySelector = '#mainDiv > div > div:nth-child(2) > section > ul > li:nth-child(1)'
   const weeklyMainKorhelySelector = '#mainDiv > div > div:nth-child(2) > section > ul > li:nth-child(2)'
   const weeklyDessertKorhelySelector = '#mainDiv > div > div:nth-child(2) > section > ul > li:nth-child(3)'
@@ -65,6 +71,8 @@ async function scraper() {
   }
   // @ KORHELY Weekly
   try {
+    const summary = await page.evaluate(el => el.textContent, (await page.$$(summarySelector))[1])
+    paramPriceString = await priceCatcher.priceCatcher(summary) // @ KORHELY price catch
     weeklySoupKorhely = await page.evaluate(el => el.innerText, await page.$(weeklySoupKorhelySelector))
     weeklySoupKorhely = weeklySoupKorhely.replace('LEVESEK', '')
     weeklyMainKorhely = await page.evaluate(el => el.innerText, await page.$(weeklyMainKorhelySelector))
@@ -85,8 +93,18 @@ async function scraper() {
     console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
     console.log(paramValueString)
     // @ KORHELY object
-    let korhelyObj = new RestaurantMenuOutput(paramColor, paramTitleString, paramUrl, paramIcon, paramValueString)
+    let korhelyObj = new RestaurantMenuOutput(
+      paramColor,
+      paramTitleString,
+      paramUrl,
+      paramIcon,
+      paramValueString,
+      paramPriceString,
+      paramAddressString
+    )
+    let korhelyMongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramValueString)
     finalJSON.attachments.push(korhelyObj)
+    finalMongoJSON.push(korhelyMongoObj)
   } catch (e) {
     console.error(e)
   }

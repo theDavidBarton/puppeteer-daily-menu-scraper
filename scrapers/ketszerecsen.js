@@ -15,11 +15,13 @@
  */
 
 const puppeteer = require('puppeteer')
+const priceCatcher = require('./../lib/priceCatcher')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
 const today = require('./../scrapeDailyMenu').today
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
+const finalMongoJSON = require('./../scrapeDailyMenu').finalMongoJSON
 const RestaurantMenuOutput = require('./../scrapeDailyMenu').RestaurantMenuOutput
-
+const RestaurantMenuDb = require('./../scrapeDailyMenu').RestaurantMenuDb
 
 async function scraper() {
   const browser = await puppeteer.connect({ browserWSEndpoint })
@@ -54,6 +56,8 @@ async function scraper() {
   let paramIcon =
     'https://images.deliveryhero.io/image/netpincer/caterer/sh-9a3e84d0-2e42-11e2-9d48-7a92eabdcf20/logo.png'
   let paramValueString
+  let paramPriceString
+  let paramAddressString = 'Budapest, Nagymező u. 14, 1065'
   let ketszerecsen1, ketszerecsen2
 
   // @ KETSZERECSEN selectors [1: first course, 2: main course]
@@ -85,6 +89,9 @@ async function scraper() {
         ketszerecsen1 = '♪"No Milk Today"♫'
         ketszerecsen2 = ''
       }
+
+      const body = await page.evaluate(el => el.textContent, (await page.$$('body'))[0])
+      paramPriceString = await priceCatcher.priceCatcher(body) // @ KETSZERECSEN price catch
       paramValueString = '• Daily menu: ' + ketszerecsen1 + ', ' + ketszerecsen2 + '\n'
       console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
       console.log(paramValueString)
@@ -94,9 +101,13 @@ async function scraper() {
         paramTitleString,
         paramUrl,
         paramIcon,
-        paramValueString
+        paramValueString,
+        paramPriceString,
+        paramAddressString
       )
+      let ketszerecsenMongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramValueString)
       finalJSON.attachments.push(ketszerecsenObj)
+      finalMongoJSON.push(ketszerecsenMongoObj)
     }
   } catch (e) {
     console.error(e)

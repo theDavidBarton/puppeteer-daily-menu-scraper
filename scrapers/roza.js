@@ -15,10 +15,12 @@
  */
 
 const puppeteer = require('puppeteer')
+const priceCatcher = require('./../lib/priceCatcher')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
+const finalMongoJSON = require('./../scrapeDailyMenu').finalMongoJSON
 const RestaurantMenuOutput = require('./../scrapeDailyMenu').RestaurantMenuOutput
-
+const RestaurantMenuDb = require('./../scrapeDailyMenu').RestaurantMenuDb
 
 async function scraper() {
   const browser = await puppeteer.connect({ browserWSEndpoint })
@@ -49,7 +51,9 @@ async function scraper() {
   let paramUrl = 'https://www.facebook.com/pg/rozafinomitt/posts/'
   let paramIcon =
     'https://scontent.fbud1-1.fna.fbcdn.net/v/t1.0-1/10394619_390942531075147_2725477335166513345_n.jpg?_nc_cat=108&_nc_ht=scontent.fbud1-1.fna&oh=e1e55fe2b089e8334deaef4895579833&oe=5D77E7B6'
+  let paramAddressString = 'Budapest, Jókai u. 22, 1066'
   let paramValueString
+  let paramPriceString
   let dailyRoza
 
   // @ ROZA selector
@@ -60,13 +64,23 @@ async function scraper() {
     // @ ROZA Daily
     dailyRoza = await page.evaluate(el => el.innerText, await page.$(dailyRozaSelector))
     dailyRoza = dailyRoza.replace(/🍲|🥪|🥧|❤️/g, '')
-
+    paramPriceString = await priceCatcher.priceCatcher(dailyRoza) // @ {RESTAURANT} price catch
     paramValueString = '• Daily menu: ' + dailyRoza + '\n'
     console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
     console.log(paramValueString)
     // @ ROZA object
-    let rozaObj = new RestaurantMenuOutput(paramColor, paramTitleString, paramUrl, paramIcon, paramValueString)
+    let rozaObj = new RestaurantMenuOutput(
+      paramColor,
+      paramTitleString,
+      paramUrl,
+      paramIcon,
+      paramValueString,
+      paramPriceString,
+      paramAddressString
+    )
+    let rozaMongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramValueString)
     finalJSON.attachments.push(rozaObj)
+    finalMongoJSON.push(rozaMongoObj)
   } catch (e) {
     console.error(e)
   }

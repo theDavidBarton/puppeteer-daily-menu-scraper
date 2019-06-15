@@ -17,6 +17,7 @@
 const puppeteer = require('puppeteer')
 const moment = require('moment')
 const request = require('request')
+const mongoDbInsertMany = require('./lib/mongoDbInsertMany')
 
 // get Day of Week
 const now = moment()
@@ -39,8 +40,11 @@ let finalJSON = {
   attachments: []
 }
 
+// this will be the object we store at database and we will extend with each menu
+let finalMongoJSON = []
+
 // constructor for menu object
-let RestaurantMenuOutput = function(color, titleString, url, icon, valueString) {
+let RestaurantMenuOutput = function(color, titleString, url, icon, valueString, priceString, addressString) {
   this.fallback = 'Please open it on a device that supports formatted messages.'
   this.pretext = '...'
   this.color = color
@@ -52,12 +56,30 @@ let RestaurantMenuOutput = function(color, titleString, url, icon, valueString) 
       title: titleString + ' menu (' + dayNames[today] + '):',
       value: valueString,
       short: false
+    },
+    {
+      title: 'price (HUF)',
+      value: priceString,
+      short: true
+    },
+    {
+      title: 'address',
+      value: addressString,
+      short: true
     }
   ]
   this.footer = 'scraped by DailyMenu'
   this.ts = Math.floor(Date.now() / 1000)
 }
 
+// constructor for database object
+let RestaurantMenuDb = function(titleString, priceString, valueString) {
+  this.timestamp = todayDotSeparated
+  this.restaurant = titleString
+  this.price = priceString
+  this.currency = 'HUF'
+  this.menuString = valueString
+}
 
 // scraper browser instance - function that wraps all the scrapers
 async function scrapeMenu() {
@@ -70,8 +92,10 @@ async function scrapeMenu() {
     todayDotSeparated,
     dayNames,
     finalJSON,
+    finalMongoJSON,
     browserWSEndpoint,
-    RestaurantMenuOutput
+    RestaurantMenuOutput,
+    RestaurantMenuDb
   }
 
   // require scrapers after module.exports object is declared
@@ -135,6 +159,12 @@ async function scrapeMenu() {
     }
   )
 
+  // store the data to mongoDB
+  try {
+    await mongoDbInsertMany.mongoDbInsertMany(finalMongoJSON)
+  } catch (e) {
+    console.error(e)
+  }
   await browser.close()
 }
 scrapeMenu()

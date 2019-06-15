@@ -33,6 +33,7 @@ async function scraper() {
   let titleString = 'Incognito'
   let url = 'https://www.facebook.com/pg/cafeincognito/posts/'
   let icon = 'https://www.copper-state.com/wp-content/uploads/2016/02/google_incognito_mode_400.jpg'
+  let addressString = 'Budapest, Liszt tér'
   let daysRegexArray = [
     '',
     /\bHÉT((.*\r?\n){3})/gi,
@@ -51,6 +52,7 @@ async function scraper() {
     titleString,
     url,
     icon,
+    addressString,
     daysRegexArray,
     facebookImageUrlSelector,
     menuHandleRegex,
