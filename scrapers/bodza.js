@@ -64,7 +64,7 @@ async function scraper() {
     forlabelBodza: for (let i = 0; i < bodzaBlock.length; i++) {
       bodzaDaily = await page.evaluate(el => el.textContent, (await page.$$(paramSelector))[i])
       if (bodzaDaily.match(todayDotSeparated)) {
-        paramPriceString = priceCatcher.priceCatcher(bodzaDaily)
+        paramPriceString = await priceCatcher.priceCatcher(bodzaDaily) // @ BODZA price catch
         bodzaDaily = bodzaDaily.match(/(.*)CHEF NAPI AJÁNLATA(.*\r?\n){3}/gi)
         bodzaDaily = bodzaDaily
           .join()
@@ -90,7 +90,7 @@ async function scraper() {
     )
     let bodzaMongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramValueString)
     finalJSON.attachments.push(bodzaObj)
-    finalMongoJSON.restaurants.push(bodzaMongoObj)
+    finalMongoJSON.push(bodzaMongoObj)
   } catch (e) {
     console.error(e)
   }

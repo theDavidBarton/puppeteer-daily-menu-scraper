@@ -26,7 +26,6 @@ const finalMongoJSON = require('./../scrapeDailyMenu').finalMongoJSON
 const RestaurantMenuOutput = require('./../scrapeDailyMenu').RestaurantMenuOutput
 const RestaurantMenuDb = require('./../scrapeDailyMenu').RestaurantMenuDb
 
-
 async function scraper() {
   const browser = await puppeteer.connect({ browserWSEndpoint })
   const page = await browser.newPage()
@@ -62,6 +61,7 @@ async function scraper() {
   let paramIcon =
     'https://scontent.fbud1-1.fna.fbcdn.net/v/t1.0-1/p320x320/969066_507629642637360_22543675_n.jpg?_nc_cat=108&_nc_ht=scontent.fbud1-1.fna&oh=a2e8efd55605ba9b7b63553dc54c23ca&oe=5D6F4115'
   let paramValueString
+  let paramPriceString = 'n/a'
   let weeklyNokedli
   let parsedResult
 
@@ -213,10 +213,17 @@ async function scraper() {
           console.log(paramValueString)
       }
       // @ NOKEDLI object
-      let nokedliObj = new RestaurantMenuOutput(paramColor, paramTitleString, paramUrl, paramIcon, paramValueString)
-      let nokedliMongoObj = new RestaurantMenuDb(paramTitleString, paramValueString)
+      let nokedliObj = new RestaurantMenuOutput(
+        paramColor,
+        paramTitleString,
+        paramUrl,
+        paramIcon,
+        paramValueString,
+        paramPriceString
+      )
+      let nokedliMongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramValueString)
       finalJSON.attachments.push(nokedliObj)
-      finalMongoJSON.restaurants.push(nokedliMongoObj)
+      finalMongoJSON.push(nokedliMongoObj)
     } catch (e) {
       console.error(e)
     }

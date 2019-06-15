@@ -15,13 +15,13 @@
  */
 
 const puppeteer = require('puppeteer')
+const priceCatcher = require('./../lib/priceCatcher')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
 const today = require('./../scrapeDailyMenu').today
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
 const finalMongoJSON = require('./../scrapeDailyMenu').finalMongoJSON
 const RestaurantMenuOutput = require('./../scrapeDailyMenu').RestaurantMenuOutput
 const RestaurantMenuDb = require('./../scrapeDailyMenu').RestaurantMenuDb
-
 
 async function scraper() {
   const browser = await puppeteer.connect({ browserWSEndpoint })
@@ -55,6 +55,7 @@ async function scraper() {
   let paramUrl = 'http://www.cafevian.com/ebedmenue'
   let paramIcon = 'https://static.wixstatic.com/media/d21995_af5b6ceedafd4913b3ed17f6377cdfa7~mv2.png'
   let paramValueString
+  let paramPriceString
   let vian1, vian2
 
   // @ VIAN selectors [1: first course, 2: main course]
@@ -93,14 +94,23 @@ async function scraper() {
         vian1 = '♪"No Milk Today"♫'
         vian2 = ''
       }
+      const body = await page.evaluate(el => el.textContent, (await page.$$('#mainDiv'))[0])
+      paramPriceString = await priceCatcher.priceCatcher(body) // @ VIAN price catch
       paramValueString = '• Daily menu: ' + vian1 + ', ' + vian2 + '\n'
       console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
       console.log(paramValueString)
       // @ VIAN object
-      let vianObj = new RestaurantMenuOutput(paramColor, paramTitleString, paramUrl, paramIcon, paramValueString)
-      let vianMongoObj = new RestaurantMenuDb(paramTitleString, paramValueString)
+      let vianObj = new RestaurantMenuOutput(
+        paramColor,
+        paramTitleString,
+        paramUrl,
+        paramIcon,
+        paramValueString,
+        paramPriceString
+      )
+      let vianMongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramValueString)
       finalJSON.attachments.push(vianObj)
-      finalMongoJSON.restaurants.push(vianMongoObj)
+      finalMongoJSON.push(vianMongoObj)
     }
   } catch (e) {
     console.error(e)

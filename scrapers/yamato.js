@@ -24,7 +24,6 @@ const finalMongoJSON = require('./../scrapeDailyMenu').finalMongoJSON
 const RestaurantMenuOutput = require('./../scrapeDailyMenu').RestaurantMenuOutput
 const RestaurantMenuDb = require('./../scrapeDailyMenu').RestaurantMenuDb
 
-
 async function scraper() {
   const browser = await puppeteer.connect({ browserWSEndpoint })
   const page = await browser.newPage()
@@ -57,6 +56,7 @@ async function scraper() {
   let paramUrl = 'https://www.wasabi.hu/napimenu.php?source=yamato&lang=hu'
   let paramIcon = 'http://yamatorestaurant.hu/wp-content/uploads/2014/12/yamato_logo_retina.png'
   let paramValueString
+  let paramPriceString
   let yamato
 
   // @ YAMATO selectors
@@ -112,10 +112,17 @@ async function scraper() {
       console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
       console.log(paramValueString)
       // @ YAMATO object
-      let yamatoObj = new RestaurantMenuOutput(paramColor, paramTitleString, paramUrl, paramIcon, paramValueString)
-      let yamatoMongoObj = new RestaurantMenuDb(paramTitleString, paramValueString)
+      let yamatoObj = new RestaurantMenuOutput(
+        paramColor,
+        paramTitleString,
+        paramUrl,
+        paramIcon,
+        paramValueString,
+        paramPriceString
+      )
+      let yamatoMongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramValueString)
       finalJSON.attachments.push(yamatoObj)
-      finalMongoJSON.restaurants.push(yamatoMongoObj)
+      finalMongoJSON.push(yamatoMongoObj)
     }
   } catch (e) {
     console.error(e)

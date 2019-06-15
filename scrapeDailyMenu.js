@@ -17,15 +17,15 @@
 const puppeteer = require('puppeteer')
 const moment = require('moment')
 const request = require('request')
-const connectMongoDb = require('./lib/connectMongoDb')
+const insertManyMongoDb = require('./lib/insertManyMongoDb')
 
 // get Day of Week
 const now = moment()
-const today = Number(moment().format('d'))
+const today = 4//Number(moment().format('d'))
 const todayFormatted = moment().format('LLLL')
-const todayDotSeparated = moment(now, 'YYYY-MM-DD')
-  .locale('hu')
-  .format('L') // e.g. 2019.05.17. (default format for Hungarian)
+const todayDotSeparated = '2019.06.13.'//moment(now, 'YYYY-MM-DD')
+  //.locale('hu')
+  //.format('L') // e.g. 2019.05.17. (default format for Hungarian)
 const dayNames = []
 for (let i = 0; i < 7; i++) {
   let day = moment(i, 'd').format('dddd')
@@ -41,10 +41,7 @@ let finalJSON = {
 }
 
 // this will be the object we store at database and we will extend with each menu
-let finalMongoJSON = {
-  timestamp: todayDotSeparated,
-  restaurants: []
-}
+let finalMongoJSON = []
 
 // constructor for menu object
 let RestaurantMenuOutput = function(color, titleString, url, icon, valueString, priceString) {
@@ -62,7 +59,7 @@ let RestaurantMenuOutput = function(color, titleString, url, icon, valueString, 
     },
     {
       title: 'price',
-      value: priceString,
+      value: priceString + ',- Ft',
       short: true
     }
   ]
@@ -72,8 +69,10 @@ let RestaurantMenuOutput = function(color, titleString, url, icon, valueString, 
 
 // constructor for database object
 let RestaurantMenuDb = function(titleString, priceString, valueString) {
+  this.timestamp = todayDotSeparated
   this.restaurant = titleString
   this.price = priceString
+  this.currency = 'HUF'
   this.menuString = valueString
 }
 
@@ -157,7 +156,7 @@ async function scrapeMenu() {
 
   // store the data to mongoDB
   try {
-    await connectMongoDb.connectMongoDb(finalMongoJSON)
+    await insertManyMongoDb.insertManyMongoDb(finalMongoJSON)
   } catch (e) {
     console.error(e)
   }

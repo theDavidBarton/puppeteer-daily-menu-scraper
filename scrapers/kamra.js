@@ -15,12 +15,12 @@
  */
 
 const puppeteer = require('puppeteer')
+const priceCatcher = require('./../lib/priceCatcher')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
 const finalMongoJSON = require('./../scrapeDailyMenu').finalMongoJSON
 const RestaurantMenuOutput = require('./../scrapeDailyMenu').RestaurantMenuOutput
 const RestaurantMenuDb = require('./../scrapeDailyMenu').RestaurantMenuDb
-
 
 async function scraper() {
   const browser = await puppeteer.connect({ browserWSEndpoint })
@@ -51,6 +51,7 @@ async function scraper() {
   let paramUrl = 'http://www.kamraetelbar.hu/kamra_etelbar_mai_menu.html'
   let paramIcon = 'https://media-cdn.tripadvisor.com/media/photo-s/06/f5/9b/24/getlstd-property-photo.jpg'
   let paramValueString
+  let paramPriceString
   let dailyKamra = []
 
   // @ KAMRA selectors
@@ -66,15 +67,23 @@ async function scraper() {
       let dailyKamraItem = await page.evaluate(el => el.innerText, (await page.$$(dailyKamraSelector))[i])
       dailyKamra.push(dailyKamraItem)
     }
+    paramPriceString = await priceCatcher.priceCatcher(dailyKamra) // @ KAMRA price catch
 
     paramValueString = '• ' + dayKamra + ' daily menu: ' + dailyKamra + '\n'
     console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
     console.log(paramValueString)
     // @ KAMRA object
-    let kamraObj = new RestaurantMenuOutput(paramColor, paramTitleString, paramUrl, paramIcon, paramValueString)
-    let kamraMongoObj = new RestaurantMenuDb(paramTitleString, paramValueString)
+    let kamraObj = new RestaurantMenuOutput(
+      paramColor,
+      paramTitleString,
+      paramUrl,
+      paramIcon,
+      paramValueString,
+      paramPriceString
+    )
+    let kamraMongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramValueString)
     finalJSON.attachments.push(kamraObj)
-    finalMongoJSON.restaurants.push(kamraMongoObj)
+    finalMongoJSON.push(kamraMongoObj)
   } catch (e) {
     console.error(e)
   }

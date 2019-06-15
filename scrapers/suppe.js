@@ -23,7 +23,6 @@ const finalMongoJSON = require('./../scrapeDailyMenu').finalMongoJSON
 const RestaurantMenuOutput = require('./../scrapeDailyMenu').RestaurantMenuOutput
 const RestaurantMenuDb = require('./../scrapeDailyMenu').RestaurantMenuDb
 
-
 async function scraper() {
   const browser = await puppeteer.connect({ browserWSEndpoint })
   const page = await browser.newPage()
@@ -58,6 +57,7 @@ async function scraper() {
   let paramIcon =
     'https://scontent.fbud1-1.fna.fbcdn.net/v/t1.0-1/c36.0.320.320a/p320x320/1377248_364465010354681_215635093_n.jpg?_nc_cat=101&_nc_ht=scontent.fbud1-1.fna&oh=2e5b2ffdede3a0606b410ca121409f27&oe=5D5F0B90'
   let paramValueString
+  let paramPriceString = '1100'
   let mondaySuppe, dailySuppe, weeklySuppe
 
   try {
@@ -87,10 +87,17 @@ async function scraper() {
       console.log('• ' + dayNames[today] + ': ' + paramValueString)
     }
     // @ SUPPÉ object
-    let suppeObj = new RestaurantMenuOutput(paramColor, paramTitleString, paramUrl, paramIcon, paramValueString)
-    let suppeMongoObj = new RestaurantMenuDb(paramTitleString, paramValueString)
+    let suppeObj = new RestaurantMenuOutput(
+      paramColor,
+      paramTitleString,
+      paramUrl,
+      paramIcon,
+      paramValueString,
+      paramPriceString
+    )
+    let suppeMongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramValueString)
     finalJSON.attachments.push(suppeObj)
-    finalMongoJSON.restaurants.push(suppeMongoObj)
+    finalMongoJSON.push(suppeMongoObj)
   } catch (e) {
     console.error(e)
   }
