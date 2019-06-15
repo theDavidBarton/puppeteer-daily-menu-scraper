@@ -22,7 +22,9 @@ const replacementMap = require('./../replacementMap.json')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
 const today = require('./../scrapeDailyMenu').today
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
+const finalMongoJSON = require('./../scrapeDailyMenu').finalMongoJSON
 const RestaurantMenuOutput = require('./../scrapeDailyMenu').RestaurantMenuOutput
+const RestaurantMenuDb = require('./../scrapeDailyMenu').RestaurantMenuDb
 
 
 async function scraper() {
@@ -212,7 +214,9 @@ async function scraper() {
       }
       // @ NOKEDLI object
       let nokedliObj = new RestaurantMenuOutput(paramColor, paramTitleString, paramUrl, paramIcon, paramValueString)
+      let nokedliMongoObj = new RestaurantMenuDb(paramTitleString, paramValueString)
       finalJSON.attachments.push(nokedliObj)
+      finalMongoJSON.restaurants.push(nokedliMongoObj)
     } catch (e) {
       console.error(e)
     }

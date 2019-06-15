@@ -18,7 +18,9 @@ const puppeteer = require('puppeteer')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
 const today = require('./../scrapeDailyMenu').today
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
+const finalMongoJSON = require('./../scrapeDailyMenu').finalMongoJSON
 const RestaurantMenuOutput = require('./../scrapeDailyMenu').RestaurantMenuOutput
+const RestaurantMenuDb = require('./../scrapeDailyMenu').RestaurantMenuDb
 
 
 async function scraper() {
@@ -96,7 +98,9 @@ async function scraper() {
       console.log(paramValueString)
       // @ VIAN object
       let vianObj = new RestaurantMenuOutput(paramColor, paramTitleString, paramUrl, paramIcon, paramValueString)
+      let vianMongoObj = new RestaurantMenuDb(paramTitleString, paramValueString)
       finalJSON.attachments.push(vianObj)
+      finalMongoJSON.restaurants.push(vianMongoObj)
     }
   } catch (e) {
     console.error(e)

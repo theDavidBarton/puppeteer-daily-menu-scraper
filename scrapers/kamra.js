@@ -17,7 +17,9 @@
 const puppeteer = require('puppeteer')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
+const finalMongoJSON = require('./../scrapeDailyMenu').finalMongoJSON
 const RestaurantMenuOutput = require('./../scrapeDailyMenu').RestaurantMenuOutput
+const RestaurantMenuDb = require('./../scrapeDailyMenu').RestaurantMenuDb
 
 
 async function scraper() {
@@ -70,7 +72,9 @@ async function scraper() {
     console.log(paramValueString)
     // @ KAMRA object
     let kamraObj = new RestaurantMenuOutput(paramColor, paramTitleString, paramUrl, paramIcon, paramValueString)
+    let kamraMongoObj = new RestaurantMenuDb(paramTitleString, paramValueString)
     finalJSON.attachments.push(kamraObj)
+    finalMongoJSON.restaurants.push(kamraMongoObj)
   } catch (e) {
     console.error(e)
   }

@@ -15,11 +15,13 @@
  */
 
 const puppeteer = require('puppeteer')
+const priceCatcher = require('./../lib/priceCatcher')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
 const todayDotSeparated = require('./../scrapeDailyMenu').todayDotSeparated
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
+const finalMongoJSON = require('./../scrapeDailyMenu').finalMongoJSON
 const RestaurantMenuOutput = require('./../scrapeDailyMenu').RestaurantMenuOutput
-
+const RestaurantMenuDb = require('./../scrapeDailyMenu').RestaurantMenuDb
 
 async function scraper() {
   const browser = await puppeteer.connect({ browserWSEndpoint })
@@ -51,6 +53,7 @@ async function scraper() {
   let paramIcon = 'http://bodzabistro.hu/wp-content/uploads/2016/03/nevtelen-1.png'
   let paramSelector = '.container'
   let paramValueString
+  let paramPriceString
   let bodzaDaily
 
   try {
@@ -61,8 +64,10 @@ async function scraper() {
     forlabelBodza: for (let i = 0; i < bodzaBlock.length; i++) {
       bodzaDaily = await page.evaluate(el => el.textContent, (await page.$$(paramSelector))[i])
       if (bodzaDaily.match(todayDotSeparated)) {
+        paramPriceString = priceCatcher.priceCatcher(bodzaDaily)
         bodzaDaily = bodzaDaily.match(/(.*)CHEF NAPI AJÁNLATA(.*\r?\n){3}/gi)
-        bodzaDaily = bodzaDaily.join()
+        bodzaDaily = bodzaDaily
+          .join()
           .replace(/(\r?\n)/gm, ' ')
           .replace(/\s\s+/gm, ' ')
           .replace(/(.*)CHEF NAPI AJÁNLATA/g, '')
@@ -75,8 +80,17 @@ async function scraper() {
     console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
     console.log(paramValueString)
     // @ BODZA object
-    let bodzaObj = new RestaurantMenuOutput(paramColor, paramTitleString, paramUrl, paramIcon, paramValueString)
+    let bodzaObj = new RestaurantMenuOutput(
+      paramColor,
+      paramTitleString,
+      paramUrl,
+      paramIcon,
+      paramValueString,
+      paramPriceString
+    )
+    let bodzaMongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramValueString)
     finalJSON.attachments.push(bodzaObj)
+    finalMongoJSON.restaurants.push(bodzaMongoObj)
   } catch (e) {
     console.error(e)
   }

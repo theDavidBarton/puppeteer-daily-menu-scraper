@@ -21,7 +21,9 @@ const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
 const today = require('./../scrapeDailyMenu').today
 const dayNames = require('./../scrapeDailyMenu').dayNames
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
+const finalMongoJSON = require('./../scrapeDailyMenu').finalMongoJSON
 const RestaurantMenuOutput = require('./../scrapeDailyMenu').RestaurantMenuOutput
+const RestaurantMenuDb = require('./../scrapeDailyMenu').RestaurantMenuDb
 
 
 // @ {RESTAURANT}s with only facebook image menus
@@ -113,7 +115,9 @@ async function ocrFacebookImage(
             paramIcon,
             paramValueString
           )
+          let restaurantMongoObj = new RestaurantMenuDb(paramTitleString, paramValueString)
           finalJSON.attachments.push(restaurantObj)
+          finalMongoJSON.restaurants.push(restaurantMongoObj)
 
           break forlabelRestaurant
         }

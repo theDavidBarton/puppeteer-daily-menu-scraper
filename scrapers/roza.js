@@ -17,7 +17,9 @@
 const puppeteer = require('puppeteer')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
+const finalMongoJSON = require('./../scrapeDailyMenu').finalMongoJSON
 const RestaurantMenuOutput = require('./../scrapeDailyMenu').RestaurantMenuOutput
+const RestaurantMenuDb = require('./../scrapeDailyMenu').RestaurantMenuDb
 
 
 async function scraper() {
@@ -66,7 +68,9 @@ async function scraper() {
     console.log(paramValueString)
     // @ ROZA object
     let rozaObj = new RestaurantMenuOutput(paramColor, paramTitleString, paramUrl, paramIcon, paramValueString)
+    let rozaMongoObj = new RestaurantMenuDb(paramTitleString, paramValueString)
     finalJSON.attachments.push(rozaObj)
+    finalMongoJSON.restaurants.push(rozaMongoObj)
   } catch (e) {
     console.error(e)
   }

@@ -19,7 +19,9 @@ const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
 const today = require('./../scrapeDailyMenu').today
 const dayNames = require('./../scrapeDailyMenu').dayNames
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
+const finalMongoJSON = require('./../scrapeDailyMenu').finalMongoJSON
 const RestaurantMenuOutput = require('./../scrapeDailyMenu').RestaurantMenuOutput
+const RestaurantMenuDb = require('./../scrapeDailyMenu').RestaurantMenuDb
 
 
 async function scraper() {
@@ -86,7 +88,9 @@ async function scraper() {
     }
     // @ SUPPÉ object
     let suppeObj = new RestaurantMenuOutput(paramColor, paramTitleString, paramUrl, paramIcon, paramValueString)
+    let suppeMongoObj = new RestaurantMenuDb(paramTitleString, paramValueString)
     finalJSON.attachments.push(suppeObj)
+    finalMongoJSON.restaurants.push(suppeMongoObj)
   } catch (e) {
     console.error(e)
   }

@@ -20,7 +20,10 @@ const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
 const today = require('./../scrapeDailyMenu').today
 const todayDotSeparated = require('./../scrapeDailyMenu').todayDotSeparated
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
+const finalMongoJSON = require('./../scrapeDailyMenu').finalMongoJSON
 const RestaurantMenuOutput = require('./../scrapeDailyMenu').RestaurantMenuOutput
+const RestaurantMenuDb = require('./../scrapeDailyMenu').RestaurantMenuDb
+
 
 async function scraper() {
   const browser = await puppeteer.connect({ browserWSEndpoint })
@@ -110,7 +113,9 @@ async function scraper() {
       console.log(paramValueString)
       // @ YAMATO object
       let yamatoObj = new RestaurantMenuOutput(paramColor, paramTitleString, paramUrl, paramIcon, paramValueString)
+      let yamatoMongoObj = new RestaurantMenuDb(paramTitleString, paramValueString)
       finalJSON.attachments.push(yamatoObj)
+      finalMongoJSON.restaurants.push(yamatoMongoObj)
     }
   } catch (e) {
     console.error(e)

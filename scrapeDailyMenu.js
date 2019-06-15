@@ -17,6 +17,7 @@
 const puppeteer = require('puppeteer')
 const moment = require('moment')
 const request = require('request')
+const connectMongoDb = require('./lib/connectMongoDb')
 
 // get Day of Week
 const now = moment()
@@ -39,8 +40,14 @@ let finalJSON = {
   attachments: []
 }
 
+// this will be the object we store at database and we will extend with each menu
+let finalMongoJSON = {
+  timestamp: todayDotSeparated,
+  restaurants: []
+}
+
 // constructor for menu object
-let RestaurantMenuOutput = function(color, titleString, url, icon, valueString) {
+let RestaurantMenuOutput = function(color, titleString, url, icon, valueString, priceString) {
   this.fallback = 'Please open it on a device that supports formatted messages.'
   this.pretext = '...'
   this.color = color
@@ -52,12 +59,23 @@ let RestaurantMenuOutput = function(color, titleString, url, icon, valueString) 
       title: titleString + ' menu (' + dayNames[today] + '):',
       value: valueString,
       short: false
+    },
+    {
+      title: 'price',
+      value: priceString,
+      short: true
     }
   ]
   this.footer = 'scraped by DailyMenu'
   this.ts = Math.floor(Date.now() / 1000)
 }
 
+// constructor for database object
+let RestaurantMenuDb = function(titleString, priceString, valueString) {
+  this.restaurant = titleString
+  this.price = priceString
+  this.menuString = valueString
+}
 
 // scraper browser instance - function that wraps all the scrapers
 async function scrapeMenu() {
@@ -70,8 +88,10 @@ async function scrapeMenu() {
     todayDotSeparated,
     dayNames,
     finalJSON,
+    finalMongoJSON,
     browserWSEndpoint,
-    RestaurantMenuOutput
+    RestaurantMenuOutput,
+    RestaurantMenuDb
   }
 
   // require scrapers after module.exports object is declared
@@ -123,7 +143,7 @@ async function scrapeMenu() {
   // _POST the final JSON to webhook
   request(
     {
-      url: process.env.WEBHOOK_URL_PROD,
+      url: process.env.WEBHOOK_URL_TEST,
       method: 'POST',
       json: false,
       body: finalJSON
@@ -135,6 +155,12 @@ async function scrapeMenu() {
     }
   )
 
+  // store the data to mongoDB
+  try {
+    await connectMongoDb.connectMongoDb(finalMongoJSON)
+  } catch (e) {
+    console.error(e)
+  }
   await browser.close()
 }
 scrapeMenu()

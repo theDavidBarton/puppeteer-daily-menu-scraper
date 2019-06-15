@@ -17,7 +17,9 @@
 const puppeteer = require('puppeteer')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
+const finalMongoJSON = require('./../scrapeDailyMenu').finalMongoJSON
 const RestaurantMenuOutput = require('./../scrapeDailyMenu').RestaurantMenuOutput
+const RestaurantMenuDb = require('./../scrapeDailyMenu').RestaurantMenuDb
 
 async function scraper() {
   const browser = await puppeteer.connect({ browserWSEndpoint })
@@ -86,7 +88,9 @@ async function scraper() {
     console.log(paramValueString)
     // @ KORHELY object
     let korhelyObj = new RestaurantMenuOutput(paramColor, paramTitleString, paramUrl, paramIcon, paramValueString)
+    let korhelyMongoObj = new RestaurantMenuDb(paramTitleString, paramValueString)
     finalJSON.attachments.push(korhelyObj)
+    finalMongoJSON.restaurants.push(korhelyMongoObj)
   } catch (e) {
     console.error(e)
   }

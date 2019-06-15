@@ -18,7 +18,9 @@ const request = require('request')
 const replacementMap = require('./../replacementMap.json')
 const today = require('./../scrapeDailyMenu').today
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
+const finalMongoJSON = require('./../scrapeDailyMenu').finalMongoJSON
 const RestaurantMenuOutput = require('./../scrapeDailyMenu').RestaurantMenuOutput
+const RestaurantMenuDb = require('./../scrapeDailyMenu').RestaurantMenuDb
 
 async function scraper() {
   /*
@@ -125,7 +127,9 @@ async function scraper() {
     console.log(paramValueString)
     // @ KARCSI object
     let karcsiObj = new RestaurantMenuOutput(paramColor, paramTitleString, paramUrl, paramIcon, paramValueString)
+    let karcsiMongoObj = new RestaurantMenuDb(paramTitleString, paramValueString)
     finalJSON.attachments.push(karcsiObj)
+    finalMongoJSON.restaurants.push(karcsiMongoObj)
   } catch (e) {
     console.error(e)
   }
