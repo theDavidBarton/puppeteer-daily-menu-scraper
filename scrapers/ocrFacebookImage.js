@@ -17,10 +17,9 @@
 const puppeteer = require('puppeteer')
 const ocrSpaceApiSimple = require('./../lib/ocrSpaceApiSimple')
 const priceCatcher = require('./../lib/priceCatcher')
-const replacementMap = require('./../replacementMap.json')
+const stringValueCleaner = require('./../lib/stringValueCleaner')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
 const today = require('./../scrapeDailyMenu').today
-const dayNames = require('./../scrapeDailyMenu').dayNames
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
 const finalMongoJSON = require('./../scrapeDailyMenu').finalMongoJSON
 const RestaurantMenuOutput = require('./../scrapeDailyMenu').RestaurantMenuOutput
@@ -95,22 +94,16 @@ async function ocrFacebookImage(
         for (let j = today; j < today + 1; j++) {
           paramPriceString = await priceCatcher.priceCatcher(parsedResult) // @ {RESTAURANT} price catch
           let restaurantDaily = parsedResult.match(restaurantDaysRegex[j])
-          // format text and replace faulty string parts
-          for (let k = 0; k < replacementMap.length; k++) {
-            restaurantDaily = restaurantDaily
-              .toString()
-              .toLowerCase()
-              .replace(new RegExp(replacementMap[k][0], 'g'), replacementMap[k][1])
+          restaurantDaily = restaurantDaily.toString().split(/\r?\n/)
+          for (let k = paramStartLine; k < paramEndLine + 1; k++) {
+            restaurantDailyArray.push(restaurantDaily[k])
           }
-          restaurantDaily = restaurantDaily.split(/\r?\n/)
 
-          for (let l = paramStartLine; l < paramEndLine + 1; l++) {
-            restaurantDaily[l] = restaurantDaily[l].trim()
-            restaurantDailyArray.push(restaurantDaily[l])
-          }
           paramValueString = restaurantDailyArray.join(', ')
+          // @ {RESTAURANT} clean string
+          paramValueString = '• Daily menu: ' + await stringValueCleaner.stringValueCleaner(paramValueString, true)
           console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
-          console.log('• ' + dayNames[today] + ': ' + paramValueString + '\n')
+          console.log(paramValueString + '\n')
           // @ {RESTAURANT} object
           let restaurantObj = new RestaurantMenuOutput(
             paramColor,

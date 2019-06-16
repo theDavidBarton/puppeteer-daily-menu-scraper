@@ -16,6 +16,7 @@
 
 const puppeteer = require('puppeteer')
 const priceCatcher = require('./../lib/priceCatcher')
+const stringValueCleaner = require('./../lib/stringValueCleaner')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
 const finalMongoJSON = require('./../scrapeDailyMenu').finalMongoJSON
@@ -63,11 +64,10 @@ async function scraper() {
     await page.goto(paramUrl, { waitUntil: 'networkidle2' })
     // @ ROZA Daily
     dailyRoza = await page.evaluate(el => el.innerText, await page.$(dailyRozaSelector))
-    dailyRoza = dailyRoza.replace(/🍲|🥪|🥧|❤️/g, '')
-    paramPriceString = await priceCatcher.priceCatcher(dailyRoza) // @ {RESTAURANT} price catch
-    paramValueString = '• Daily menu: ' + dailyRoza + '\n'
+    paramPriceString = await priceCatcher.priceCatcher(dailyRoza) // @ ROZA price catch
+    paramValueString = '• Daily menu: ' + await stringValueCleaner.stringValueCleaner(dailyRoza, true) // @ ROZA clean string
     console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
-    console.log(paramValueString)
+    console.log(paramValueString + '\n')
     // @ ROZA object
     let rozaObj = new RestaurantMenuOutput(
       paramColor,
