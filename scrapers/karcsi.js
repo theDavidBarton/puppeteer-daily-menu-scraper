@@ -15,7 +15,7 @@
  */
 
 const ocrSpaceApiSimple = require('./../lib/ocrSpaceApiSimple')
-const replacementMap = require('./../replacementMap.json')
+const stringValueCleaner = require('./../lib/stringValueCleaner')
 const today = require('./../scrapeDailyMenu').today
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
 const finalMongoJSON = require('./../scrapeDailyMenu').finalMongoJSON
@@ -81,32 +81,9 @@ async function scraper() {
       karcsiDaily = parsedResult.match(karcsiDaysRegexArray[i])
       karcsiWeekly = parsedResult.match(weeklyOfferRegex)
       karcsiSoup = parsedResult.match(soupRegex)
-      // format text and replace faulty string parts
-      for (let j = 0; j < replacementMap.length; j++) {
-        karcsiWeekly = karcsiWeekly
-          .toString()
-          .toLowerCase()
-          .replace(/\bheti men.((.*\r?\n))|\bmen. 1((.*\r?\n))/gi, '')
-          .replace(/[0-9]+ ft/gi, '')
-          .replace(/\r?\n/g, ', ')
-          .replace(new RegExp(replacementMap[j][0], 'g'), replacementMap[j][1])
-        karcsiSoup = karcsiSoup
-          .toString()
-          .toLowerCase()
-          .replace(/\bheti men.((.*\r?\n))|\bmen. 1((.*\r?\n))/gi, '')
-          .replace(/[0-9]+ ft/gi, '')
-          .replace(/\r?\n/g, ', ')
-          .replace(new RegExp(replacementMap[j][0], 'g'), replacementMap[j][1])
-        karcsiDaily = karcsiDaily
-          .toString()
-          .toLowerCase()
-          .replace(/\bheti men.((.*\r?\n))|\bmen. 1((.*\r?\n))/gi, '')
-          .replace(/[0-9]+ ft/gi, '')
-          .replace(/\r?\n/g, ', ')
-          .replace(new RegExp(replacementMap[j][0], 'g'), replacementMap[j][1])
-      }
     }
-    paramValueString = '• Weekly offer: ' + karcsiWeekly + '\n• Daily menu: ' + karcsiSoup + karcsiDaily + '\n'
+    // @ KARCSI clean string
+    paramValueString = '• Weekly offer: ' + await stringValueCleaner.stringValueCleaner(karcsiWeekly, true) + '\n• Daily menu: ' + await stringValueCleaner.stringValueCleaner(karcsiSoup, true) + await stringValueCleaner.stringValueCleaner(karcsiDaily, true) + '\n'
     console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
     console.log(paramValueString)
     // @ KARCSI object

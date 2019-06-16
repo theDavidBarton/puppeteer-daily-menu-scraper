@@ -16,6 +16,7 @@
 
 const puppeteer = require('puppeteer')
 const priceCatcher = require('./../lib/priceCatcher')
+const stringValueCleaner = require('./../lib/stringValueCleaner')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
 const finalMongoJSON = require('./../scrapeDailyMenu').finalMongoJSON
@@ -74,24 +75,21 @@ async function scraper() {
     const summary = await page.evaluate(el => el.textContent, (await page.$$(summarySelector))[1])
     paramPriceString = await priceCatcher.priceCatcher(summary) // @ KORHELY price catch
     weeklySoupKorhely = await page.evaluate(el => el.innerText, await page.$(weeklySoupKorhelySelector))
-    weeklySoupKorhely = weeklySoupKorhely.replace('LEVESEK', '')
     weeklyMainKorhely = await page.evaluate(el => el.innerText, await page.$(weeklyMainKorhelySelector))
-    weeklyMainKorhely = weeklyMainKorhely.replace('FŐÉTELEK', '')
     weeklyDessertKorhely = await page.evaluate(el => el.innerText, await page.$(weeklyDessertKorhelySelector))
-    weeklyDessertKorhely = weeklyDessertKorhely.replace('DESSZERTEK', '')
 
     paramValueString =
       '• Soups: ' +
-      weeklySoupKorhely +
+      await stringValueCleaner.stringValueCleaner(weeklySoupKorhely, true) +
       '\n' +
       '• Main courses: ' +
-      weeklyMainKorhely +
+      await stringValueCleaner.stringValueCleaner(weeklyMainKorhely, true) +
       '\n' +
       '• Desserts: ' +
-      weeklyDessertKorhely +
-      '\n'
+      await stringValueCleaner.stringValueCleaner(weeklyDessertKorhely, true)
+
     console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
-    console.log(paramValueString)
+    console.log(paramValueString + '\n')
     // @ KORHELY object
     let korhelyObj = new RestaurantMenuOutput(
       paramColor,

@@ -18,7 +18,7 @@ const compressImages = require('compress-images')
 const fs = require('fs')
 const puppeteer = require('puppeteer')
 const ocrSpaceApiSimple = require('./../lib/ocrSpaceApiSimple')
-const replacementMap = require('./../replacementMap.json')
+const stringValueCleaner = require('./../lib/stringValueCleaner')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
 const today = require('./../scrapeDailyMenu').today
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
@@ -143,10 +143,7 @@ async function scraper() {
           let wordLeft = parsedResult.TextOverlay.Lines[i].Words[0].Left
           let wordTop = parsedResult.TextOverlay.Lines[i].Words[0].Top
           let wordText = parsedResult.TextOverlay.Lines[i].Words[j].WordText
-          // format text and replace faulty string parts
-          for (let k = 0; k < replacementMap.length; k++) {
-            wordText = wordText.replace(new RegExp(replacementMap[k][0], 'g'), replacementMap[k][1])
-          }
+
           if (wordTop > 520 && wordTop < 1930) {
             monday: if (wordLeft > 780 && wordLeft < 980) {
               nokedliMonday.push(wordText)
@@ -190,29 +187,30 @@ async function scraper() {
 
       switch (today) {
         case 1:
-          paramValueString = '• Daily menu: ' + nokedliMondayStr.join(', ') + '\n'
-          console.log(paramValueString)
+          paramValueString = nokedliMondayStr.join(', ')
+          paramValueString = '• Daily menu: ' + await stringValueCleaner.stringValueCleaner(paramValueString, true)
           break
         case 2:
-          paramValueString = '• Daily menu: ' + nokedliTuesdayStr.join(', ') + '\n'
-          console.log(paramValueString)
+          paramValueString = nokedliTuesdayStr.join(', ')
+          paramValueString = '• Daily menu: ' + await stringValueCleaner.stringValueCleaner(paramValueString, true)
           break
         case 3:
-          paramValueString = '• Daily menu: ' + nokedliWednesdayStr.join(', ') + '\n'
-          console.log(paramValueString)
+          paramValueString = nokedliWednesdayStr.join(', ')
+          paramValueString = '• Daily menu: ' + await stringValueCleaner.stringValueCleaner(paramValueString, true)
           break
         case 4:
-          paramValueString = '• Daily menu: ' + nokedliThursdayStr.join(', ') + '\n'
-          console.log(paramValueString)
+          paramValueString = nokedliThursdayStr.join(', ')
+          paramValueString = '• Daily menu: ' + await stringValueCleaner.stringValueCleaner(paramValueString, true)
           break
         case 5:
-          paramValueString = '• Daily menu: ' + nokedliFridayStr.join(', ') + '\n'
-          console.log(paramValueString)
+          paramValueString = nokedliFridayStr.join(', ')
+          paramValueString = '• Daily menu: ' + await stringValueCleaner.stringValueCleaner(paramValueString, true)
           break
         default:
           paramValueString = 'weekend work, eh?\n'
-          console.log(paramValueString)
       }
+      console.log(paramValueString + '\n')
+
       // @ NOKEDLI object
       let nokedliObj = new RestaurantMenuOutput(
         paramColor,

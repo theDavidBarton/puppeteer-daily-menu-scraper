@@ -1,4 +1,6 @@
 [
+  ["h(e|é)tf(o|ö|ő).|kedd.|szerda.|cs.t(.*)(o|ö)k.|p(e|é)ntek.", ""],
+  ["\\bheti menü|(\\bmenü(.*)menüii)|[0-9]+ ft|,,|:|a napi |🍲|🥪|🥧|❤️|LEVESEK|FŐÉTELEK|DESSZERTEK", ""],
   ["¿", "á"],
   ["co\\.mb", "comb"],
   ["c,s", "cs"],
@@ -17,7 +19,7 @@
   ["krén|k(ř|r)éh|krěm|krčrn", "krém"],
   ["i\\.\\.|i\\.|1\\.", "l"],
   ["\\/eves", "leves"],
-  ["mártós", "mártás"],
+  ["mártós|m\\.írtäs", "mártás"],
   ["\\/VaCeďZö|\\/VoCeďZö|\\/\\(\\/aőeďö", "nokedli"],
   ["0s", "ös"],
   ["pf,nni•:", "penne"],
