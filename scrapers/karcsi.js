@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-const request = require('request')
+const ocrSpaceApiSimple = require('./../lib/ocrSpaceApiSimple')
 const replacementMap = require('./../replacementMap.json')
 const today = require('./../scrapeDailyMenu').today
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
@@ -57,8 +57,9 @@ async function scraper() {
   let karcsiWeekly
   let karcsiSoup
   let karcsiDaily
+  let parsedResult
 
-  const optionsKarcsi = {
+  const options = {
     method: 'POST',
     url: 'https://api.ocr.space/parse/image',
     headers: {
@@ -72,29 +73,10 @@ async function scraper() {
       isTable: 'true'
     }
   }
-  // (I.) promise to return the parsedResult for processing
-  function ocrRequest() {
-    return new Promise(function(resolve, reject) {
-      request(optionsKarcsi, function(error, response, body) {
-        try {
-          resolve(JSON.parse(body).ParsedResults[0].ParsedText)
-        } catch (e) {
-          reject(e)
-        }
-      })
-    })
-  }
-  // (II.)
-  async function ocrResponse() {
-    try {
-      parsedResult = await ocrRequest()
-    } catch (e) {
-      console.error(e)
-    }
-  }
   try {
-    // (III.)
-    await ocrResponse()
+    parsedResult = await ocrSpaceApiSimple.ocrSpaceApiSimple(options)
+    parsedResult = parsedResult.ParsedText
+
     for (let i = today; i < today + 1; i++) {
       karcsiDaily = parsedResult.match(karcsiDaysRegexArray[i])
       karcsiWeekly = parsedResult.match(weeklyOfferRegex)
