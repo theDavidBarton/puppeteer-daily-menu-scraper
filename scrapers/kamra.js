@@ -73,7 +73,7 @@ async function scraper() {
 
     paramValueString = '• Daily menu: ' + dailyKamra
     console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
-    console.log(paramValueString + '\n')
+    console.log(dayKamra + paramValueString + '\n')
     // @ KAMRA object
     let kamraObj = new RestaurantMenuOutput(
       paramColor,
