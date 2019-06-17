@@ -63,7 +63,7 @@ async function scraper() {
     // @ FRUCCOLA Daily
     dailyFruccola1 = await page.evaluate(el => el.innerText, await page.$(dailyFruccolaSelector1))
     dailyFruccola2 = await page.evaluate(el => el.innerText, await page.$(dailyFruccolaSelector2))
-    paramPriceString = await page.evaluate(el => el.innerText, (await page.$$('.price'))[0]) // @ FRUCCOLA price catch
+    paramPriceString = await page.evaluate(el => el.innerText, (await page.$$('.soup-and-maindish > .price'))[0]) // @ FRUCCOLA price catch
     paramValueString = '• Daily menu: ' + dailyFruccola1 + ', ' + dailyFruccola2 + '\n'
     console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
     console.log(paramValueString)
