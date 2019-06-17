@@ -68,11 +68,12 @@ async function scraper() {
       let dailyKamraItem = await page.evaluate(el => el.innerText, (await page.$$(dailyKamraSelector))[i])
       dailyKamra.push(dailyKamraItem)
     }
+    dailyKamra = dailyKamra.join(', ')
     paramPriceString = await priceCatcher.priceCatcher(dailyKamra) // @ KAMRA price catch
 
-    paramValueString = '• ' + dayKamra + ' daily menu: ' + dailyKamra + '\n'
+    paramValueString = '• Daily menu: ' + dailyKamra
     console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
-    console.log(paramValueString)
+    console.log(paramValueString + '\n')
     // @ KAMRA object
     let kamraObj = new RestaurantMenuOutput(
       paramColor,
