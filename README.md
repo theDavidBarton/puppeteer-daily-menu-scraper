@@ -18,8 +18,7 @@ The final output is stored in JSON and posted to slack via webhooks.
 ### What can you find here?
 
 - scraping daily menus and print the output with webhooks to slack;
-- scraping facebook images and retrieve their content with OCR;
-- trying out the experimental [Puppeteer-Firefox](https://aslushnikov.github.io/ispuppeteerfirefoxready/).
+- scraping facebook images and retrieve their content with OCR.
 
 ### Install packages
 
@@ -31,21 +30,22 @@ The actual version of pptr is v1.17.0
 
 ### Environment variables
 
-Create your own OCR API key and put in a file `app.env` (gitignored) in the root folder. Store the webhooks urls for slack per environment.
+I.) touch an `app.env` file (gitignored) in the root folder. Create your own OCR Space API key; request user for the daily_menu mongoDB (or create your own and replace uri in the code to fit); and finally store the webhooks urls for slack per environment.
 
 ```shell_session
 # create your API key here: https://ocr.space/ocrapi#free
 export OCR_API_KEY="******************"
+
 # mongoDb credentials
 export MONGO_USERNAME="**************"
 export MONGO_PASSWORD="**************"
+
 # slack webhooks
 export WEBHOOK_URL_TEST=https://hooks.slack.com/services/*********/*********/************************
 export WEBHOOK_URL_PROD=https://hooks.slack.com/services/*********/*********/************************
-
 ```
 
-source the created file to local environment variables (depending on your environment you'll need to find a method which lasts more than the current session!):
+II.) source the created file to local environment variables (depending on your environment you'll need to find a method which lasts more than the current session!):
 
 ```shell_session
 $ source app.env
@@ -64,3 +64,6 @@ $ node scrapeDailyMenu.js
 [GitHub Puppeteer](https://github.com/GoogleChrome/puppeteer)
 
 [Slightly better examples than mine](https://github.com/GoogleChromeLabs/puppeteer-examples)
+
+### License
+DailyMenu is [Apache License 2.0](/LICENSE)
