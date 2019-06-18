@@ -43,7 +43,6 @@ export MONGO_PASSWORD="**************"
 # slack webhooks
 export WEBHOOK_URL_TEST=https://hooks.slack.com/services/*********/*********/************************
 export WEBHOOK_URL_PROD=https://hooks.slack.com/services/*********/*********/************************
-
 ```
 
 II.) source the created file to local environment variables (depending on your environment you'll need to find a method which lasts more than the current session!):
@@ -65,3 +64,6 @@ $ node scrapeDailyMenu.js
 [GitHub Puppeteer](https://github.com/GoogleChrome/puppeteer)
 
 [Slightly better examples than mine](https://github.com/GoogleChromeLabs/puppeteer-examples)
+
+### License
+DailyMenu is [Apache License 2.0](/LICENSE)
