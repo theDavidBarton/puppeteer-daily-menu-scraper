@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-const compressImages = require('compress-images')
 const fs = require('fs')
 const puppeteer = require('puppeteer')
 const ocrSpaceApiSimple = require('./../lib/ocrSpaceApiSimple')
+const reduceImageSize = require('./../lib/reduceImageSize')
 const stringValueCleaner = require('./../lib/stringValueCleaner')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
 const today = require('./../scrapeDailyMenu').today
@@ -94,140 +94,134 @@ async function scraper() {
     })
   }
   // @ NOKEDLI reduce image size
-  let input = 'tmp/input/weeklyNokedli.jpg'
-  let output = 'tmp/output/'
-  // the parameters for compress-images library
-  let compressSettings = { compress_force: false, statistic: false, autoupdate: true }
-  let jpg = { jpg: { engine: 'mozjpeg', command: ['-quality', '60'] } }
-  let png = { png: { engine: 'pngquant', command: ['--quality=20-50'] } }
-  let svg = { svg: { engine: 'svgo', command: '--multipass' } }
-  let gif = { gif: { engine: 'gifsicle', command: ['--colors', '64', '--use-col=web'] } }
+  const input = 'tmp/input/weeklyNokedli.jpg'
+  const output = 'tmp/output/'
 
-  compressImages(input, output, compressSettings, false, jpg, png, svg, gif, async function(error, completed) {
-    // @ NOKEDLI OCR reduced image (plus base64 for better performance)
-    const imagePath = 'tmp/output/weeklyNokedli.jpg'
-    const imageAsBase64 = await fs.readFileSync(imagePath, 'base64')
-    const options = {
-      method: 'POST',
-      url: 'https://api.ocr.space/parse/image',
-      headers: {
-        apikey: process.env.OCR_API_KEY
-      },
-      formData: {
-        language: 'hun',
-        isOverlayRequired: 'true',
-        base64image: 'data:image/jpg;base64,' + imageAsBase64,
-        scale: 'true',
-        isTable: 'true'
-      }
+  await reduceImageSize.reduceImageSize(input, output)
+
+  // @ NOKEDLI OCR reduced image (plus base64 for better POST performance at OCR Space Api)
+  const imagePath = 'tmp/output/weeklyNokedli.jpg'
+  const imageAsBase64 = await fs.readFileSync(imagePath, 'base64')
+  const options = {
+    method: 'POST',
+    url: 'https://api.ocr.space/parse/image',
+    headers: {
+      apikey: process.env.OCR_API_KEY
+    },
+    formData: {
+      language: 'hun',
+      isOverlayRequired: 'true',
+      base64image: 'data:image/jpg;base64,' + imageAsBase64,
+      scale: 'true',
+      isTable: 'true'
     }
-    try {
-      parsedResult = await ocrSpaceApiSimple.ocrSpaceApiSimple(options)
+  }
+  try {
+    parsedResult = await ocrSpaceApiSimple.ocrSpaceApiSimple(options)
 
-      let textOverlayLinesCount = parsedResult.TextOverlay.Lines.length // text group count
-      let nokedliMonday = []
-      let nokedliMondayStr = []
-      let nokedliTuesday = []
-      let nokedliTuesdayStr = []
-      let nokedliWednesday = []
-      let nokedliWednesdayStr = []
-      let nokedliThursday = []
-      let nokedliThursdayStr = []
-      let nokedliFriday = []
-      let nokedliFridayStr = []
+    let textOverlayLinesCount = parsedResult.TextOverlay.Lines.length // text group count
+    let nokedliMonday = []
+    let nokedliMondayStr = []
+    let nokedliTuesday = []
+    let nokedliTuesdayStr = []
+    let nokedliWednesday = []
+    let nokedliWednesdayStr = []
+    let nokedliThursday = []
+    let nokedliThursdayStr = []
+    let nokedliFriday = []
+    let nokedliFridayStr = []
 
-      // checks word coordinates against a predefined map of the table
-      for (let i = 0; i < textOverlayLinesCount; i++) {
-        let textOverlayWordsCount = parsedResult.TextOverlay.Lines[i].Words.length
-        for (let j = 0; j < textOverlayWordsCount; j++) {
-          let wordLeft = parsedResult.TextOverlay.Lines[i].Words[0].Left
-          let wordTop = parsedResult.TextOverlay.Lines[i].Words[0].Top
-          let wordText = parsedResult.TextOverlay.Lines[i].Words[j].WordText
+    // checks word coordinates against a predefined map of the table
+    for (let i = 0; i < textOverlayLinesCount; i++) {
+      let textOverlayWordsCount = parsedResult.TextOverlay.Lines[i].Words.length
+      for (let j = 0; j < textOverlayWordsCount; j++) {
+        let wordLeft = parsedResult.TextOverlay.Lines[i].Words[0].Left
+        let wordTop = parsedResult.TextOverlay.Lines[i].Words[0].Top
+        let wordText = parsedResult.TextOverlay.Lines[i].Words[j].WordText
 
-          if (wordTop > 520 && wordTop < 1930) {
-            monday: if (wordLeft > 780 && wordLeft < 980) {
-              nokedliMonday.push(wordText)
-              nokedliMondayStr = nokedliMonday.join(' ').split(/(?= [A-ZÁÍŰŐÜÖÚÓÉ])/g)
-              for (let l = 0; l < nokedliMondayStr.length; l++) {
-                nokedliMondayStr[l] = nokedliMondayStr[l].trim()
-              }
+        if (wordTop > 520 && wordTop < 1930) {
+          monday: if (wordLeft > 780 && wordLeft < 980) {
+            nokedliMonday.push(wordText)
+            nokedliMondayStr = nokedliMonday.join(' ').split(/(?= [A-ZÁÍŰŐÜÖÚÓÉ])/g)
+            for (let l = 0; l < nokedliMondayStr.length; l++) {
+              nokedliMondayStr[l] = nokedliMondayStr[l].trim()
             }
-            tuesday: if (wordLeft > 1310 && wordLeft < 1546) {
-              nokedliTuesday.push(wordText)
-              nokedliTuesdayStr = nokedliTuesday.join(' ').split(/(?= [A-ZÁÍŰŐÜÖÚÓÉ])/g)
-              for (let l = 0; l < nokedliTuesdayStr.length; l++) {
-                nokedliTuesdayStr[l] = nokedliTuesdayStr[l].trim()
-              }
+          }
+          tuesday: if (wordLeft > 1310 && wordLeft < 1546) {
+            nokedliTuesday.push(wordText)
+            nokedliTuesdayStr = nokedliTuesday.join(' ').split(/(?= [A-ZÁÍŰŐÜÖÚÓÉ])/g)
+            for (let l = 0; l < nokedliTuesdayStr.length; l++) {
+              nokedliTuesdayStr[l] = nokedliTuesdayStr[l].trim()
             }
-            wednesday: if (wordLeft > 1815 && wordLeft < 2090) {
-              nokedliWednesday.push(wordText)
-              nokedliWednesdayStr = nokedliWednesday.join(' ').split(/(?= [A-ZÁÍŰŐÜÖÚÓÉ])/g)
-              for (let l = 0; l < nokedliWednesdayStr.length; l++) {
-                nokedliWednesdayStr[l] = nokedliWednesdayStr[l].trim()
-              }
+          }
+          wednesday: if (wordLeft > 1815 && wordLeft < 2090) {
+            nokedliWednesday.push(wordText)
+            nokedliWednesdayStr = nokedliWednesday.join(' ').split(/(?= [A-ZÁÍŰŐÜÖÚÓÉ])/g)
+            for (let l = 0; l < nokedliWednesdayStr.length; l++) {
+              nokedliWednesdayStr[l] = nokedliWednesdayStr[l].trim()
             }
-            thursday: if (wordLeft > 2345 && wordLeft < 2620) {
-              nokedliThursday.push(wordText)
-              nokedliThursdayStr = nokedliThursday.join(' ').split(/(?= [A-ZÁÍŰŐÜÖÚÓÉ])/g)
-              for (let l = 0; l < nokedliThursdayStr.length; l++) {
-                nokedliThursdayStr[l] = nokedliThursdayStr[l].trim()
-              }
+          }
+          thursday: if (wordLeft > 2345 && wordLeft < 2620) {
+            nokedliThursday.push(wordText)
+            nokedliThursdayStr = nokedliThursday.join(' ').split(/(?= [A-ZÁÍŰŐÜÖÚÓÉ])/g)
+            for (let l = 0; l < nokedliThursdayStr.length; l++) {
+              nokedliThursdayStr[l] = nokedliThursdayStr[l].trim()
             }
-            friday: if (wordLeft > 2880 && wordLeft < 3110) {
-              nokedliFriday.push(wordText)
-              nokedliFridayStr = nokedliFriday.join(' ').split(/(?= [A-ZÁÍŰŐÜÖÚÓÉ])/g)
-              for (let l = 0; l < nokedliFridayStr.length; l++) {
-                nokedliFridayStr[l] = nokedliFridayStr[l].trim()
-              }
+          }
+          friday: if (wordLeft > 2880 && wordLeft < 3110) {
+            nokedliFriday.push(wordText)
+            nokedliFridayStr = nokedliFriday.join(' ').split(/(?= [A-ZÁÍŰŐÜÖÚÓÉ])/g)
+            for (let l = 0; l < nokedliFridayStr.length; l++) {
+              nokedliFridayStr[l] = nokedliFridayStr[l].trim()
             }
           }
         }
       }
-      console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
-
-      switch (today) {
-        case 1:
-          paramValueString = nokedliMondayStr.join(', ')
-          paramValueString = '• Daily menu: ' + await stringValueCleaner.stringValueCleaner(paramValueString, true)
-          break
-        case 2:
-          paramValueString = nokedliTuesdayStr.join(', ')
-          paramValueString = '• Daily menu: ' + await stringValueCleaner.stringValueCleaner(paramValueString, true)
-          break
-        case 3:
-          paramValueString = nokedliWednesdayStr.join(', ')
-          paramValueString = '• Daily menu: ' + await stringValueCleaner.stringValueCleaner(paramValueString, true)
-          break
-        case 4:
-          paramValueString = nokedliThursdayStr.join(', ')
-          paramValueString = '• Daily menu: ' + await stringValueCleaner.stringValueCleaner(paramValueString, true)
-          break
-        case 5:
-          paramValueString = nokedliFridayStr.join(', ')
-          paramValueString = '• Daily menu: ' + await stringValueCleaner.stringValueCleaner(paramValueString, true)
-          break
-        default:
-          paramValueString = 'weekend work, eh?\n'
-      }
-      console.log(paramValueString + '\n')
-
-      // @ NOKEDLI object
-      let nokedliObj = new RestaurantMenuOutput(
-        paramColor,
-        paramTitleString,
-        paramUrl,
-        paramIcon,
-        paramValueString,
-        paramPriceString,
-        paramAddressString
-      )
-      let nokedliMongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramValueString)
-      finalJSON.attachments.push(nokedliObj)
-      finalMongoJSON.push(nokedliMongoObj)
-    } catch (e) {
-      console.error(e)
     }
-  })
+    console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
+
+    switch (today) {
+      case 1:
+        paramValueString = nokedliMondayStr.join(', ')
+        paramValueString = '• Daily menu: ' + (await stringValueCleaner.stringValueCleaner(paramValueString, true))
+        break
+      case 2:
+        paramValueString = nokedliTuesdayStr.join(', ')
+        paramValueString = '• Daily menu: ' + (await stringValueCleaner.stringValueCleaner(paramValueString, true))
+        break
+      case 3:
+        paramValueString = nokedliWednesdayStr.join(', ')
+        paramValueString = '• Daily menu: ' + (await stringValueCleaner.stringValueCleaner(paramValueString, true))
+        break
+      case 4:
+        paramValueString = nokedliThursdayStr.join(', ')
+        paramValueString = '• Daily menu: ' + (await stringValueCleaner.stringValueCleaner(paramValueString, true))
+        break
+      case 5:
+        paramValueString = nokedliFridayStr.join(', ')
+        paramValueString = '• Daily menu: ' + (await stringValueCleaner.stringValueCleaner(paramValueString, true))
+        break
+      default:
+        paramValueString = 'weekend work, eh?\n'
+    }
+    console.log(paramValueString + '\n')
+
+    // @ NOKEDLI object
+    let nokedliObj = new RestaurantMenuOutput(
+      paramColor,
+      paramTitleString,
+      paramUrl,
+      paramIcon,
+      paramValueString,
+      paramPriceString,
+      paramAddressString
+    )
+    let nokedliMongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramValueString)
+    finalJSON.attachments.push(nokedliObj)
+    finalMongoJSON.push(nokedliMongoObj)
+  } catch (e) {
+    console.error(e)
+  }
   await page.goto('about:blank')
   await page.close()
   await browser.disconnect()
