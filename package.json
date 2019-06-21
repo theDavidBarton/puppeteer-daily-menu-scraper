@@ -5,7 +5,7 @@
     "imagemin-mozjpeg": "^8.0.0",
     "moment": "^2.24.0",
     "mongodb": "^3.2.7",
-    "puppeteer": "^1.17.0",
+    "puppeteer": "^1.18.0",
     "request": "^2.88.0"
   },
   "devDependencies": {
