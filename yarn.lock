@@ -1967,13 +1967,13 @@ ignore@^4.0.6:
   version "4.0.6"
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-4.0.6.tgz#750e3db5862087b4737ebac8207ffd1ef27b25fc"
 
-imagemin-mozjpeg@^8.0.0:
-  version "8.0.0"
-  resolved "https://registry.yarnpkg.com/imagemin-mozjpeg/-/imagemin-mozjpeg-8.0.0.tgz#d2ca4e8c982c7c6eda55069af89dee4c1cebcdfd"
+imagemin-jpegoptim@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/imagemin-jpegoptim/-/imagemin-jpegoptim-6.0.0.tgz#718a86ee271ba15f46df1a5263310d9a51d1f3de"
   dependencies:
     execa "^1.0.0"
     is-jpg "^2.0.0"
-    mozjpeg "^6.0.0"
+    jpegoptim-bin "^5.0.0"
 
 imagemin@^6.1.0:
   version "6.1.0"
@@ -2021,9 +2021,13 @@ inflight@^1.0.4:
     once "^1.3.0"
     wrappy "1"
 
-inherits@2, inherits@^2.0.1, inherits@^2.0.3, inherits@~2.0.3:
+inherits@2, inherits@^2.0.3, inherits@~2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/inherits/-/inherits-2.0.3.tgz#633c2c83e3da42a502f52466022480f4208261de"
+
+inherits@^2.0.1:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/inherits/-/inherits-2.0.4.tgz#0fa2c64f932917c3433a0ded55363aae37416b7c"
 
 ini@^1.3.4, ini@~1.3.0:
   version "1.3.5"
@@ -2633,6 +2637,14 @@ jest@^24.8.0:
     import-local "^2.0.0"
     jest-cli "^24.8.0"
 
+jpegoptim-bin@^5.0.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/jpegoptim-bin/-/jpegoptim-bin-5.1.0.tgz#afe26498bcf91d64beca9e235f60bac7525bf969"
+  dependencies:
+    bin-build "^3.0.0"
+    bin-wrapper "^4.0.0"
+    logalot "^2.0.0"
+
 "js-tokens@^3.0.0 || ^4.0.0", js-tokens@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-4.0.0.tgz#19203fb59991df98e3a287050d4647cdeaf32499"
@@ -2807,7 +2819,7 @@ lodash@^4.17.11, lodash@^4.17.5:
   version "4.17.11"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.11.tgz#b39ea6229ef607ecd89e2c8df12536891cac9b8d"
 
-logalot@^2.1.0:
+logalot@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/logalot/-/logalot-2.1.0.tgz#5f8e8c90d304edf12530951a5554abb8c5e3f552"
   dependencies:
@@ -3039,14 +3051,6 @@ mongodb@^3.2.7:
   dependencies:
     mongodb-core "3.2.7"
     safe-buffer "^5.1.2"
-
-mozjpeg@^6.0.0:
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/mozjpeg/-/mozjpeg-6.0.1.tgz#56969dddb5741ef2bcb1af066cae21e61a91a27b"
-  dependencies:
-    bin-build "^3.0.0"
-    bin-wrapper "^4.0.0"
-    logalot "^2.1.0"
 
 ms@2.0.0:
   version "2.0.0"

@@ -2,7 +2,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "imagemin": "^6.1.0",
-    "imagemin-mozjpeg": "^8.0.0",
+    "imagemin-jpegoptim": "^6.0.0",
     "moment": "^2.24.0",
     "mongodb": "^3.2.7",
     "puppeteer": "^1.18.0",
