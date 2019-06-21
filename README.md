@@ -24,7 +24,7 @@ The final output is stored in JSON and posted to slack via webhooks.
 
 Node v10.15.3 or greater is needed to run the scripts in this repo.
 
-The actual version of pptr is v1.17.0
+The actual version of pptr is v1.18.0
 
 `yarn install` the project (see dependencies in [package.json](/package.json))
 
