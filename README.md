@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.com/theDavidBarton/puppeteer-daily-menu-scraper.svg?branch=master)](https://travis-ci.com/theDavidBarton/puppeteer-daily-menu-scraper)
 [![codecov](https://img.shields.io/codecov/c/github/theDavidBarton/puppeteer-daily-menu-scraper/master.svg)](https://codecov.io/gh/theDavidBarton/puppeteer-daily-menu-scraper)
-[![pptr](https://img.shields.io/github/package-json/dependency-version/theDavidBarton/puppeteer-daily-menu-scraper/puppeteer.svg)](/package.json)
+[![Dependency Status](https://david-dm.org/theDavidBarton/puppeteer-daily-menu-scraper.svg)](https://david-dm.org/)
 [![crocodile](https://img.shields.io/badge/crocodiles_in_the_basement-%F0%9F%90%8A_yes-orange.svg)](/lib)
 [![license](https://img.shields.io/github/license/theDavidBarton/puppeteer-daily-menu-scraper.svg)](/LICENSE.md)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FtheDavidBarton%2Fpuppeteer-daily-menu-scraper.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FtheDavidBarton%2Fpuppeteer-daily-menu-scraper?ref=badge_shield)
@@ -27,9 +27,8 @@ The final output is stored in JSON and posted to slack via webhooks.
 
 ### Install packages
 
-Node v10.15.3 or greater is needed to run the scripts in this repo.
-
-The actual version of pptr is v1.18.0
+![node](https://img.shields.io/badge/node-%3E%3D10.15.3-green.svg)
+[![pptr](https://img.shields.io/github/package-json/dependency-version/theDavidBarton/puppeteer-daily-menu-scraper/puppeteer.svg)](/package.json)
 
 `yarn install` the project (see dependencies in [package.json](/package.json))
 
