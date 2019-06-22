@@ -15,10 +15,9 @@
  */
 
 const puppeteer = require('puppeteer')
-const moment = require('moment')
+const dateCatcher = require('./../lib/dateCatcher')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
 const today = require('./../scrapeDailyMenu').today
-const todayDotSeparated = require('./../scrapeDailyMenu').todayDotSeparated
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
 const finalMongoJSON = require('./../scrapeDailyMenu').finalMongoJSON
 const RestaurantMenuOutput = require('./../scrapeDailyMenu').RestaurantMenuOutput
@@ -59,6 +58,7 @@ async function scraper() {
   let paramPriceString
   let paramAddressString = 'Budapest, 1066, Jókai u. 30.'
   let yamato
+  let found
 
   // @ YAMATO selectors
   let yamatoArray = [
@@ -72,35 +72,8 @@ async function scraper() {
 
   try {
     await page.goto(paramUrl, { waitUntil: 'networkidle2', timout: 0 })
-
-    /*
-     * general checking if menu is up-to-date
-     * @selectTheWhole: selector for the whole text
-     * todo: move outside as separate module
-     */
-    let found
-    async function checkDateForWeekly(selectTheWhole) {
-      try {
-        found = false
-        const theWhole = await page.evaluate(el => el.textContent, selectTheWhole)
-        let actualDateStrings = theWhole.match(
-          /([12]\d{3}.(0[1-9]|1[0-2]).(0[1-9]|[12]\d|3[01]))|([12]\d{3}. (0[1-9]|1[0-2]). (0[1-9]|[12]\d|3[01]))/gm
-        )
-        for (let i = 0; i < actualDateStrings.length; i++) {
-          actualDateStrings[i] = moment(actualDateStrings[i], 'YYYY-MM-DD')
-            .locale('hu')
-            .format('L')
-          if (actualDateStrings[i].match(todayDotSeparated)) {
-            found = true
-          }
-        }
-      } catch (e) {
-        console.error(e)
-      }
-      return found
-    }
-
-    await checkDateForWeekly(await page.$('body'))
+    const theWhole = await page.evaluate(el => el.textContent, await page.$('body'))
+    found = await dateCatcher.dateCatcher(theWhole) // @ YAMATO catch date
     // @ YAMATO Monday-Friday
     for (let i = today; i < today + 1; i++) {
       if ((await page.$(yamatoArray[i])) !== null && found === true) {
