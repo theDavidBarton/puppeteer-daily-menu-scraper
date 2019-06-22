@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-const fs = require('fs')
 const puppeteer = require('puppeteer')
 const ocrSpaceApiSimple = require('./../lib/ocrSpaceApiSimple')
-const reduceImageSize = require('./../lib/reduceImageSize')
 const stringValueCleaner = require('./../lib/stringValueCleaner')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
 const today = require('./../scrapeDailyMenu').today
@@ -78,30 +76,11 @@ async function scraper() {
   } catch (e) {
     console.error(e)
   }
-  // @ NOKEDLI download latest weekly menu image
-  let weeklyNokedliUrlVisit = await page.goto(weeklyNokedli, { waitUntil: 'networkidle0' })
-  fs.writeFile('tmp/input/weeklyNokedli.jpg', await weeklyNokedliUrlVisit.buffer(), function(err) {
-    if (err) {
-      return console.log(err)
-    }
-  })
-  // clear output image if it already exists
-  if (fs.existsSync('tmp/output/weeklyNokedli.jpg')) {
-    fs.unlink('tmp/output/weeklyNokedli.jpg', function(err) {
-      if (err) {
-        return console.log(err)
-      }
-    })
-  }
-  // @ NOKEDLI reduce image size
-  const input = 'tmp/input/weeklyNokedli.jpg'
-  const output = 'tmp/output/'
 
-  await reduceImageSize.reduceImageSize(input, output)
+  // @ NOKEDLI compress image with the great Images.weserv.nl 💚 API https://images.weserv.nl/#image-api
+  const imageURL = 'https://images.weserv.nl/?url=' + weeklyNokedli + '&q=60'
 
-  // @ NOKEDLI OCR reduced image (plus base64 for better POST performance at OCR Space Api)
-  const imagePath = 'tmp/output/weeklyNokedli.jpg'
-  const imageAsBase64 = await fs.readFileSync(imagePath, 'base64')
+  // @ NOKEDLI OCR
   const options = {
     method: 'POST',
     url: 'https://api.ocr.space/parse/image',
@@ -111,7 +90,7 @@ async function scraper() {
     formData: {
       language: 'hun',
       isOverlayRequired: 'true',
-      base64image: 'data:image/jpg;base64,' + imageAsBase64,
+      url: imageURL,
       scale: 'true',
       isTable: 'true'
     }
