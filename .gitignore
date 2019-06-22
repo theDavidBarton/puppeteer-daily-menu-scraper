@@ -1,11 +1,8 @@
 node_modules/
 coverage/
 .local-chromium/
-tmp/
 log/
 *.png
 *.jpg
 *.pdf
 *.env
-!tmp/.gitkeep
-!tmp/input/.gitkeep
