@@ -4,7 +4,7 @@
 [![crocodile](https://img.shields.io/badge/crocodiles_in_the_basement-%F0%9F%90%8A_yes-orange.svg)](/lib)
 [![license](https://img.shields.io/github/license/theDavidBarton/puppeteer-daily-menu-scraper.svg)](/LICENSE.md)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FtheDavidBarton%2Fpuppeteer-daily-menu-scraper.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FtheDavidBarton%2Fpuppeteer-daily-menu-scraper?ref=badge_shield)
-
+[![tested with jest](https://img.shields.io/static/v1.svg?label=tested%20with&message=jest&color=C21325&logo=jest)](https://github.com/facebook/jest)
 
 # Puppeteer Daily Menu Scraper
 
@@ -20,14 +20,15 @@ The final output is stored in JSON and posted to slack via webhooks.
 ###### KEYWORDS: [puppeteer](https://github.com/search?q=puppeteer) | [OCR](https://github.com/search?q=ocr) | [web scraping](https://github.com/search?q=web+scraping) | [facebook scraping](https://github.com/search?q=facebook+scraping) | [webhooks](https://github.com/search?q=webhooks)
 
 
-### What can you find here?
+### What can you do here?
 
-- scraping daily menus and print the output with webhooks to slack;
-- scraping facebook images and retrieve their content with OCR.
+- scrape daily menus and post the information with webhooks to slack;
+- scrape images from facebook posts and retrieve their content with OCR.
 
 ### Install packages
 
-![node](https://img.shields.io/badge/node-%3E%3D10.15.3-green.svg)
+![node](https://img.shields.io/badge/node-%3E%3D7.6.0-green.svg)
+![node-dev](https://img.shields.io/badge/node_(devDependencies)-%3E%3D10.15.3-green.svg)
 [![pptr](https://img.shields.io/github/package-json/dependency-version/theDavidBarton/puppeteer-daily-menu-scraper/puppeteer.svg)](/package.json)
 
 `yarn install` the project (see dependencies in [package.json](/package.json))
@@ -36,7 +37,7 @@ The final output is stored in JSON and posted to slack via webhooks.
 
 I.) touch an `app.env` file (gitignored) in the root folder. Create your own OCR Space API key; request user for the daily_menu mongoDB (or create your own and replace uri in the code to fit); and finally store the webhooks urls for slack per environment.
 
-```shell_session
+```bash
 # create your API key here: https://ocr.space/ocrapi#free
 export OCR_API_KEY="******************"
 
@@ -49,15 +50,15 @@ export WEBHOOK_URL_TEST=https://hooks.slack.com/services/*********/*********/***
 export WEBHOOK_URL_PROD=https://hooks.slack.com/services/*********/*********/************************
 ```
 
-II.) source the created file to local environment variables (depending on your environment you'll need to find a method which lasts more than the current session!):
+II.) source the created file to local environment variables (depending on your platform you'll need to find a method which lasts more than the current session!):
 
-```shell_session
+```bash
 $ source app.env
 ```
 
 ### Run scrapers
 
-```shell_session
+```bash
 $ node scrapeDailyMenu.js
 ```
 
