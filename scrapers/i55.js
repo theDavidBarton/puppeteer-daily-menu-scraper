@@ -54,7 +54,7 @@ async function scraper(){
   let paramValueString
   let paramPriceString
   let paramAddressString = 'Budapest, Alkotmány u. 20, 1054'
-  let weeklyI55
+  let weeklyI55, weeklyI55Daily
 
   // @ I55 selectors
   const weeklyI55Selector = '.vc_column-inner'
@@ -62,9 +62,10 @@ async function scraper(){
   try {
     await page.goto(paramUrl, { waituntil: 'domcontentloaded', timeout: 0 })
     weeklyI55 = await page.evaluate(el => el.textContent, (await page.$$(weeklyI55Selector))[1])
+    weeklyI55Daily = weeklyI55.match(/levesek([\s\S]*?)ebédelj/gi)
     paramPriceString = await priceCatcher.priceCatcher(weeklyI55) // @ I55 price catch
 
-    paramValueString = await stringValueCleaner.stringValueCleaner(weeklyI55, false)
+    paramValueString = await stringValueCleaner.stringValueCleaner(weeklyI55Daily, false)
 
     console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
     console.log(paramValueString + '\n')
