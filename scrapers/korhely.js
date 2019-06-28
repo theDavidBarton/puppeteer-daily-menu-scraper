@@ -80,13 +80,13 @@ async function scraper() {
 
     paramValueString =
       '• Soups: ' +
-      await stringValueCleaner.stringValueCleaner(weeklySoupKorhely, true) +
+      await stringValueCleaner.stringValueCleaner(weeklySoupKorhely, false) +
       '\n' +
       '• Main courses: ' +
-      await stringValueCleaner.stringValueCleaner(weeklyMainKorhely, true) +
+      await stringValueCleaner.stringValueCleaner(weeklyMainKorhely, false) +
       '\n' +
       '• Desserts: ' +
-      await stringValueCleaner.stringValueCleaner(weeklyDessertKorhely, true)
+      await stringValueCleaner.stringValueCleaner(weeklyDessertKorhely, false)
 
     console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
     console.log(paramValueString + '\n')

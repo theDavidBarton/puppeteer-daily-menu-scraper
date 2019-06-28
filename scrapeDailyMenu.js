@@ -99,6 +99,7 @@ async function scrapeMenu() {
   }
 
   // require scrapers after module.exports object is declared
+  const i55 = require('./scrapers/i55')
   const nokedli = require('./scrapers/nokedli')
   const pestiDiszno = require('./scrapers/pestiDiszno')
   const incognito = require('./scrapers/incognito')
@@ -116,6 +117,7 @@ async function scrapeMenu() {
   const karcsi = require('./scrapers/karcsi')
 
   // launch scrapers
+  await i55.scraper() /*
   await nokedli.scraper()
   await pestiDiszno.scraper()
   await incognito.scraper()
@@ -130,7 +132,7 @@ async function scrapeMenu() {
   await kamra.scraper()
   await roza.scraper()
   await suppe.scraper()
-  await karcsi.scraper()
+  await karcsi.scraper()*/
 
   // prepare output for submit by stringifying the object
   finalJSON = JSON.stringify(finalJSON)
@@ -145,7 +147,7 @@ async function scrapeMenu() {
   // _POST the final JSON to webhook
   request(
     {
-      url: process.env.WEBHOOK_URL_PROD,
+      url: process.env.WEBHOOK_URL_TEST,
       method: 'POST',
       json: false,
       body: finalJSON
