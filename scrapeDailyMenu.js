@@ -117,7 +117,7 @@ async function scrapeMenu() {
   const karcsi = require('./scrapers/karcsi')
 
   // launch scrapers
-  await i55.scraper() /*
+  await i55.scraper()
   await nokedli.scraper()
   await pestiDiszno.scraper()
   await incognito.scraper()
@@ -132,7 +132,7 @@ async function scrapeMenu() {
   await kamra.scraper()
   await roza.scraper()
   await suppe.scraper()
-  await karcsi.scraper()*/
+  await karcsi.scraper()
 
   // prepare output for submit by stringifying the object
   finalJSON = JSON.stringify(finalJSON)
@@ -147,7 +147,7 @@ async function scrapeMenu() {
   // _POST the final JSON to webhook
   request(
     {
-      url: process.env.WEBHOOK_URL_TEST,
+      url: process.env.WEBHOOK_URL_PROD,
       method: 'POST',
       json: false,
       body: finalJSON

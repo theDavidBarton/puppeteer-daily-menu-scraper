@@ -15,6 +15,7 @@
  */
 
 const puppeteer = require('puppeteer')
+const dateCatcher = require('./../lib/dateCatcher')
 const priceCatcher = require('./../lib/priceCatcher')
 const stringValueCleaner = require('./../lib/stringValueCleaner')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
@@ -55,6 +56,7 @@ async function scraper(){
   let paramPriceString
   let paramAddressString = 'Budapest, Alkotmány u. 20, 1054'
   let weeklyI55, weeklyI55Daily
+  let found
 
   // @ I55 selectors
   const weeklyI55Selector = '.vc_column-inner'
@@ -63,10 +65,14 @@ async function scraper(){
     await page.goto(paramUrl, { waituntil: 'domcontentloaded', timeout: 0 })
     weeklyI55 = await page.evaluate(el => el.textContent, (await page.$$(weeklyI55Selector))[1])
     weeklyI55Daily = weeklyI55.match(/levesek([\s\S]*?)ebédelj/gi)
-    paramPriceString = await priceCatcher.priceCatcher(weeklyI55) // @ I55 price catch
-
-    paramValueString = await stringValueCleaner.stringValueCleaner(weeklyI55Daily, false)
-
+    paramPriceString = await priceCatcher.priceCatcher(weeklyI55, 1) // @ I55 price catch
+    found = await dateCatcher.dateCatcher(weeklyI55, true) // @ I55 catch date
+    if (found === true) {
+      paramValueString = await stringValueCleaner.stringValueCleaner(weeklyI55Daily, false)
+      paramValueString = paramValueString.replace(/\(\)/g, '').replace(/\n/, ' ') // to be moved to ValueCleaner mpodule later!
+    } else {
+      paramValueString = 'menu is outdated!'
+    }
     console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
     console.log(paramValueString + '\n')
 
