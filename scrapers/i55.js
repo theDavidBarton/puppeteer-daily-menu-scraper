@@ -24,7 +24,7 @@ const finalMongoJSON = require('./../scrapeDailyMenu').finalMongoJSON
 const RestaurantMenuOutput = require('./../scrapeDailyMenu').RestaurantMenuOutput
 const RestaurantMenuDb = require('./../scrapeDailyMenu').RestaurantMenuDb
 
-async function scraper(){
+async function scraper() {
   const browser = await puppeteer.connect({ browserWSEndpoint })
   const page = await browser.newPage()
 
@@ -51,6 +51,7 @@ async function scraper(){
   let paramColor = '#104283'
   let paramTitleString = 'I55'
   let paramUrl = 'http://i55.hu/ebedmenu/'
+  let paramUrlFallback = 'https://www.facebook.com/pg/i55americanrestaurant/posts/'
   let paramIcon = 'http://i55.hu/wp-content/uploads/2018/05/i55-1.png'
   let paramValueString
   let paramPriceString
@@ -60,6 +61,7 @@ async function scraper(){
 
   // @ I55 selectors
   const weeklyI55Selector = '.vc_column-inner'
+  const weeklyI55SelectorFallback = '.userContent'
 
   try {
     await page.goto(paramUrl, { waituntil: 'domcontentloaded', timeout: 0 })
@@ -70,8 +72,25 @@ async function scraper(){
     if (found === true) {
       paramValueString = await stringValueCleaner.stringValueCleaner(weeklyI55Daily, false)
       paramValueString = paramValueString.replace(/\(\)/g, '').replace(/\n/, ' ') // to be moved to stringValueCleaner module later!
+
+      // fallback on facebook page
     } else {
-      paramValueString = 'menu is outdated!'
+      await page.goto(paramUrlFallback, { waituntil: 'domcontentloaded', timeout: 0 })
+      forlabel: for (let i = 0; i < 10; i++) {
+        weeklyI55 = await page.evaluate(el => el.textContent, (await page.$$(weeklyI55SelectorFallback))[i])
+        if (weeklyI55.match(/levesek([\s\S]*?)ebédelj/gi)) {
+          weeklyI55Daily = weeklyI55.match(/levesek([\s\S]*?)ebédelj/gi)
+          paramPriceString = await priceCatcher.priceCatcher(weeklyI55, 1) // @ I55 price catch
+          found = await dateCatcher.dateCatcher(weeklyI55, true) // @ I55 catch date
+          if (found === true) {
+            paramValueString = await stringValueCleaner.stringValueCleaner(weeklyI55Daily, false)
+            paramValueString = paramValueString.replace(/\(\)/g, '').replace(/\n/, ' ') // to be moved to stringValueCleaner module later!
+            break forlabel
+          } else {
+            paramValueString = 'menu is out of date!'
+          }
+        }
+      }
     }
     console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
     console.log(paramValueString + '\n')
