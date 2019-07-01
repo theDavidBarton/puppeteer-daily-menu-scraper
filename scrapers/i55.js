@@ -69,7 +69,7 @@ async function scraper(){
     found = await dateCatcher.dateCatcher(weeklyI55, true) // @ I55 catch date
     if (found === true) {
       paramValueString = await stringValueCleaner.stringValueCleaner(weeklyI55Daily, false)
-      paramValueString = paramValueString.replace(/\(\)/g, '').replace(/\n/, ' ') // to be moved to ValueCleaner mpodule later!
+      paramValueString = paramValueString.replace(/\(\)/g, '').replace(/\n/, ' ') // to be moved to stringValueCleaner module later!
     } else {
       paramValueString = 'menu is outdated!'
     }
