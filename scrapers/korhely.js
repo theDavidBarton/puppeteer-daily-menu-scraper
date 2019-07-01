@@ -15,6 +15,7 @@
  */
 
 const puppeteer = require('puppeteer')
+const dateCatcher = require('./../lib/dateCatcher')
 const priceCatcher = require('./../lib/priceCatcher')
 const stringValueCleaner = require('./../lib/stringValueCleaner')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
@@ -54,7 +55,7 @@ async function scraper() {
   let paramValueString
   let paramPriceString
   let paramAddressString = 'Budapest, Liszt Ferenc tér 7, 1061'
-  let weeklySoupKorhely, weeklyMainKorhely, weeklyDessertKorhely
+  let weeklySoupKorhely, weeklyMainKorhely, weeklyDessertKorhely, found
 
   // @ KORHELY selectors
   const summarySelector = '.MenusNavigation_description'
@@ -74,19 +75,24 @@ async function scraper() {
   try {
     const summary = await page.evaluate(el => el.textContent, (await page.$$(summarySelector))[1])
     paramPriceString = await priceCatcher.priceCatcher(summary) // @ KORHELY price catch
-    weeklySoupKorhely = await page.evaluate(el => el.innerText, await page.$(weeklySoupKorhelySelector))
-    weeklyMainKorhely = await page.evaluate(el => el.innerText, await page.$(weeklyMainKorhelySelector))
-    weeklyDessertKorhely = await page.evaluate(el => el.innerText, await page.$(weeklyDessertKorhelySelector))
+    found = await dateCatcher.dateCatcher(summary, true)
+    if (found === true) {
+      weeklySoupKorhely = await page.evaluate(el => el.innerText, await page.$(weeklySoupKorhelySelector))
+      weeklyMainKorhely = await page.evaluate(el => el.innerText, await page.$(weeklyMainKorhelySelector))
+      weeklyDessertKorhely = await page.evaluate(el => el.innerText, await page.$(weeklyDessertKorhelySelector))
 
-    paramValueString =
-      '• Soups: ' +
-      await stringValueCleaner.stringValueCleaner(weeklySoupKorhely, false) +
-      '\n' +
-      '• Main courses: ' +
-      await stringValueCleaner.stringValueCleaner(weeklyMainKorhely, false) +
-      '\n' +
-      '• Desserts: ' +
-      await stringValueCleaner.stringValueCleaner(weeklyDessertKorhely, false)
+      paramValueString =
+        '• Soups: ' +
+        (await stringValueCleaner.stringValueCleaner(weeklySoupKorhely, false)) +
+        '\n' +
+        '• Main courses: ' +
+        (await stringValueCleaner.stringValueCleaner(weeklyMainKorhely, false)) +
+        '\n' +
+        '• Desserts: ' +
+        (await stringValueCleaner.stringValueCleaner(weeklyDessertKorhely, false))
+    } else {
+      paramValueString = 'menu is outdated!'
+    }
 
     console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
     console.log(paramValueString + '\n')
