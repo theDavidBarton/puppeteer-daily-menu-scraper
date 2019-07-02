@@ -1,6 +1,6 @@
 {
    "rules":{
-      "á":"¿|ä",
+      "á":"¿|ä|\\.í",
       "comb":"co\\.mb",
       "cs":"c,s",
       "csirke":"c.sirkf.|c:s1rkf.|cs.rke",
