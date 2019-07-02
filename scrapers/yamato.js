@@ -16,6 +16,7 @@
 
 const puppeteer = require('puppeteer')
 const dateCatcher = require('./../lib/dateCatcher')
+const priceCatcher = require('./../lib/priceCatcher')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
 const today = require('./../scrapeDailyMenu').today
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
@@ -68,6 +69,7 @@ async function scraper() {
     await page.goto(paramUrl, { waitUntil: 'domcontentloaded', timout: 0 })
     const theWhole = await page.evaluate(el => el.textContent, await page.$('body'))
     found = await dateCatcher.dateCatcher(theWhole) // @ YAMATO catch date
+    paramPriceString = await priceCatcher.priceCatcher(theWhole) // @ YAMATO price catch
     // @ YAMATO Monday-Friday
     for (let i = today; i < today + 1; i++) {
       if (found === true) {

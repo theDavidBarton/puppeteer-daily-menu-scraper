@@ -58,14 +58,14 @@ async function scraper() {
   let dailyRoza
 
   // @ ROZA selector
-  const dailyRozaSelector = '.text_exposed_show'
+  const dailyRozaSelector = '.userContent'
 
   try {
-    await page.goto(paramUrl, { waitUntil: 'networkidle2' })
+    await page.goto(paramUrl, { waitUntil: 'domcontentloaded' })
     // @ ROZA Daily
-    dailyRoza = await page.evaluate(el => el.innerText, await page.$(dailyRozaSelector))
+    dailyRoza = await page.evaluate(el => el.textContent, (await page.$$(dailyRozaSelector))[0])
     paramPriceString = await priceCatcher.priceCatcher(dailyRoza) // @ ROZA price catch
-    paramValueString = '• Daily menu: ' + await stringValueCleaner.stringValueCleaner(dailyRoza, true) // @ ROZA clean string
+    paramValueString = '• Daily menu: ' + (await stringValueCleaner.stringValueCleaner(dailyRoza, true)) // @ ROZA clean string
     console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
     console.log(paramValueString + '\n')
     // @ ROZA object
