@@ -71,7 +71,7 @@ async function scraper() {
     // @ YAMATO Monday-Friday
     for (let i = today; i < today + 1; i++) {
       if (found === true) {
-        yamato = await page.evaluate(el => el.textContent, await page.$(yamatoSelector[yamatoArray[i]]))
+        yamato = await page.evaluate(el => el.textContent, (await page.$$(yamatoSelector))[yamatoArray[i]])
         yamato = yamato.replace(/(\r?\n)/gm, ', ')
       } else {
         yamato = '♪"No Milk Today"♫'
