@@ -61,23 +61,17 @@ async function scraper() {
   let found
 
   // @ YAMATO selectors
-  let yamatoArray = [
-    '',
-    'body > div > h6:nth-child(2)',
-    'body > div > h6:nth-child(4)',
-    'body > div > h6:nth-child(6)',
-    'body > div > h6:nth-child(8)',
-    'body > div > h6:nth-child(10)'
-  ]
+  let yamatoSelector = '.fr-tag'
+  let yamatoArray = [0, 1, 3, 5, 7, 9]
 
   try {
-    await page.goto(paramUrl, { waitUntil: 'networkidle2', timout: 0 })
+    await page.goto(paramUrl, { waitUntil: 'domcontentloaded', timout: 0 })
     const theWhole = await page.evaluate(el => el.textContent, await page.$('body'))
     found = await dateCatcher.dateCatcher(theWhole) // @ YAMATO catch date
     // @ YAMATO Monday-Friday
     for (let i = today; i < today + 1; i++) {
-      if ((await page.$(yamatoArray[i])) !== null && found === true) {
-        yamato = await page.evaluate(el => el.innerText, await page.$(yamatoArray[i]))
+      if (found === true) {
+        yamato = await page.evaluate(el => el.textContent, await page.$(yamatoSelector[yamatoArray[i]]))
         yamato = yamato.replace(/(\r?\n)/gm, ', ')
       } else {
         yamato = '♪"No Milk Today"♫'
