@@ -66,7 +66,7 @@ async function scraper() {
   let yamatoArray = [0, 1, 3, 5, 7, 9]
 
   try {
-    await page.goto(paramUrl, { waitUntil: 'domcontentloaded', timout: 0 })
+    await page.goto(paramUrl, { waitUntil: 'domcontentloaded', timeout: 0 })
     const theWhole = await page.evaluate(el => el.textContent, await page.$('body'))
     found = await dateCatcher.dateCatcher(theWhole) // @ YAMATO catch date
     paramPriceString = await priceCatcher.priceCatcher(theWhole) // @ YAMATO price catch
