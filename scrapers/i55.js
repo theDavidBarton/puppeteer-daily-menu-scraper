@@ -55,6 +55,8 @@ async function scraper() {
   let paramIcon = 'http://i55.hu/wp-content/uploads/2018/05/i55-1.png'
   let paramValueString
   let paramPriceString
+  let paramPriceCurrency
+  let paramPriceCurrencyString
   let paramAddressString = 'Budapest, Alkotmány u. 20, 1054'
   let weeklyI55, weeklyI55Daily
   let found
@@ -67,7 +69,12 @@ async function scraper() {
     await page.goto(paramUrl, { waituntil: 'domcontentloaded', timeout: 0 })
     weeklyI55 = await page.evaluate(el => el.textContent, (await page.$$(weeklyI55Selector))[1])
     weeklyI55Daily = weeklyI55.match(/levesek([\s\S]*?)ebédelj/gi)
-    paramPriceString = await priceCatcher.priceCatcher(weeklyI55, 1) // @ I55 price catch
+    // @ I55 price catch
+    let { price, priceCurrencyStr, priceCurrency } = await priceCatcher.priceCatcher(weeklyI55, 1)
+    paramPriceString = price
+    paramPriceCurrency = priceCurrencyStr
+    paramPriceCurrencyString = priceCurrency
+
     found = await dateCatcher.dateCatcher(weeklyI55, true) // @ I55 catch date
     if (found === true) {
       paramValueString = await stringValueCleaner.stringValueCleaner(weeklyI55Daily, false)
@@ -96,18 +103,26 @@ async function scraper() {
     console.log(paramValueString + '\n')
 
     // @ I55 object
-    let i55Obj = new RestaurantMenuOutput(
+    let obj = new RestaurantMenuOutput(
       paramColor,
       paramTitleString,
       paramUrl,
       paramIcon,
       paramValueString,
       paramPriceString,
+      paramPriceCurrency,
+      paramPriceCurrencyString,
       paramAddressString
     )
-    let i55MongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramValueString)
-    finalJSON.attachments.push(i55Obj)
-    finalMongoJSON.push(i55MongoObj)
+    let mongoObj = new RestaurantMenuDb(
+      paramTitleString,
+      paramPriceString,
+      paramPriceCurrency,
+      paramPriceCurrencyString,
+      paramValueString
+    )
+    finalJSON.attachments.push(obj)
+    finalMongoJSON.push(mongoObj)
   } catch (e) {
     console.error(e)
   }

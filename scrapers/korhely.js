@@ -54,6 +54,8 @@ async function scraper() {
   let paramIcon = 'https://etterem.hu/img/max960/p9787n/1393339359-3252.jpg'
   let paramValueString
   let paramPriceString
+  let paramPriceCurrency
+  let paramPriceCurrencyString
   let paramAddressString = 'Budapest, Liszt Ferenc tér 7, 1061'
   let weeklySoupKorhely, weeklyMainKorhely, weeklyDessertKorhely, found
 
@@ -74,7 +76,12 @@ async function scraper() {
   // @ KORHELY Weekly
   try {
     const summary = await page.evaluate(el => el.textContent, (await page.$$(summarySelector))[1])
-    paramPriceString = await priceCatcher.priceCatcher(summary) // @ KORHELY price catch
+    // @ KORHELY price catch
+    let { price, priceCurrencyStr, priceCurrency } = await priceCatcher.priceCatcher(summary)
+    paramPriceString = price
+    paramPriceCurrency = priceCurrencyStr
+    paramPriceCurrencyString = priceCurrency
+
     found = await dateCatcher.dateCatcher(summary, true)
     if (found === true) {
       weeklySoupKorhely = await page.evaluate(el => el.innerText, await page.$(weeklySoupKorhelySelector))
@@ -97,18 +104,26 @@ async function scraper() {
     console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
     console.log(paramValueString + '\n')
     // @ KORHELY object
-    let korhelyObj = new RestaurantMenuOutput(
+    let obj = new RestaurantMenuOutput(
       paramColor,
       paramTitleString,
       paramUrl,
       paramIcon,
       paramValueString,
       paramPriceString,
+      paramPriceCurrency,
+      paramPriceCurrencyString,
       paramAddressString
     )
-    let korhelyMongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramValueString)
-    finalJSON.attachments.push(korhelyObj)
-    finalMongoJSON.push(korhelyMongoObj)
+    let mongoObj = new RestaurantMenuDb(
+      paramTitleString,
+      paramPriceString,
+      paramPriceCurrency,
+      paramPriceCurrencyString,
+      paramValueString
+    )
+    finalJSON.attachments.push(obj)
+    finalMongoJSON.push(mongoObj)
   } catch (e) {
     console.error(e)
   }

@@ -52,6 +52,8 @@ async function scraper() {
   let paramIcon = 'https://media-cdn.tripadvisor.com/media/photo-s/06/f5/9b/24/getlstd-property-photo.jpg'
   let paramValueString
   let paramPriceString
+  let paramPriceCurrency
+  let paramPriceCurrencyString
   let paramAddressString = 'Budapest, Hercegprímás u. 19, 1051'
   let dailyKamra = []
 
@@ -69,24 +71,36 @@ async function scraper() {
       dailyKamra.push(dailyKamraItem)
     }
     dailyKamra = dailyKamra.join(', ')
-    paramPriceString = await priceCatcher.priceCatcher(dailyKamra) // @ KAMRA price catch
+    // @ KAMRA price catch
+    let { price, priceCurrencyStr, priceCurrency } = await priceCatcher.priceCatcher(dailyKamra)
+    paramPriceString = price
+    paramPriceCurrency = priceCurrencyStr
+    paramPriceCurrencyString = priceCurrency
 
     paramValueString = '• Daily menu: ' + dailyKamra
     console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
     console.log(dayKamra + paramValueString + '\n')
     // @ KAMRA object
-    let kamraObj = new RestaurantMenuOutput(
+    let obj = new RestaurantMenuOutput(
       paramColor,
       paramTitleString,
       paramUrl,
       paramIcon,
       paramValueString,
       paramPriceString,
+      paramPriceCurrency,
+      paramPriceCurrencyString,
       paramAddressString
     )
-    let kamraMongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramValueString)
-    finalJSON.attachments.push(kamraObj)
-    finalMongoJSON.push(kamraMongoObj)
+    let mongoObj = new RestaurantMenuDb(
+      paramTitleString,
+      paramPriceString,
+      paramPriceCurrency,
+      paramPriceCurrencyString,
+      paramValueString
+    )
+    finalJSON.attachments.push(obj)
+    finalMongoJSON.push(mongoObj)
   } catch (e) {
     console.error(e)
   }

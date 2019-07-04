@@ -56,6 +56,8 @@ async function scraper() {
   let paramIcon = 'https://static.wixstatic.com/media/d21995_af5b6ceedafd4913b3ed17f6377cdfa7~mv2.png'
   let paramValueString
   let paramPriceString
+  let paramPriceCurrency
+  let paramPriceCurrencyString
   let paramAddressString = 'Budapest, Liszt Ferenc tér 9, 1061'
   let vian1, vian2
 
@@ -96,23 +98,36 @@ async function scraper() {
         vian2 = ''
       }
       const body = await page.evaluate(el => el.textContent, (await page.$$('#mainDiv'))[0])
-      paramPriceString = await priceCatcher.priceCatcher(body) // @ VIAN price catch
+      // @ VIAN price catch
+      let { price, priceCurrencyStr, priceCurrency } = await priceCatcher.priceCatcher(body)
+      paramPriceString = price
+      paramPriceCurrency = priceCurrencyStr
+      paramPriceCurrencyString = priceCurrency
+
       paramValueString = '• Daily menu: ' + vian1 + ', ' + vian2 + '\n'
       console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
       console.log(paramValueString)
       // @ VIAN object
-      let vianObj = new RestaurantMenuOutput(
+      let obj = new RestaurantMenuOutput(
         paramColor,
         paramTitleString,
         paramUrl,
         paramIcon,
         paramValueString,
         paramPriceString,
+        paramPriceCurrency,
+        paramPriceCurrencyString,
         paramAddressString
       )
-      let vianMongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramValueString)
-      finalJSON.attachments.push(vianObj)
-      finalMongoJSON.push(vianMongoObj)
+      let mongoObj = new RestaurantMenuDb(
+        paramTitleString,
+        paramPriceString,
+        paramPriceCurrency,
+        paramPriceCurrencyString,
+        paramValueString
+      )
+      finalJSON.attachments.push(obj)
+      finalMongoJSON.push(mongoObj)
     }
   } catch (e) {
     console.error(e)

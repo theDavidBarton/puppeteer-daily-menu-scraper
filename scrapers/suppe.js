@@ -57,7 +57,9 @@ async function scraper() {
   let paramIcon =
     'https://scontent.fbud1-1.fna.fbcdn.net/v/t1.0-1/c36.0.320.320a/p320x320/1377248_364465010354681_215635093_n.jpg?_nc_cat=101&_nc_ht=scontent.fbud1-1.fna&oh=2e5b2ffdede3a0606b410ca121409f27&oe=5D5F0B90'
   let paramValueString
-  let paramPriceString = '1100'
+  let paramPriceString = '1190'
+  let paramPriceCurrency = 'HUF'
+  let paramPriceCurrencyString = ' Ft'
   let paramAddressString = 'Budapest, Hajós u. 19, 1065'
   let mondaySuppe, dailySuppe, weeklySuppe
 
@@ -88,18 +90,26 @@ async function scraper() {
       console.log('• ' + dayNames[today] + ': ' + paramValueString)
     }
     // @ SUPPÉ object
-    let suppeObj = new RestaurantMenuOutput(
+    let obj = new RestaurantMenuOutput(
       paramColor,
       paramTitleString,
       paramUrl,
       paramIcon,
       paramValueString,
       paramPriceString,
+      paramPriceCurrency,
+      paramPriceCurrencyString,
       paramAddressString
     )
-    let suppeMongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramValueString)
-    finalJSON.attachments.push(suppeObj)
-    finalMongoJSON.push(suppeMongoObj)
+    let mongoObj = new RestaurantMenuDb(
+      paramTitleString,
+      paramPriceString,
+      paramPriceCurrency,
+      paramPriceCurrencyString,
+      paramValueString
+    )
+    finalJSON.attachments.push(obj)
+    finalMongoJSON.push(mongoObj)
   } catch (e) {
     console.error(e)
   }
