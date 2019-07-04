@@ -66,9 +66,10 @@ async function scraper() {
     dailyFruccola1 = await page.evaluate(el => el.innerText, await page.$(dailyFruccolaSelector1))
     dailyFruccola2 = await page.evaluate(el => el.innerText, await page.$(dailyFruccolaSelector2))
     paramPriceString = await page.evaluate(el => el.innerText, (await page.$$('.soup-and-maindish > .price'))[0]) // @ FRUCCOLA price catch
-    paramValueString = '• Daily menu: ' + dailyFruccola1 + ', ' + dailyFruccola2 + '\n'
+    paramValueString = '• Daily menu: ' + dailyFruccola1 + ', ' + dailyFruccola2
     console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
     console.log(paramValueString)
+    console.log(paramPriceString + paramPriceCurrencyString + '\n')
     // @ FRUCCOLA object
     let obj = new RestaurantMenuOutput(
       paramColor,
@@ -85,7 +86,6 @@ async function scraper() {
       paramTitleString,
       paramPriceString,
       paramPriceCurrency,
-      paramPriceCurrencyString,
       paramValueString
     )
     finalJSON.attachments.push(obj)

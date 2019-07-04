@@ -97,8 +97,8 @@ async function ocrFacebookImage(
           // @ {RESTAURANT} price catch
           let { price, priceCurrencyStr, priceCurrency } = await priceCatcher.priceCatcher(parsedResult)
           paramPriceString = price
-          paramPriceCurrency = priceCurrencyStr
-          paramPriceCurrencyString = priceCurrency
+          paramPriceCurrency = priceCurrency
+          paramPriceCurrencyString = priceCurrencyStr
 
           let restaurantDaily = parsedResult.match(restaurantDaysRegex[j])
           restaurantDaily = restaurantDaily.toString().split(/\r?\n/)
@@ -110,7 +110,8 @@ async function ocrFacebookImage(
           // @ {RESTAURANT} clean string
           paramValueString = '• Daily menu: ' + await stringValueCleaner.stringValueCleaner(paramValueString, true)
           console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
-          console.log(paramValueString + '\n')
+          console.log(paramValueString)
+          console.log(paramPriceString + paramPriceCurrencyString + '\n')
           // @ {RESTAURANT} object
           let obj = new RestaurantMenuOutput(
             paramColor,
@@ -127,7 +128,6 @@ async function ocrFacebookImage(
             paramTitleString,
             paramPriceString,
             paramPriceCurrency,
-            paramPriceCurrencyString,
             paramValueString
           )
           finalJSON.attachments.push(obj)

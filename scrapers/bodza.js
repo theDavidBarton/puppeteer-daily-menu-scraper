@@ -70,8 +70,8 @@ async function scraper() {
         // @ BODZA price catch
         let { price, priceCurrencyStr, priceCurrency } = await priceCatcher.priceCatcher(bodzaDaily)
         paramPriceString = price
-        paramPriceCurrency = priceCurrencyStr
-        paramPriceCurrencyString = priceCurrency
+        paramPriceCurrency = priceCurrency
+        paramPriceCurrencyString = priceCurrencyStr
 
         bodzaDaily = bodzaDaily.match(/(.*)CHEF NAPI AJÁNLATA(.*\r?\n){3}/gi)
         bodzaDaily = bodzaDaily
@@ -83,10 +83,15 @@ async function scraper() {
         break forlabelBodza
       }
       bodzaDaily = '♪"No Milk Today"♫'
+      // sorry about this one :(
+      paramPriceString = 'n/a'
+      paramPriceCurrency = 'n/a'
+      paramPriceCurrencyString = ''
     }
-    paramValueString = '• Daily menu: ' + bodzaDaily + '\n'
+    paramValueString = '• Daily menu: ' + bodzaDaily
     console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
     console.log(paramValueString)
+    console.log(paramPriceString + paramPriceCurrencyString + '\n')
     // @ BODZA object
     let obj = new RestaurantMenuOutput(
       paramColor,
@@ -103,7 +108,6 @@ async function scraper() {
       paramTitleString,
       paramPriceString,
       paramPriceCurrency,
-      paramPriceCurrencyString,
       paramValueString
     )
     finalJSON.attachments.push(obj)

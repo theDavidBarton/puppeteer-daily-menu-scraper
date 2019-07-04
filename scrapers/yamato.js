@@ -74,8 +74,8 @@ async function scraper() {
     // @ YAMATO price catch
     let { price, priceCurrencyStr, priceCurrency } = await priceCatcher.priceCatcher(theWhole)
     paramPriceString = price
-    paramPriceCurrency = priceCurrencyStr
-    paramPriceCurrencyString = priceCurrency
+    paramPriceCurrency = priceCurrency
+    paramPriceCurrencyString = priceCurrencyStr
     // @ YAMATO Monday-Friday
     for (let i = today; i < today + 1; i++) {
       if (found === true) {
@@ -84,9 +84,10 @@ async function scraper() {
       } else {
         yamato = '♪"No Milk Today"♫'
       }
-      paramValueString = '• Daily menu: ' + yamato + '\n'
+      paramValueString = '• Daily menu: ' + yamato
       console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
       console.log(paramValueString)
+      console.log(paramPriceString + paramPriceCurrencyString + '\n')
       // @ YAMATO object
       let obj = new RestaurantMenuOutput(
         paramColor,
@@ -103,7 +104,6 @@ async function scraper() {
         paramTitleString,
         paramPriceString,
         paramPriceCurrency,
-        paramPriceCurrencyString,
         paramValueString
       )
       finalJSON.attachments.push(obj)

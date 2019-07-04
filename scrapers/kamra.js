@@ -74,12 +74,13 @@ async function scraper() {
     // @ KAMRA price catch
     let { price, priceCurrencyStr, priceCurrency } = await priceCatcher.priceCatcher(dailyKamra)
     paramPriceString = price
-    paramPriceCurrency = priceCurrencyStr
-    paramPriceCurrencyString = priceCurrency
+    paramPriceCurrency = priceCurrency
+    paramPriceCurrencyString = priceCurrencyStr
 
     paramValueString = '• Daily menu: ' + dailyKamra
     console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
-    console.log(dayKamra + paramValueString + '\n')
+    console.log(dayKamra + paramValueString)
+    console.log(paramPriceString + paramPriceCurrencyString + '\n')
     // @ KAMRA object
     let obj = new RestaurantMenuOutput(
       paramColor,
@@ -96,7 +97,6 @@ async function scraper() {
       paramTitleString,
       paramPriceString,
       paramPriceCurrency,
-      paramPriceCurrencyString,
       paramValueString
     )
     finalJSON.attachments.push(obj)

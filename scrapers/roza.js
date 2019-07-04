@@ -69,12 +69,13 @@ async function scraper() {
     // @ ROZA price catch
     let { price, priceCurrencyStr, priceCurrency } = await priceCatcher.priceCatcher(dailyRoza)
     paramPriceString = price
-    paramPriceCurrency = priceCurrencyStr
-    paramPriceCurrencyString = priceCurrency
+    paramPriceCurrency = priceCurrency
+    paramPriceCurrencyString = priceCurrencyStr
 
     paramValueString = '• Daily menu: ' + (await stringValueCleaner.stringValueCleaner(dailyRoza, true)) // @ ROZA clean string
     console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
-    console.log(paramValueString + '\n')
+    console.log(paramValueString)
+    console.log(paramPriceString + paramPriceCurrencyString + '\n')
     // @ ROZA object
     let obj = new RestaurantMenuOutput(
       paramColor,
@@ -91,7 +92,6 @@ async function scraper() {
       paramTitleString,
       paramPriceString,
       paramPriceCurrency,
-      paramPriceCurrencyString,
       paramValueString
     )
     finalJSON.attachments.push(obj)

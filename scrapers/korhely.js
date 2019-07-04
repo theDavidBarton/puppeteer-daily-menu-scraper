@@ -79,8 +79,8 @@ async function scraper() {
     // @ KORHELY price catch
     let { price, priceCurrencyStr, priceCurrency } = await priceCatcher.priceCatcher(summary)
     paramPriceString = price
-    paramPriceCurrency = priceCurrencyStr
-    paramPriceCurrencyString = priceCurrency
+    paramPriceCurrency = priceCurrency
+    paramPriceCurrencyString = priceCurrencyStr
 
     found = await dateCatcher.dateCatcher(summary, true)
     if (found === true) {
@@ -102,7 +102,8 @@ async function scraper() {
     }
 
     console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
-    console.log(paramValueString + '\n')
+    console.log(paramValueString)
+    console.log(paramPriceString + paramPriceCurrencyString + '\n')
     // @ KORHELY object
     let obj = new RestaurantMenuOutput(
       paramColor,
@@ -119,7 +120,6 @@ async function scraper() {
       paramTitleString,
       paramPriceString,
       paramPriceCurrency,
-      paramPriceCurrencyString,
       paramValueString
     )
     finalJSON.attachments.push(obj)

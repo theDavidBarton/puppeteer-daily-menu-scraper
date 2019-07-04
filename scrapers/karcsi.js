@@ -41,7 +41,7 @@ async function scraper() {
   let paramValueString
   let paramPriceString = '1100'
   let paramPriceCurrency = 'n/a'
-  let paramPriceCurrencyString = ''
+  let paramPriceCurrencyString = ' Ft'
   let paramAddressString = 'Budapest, Jókai u. 20, 1066'
 
   // @ KARCSI weekly
@@ -85,9 +85,10 @@ async function scraper() {
       karcsiSoup = parsedResult.match(soupRegex)
     }
     // @ KARCSI clean string
-    paramValueString = '• Weekly offer: ' + await stringValueCleaner.stringValueCleaner(karcsiWeekly, true) + '\n• Daily menu: ' + await stringValueCleaner.stringValueCleaner(karcsiSoup, true) + await stringValueCleaner.stringValueCleaner(karcsiDaily, true) + '\n'
+    paramValueString = '• Weekly offer: ' + await stringValueCleaner.stringValueCleaner(karcsiWeekly, true) + '\n• Daily menu: ' + await stringValueCleaner.stringValueCleaner(karcsiSoup, true) + await stringValueCleaner.stringValueCleaner(karcsiDaily, true)
     console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
     console.log(paramValueString)
+    console.log(paramPriceString + paramPriceCurrencyString + '\n')
     // @ KARCSI object
     let obj = new RestaurantMenuOutput(
       paramColor,
@@ -104,7 +105,6 @@ async function scraper() {
       paramTitleString,
       paramPriceString,
       paramPriceCurrency,
-      paramPriceCurrencyString,
       paramValueString
     )
     finalJSON.attachments.push(obj)

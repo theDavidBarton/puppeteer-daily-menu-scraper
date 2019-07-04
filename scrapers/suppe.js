@@ -83,12 +83,13 @@ async function scraper() {
 
     console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
     if (today === 1) {
-      paramValueString = mondaySuppe + '\n'
+      paramValueString = mondaySuppe
       console.log('• ' + dayNames[today] + ': ' + paramValueString)
     } else {
-      paramValueString = dailySuppe + '\n' + weeklySuppe + '\n'
+      paramValueString = dailySuppe + '\n' + weeklySuppe
       console.log('• ' + dayNames[today] + ': ' + paramValueString)
     }
+    console.log(paramPriceString + paramPriceCurrencyString + '\n')
     // @ SUPPÉ object
     let obj = new RestaurantMenuOutput(
       paramColor,
@@ -105,7 +106,6 @@ async function scraper() {
       paramTitleString,
       paramPriceString,
       paramPriceCurrency,
-      paramPriceCurrencyString,
       paramValueString
     )
     finalJSON.attachments.push(obj)

@@ -185,7 +185,8 @@ async function scraper() {
       default:
         paramValueString = 'weekend work, eh?\n'
     }
-    console.log(paramValueString + '\n')
+    console.log(paramValueString)
+    console.log(paramPriceString + paramPriceCurrencyString + '\n')
 
     // @ NOKEDLI object
     let obj = new RestaurantMenuOutput(
@@ -203,7 +204,6 @@ async function scraper() {
       paramTitleString,
       paramPriceString,
       paramPriceCurrency,
-      paramPriceCurrencyString,
       paramValueString
     )
     finalJSON.attachments.push(obj)

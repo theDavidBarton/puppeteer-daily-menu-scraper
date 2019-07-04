@@ -101,12 +101,13 @@ async function scraper() {
       // @ VIAN price catch
       let { price, priceCurrencyStr, priceCurrency } = await priceCatcher.priceCatcher(body)
       paramPriceString = price
-      paramPriceCurrency = priceCurrencyStr
-      paramPriceCurrencyString = priceCurrency
+      paramPriceCurrency = priceCurrency
+      paramPriceCurrencyString = priceCurrencyStr
 
-      paramValueString = '• Daily menu: ' + vian1 + ', ' + vian2 + '\n'
+      paramValueString = '• Daily menu: ' + vian1 + ', ' + vian2
       console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
       console.log(paramValueString)
+      console.log(paramPriceString + paramPriceCurrencyString + '\n')
       // @ VIAN object
       let obj = new RestaurantMenuOutput(
         paramColor,
@@ -123,7 +124,6 @@ async function scraper() {
         paramTitleString,
         paramPriceString,
         paramPriceCurrency,
-        paramPriceCurrencyString,
         paramValueString
       )
       finalJSON.attachments.push(obj)

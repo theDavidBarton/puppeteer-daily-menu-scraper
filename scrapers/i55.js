@@ -72,8 +72,8 @@ async function scraper() {
     // @ I55 price catch
     let { price, priceCurrencyStr, priceCurrency } = await priceCatcher.priceCatcher(weeklyI55, 1)
     paramPriceString = price
-    paramPriceCurrency = priceCurrencyStr
-    paramPriceCurrencyString = priceCurrency
+    paramPriceCurrency = priceCurrency
+    paramPriceCurrencyString = priceCurrencyStr
 
     found = await dateCatcher.dateCatcher(weeklyI55, true) // @ I55 catch date
     if (found === true) {
@@ -100,7 +100,8 @@ async function scraper() {
       }
     }
     console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
-    console.log(paramValueString + '\n')
+    console.log(paramValueString)
+    console.log(paramPriceString + paramPriceCurrencyString + '\n')
 
     // @ I55 object
     let obj = new RestaurantMenuOutput(
@@ -118,7 +119,6 @@ async function scraper() {
       paramTitleString,
       paramPriceString,
       paramPriceCurrency,
-      paramPriceCurrencyString,
       paramValueString
     )
     finalJSON.attachments.push(obj)
