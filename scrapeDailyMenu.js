@@ -44,7 +44,17 @@ let finalJSON = {
 let finalMongoJSON = []
 
 // constructor for menu object
-let RestaurantMenuOutput = function(color, titleString, url, icon, valueString, priceString, addressString) {
+let RestaurantMenuOutput = function(
+  color,
+  titleString,
+  url,
+  icon,
+  valueString,
+  priceString,
+  priceCurrency,
+  priceCurrencyString,
+  addressString
+) {
   this.fallback = 'Please open it on a device that supports formatted messages.'
   this.pretext = '...'
   this.color = color
@@ -58,8 +68,8 @@ let RestaurantMenuOutput = function(color, titleString, url, icon, valueString, 
       short: false
     },
     {
-      title: 'price (HUF)',
-      value: priceString,
+      title: 'price (' + priceCurrency + ')',
+      value: priceString + priceCurrencyString,
       short: true
     },
     {
@@ -73,11 +83,11 @@ let RestaurantMenuOutput = function(color, titleString, url, icon, valueString, 
 }
 
 // constructor for database object
-let RestaurantMenuDb = function(titleString, priceString, valueString) {
+let RestaurantMenuDb = function(titleString, priceString, priceCurrency, valueString) {
   this.timestamp = todayDotSeparated
   this.restaurant = titleString
   this.price = priceString
-  this.currency = 'HUF'
+  this.currency = priceCurrency
   this.menuString = valueString
 }
 
@@ -112,7 +122,7 @@ async function scrapeMenu() {
   const ketszerecsen = require('./scrapers/ketszerecsen')
   const fruccola = require('./scrapers/fruccola')
   const kamra = require('./scrapers/kamra')
-  const roza =  require('./scrapers/roza')
+  const roza = require('./scrapers/roza')
   const suppe = require('./scrapers/suppe')
   const karcsi = require('./scrapers/karcsi')
 

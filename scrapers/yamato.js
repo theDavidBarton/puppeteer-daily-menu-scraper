@@ -57,6 +57,8 @@ async function scraper() {
   let paramIcon = 'http://yamatorestaurant.hu/wp-content/uploads/2014/12/yamato_logo_retina.png'
   let paramValueString
   let paramPriceString
+  let paramPriceCurrency
+  let paramPriceCurrencyString
   let paramAddressString = 'Budapest, 1066, Jókai u. 30.'
   let yamato
   let found
@@ -69,7 +71,11 @@ async function scraper() {
     await page.goto(paramUrl, { waitUntil: 'domcontentloaded', timeout: 0 })
     const theWhole = await page.evaluate(el => el.textContent, await page.$('body'))
     found = await dateCatcher.dateCatcher(theWhole) // @ YAMATO catch date
-    paramPriceString = await priceCatcher.priceCatcher(theWhole) // @ YAMATO price catch
+    // @ YAMATO price catch
+    let { price, priceCurrencyStr, priceCurrency } = await priceCatcher.priceCatcher(theWhole)
+    paramPriceString = price
+    paramPriceCurrency = priceCurrency
+    paramPriceCurrencyString = priceCurrencyStr
     // @ YAMATO Monday-Friday
     for (let i = today; i < today + 1; i++) {
       if (found === true) {
@@ -78,22 +84,30 @@ async function scraper() {
       } else {
         yamato = '♪"No Milk Today"♫'
       }
-      paramValueString = '• Daily menu: ' + yamato + '\n'
+      paramValueString = '• Daily menu: ' + yamato
       console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
       console.log(paramValueString)
+      console.log(paramPriceString + paramPriceCurrencyString + '\n')
       // @ YAMATO object
-      let yamatoObj = new RestaurantMenuOutput(
+      let obj = new RestaurantMenuOutput(
         paramColor,
         paramTitleString,
         paramUrl,
         paramIcon,
         paramValueString,
         paramPriceString,
+        paramPriceCurrency,
+        paramPriceCurrencyString,
         paramAddressString
       )
-      let yamatoMongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramValueString)
-      finalJSON.attachments.push(yamatoObj)
-      finalMongoJSON.push(yamatoMongoObj)
+      let mongoObj = new RestaurantMenuDb(
+        paramTitleString,
+        paramPriceString,
+        paramPriceCurrency,
+        paramValueString
+      )
+      finalJSON.attachments.push(obj)
+      finalMongoJSON.push(mongoObj)
     }
   } catch (e) {
     console.error(e)

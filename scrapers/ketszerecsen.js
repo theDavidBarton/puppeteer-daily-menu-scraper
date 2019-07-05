@@ -57,6 +57,8 @@ async function scraper() {
     'https://images.deliveryhero.io/image/netpincer/caterer/sh-9a3e84d0-2e42-11e2-9d48-7a92eabdcf20/logo.png'
   let paramValueString
   let paramPriceString
+  let paramPriceCurrency
+  let paramPriceCurrencyString
   let paramAddressString = 'Budapest, Nagymező u. 14, 1065'
   let ketszerecsen1, ketszerecsen2
 
@@ -91,23 +93,36 @@ async function scraper() {
       }
 
       const body = await page.evaluate(el => el.textContent, (await page.$$('body'))[0])
-      paramPriceString = await priceCatcher.priceCatcher(body) // @ KETSZERECSEN price catch
-      paramValueString = '• Daily menu: ' + ketszerecsen1 + ', ' + ketszerecsen2 + '\n'
+      // @ KETSZERECSEN price catch
+      let { price, priceCurrencyStr, priceCurrency } = await priceCatcher.priceCatcher(body)
+      paramPriceString = price
+      paramPriceCurrency = priceCurrency
+      paramPriceCurrencyString = priceCurrencyStr
+
+      paramValueString = '• Daily menu: ' + ketszerecsen1 + ', ' + ketszerecsen2
       console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
       console.log(paramValueString)
+      console.log(paramPriceString + paramPriceCurrencyString + '\n')
       // @ KETSZERECSEN object
-      let ketszerecsenObj = new RestaurantMenuOutput(
+      let obj = new RestaurantMenuOutput(
         paramColor,
         paramTitleString,
         paramUrl,
         paramIcon,
         paramValueString,
         paramPriceString,
+        paramPriceCurrency,
+        paramPriceCurrencyString,
         paramAddressString
       )
-      let ketszerecsenMongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramValueString)
-      finalJSON.attachments.push(ketszerecsenObj)
-      finalMongoJSON.push(ketszerecsenMongoObj)
+      let mongoObj = new RestaurantMenuDb(
+        paramTitleString,
+        paramPriceString,
+        paramPriceCurrency,
+        paramValueString
+      )
+      finalJSON.attachments.push(obj)
+      finalMongoJSON.push(mongoObj)
     }
   } catch (e) {
     console.error(e)

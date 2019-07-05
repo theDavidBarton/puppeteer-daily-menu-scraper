@@ -54,6 +54,8 @@ async function scraper() {
   let paramSelector = '.container'
   let paramValueString
   let paramPriceString
+  let paramPriceCurrency
+  let paramPriceCurrencyString
   let paramAddressString = 'Budapest, Bajcsy-Zsilinszky út 12, 1051'
   let bodzaDaily
 
@@ -65,7 +67,12 @@ async function scraper() {
     forlabelBodza: for (let i = 0; i < bodzaBlock.length; i++) {
       bodzaDaily = await page.evaluate(el => el.textContent, (await page.$$(paramSelector))[i])
       if (bodzaDaily.match(todayDotSeparated)) {
-        paramPriceString = await priceCatcher.priceCatcher(bodzaDaily) // @ BODZA price catch
+        // @ BODZA price catch
+        let { price, priceCurrencyStr, priceCurrency } = await priceCatcher.priceCatcher(bodzaDaily)
+        paramPriceString = price
+        paramPriceCurrency = priceCurrency
+        paramPriceCurrencyString = priceCurrencyStr
+
         bodzaDaily = bodzaDaily.match(/(.*)CHEF NAPI AJÁNLATA(.*\r?\n){3}/gi)
         bodzaDaily = bodzaDaily
           .join()
@@ -76,23 +83,35 @@ async function scraper() {
         break forlabelBodza
       }
       bodzaDaily = '♪"No Milk Today"♫'
+      // sorry about this one :(
+      paramPriceString = 'n/a'
+      paramPriceCurrency = 'n/a'
+      paramPriceCurrencyString = ''
     }
-    paramValueString = '• Daily menu: ' + bodzaDaily + '\n'
+    paramValueString = '• Daily menu: ' + bodzaDaily
     console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
     console.log(paramValueString)
+    console.log(paramPriceString + paramPriceCurrencyString + '\n')
     // @ BODZA object
-    let bodzaObj = new RestaurantMenuOutput(
+    let obj = new RestaurantMenuOutput(
       paramColor,
       paramTitleString,
       paramUrl,
       paramIcon,
       paramValueString,
       paramPriceString,
+      paramPriceCurrency,
+      paramPriceCurrencyString,
       paramAddressString
     )
-    let bodzaMongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramValueString)
-    finalJSON.attachments.push(bodzaObj)
-    finalMongoJSON.push(bodzaMongoObj)
+    let mongoObj = new RestaurantMenuDb(
+      paramTitleString,
+      paramPriceString,
+      paramPriceCurrency,
+      paramValueString
+    )
+    finalJSON.attachments.push(obj)
+    finalMongoJSON.push(mongoObj)
   } catch (e) {
     console.error(e)
   }

@@ -41,7 +41,7 @@ async function scraper() {
     /(Január|Február|Március|Április|Május|Június|Július|Augu|Szeptember|Október|November|December)((.*\r?\n){3})/gi,
     /\bKEDD((.*\r?\n){2})/gi,
     /\bSZERD((.*\r?\n){2})/gi,
-    /\bCSÜT((.*\r?\n){2})/gi,
+    /(\bCSÜT|\bCSIIT|\bCSUT)((.*\r?\n){2})/gi,
     /\bPÉNT((.*\r?\n){2})/gi
   ]
   let facebookImageUrlSelector = '.scaledImageFitWidth'

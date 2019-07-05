@@ -55,6 +55,8 @@ async function scraper() {
   let paramAddressString = 'Budapest, Jókai u. 22, 1066'
   let paramValueString
   let paramPriceString
+  let paramPriceCurrency
+  let paramPriceCurrencyString
   let dailyRoza
 
   // @ ROZA selector
@@ -64,23 +66,36 @@ async function scraper() {
     await page.goto(paramUrl, { waitUntil: 'domcontentloaded' })
     // @ ROZA Daily
     dailyRoza = await page.evaluate(el => el.textContent, (await page.$$(dailyRozaSelector))[0])
-    paramPriceString = await priceCatcher.priceCatcher(dailyRoza) // @ ROZA price catch
+    // @ ROZA price catch
+    let { price, priceCurrencyStr, priceCurrency } = await priceCatcher.priceCatcher(dailyRoza)
+    paramPriceString = price
+    paramPriceCurrency = priceCurrency
+    paramPriceCurrencyString = priceCurrencyStr
+
     paramValueString = '• Daily menu: ' + (await stringValueCleaner.stringValueCleaner(dailyRoza, true)) // @ ROZA clean string
     console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
-    console.log(paramValueString + '\n')
+    console.log(paramValueString)
+    console.log(paramPriceString + paramPriceCurrencyString + '\n')
     // @ ROZA object
-    let rozaObj = new RestaurantMenuOutput(
+    let obj = new RestaurantMenuOutput(
       paramColor,
       paramTitleString,
       paramUrl,
       paramIcon,
       paramValueString,
       paramPriceString,
+      paramPriceCurrency,
+      paramPriceCurrencyString,
       paramAddressString
     )
-    let rozaMongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramValueString)
-    finalJSON.attachments.push(rozaObj)
-    finalMongoJSON.push(rozaMongoObj)
+    let mongoObj = new RestaurantMenuDb(
+      paramTitleString,
+      paramPriceString,
+      paramPriceCurrency,
+      paramValueString
+    )
+    finalJSON.attachments.push(obj)
+    finalMongoJSON.push(mongoObj)
   } catch (e) {
     console.error(e)
   }

@@ -51,6 +51,8 @@ async function scraper() {
   let paramIcon = 'https://pbs.twimg.com/profile_images/295153467/fruccola_logo_rgb.png'
   let paramValueString
   let paramPriceString
+  let paramPriceCurrency = 'HUF'
+  let paramPriceCurrencyString = ' Ft'
   let paramAddressString = 'Budapest, Arany János u. 32, 1051'
   let dailyFruccola1, dailyFruccola2
 
@@ -64,22 +66,30 @@ async function scraper() {
     dailyFruccola1 = await page.evaluate(el => el.innerText, await page.$(dailyFruccolaSelector1))
     dailyFruccola2 = await page.evaluate(el => el.innerText, await page.$(dailyFruccolaSelector2))
     paramPriceString = await page.evaluate(el => el.innerText, (await page.$$('.soup-and-maindish > .price'))[0]) // @ FRUCCOLA price catch
-    paramValueString = '• Daily menu: ' + dailyFruccola1 + ', ' + dailyFruccola2 + '\n'
+    paramValueString = '• Daily menu: ' + dailyFruccola1 + ', ' + dailyFruccola2
     console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
     console.log(paramValueString)
+    console.log(paramPriceString + paramPriceCurrencyString + '\n')
     // @ FRUCCOLA object
-    let fruccolaObj = new RestaurantMenuOutput(
+    let obj = new RestaurantMenuOutput(
       paramColor,
       paramTitleString,
       paramUrl,
       paramIcon,
       paramValueString,
       paramPriceString,
+      paramPriceCurrency,
+      paramPriceCurrencyString,
       paramAddressString
     )
-    let fruccolaMongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramValueString)
-    finalJSON.attachments.push(fruccolaObj)
-    finalMongoJSON.push(fruccolaMongoObj)
+    let mongoObj = new RestaurantMenuDb(
+      paramTitleString,
+      paramPriceString,
+      paramPriceCurrency,
+      paramValueString
+    )
+    finalJSON.attachments.push(obj)
+    finalMongoJSON.push(mongoObj)
   } catch (e) {
     console.error(e)
   }

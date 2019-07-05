@@ -61,6 +61,8 @@ async function scraper() {
   let paramAddressString = 'Budapest, Weiner Leó u. 17, 1065'
   let paramValueString
   let paramPriceString = 'n/a'
+  let paramPriceCurrency = 'n/a'
+  let paramPriceCurrencyString = ''
   let weeklyNokedli
   let parsedResult
 
@@ -183,21 +185,29 @@ async function scraper() {
       default:
         paramValueString = 'weekend work, eh?\n'
     }
-    console.log(paramValueString + '\n')
+    console.log(paramValueString)
+    console.log(paramPriceString + paramPriceCurrencyString + '\n')
 
     // @ NOKEDLI object
-    let nokedliObj = new RestaurantMenuOutput(
+    let obj = new RestaurantMenuOutput(
       paramColor,
       paramTitleString,
       paramUrl,
       paramIcon,
       paramValueString,
       paramPriceString,
+      paramPriceCurrency,
+      paramPriceCurrencyString,
       paramAddressString
     )
-    let nokedliMongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramValueString)
-    finalJSON.attachments.push(nokedliObj)
-    finalMongoJSON.push(nokedliMongoObj)
+    let mongoObj = new RestaurantMenuDb(
+      paramTitleString,
+      paramPriceString,
+      paramPriceCurrency,
+      paramValueString
+    )
+    finalJSON.attachments.push(obj)
+    finalMongoJSON.push(mongoObj)
   } catch (e) {
     console.error(e)
   }

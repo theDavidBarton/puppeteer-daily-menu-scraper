@@ -54,6 +54,8 @@ async function ocrFacebookImage(
 
   let paramValueString
   let paramPriceString
+  let paramPriceCurrency
+  let paramPriceCurrencyString
   let restaurantDaysRegex = paramDaysRegexArray
   let imageUrlArray = []
   let restaurantDailyArray = []
@@ -92,7 +94,12 @@ async function ocrFacebookImage(
       if (await parsedResult.match(paramMenuHandleRegex)) {
         // @ {RESTAURANT} Monday-Friday
         for (let j = today; j < today + 1; j++) {
-          paramPriceString = await priceCatcher.priceCatcher(parsedResult) // @ {RESTAURANT} price catch
+          // @ {RESTAURANT} price catch
+          let { price, priceCurrencyStr, priceCurrency } = await priceCatcher.priceCatcher(parsedResult)
+          paramPriceString = price
+          paramPriceCurrency = priceCurrency
+          paramPriceCurrencyString = priceCurrencyStr
+
           let restaurantDaily = parsedResult.match(restaurantDaysRegex[j])
           restaurantDaily = restaurantDaily.toString().split(/\r?\n/)
           for (let k = paramStartLine; k < paramEndLine + 1; k++) {
@@ -103,20 +110,28 @@ async function ocrFacebookImage(
           // @ {RESTAURANT} clean string
           paramValueString = '• Daily menu: ' + await stringValueCleaner.stringValueCleaner(paramValueString, true)
           console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
-          console.log(paramValueString + '\n')
+          console.log(paramValueString)
+          console.log(paramPriceString + paramPriceCurrencyString + '\n')
           // @ {RESTAURANT} object
-          let restaurantObj = new RestaurantMenuOutput(
+          let obj = new RestaurantMenuOutput(
             paramColor,
             paramTitleString,
             paramUrl,
             paramIcon,
             paramValueString,
             paramPriceString,
+            paramPriceCurrency,
+            paramPriceCurrencyString,
             paramAddressString
           )
-          let restaurantMongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramValueString)
-          finalJSON.attachments.push(restaurantObj)
-          finalMongoJSON.push(restaurantMongoObj)
+          let mongoObj = new RestaurantMenuDb(
+            paramTitleString,
+            paramPriceString,
+            paramPriceCurrency,
+            paramValueString
+          )
+          finalJSON.attachments.push(obj)
+          finalMongoJSON.push(mongoObj)
 
           break forlabelRestaurant
         }
