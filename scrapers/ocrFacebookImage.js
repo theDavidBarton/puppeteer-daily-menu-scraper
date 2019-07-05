@@ -25,7 +25,6 @@ const finalMongoJSON = require('./../scrapeDailyMenu').finalMongoJSON
 const RestaurantMenuOutput = require('./../scrapeDailyMenu').RestaurantMenuOutput
 const RestaurantMenuDb = require('./../scrapeDailyMenu').RestaurantMenuDb
 
-
 // @ {RESTAURANT}s with only facebook image menus
 async function ocrFacebookImage(
   paramColor,
@@ -101,6 +100,10 @@ async function ocrFacebookImage(
           paramPriceCurrencyString = priceCurrencyStr
 
           let restaurantDaily = parsedResult.match(restaurantDaysRegex[j])
+          if (restaurantDaily === null) {
+            console.log(paramTitleString + ' : ' + restaurantDaily + ' at ' + i)
+            continue forlabelRestaurant
+          }
           restaurantDaily = restaurantDaily.toString().split(/\r?\n/)
           for (let k = paramStartLine; k < paramEndLine + 1; k++) {
             restaurantDailyArray.push(restaurantDaily[k])
@@ -108,7 +111,7 @@ async function ocrFacebookImage(
 
           paramValueString = restaurantDailyArray.join(', ')
           // @ {RESTAURANT} clean string
-          paramValueString = '• Daily menu: ' + await stringValueCleaner.stringValueCleaner(paramValueString, true)
+          paramValueString = '• Daily menu: ' + (await stringValueCleaner.stringValueCleaner(paramValueString, true))
           console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
           console.log(paramValueString)
           console.log(paramPriceString + paramPriceCurrencyString + '\n')
@@ -124,12 +127,7 @@ async function ocrFacebookImage(
             paramPriceCurrencyString,
             paramAddressString
           )
-          let mongoObj = new RestaurantMenuDb(
-            paramTitleString,
-            paramPriceString,
-            paramPriceCurrency,
-            paramValueString
-          )
+          let mongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramPriceCurrency, paramValueString)
           finalJSON.attachments.push(obj)
           finalMongoJSON.push(mongoObj)
 

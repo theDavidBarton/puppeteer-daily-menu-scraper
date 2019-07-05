@@ -41,7 +41,7 @@ async function scraper() {
     /\bKED((.*\r?\n){3})/gi,
     /\bSZERD((.*\r?\n){3})/gi,
     /\bCSOT((.*\r?\n){3})|\bCSU((.*\r?\n){3})|\bCSÜ((.*\r?\n){3})/gi,
-    /\bPÉNT((.*\r?\n){3})/gi
+    /\borbán((.*\r?\n){3})/gi
   ]
   let facebookImageUrlSelector = '.scaledImageFitWidth'
   let menuHandleRegex = /espresso/gi
