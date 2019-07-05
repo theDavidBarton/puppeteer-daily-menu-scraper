@@ -25,7 +25,6 @@ const finalMongoJSON = require('./../scrapeDailyMenu').finalMongoJSON
 const RestaurantMenuOutput = require('./../scrapeDailyMenu').RestaurantMenuOutput
 const RestaurantMenuDb = require('./../scrapeDailyMenu').RestaurantMenuDb
 
-
 // @ {RESTAURANT}s with only facebook image menus
 async function ocrFacebookImage(
   paramColor,
@@ -90,51 +89,47 @@ async function ocrFacebookImage(
     try {
       parsedResult = await ocrSpaceApiSimple.ocrSpaceApiSimple(options)
       parsedResult = parsedResult.ParsedText
-
+      // @ {RESTAURANT} Monday-Friday
       if (await parsedResult.match(paramMenuHandleRegex)) {
-        // @ {RESTAURANT} Monday-Friday
-        for (let j = today; j < today + 1; j++) {
-          // @ {RESTAURANT} price catch
-          let { price, priceCurrencyStr, priceCurrency } = await priceCatcher.priceCatcher(parsedResult)
-          paramPriceString = price
-          paramPriceCurrency = priceCurrency
-          paramPriceCurrencyString = priceCurrencyStr
+        // @ {RESTAURANT} price catch
+        let { price, priceCurrencyStr, priceCurrency } = await priceCatcher.priceCatcher(parsedResult)
+        paramPriceString = price
+        paramPriceCurrency = priceCurrency
+        paramPriceCurrencyString = priceCurrencyStr
 
-          let restaurantDaily = parsedResult.match(restaurantDaysRegex[j])
-          restaurantDaily = restaurantDaily.toString().split(/\r?\n/)
-          for (let k = paramStartLine; k < paramEndLine + 1; k++) {
-            restaurantDailyArray.push(restaurantDaily[k])
-          }
-
-          paramValueString = restaurantDailyArray.join(', ')
-          // @ {RESTAURANT} clean string
-          paramValueString = '• Daily menu: ' + await stringValueCleaner.stringValueCleaner(paramValueString, true)
-          console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
-          console.log(paramValueString)
-          console.log(paramPriceString + paramPriceCurrencyString + '\n')
-          // @ {RESTAURANT} object
-          let obj = new RestaurantMenuOutput(
-            paramColor,
-            paramTitleString,
-            paramUrl,
-            paramIcon,
-            paramValueString,
-            paramPriceString,
-            paramPriceCurrency,
-            paramPriceCurrencyString,
-            paramAddressString
-          )
-          let mongoObj = new RestaurantMenuDb(
-            paramTitleString,
-            paramPriceString,
-            paramPriceCurrency,
-            paramValueString
-          )
-          finalJSON.attachments.push(obj)
-          finalMongoJSON.push(mongoObj)
-
-          break forlabelRestaurant
+        let restaurantDaily = parsedResult.match(restaurantDaysRegex[today])
+        if (restaurantDaily === null) {
+          console.log(paramTitleString + ' parsed result is: ' + restaurantDaily + ' at ' + i + 'th matching image')
+          continue forlabelRestaurant
         }
+        restaurantDaily = restaurantDaily.toString().split(/\r?\n/)
+        for (let j = paramStartLine; j < paramEndLine + 1; j++) {
+          restaurantDailyArray.push(restaurantDaily[j])
+        }
+
+        paramValueString = restaurantDailyArray.join(', ')
+        // @ {RESTAURANT} clean string
+        paramValueString = '• Daily menu: ' + (await stringValueCleaner.stringValueCleaner(paramValueString, true))
+        console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
+        console.log(paramValueString)
+        console.log(paramPriceString + paramPriceCurrencyString + '\n')
+        // @ {RESTAURANT} object
+        let obj = new RestaurantMenuOutput(
+          paramColor,
+          paramTitleString,
+          paramUrl,
+          paramIcon,
+          paramValueString,
+          paramPriceString,
+          paramPriceCurrency,
+          paramPriceCurrencyString,
+          paramAddressString
+        )
+        let mongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramPriceCurrency, paramValueString)
+        finalJSON.attachments.push(obj)
+        finalMongoJSON.push(mongoObj)
+
+        break forlabelRestaurant
       }
     } catch (e) {
       console.error(e)
