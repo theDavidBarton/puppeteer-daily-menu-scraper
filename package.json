@@ -7,7 +7,6 @@
     "request": "^2.88.0"
   },
   "devDependencies": {
-    "@shelf/jest-mongodb": "^1.1.0",
     "codecov": "^3.5.0",
     "eslint": "^5.16.0",
     "jest": "^24.8.0",
@@ -18,7 +17,6 @@
     "lint": "eslint"
   },
   "jest": {
-    "preset": "@shelf/jest-mongodb",
     "coverageDirectory": "./coverage/",
     "collectCoverage": true
   }
