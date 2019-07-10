@@ -17,6 +17,7 @@
 const puppeteer = require('puppeteer')
 const ocrSpaceApiSimple = require('./../lib/ocrSpaceApiSimple')
 const priceCatcher = require('./../lib/priceCatcher')
+const priceCompareToDb = require('./../lib/priceCompareToDb')
 const stringValueCleaner = require('./../lib/stringValueCleaner')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
 const today = require('./../scrapeDailyMenu').today
@@ -93,9 +94,10 @@ async function ocrFacebookImage(
       if (await parsedResult.match(paramMenuHandleRegex)) {
         // @ {RESTAURANT} price catch
         let { price, priceCurrencyStr, priceCurrency } = await priceCatcher.priceCatcher(parsedResult)
+        let trend = await priceCompareToDb.priceCompareToDb(paramTitleString, price)
         paramPriceString = price
         paramPriceCurrency = priceCurrency
-        paramPriceCurrencyString = priceCurrencyStr
+        paramPriceCurrencyString = priceCurrencyStr + trend
 
         let restaurantDaily = parsedResult.match(restaurantDaysRegex[today])
         if (restaurantDaily === null) {

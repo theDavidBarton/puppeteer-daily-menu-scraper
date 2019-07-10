@@ -16,6 +16,7 @@
 
 const puppeteer = require('puppeteer')
 const priceCatcher = require('./../lib/priceCatcher')
+const priceCompareToDb = require('./../lib/priceCompareToDb')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
 const todayDotSeparated = require('./../scrapeDailyMenu').todayDotSeparated
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
@@ -69,9 +70,10 @@ async function scraper() {
       if (bodzaDaily.match(todayDotSeparated)) {
         // @ BODZA price catch
         let { price, priceCurrencyStr, priceCurrency } = await priceCatcher.priceCatcher(bodzaDaily)
+        let trend = await priceCompareToDb.priceCompareToDb(paramTitleString, price)
         paramPriceString = price
         paramPriceCurrency = priceCurrency
-        paramPriceCurrencyString = priceCurrencyStr
+        paramPriceCurrencyString = priceCurrencyStr + trend
 
         bodzaDaily = bodzaDaily.match(/(.*)CHEF NAPI AJÁNLATA(.*\r?\n){3}/gi)
         bodzaDaily = bodzaDaily

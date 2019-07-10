@@ -17,6 +17,7 @@
 const puppeteer = require('puppeteer')
 const dateCatcher = require('./../lib/dateCatcher')
 const priceCatcher = require('./../lib/priceCatcher')
+const priceCompareToDb = require('./../lib/priceCompareToDb')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
 const today = require('./../scrapeDailyMenu').today
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
@@ -73,9 +74,11 @@ async function scraper() {
     found = await dateCatcher.dateCatcher(theWhole) // @ YAMATO catch date
     // @ YAMATO price catch
     let { price, priceCurrencyStr, priceCurrency } = await priceCatcher.priceCatcher(theWhole)
+    let trend = await priceCompareToDb.priceCompareToDb(paramTitleString, price)
+
     paramPriceString = price
     paramPriceCurrency = priceCurrency
-    paramPriceCurrencyString = priceCurrencyStr
+    paramPriceCurrencyString = priceCurrencyStr + trend
     // @ YAMATO Monday-Friday
     for (let i = today; i < today + 1; i++) {
       if (found === true) {

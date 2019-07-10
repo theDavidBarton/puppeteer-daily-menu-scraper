@@ -15,6 +15,7 @@
  */
 
 const puppeteer = require('puppeteer')
+const priceCompareToDb = require('./../lib/priceCompareToDb')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
 const finalMongoJSON = require('./../scrapeDailyMenu').finalMongoJSON
@@ -66,6 +67,8 @@ async function scraper() {
     dailyFruccola1 = await page.evaluate(el => el.innerText, await page.$(dailyFruccolaSelector1))
     dailyFruccola2 = await page.evaluate(el => el.innerText, await page.$(dailyFruccolaSelector2))
     paramPriceString = await page.evaluate(el => el.innerText, (await page.$$('.soup-and-maindish > .price'))[0]) // @ FRUCCOLA price catch
+    let trend = await priceCompareToDb.priceCompareToDb(paramTitleString, paramPriceString)
+    paramPriceCurrencyString = paramPriceCurrencyString + trend
     paramValueString = '• Daily menu: ' + dailyFruccola1 + ', ' + dailyFruccola2
     console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
     console.log(paramValueString)

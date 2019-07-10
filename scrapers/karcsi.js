@@ -16,6 +16,7 @@
 
 const ocrSpaceApiSimple = require('./../lib/ocrSpaceApiSimple')
 const stringValueCleaner = require('./../lib/stringValueCleaner')
+const priceCompareToDb = require('./../lib/priceCompareToDb')
 const today = require('./../scrapeDailyMenu').today
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
 const finalMongoJSON = require('./../scrapeDailyMenu').finalMongoJSON
@@ -84,6 +85,8 @@ async function scraper() {
       karcsiWeekly = parsedResult.match(weeklyOfferRegex)
       karcsiSoup = parsedResult.match(soupRegex)
     }
+    let trend = await priceCompareToDb.priceCompareToDb(paramTitleString, paramPriceString)
+    paramPriceCurrencyString = paramPriceCurrencyString + trend
     // @ KARCSI clean string
     paramValueString = '• Weekly offer: ' + await stringValueCleaner.stringValueCleaner(karcsiWeekly, true) + '\n• Daily menu: ' + await stringValueCleaner.stringValueCleaner(karcsiSoup, true) + await stringValueCleaner.stringValueCleaner(karcsiDaily, true)
     console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))

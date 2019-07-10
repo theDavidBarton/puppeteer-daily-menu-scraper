@@ -16,6 +16,7 @@
 
 const puppeteer = require('puppeteer')
 const priceCatcher = require('./../lib/priceCatcher')
+const priceCompareToDb = require('./../lib/priceCompareToDb')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
 const today = require('./../scrapeDailyMenu').today
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
@@ -100,9 +101,11 @@ async function scraper() {
       const body = await page.evaluate(el => el.textContent, (await page.$$('#mainDiv'))[0])
       // @ VIAN price catch
       let { price, priceCurrencyStr, priceCurrency } = await priceCatcher.priceCatcher(body)
+      let trend = await priceCompareToDb.priceCompareToDb(paramTitleString, price)
+
       paramPriceString = price
       paramPriceCurrency = priceCurrency
-      paramPriceCurrencyString = priceCurrencyStr
+      paramPriceCurrencyString = priceCurrencyStr + trend
 
       paramValueString = '• Daily menu: ' + vian1 + ', ' + vian2
       console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
