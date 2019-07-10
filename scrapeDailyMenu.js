@@ -157,7 +157,7 @@ async function scrapeMenu() {
   // _POST the final JSON to webhook
   request(
     {
-      url: process.env.WEBHOOK_URL_PROD,
+      url: process.env.WEBHOOK_URL_TEST,
       method: 'POST',
       json: false,
       body: finalJSON
