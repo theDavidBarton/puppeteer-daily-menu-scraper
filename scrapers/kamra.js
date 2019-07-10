@@ -16,6 +16,7 @@
 
 const puppeteer = require('puppeteer')
 const priceCatcher = require('./../lib/priceCatcher')
+const priceCompareToDb = require('./../lib/priceCompareToDb')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
 const finalMongoJSON = require('./../scrapeDailyMenu').finalMongoJSON
@@ -73,9 +74,10 @@ async function scraper() {
     dailyKamra = dailyKamra.join(', ')
     // @ KAMRA price catch
     let { price, priceCurrencyStr, priceCurrency } = await priceCatcher.priceCatcher(dailyKamra)
+    let trend = await priceCompareToDb.priceCompareToDb(paramTitleString, price)
     paramPriceString = price
     paramPriceCurrency = priceCurrency
-    paramPriceCurrencyString = priceCurrencyStr
+    paramPriceCurrencyString = priceCurrencyStr + trend
 
     paramValueString = '• Daily menu: ' + dailyKamra
     console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))

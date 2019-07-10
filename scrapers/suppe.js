@@ -15,6 +15,7 @@
  */
 
 const puppeteer = require('puppeteer')
+const priceCompareToDb = require('./../lib/priceCompareToDb')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
 const today = require('./../scrapeDailyMenu').today
 const dayNames = require('./../scrapeDailyMenu').dayNames
@@ -80,6 +81,9 @@ async function scraper() {
     const mondaySuppeIncludes = (await page.$x('//p[contains(text(), "Sziasztok")]'))[0]
     mondaySuppe = await page.evaluate(el => el.textContent, mondaySuppeIncludes)
     mondaySuppe = mondaySuppe.replace(/(?=sziasztok)(.*)(?=levesek )|(, várunk Titeket!)/gi, '')
+
+    let trend = await priceCompareToDb.priceCompareToDb(paramTitleString, paramPriceString)
+    paramPriceCurrencyString = paramPriceCurrencyString + trend
 
     console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
     if (today === 1) {

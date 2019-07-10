@@ -68,7 +68,7 @@ async function scraper() {
     dailyFruccola2 = await page.evaluate(el => el.innerText, await page.$(dailyFruccolaSelector2))
     paramPriceString = await page.evaluate(el => el.innerText, (await page.$$('.soup-and-maindish > .price'))[0]) // @ FRUCCOLA price catch
     let trend = await priceCompareToDb.priceCompareToDb(paramTitleString, paramPriceString)
-    paramPriceCurrencyString = paramPriceCurrencyStr + trend
+    paramPriceCurrencyString = paramPriceCurrencyString + trend
     paramValueString = '• Daily menu: ' + dailyFruccola1 + ', ' + dailyFruccola2
     console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
     console.log(paramValueString)

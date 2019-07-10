@@ -17,6 +17,7 @@
 const puppeteer = require('puppeteer')
 const dateCatcher = require('./../lib/dateCatcher')
 const priceCatcher = require('./../lib/priceCatcher')
+const priceCompareToDb = require('./../lib/priceCompareToDb')
 const stringValueCleaner = require('./../lib/stringValueCleaner')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
@@ -71,9 +72,10 @@ async function scraper() {
     weeklyI55Daily = weeklyI55.match(/levesek([\s\S]*?)ebédelj/gi)
     // @ I55 price catch
     let { price, priceCurrencyStr, priceCurrency } = await priceCatcher.priceCatcher(weeklyI55, 1)
+    let trend = await priceCompareToDb.priceCompareToDb(paramTitleString, price)
     paramPriceString = price
     paramPriceCurrency = priceCurrency
-    paramPriceCurrencyString = priceCurrencyStr
+    paramPriceCurrencyString = priceCurrencyStr + trend
 
     found = await dateCatcher.dateCatcher(weeklyI55, true) // @ I55 catch date
     if (found === true) {

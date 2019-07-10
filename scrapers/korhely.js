@@ -17,6 +17,7 @@
 const puppeteer = require('puppeteer')
 const dateCatcher = require('./../lib/dateCatcher')
 const priceCatcher = require('./../lib/priceCatcher')
+const priceCompareToDb = require('./../lib/priceCompareToDb')
 const stringValueCleaner = require('./../lib/stringValueCleaner')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
@@ -78,9 +79,10 @@ async function scraper() {
     const summary = await page.evaluate(el => el.textContent, (await page.$$(summarySelector))[1])
     // @ KORHELY price catch
     let { price, priceCurrencyStr, priceCurrency } = await priceCatcher.priceCatcher(summary)
+    let trend = await priceCompareToDb.priceCompareToDb(paramTitleString, price)
     paramPriceString = price
     paramPriceCurrency = priceCurrency
-    paramPriceCurrencyString = priceCurrencyStr
+    paramPriceCurrencyString = priceCurrencyStr + trend
 
     found = await dateCatcher.dateCatcher(summary, true)
     if (found === true) {
