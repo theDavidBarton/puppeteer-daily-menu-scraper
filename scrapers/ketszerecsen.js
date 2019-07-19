@@ -64,8 +64,8 @@ async function scraper() {
   let paramAddressString = 'Budapest, Nagymező u. 14, 1065'
   let ketszerecsen1
   let ketszerecsen2
-  let obj
-  let mongoObj
+  let obj = null
+  let mongoObj = null
 
   // @ KETSZERECSEN selectors [1: first course, 2: main course]
   let ketszerecsenArray1 = [

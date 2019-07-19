@@ -60,8 +60,8 @@ async function scraper() {
   let paramPriceCurrencyString
   let paramAddressString = 'Budapest, Bajcsy-Zsilinszky út 12, 1051'
   let bodzaDaily
-  let obj
-  let mongoObj
+  let obj = null
+  let mongoObj = null
 
   try {
     await page.goto(paramUrl, { waitUntil: 'domcontentloaded', timeout: 0 })

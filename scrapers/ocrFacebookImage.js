@@ -61,8 +61,8 @@ async function ocrFacebookImage(
   let imageUrlArray = []
   let restaurantDailyArray = []
   let parsedResult
-  let obj
-  let mongoObj
+  let obj = null
+  let mongoObj = null
 
   try {
     await page.goto(paramUrl, { waitUntil: 'domcontentloaded' })

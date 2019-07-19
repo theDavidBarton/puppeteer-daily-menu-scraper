@@ -63,8 +63,8 @@ async function scraper() {
   let paramAddressString = 'Budapest, Liszt Ferenc tér 9, 1061'
   let vian1
   let vian2
-  let obj
-  let mongoObj
+  let obj = null
+  let mongoObj = null
 
   // @ VIAN selectors [1: first course, 2: main course]
   let vianArray1 = [

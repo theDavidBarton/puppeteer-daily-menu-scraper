@@ -58,8 +58,8 @@ async function scraper() {
   let paramAddressString = 'Budapest, Arany János u. 32, 1051'
   let dailyFruccola1
   let dailyFruccola2
-  let obj
-  let mongoObj
+  let obj = null
+  let mongoObj = null
 
   // @ FRUCCOLA selectors
   const dailyFruccolaSelector1 = '#dailymenu-holder > li.arany.today > div.soup > p.description'

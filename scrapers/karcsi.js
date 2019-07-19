@@ -62,8 +62,8 @@ async function scraper() {
   let karcsiSoup
   let karcsiDaily
   let parsedResult
-  let obj
-  let mongoObj
+  let obj = null
+  let mongoObj = null
 
   const options = {
     method: 'POST',

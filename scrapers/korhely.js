@@ -63,8 +63,8 @@ async function scraper() {
   let weeklyMainKorhely
   let weeklyDessertKorhely
   let found
-  let obj
-  let mongoObj
+  let obj = null
+  let mongoObj = null
 
   // @ KORHELY selectors
   const summarySelector = '.MenusNavigation_description'

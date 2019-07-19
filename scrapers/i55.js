@@ -63,8 +63,8 @@ async function scraper() {
   let weeklyI55
   let weeklyI55Daily
   let found
-  let obj
-  let mongoObj
+  let obj = null
+  let mongoObj = null
 
   // @ I55 selectors
   const weeklyI55Selector = '.vc_column-inner'

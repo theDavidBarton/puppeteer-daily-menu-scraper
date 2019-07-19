@@ -58,8 +58,8 @@ async function scraper() {
   let paramPriceCurrencyString
   let paramAddressString = 'Budapest, Hercegprímás u. 19, 1051'
   let dailyKamra = []
-  let obj
-  let mongoObj
+  let obj = null
+  let mongoObj = null
 
   // @ KAMRA selectors
   const dayKamraSelector = '.shop_today_1'

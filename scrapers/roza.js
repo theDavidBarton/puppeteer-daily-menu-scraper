@@ -59,8 +59,8 @@ async function scraper() {
   let paramPriceCurrency
   let paramPriceCurrencyString
   let dailyRoza
-  let obj
-  let mongoObj
+  let obj = null
+  let mongoObj = null
 
   // @ ROZA selector
   const dailyRozaSelector = '.userContent'

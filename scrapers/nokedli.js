@@ -66,8 +66,8 @@ async function scraper() {
   let paramPriceCurrencyString = ''
   let weeklyNokedli
   let parsedResult
-  let obj
-  let mongoObj
+  let obj = null
+  let mongoObj = null
 
   // @ NOKEDLI selector
   const imageNokedliSelector = '.aligncenter'
