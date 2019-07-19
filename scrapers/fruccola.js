@@ -15,6 +15,7 @@
  */
 
 const puppeteer = require('puppeteer')
+const objectDecider = require('./../lib/objectDecider')
 const priceCompareToDb = require('./../lib/priceCompareToDb')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
@@ -55,7 +56,10 @@ async function scraper() {
   let paramPriceCurrency = 'HUF'
   let paramPriceCurrencyString = ' Ft'
   let paramAddressString = 'Budapest, Arany János u. 32, 1051'
-  let dailyFruccola1, dailyFruccola2
+  let dailyFruccola1
+  let dailyFruccola2
+  let obj = null
+  let mongoObj = null
 
   // @ FRUCCOLA selectors
   const dailyFruccolaSelector1 = '#dailymenu-holder > li.arany.today > div.soup > p.description'
@@ -74,7 +78,7 @@ async function scraper() {
     console.log(paramValueString)
     console.log(paramPriceString + paramPriceCurrencyString + '\n')
     // @ FRUCCOLA object
-    let obj = new RestaurantMenuOutput(
+    obj = new RestaurantMenuOutput(
       paramColor,
       paramTitleString,
       paramUrl,
@@ -85,14 +89,16 @@ async function scraper() {
       paramPriceCurrencyString,
       paramAddressString
     )
-    let mongoObj = new RestaurantMenuDb(
+    mongoObj = new RestaurantMenuDb(
       paramTitleString,
       paramPriceString,
       paramPriceCurrency,
       paramValueString
     )
-    finalJSON.attachments.push(obj)
-    finalMongoJSON.push(mongoObj)
+    if (objectDecider.objectDecider(paramValueString)) {
+      finalJSON.attachments.push(obj)
+      finalMongoJSON.push(mongoObj)
+    }
   } catch (e) {
     console.error(e)
   }

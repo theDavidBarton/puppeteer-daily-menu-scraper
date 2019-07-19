@@ -15,6 +15,7 @@
  */
 
 const puppeteer = require('puppeteer')
+const objectDecider = require('./../lib/objectDecider')
 const priceCatcher = require('./../lib/priceCatcher')
 const priceCompareToDb = require('./../lib/priceCompareToDb')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
@@ -60,7 +61,10 @@ async function scraper() {
   let paramPriceCurrency
   let paramPriceCurrencyString
   let paramAddressString = 'Budapest, Liszt Ferenc tér 9, 1061'
-  let vian1, vian2
+  let vian1
+  let vian2
+  let obj = null
+  let mongoObj = null
 
   // @ VIAN selectors [1: first course, 2: main course]
   let vianArray1 = [
@@ -112,7 +116,7 @@ async function scraper() {
       console.log(paramValueString)
       console.log(paramPriceString + paramPriceCurrencyString + '\n')
       // @ VIAN object
-      let obj = new RestaurantMenuOutput(
+      obj = new RestaurantMenuOutput(
         paramColor,
         paramTitleString,
         paramUrl,
@@ -123,14 +127,11 @@ async function scraper() {
         paramPriceCurrencyString,
         paramAddressString
       )
-      let mongoObj = new RestaurantMenuDb(
-        paramTitleString,
-        paramPriceString,
-        paramPriceCurrency,
-        paramValueString
-      )
-      finalJSON.attachments.push(obj)
-      finalMongoJSON.push(mongoObj)
+      mongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramPriceCurrency, paramValueString)
+      if (objectDecider.objectDecider(paramValueString)) {
+        finalJSON.attachments.push(obj)
+        finalMongoJSON.push(mongoObj)
+      }
     }
   } catch (e) {
     console.error(e)

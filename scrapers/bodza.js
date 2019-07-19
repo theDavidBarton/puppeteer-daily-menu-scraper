@@ -16,6 +16,7 @@
 
 const puppeteer = require('puppeteer')
 const priceCatcher = require('./../lib/priceCatcher')
+const objectDecider = require('./../lib/objectDecider')
 const priceCompareToDb = require('./../lib/priceCompareToDb')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
 const todayDotSeparated = require('./../scrapeDailyMenu').todayDotSeparated
@@ -59,6 +60,8 @@ async function scraper() {
   let paramPriceCurrencyString
   let paramAddressString = 'Budapest, Bajcsy-Zsilinszky út 12, 1051'
   let bodzaDaily
+  let obj = null
+  let mongoObj = null
 
   try {
     await page.goto(paramUrl, { waitUntil: 'domcontentloaded', timeout: 0 })
@@ -95,7 +98,7 @@ async function scraper() {
     console.log(paramValueString)
     console.log(paramPriceString + paramPriceCurrencyString + '\n')
     // @ BODZA object
-    let obj = new RestaurantMenuOutput(
+    obj = new RestaurantMenuOutput(
       paramColor,
       paramTitleString,
       paramUrl,
@@ -106,14 +109,16 @@ async function scraper() {
       paramPriceCurrencyString,
       paramAddressString
     )
-    let mongoObj = new RestaurantMenuDb(
+    mongoObj = new RestaurantMenuDb(
       paramTitleString,
       paramPriceString,
       paramPriceCurrency,
       paramValueString
     )
-    finalJSON.attachments.push(obj)
-    finalMongoJSON.push(mongoObj)
+    if (objectDecider.objectDecider(paramValueString)) {
+      finalJSON.attachments.push(obj)
+      finalMongoJSON.push(mongoObj)
+    }
   } catch (e) {
     console.error(e)
   }
