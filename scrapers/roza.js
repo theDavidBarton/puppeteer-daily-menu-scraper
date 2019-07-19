@@ -15,6 +15,7 @@
  */
 
 const puppeteer = require('puppeteer')
+const objectDecider = require('./../lib/objectDecider')
 const priceCatcher = require('./../lib/priceCatcher')
 const stringValueCleaner = require('./../lib/stringValueCleaner')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
@@ -58,6 +59,8 @@ async function scraper() {
   let paramPriceCurrency
   let paramPriceCurrencyString
   let dailyRoza
+  let obj
+  let mongoObj
 
   // @ ROZA selector
   const dailyRozaSelector = '.userContent'
@@ -77,7 +80,7 @@ async function scraper() {
     console.log(paramValueString)
     console.log(paramPriceString + paramPriceCurrencyString + '\n')
     // @ ROZA object
-    let obj = new RestaurantMenuOutput(
+    obj = new RestaurantMenuOutput(
       paramColor,
       paramTitleString,
       paramUrl,
@@ -88,14 +91,16 @@ async function scraper() {
       paramPriceCurrencyString,
       paramAddressString
     )
-    let mongoObj = new RestaurantMenuDb(
+    mongoObj = new RestaurantMenuDb(
       paramTitleString,
       paramPriceString,
       paramPriceCurrency,
       paramValueString
     )
-    finalJSON.attachments.push(obj)
-    finalMongoJSON.push(mongoObj)
+    if (objectDecider.objectDecider(paramValueString)) {
+      finalJSON.attachments.push(obj)
+      finalMongoJSON.push(mongoObj)
+    }
   } catch (e) {
     console.error(e)
   }

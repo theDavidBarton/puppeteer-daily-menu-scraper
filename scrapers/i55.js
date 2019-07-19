@@ -16,6 +16,7 @@
 
 const puppeteer = require('puppeteer')
 const dateCatcher = require('./../lib/dateCatcher')
+const objectDecider = require('./../lib/objectDecider')
 const priceCatcher = require('./../lib/priceCatcher')
 const priceCompareToDb = require('./../lib/priceCompareToDb')
 const stringValueCleaner = require('./../lib/stringValueCleaner')
@@ -59,8 +60,11 @@ async function scraper() {
   let paramPriceCurrency
   let paramPriceCurrencyString
   let paramAddressString = 'Budapest, Alkotmány u. 20, 1054'
-  let weeklyI55, weeklyI55Daily
+  let weeklyI55
+  let weeklyI55Daily
   let found
+  let obj
+  let mongoObj
 
   // @ I55 selectors
   const weeklyI55Selector = '.vc_column-inner'
@@ -106,7 +110,7 @@ async function scraper() {
     console.log(paramPriceString + paramPriceCurrencyString + '\n')
 
     // @ I55 object
-    let obj = new RestaurantMenuOutput(
+    obj = new RestaurantMenuOutput(
       paramColor,
       paramTitleString,
       paramUrl,
@@ -117,14 +121,16 @@ async function scraper() {
       paramPriceCurrencyString,
       paramAddressString
     )
-    let mongoObj = new RestaurantMenuDb(
+    mongoObj = new RestaurantMenuDb(
       paramTitleString,
       paramPriceString,
       paramPriceCurrency,
       paramValueString
     )
-    finalJSON.attachments.push(obj)
-    finalMongoJSON.push(mongoObj)
+    if (objectDecider.objectDecider(paramValueString)) {
+      finalJSON.attachments.push(obj)
+      finalMongoJSON.push(mongoObj)
+    }
   } catch (e) {
     console.error(e)
   }

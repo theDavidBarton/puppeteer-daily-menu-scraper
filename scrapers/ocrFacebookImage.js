@@ -15,6 +15,7 @@
  */
 
 const puppeteer = require('puppeteer')
+const objectDecider = require('./../lib/objectDecider')
 const ocrSpaceApiSimple = require('./../lib/ocrSpaceApiSimple')
 const priceCatcher = require('./../lib/priceCatcher')
 const priceCompareToDb = require('./../lib/priceCompareToDb')
@@ -60,6 +61,9 @@ async function ocrFacebookImage(
   let imageUrlArray = []
   let restaurantDailyArray = []
   let parsedResult
+  let obj
+  let mongoObj
+
   try {
     await page.goto(paramUrl, { waitUntil: 'domcontentloaded' })
     // @ {RESTAURANT} the hunt for the menu image src
@@ -116,7 +120,7 @@ async function ocrFacebookImage(
         console.log(paramValueString)
         console.log(paramPriceString + paramPriceCurrencyString + '\n')
         // @ {RESTAURANT} object
-        let obj = new RestaurantMenuOutput(
+        obj = new RestaurantMenuOutput(
           paramColor,
           paramTitleString,
           paramUrl,
@@ -127,9 +131,11 @@ async function ocrFacebookImage(
           paramPriceCurrencyString,
           paramAddressString
         )
-        let mongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramPriceCurrency, paramValueString)
-        finalJSON.attachments.push(obj)
-        finalMongoJSON.push(mongoObj)
+        mongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramPriceCurrency, paramValueString)
+        if (objectDecider.objectDecider(paramValueString)) {
+          finalJSON.attachments.push(obj)
+          finalMongoJSON.push(mongoObj)
+        }
 
         break forlabelRestaurant
       }

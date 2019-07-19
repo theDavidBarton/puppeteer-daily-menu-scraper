@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+const objectDecider = require('./../lib/objectDecider')
 const ocrSpaceApiSimple = require('./../lib/ocrSpaceApiSimple')
 const stringValueCleaner = require('./../lib/stringValueCleaner')
 const priceCompareToDb = require('./../lib/priceCompareToDb')
@@ -61,6 +62,8 @@ async function scraper() {
   let karcsiSoup
   let karcsiDaily
   let parsedResult
+  let obj
+  let mongoObj
 
   const options = {
     method: 'POST',
@@ -93,7 +96,7 @@ async function scraper() {
     console.log(paramValueString)
     console.log(paramPriceString + paramPriceCurrencyString + '\n')
     // @ KARCSI object
-    let obj = new RestaurantMenuOutput(
+    obj = new RestaurantMenuOutput(
       paramColor,
       paramTitleString,
       paramUrl,
@@ -104,14 +107,16 @@ async function scraper() {
       paramPriceCurrencyString,
       paramAddressString
     )
-    let mongoObj = new RestaurantMenuDb(
+    mongoObj = new RestaurantMenuDb(
       paramTitleString,
       paramPriceString,
       paramPriceCurrency,
       paramValueString
     )
-    finalJSON.attachments.push(obj)
-    finalMongoJSON.push(mongoObj)
+    if (objectDecider.objectDecider(paramValueString)) {
+      finalJSON.attachments.push(obj)
+      finalMongoJSON.push(mongoObj)
+    }
   } catch (e) {
     console.error(e)
   }

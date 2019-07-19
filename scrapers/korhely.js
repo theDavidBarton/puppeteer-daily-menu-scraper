@@ -16,6 +16,7 @@
 
 const puppeteer = require('puppeteer')
 const dateCatcher = require('./../lib/dateCatcher')
+const objectDecider = require('./../lib/objectDecider')
 const priceCatcher = require('./../lib/priceCatcher')
 const priceCompareToDb = require('./../lib/priceCompareToDb')
 const stringValueCleaner = require('./../lib/stringValueCleaner')
@@ -58,7 +59,12 @@ async function scraper() {
   let paramPriceCurrency
   let paramPriceCurrencyString
   let paramAddressString = 'Budapest, Liszt Ferenc tér 7, 1061'
-  let weeklySoupKorhely, weeklyMainKorhely, weeklyDessertKorhely, found
+  let weeklySoupKorhely
+  let weeklyMainKorhely
+  let weeklyDessertKorhely
+  let found
+  let obj
+  let mongoObj
 
   // @ KORHELY selectors
   const summarySelector = '.MenusNavigation_description'
@@ -107,7 +113,7 @@ async function scraper() {
     console.log(paramValueString)
     console.log(paramPriceString + paramPriceCurrencyString + '\n')
     // @ KORHELY object
-    let obj = new RestaurantMenuOutput(
+    obj = new RestaurantMenuOutput(
       paramColor,
       paramTitleString,
       paramUrl,
@@ -118,14 +124,16 @@ async function scraper() {
       paramPriceCurrencyString,
       paramAddressString
     )
-    let mongoObj = new RestaurantMenuDb(
+    mongoObj = new RestaurantMenuDb(
       paramTitleString,
       paramPriceString,
       paramPriceCurrency,
       paramValueString
     )
-    finalJSON.attachments.push(obj)
-    finalMongoJSON.push(mongoObj)
+    if (objectDecider.objectDecider(paramValueString)) {
+      finalJSON.attachments.push(obj)
+      finalMongoJSON.push(mongoObj)
+    }
   } catch (e) {
     console.error(e)
   }
