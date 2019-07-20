@@ -4,7 +4,6 @@
 [![crocodile](https://img.shields.io/badge/crocodiles_in_the_basement-%F0%9F%90%8A_yes-orange.svg)](/lib)
 [![license](https://img.shields.io/github/license/theDavidBarton/puppeteer-daily-menu-scraper.svg)](/LICENSE.md)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FtheDavidBarton%2Fpuppeteer-daily-menu-scraper.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FtheDavidBarton%2Fpuppeteer-daily-menu-scraper?ref=badge_shield)
-[![tested with jest](https://img.shields.io/static/v1.svg?label=tested%20with&message=jest&color=C21325&logo=jest)](https://github.com/facebook/jest)
 
 # Puppeteer Daily Menu Scraper
 
@@ -15,7 +14,6 @@ Currently the project's main js contains one headless Chrome instance with multi
 So far the scrapers are diverse: **(1)** harvests facebook posts for images, then OCR their content; **(2)** OCR menus uploaded in jpg image and table format; **(3)** scrape regular restaurant websites and get content via DOM and **(4)** also scraping facebook post texts based on regex patterns.
 
 The final output is stored in JSON and posted to slack via webhooks.
-
 
 ###### KEYWORDS: [puppeteer](https://github.com/search?q=puppeteer) | [OCR](https://github.com/search?q=ocr) | [web scraping](https://github.com/search?q=web+scraping) | [facebook scraping](https://github.com/search?q=facebook+scraping) | [webhooks](https://github.com/search?q=webhooks)
 
@@ -30,6 +28,7 @@ The final output is stored in JSON and posted to slack via webhooks.
 ![node](https://img.shields.io/badge/node-%3E%3D7.6.0-green.svg)
 ![node-dev](https://img.shields.io/badge/node_(devDependencies)-%3E%3D10.15.3-green.svg)
 [![pptr](https://img.shields.io/github/package-json/dependency-version/theDavidBarton/puppeteer-daily-menu-scraper/puppeteer.svg)](/package.json)
+[![tested with jest](https://img.shields.io/static/v1.svg?label=tested%20with&message=jest&color=C21325)](https://github.com/facebook/jest)
 
 `yarn install` the project (see dependencies in [package.json](/package.json))
 
