@@ -1,6 +1,7 @@
 {
    "rules":{
       "á":"¿|ä|\\.í",
+      "gombóc":"gomiióc",
       "comb":"co\\.mb",
       "cs":"c,s",
       "csirke":"c.sirkf.|c:s1rkf.|cs.rke",
@@ -9,7 +10,7 @@
       "főétel":"fóétel",
       "főzelék":"f.ze\\/ék|ii,'özei\\.é\\.k,|fózelék|ĺő•elŕk|.ő.el.k",
       "füstölt":"fustblt|fostólt|fústolt|fiistölt",
-      "hús":"hcs|11ts",
+      "hús":"hcs|11ts|iiús|iiűs",
       "hagym":"hagvm|hac,ym|hagy\\.m",
       "ggy":"ggv",
       "guly":"gulv",
@@ -17,9 +18,9 @@
       "körte":"kórte",
       "krém":"krén|k(ř|r)éh|krěm|krčrn",
       "l":"i\\.\\.|i\\.|1\\.",
-      "leves":"\\/eves|lewes",
+      "leves":"\\/eves|lewes|\\/ewes",
       "mártás":"mártós|m\\.írtäs",
-      "nokedli":"\\/VaCeďZö|\\/VoCeďZö|\\/\\(\\/aőeďö",
+      "nokedli":"\\/\\S+(Zö|ďö)",
       "ös":"0s",
       "penne":"pf,nni•:",
       "pörkölt":"pbrkblt",
