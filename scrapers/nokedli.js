@@ -126,38 +126,38 @@ async function scraper() {
         if (wordTop > 520 && wordTop < 1930) {
           monday: if (wordLeft > 780 && wordLeft < 980) {
             nokedliMonday.push(wordText)
-            nokedliMondayStr = nokedliMonday
-              .join(' ')
-              .split(/(?= [A-ZÁÍŰŐÜÖÚÓÉ])/g)
-              .map(trimThemAll => trimThemAll.trim())
+            nokedliMondayStr = nokedliMonday.join(' ').split(/(?= [A-ZÁÍŰŐÜÖÚÓÉ])/g)
+            for (let l = 0; l < nokedliMondayStr.length; l++) {
+              nokedliMondayStr[l] = nokedliMondayStr[l].trim()
+            }
           }
           tuesday: if (wordLeft > 1310 && wordLeft < 1546) {
             nokedliTuesday.push(wordText)
-            nokedliTuesdayStr = nokedliTuesday
-              .join(' ')
-              .split(/(?= [A-ZÁÍŰŐÜÖÚÓÉ])/g)
-              .map(trimThemAll => trimThemAll.trim())
+            nokedliTuesdayStr = nokedliTuesday.join(' ').split(/(?= [A-ZÁÍŰŐÜÖÚÓÉ])/g)
+            for (let l = 0; l < nokedliTuesdayStr.length; l++) {
+              nokedliTuesdayStr[l] = nokedliTuesdayStr[l].trim()
+            }
           }
           wednesday: if (wordLeft > 1815 && wordLeft < 2090) {
             nokedliWednesday.push(wordText)
-            nokedliWednesdayStr = nokedliWednesday
-              .join(' ')
-              .split(/(?= [A-ZÁÍŰŐÜÖÚÓÉ])/g)
-              .map(trimThemAll => trimThemAll.trim())
+            nokedliWednesdayStr = nokedliWednesday.join(' ').split(/(?= [A-ZÁÍŰŐÜÖÚÓÉ])/g)
+            for (let l = 0; l < nokedliWednesdayStr.length; l++) {
+              nokedliWednesdayStr[l] = nokedliWednesdayStr[l].trim()
+            }
           }
           thursday: if (wordLeft > 2345 && wordLeft < 2620) {
             nokedliThursday.push(wordText)
-            nokedliThursdayStr = nokedliThursday
-              .join(' ')
-              .split(/(?= [A-ZÁÍŰŐÜÖÚÓÉ])/g)
-              .map(trimThemAll => trimThemAll.trim())
+            nokedliThursdayStr = nokedliThursday.join(' ').split(/(?= [A-ZÁÍŰŐÜÖÚÓÉ])/g)
+            for (let l = 0; l < nokedliThursdayStr.length; l++) {
+              nokedliThursdayStr[l] = nokedliThursdayStr[l].trim()
+            }
           }
           friday: if (wordLeft > 2880 && wordLeft < 3110) {
             nokedliFriday.push(wordText)
-            nokedliFridayStr = nokedliFriday
-              .join(' ')
-              .split(/(?= [A-ZÁÍŰŐÜÖÚÓÉ])/g)
-              .map(trimThemAll => trimThemAll.trim())
+            nokedliFridayStr = nokedliFriday.join(' ').split(/(?= [A-ZÁÍŰŐÜÖÚÓÉ])/g)
+            for (let l = 0; l < nokedliFridayStr.length; l++) {
+              nokedliFridayStr[l] = nokedliFridayStr[l].trim()
+            }
           }
         }
       }
@@ -203,7 +203,12 @@ async function scraper() {
       paramPriceCurrencyString,
       paramAddressString
     )
-    mongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramPriceCurrency, paramValueString)
+    mongoObj = new RestaurantMenuDb(
+      paramTitleString,
+      paramPriceString,
+      paramPriceCurrency,
+      paramValueString
+    )
     if (objectDecider.objectDecider(paramValueString)) {
       finalJSON.attachments.push(obj)
       finalMongoJSON.push(mongoObj)
