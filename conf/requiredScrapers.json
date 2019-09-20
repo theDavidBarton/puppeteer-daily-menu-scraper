@@ -1,0 +1,22 @@
+{
+  "scrapers": {
+    "active": [
+      "i55",
+      "pestiDiszno",
+      "incognito",
+      "kata",
+      "drop",
+      "bodza",
+      "yamato",
+      "vian",
+      "korhely",
+      "ketszerecsen",
+      "fruccola",
+      "kamra",
+      "roza",
+      "suppe",
+      "karcsi"
+    ],
+    "inactive": ["nokedli"]
+  }
+}
