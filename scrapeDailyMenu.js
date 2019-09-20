@@ -130,7 +130,7 @@ async function scrapeMenu() {
         console.error(e)
       }
     })
-
+    // maybe a better solution: https://flaviocopes.com/javascript-async-await-array-map/
     await Promise.all(promises)
   }
   await scraperExecuter()
