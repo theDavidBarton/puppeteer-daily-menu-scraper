@@ -9,7 +9,7 @@
       "TextOrientation": "0",
       "FileParseExitCode": 1,
       "ParsedText": "I ❤ \r\nGitHuB and coding in NodeJs \r\nthis response is coming from \r\nmock (via Nock). \r\n",
-      "ErrorMessage": "",
+      "ErrorMessage": ["mocked error"],
       "ErrorDetails": ""
     }
   ],
