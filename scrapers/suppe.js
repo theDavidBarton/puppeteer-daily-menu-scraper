@@ -22,7 +22,8 @@ const today = require('./../scrapeDailyMenu').today
 const dayNames = require('./../scrapeDailyMenu').dayNames
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
 const finalMongoJSON = require('./../scrapeDailyMenu').finalMongoJSON
-const RestaurantMenuOutput = require('./../scrapeDailyMenu').RestaurantMenuOutput
+const RestaurantMenuOutput = require('./../scrapeDailyMenu')
+  .RestaurantMenuOutput
 const RestaurantMenuDb = require('./../scrapeDailyMenu').RestaurantMenuDb
 
 async function scraper() {
@@ -57,7 +58,7 @@ async function scraper() {
   let paramTitleString = 'Bistro Suppé'
   let paramUrl = 'https://www.facebook.com/pg/bistrosuppe/posts/'
   let paramIcon =
-    'https://scontent.fbud1-1.fna.fbcdn.net/v/t1.0-1/c36.0.320.320a/p320x320/1377248_364465010354681_215635093_n.jpg?_nc_cat=101&_nc_ht=scontent.fbud1-1.fna&oh=2e5b2ffdede3a0606b410ca121409f27&oe=5D5F0B90'
+    'https://scontent.fbud5-1.fna.fbcdn.net/v/t1.0-9/1377248_364465010354681_215635093_n.jpg?_nc_cat=101&_nc_oc=AQm91PjrSi-ey80DSDwdQ3M3QHzUeuVWy-oElgtNm3nn2HdoSNFxNcRZGwQPDG2Hkmo&_nc_ht=scontent.fbud5-1.fna&oh=925e1c2bb1782f4ab82cd02ef911ecc1&oe=5E254656'
   let paramValueString
   let paramPriceString = '1190'
   let paramPriceCurrency = 'HUF'
@@ -75,22 +76,42 @@ async function scraper() {
      * @ SUPPÉ selector, source: https://stackoverflow.com/questions/48448586/how-to-use-xpath-in-chrome-headlesspuppeteer-evaluate
      * @ SUPPÉ Daily
      */
-    const dailySuppeIncludes = (await page.$x('//span[contains(text(), "Sziasztok")]'))[0]
+    const dailySuppeIncludes = (await page.$x(
+      '//span[contains(text(), "Sziasztok")]'
+    ))[0]
     dailySuppe = await page.evaluate(el => el.textContent, dailySuppeIncludes)
-    dailySuppe = dailySuppe.replace(/Sziasztok, |, kellemes hétvégét!|, szép napot!|, várunk Titeket!/gi, '')
+    dailySuppe = dailySuppe.replace(
+      /Sziasztok, |, kellemes hétvégét!|, szép napot!|, várunk Titeket!/gi,
+      ''
+    )
     // @ SUPPÉ Weekly (on Monday)
-    const weeklySuppeIncludes = (await page.$x('//p[contains(text(), "Sziasztok")]'))[0]
+    const weeklySuppeIncludes = (await page.$x(
+      '//p[contains(text(), "Sziasztok")]'
+    ))[0]
     weeklySuppe = await page.evaluate(el => el.textContent, weeklySuppeIncludes)
-    weeklySuppe = weeklySuppe.replace(/(?=sziasztok)(.*)(?=levesek )|(?=mai)(.*)(?=\s*)/gi, '')
+    weeklySuppe = weeklySuppe.replace(
+      /(?=sziasztok)(.*)(?=levesek )|(?=mai)(.*)(?=\s*)/gi,
+      ''
+    )
     // @ SUPPÉ Monday only (on Monday)
-    const mondaySuppeIncludes = (await page.$x('//p[contains(text(), "Sziasztok")]'))[0]
+    const mondaySuppeIncludes = (await page.$x(
+      '//p[contains(text(), "Sziasztok")]'
+    ))[0]
     mondaySuppe = await page.evaluate(el => el.textContent, mondaySuppeIncludes)
-    mondaySuppe = mondaySuppe.replace(/(?=sziasztok)(.*)(?=levesek )|(, várunk Titeket!)/gi, '')
+    mondaySuppe = mondaySuppe.replace(
+      /(?=sziasztok)(.*)(?=levesek )|(, várunk Titeket!)/gi,
+      ''
+    )
 
-    let trend = await priceCompareToDb.priceCompareToDb(paramTitleString, paramPriceString)
+    let trend = await priceCompareToDb.priceCompareToDb(
+      paramTitleString,
+      paramPriceString
+    )
     paramPriceCurrencyString = paramPriceCurrencyString + trend
 
-    console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
+    console.log(
+      '*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length)
+    )
     if (today === 1) {
       paramValueString = mondaySuppe
       console.log('• ' + dayNames[today] + ': ' + paramValueString)
