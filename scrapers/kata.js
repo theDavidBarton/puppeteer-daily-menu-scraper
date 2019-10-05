@@ -33,7 +33,7 @@ async function scraper() {
   let titleString = 'Kata (Chagall)'
   let url = 'https://www.facebook.com/pg/katarestaurantbudapest/posts/'
   let icon =
-    'https://scontent-vie1-1.xx.fbcdn.net/v/t1.0-1/p200x200/54435606_326369938082271_8203013160240676864_n.jpg?_nc_cat=102&_nc_ht=scontent-vie1-1.xx&oh=f5ccb50053c0d9174c10d71ab0097807&oe=5D2A4D25'
+    'https://lh3.googleusercontent.com/GrM72gaBN1l7BUgUuWI5T9w2zc1qxsKFNukg6Szp-lXXpfG0wmnxT2FA_o725nmAiZkxGmf_=w1080-h608-p-no-v0'
   let addressString = 'Budapest, 1065, Hajós u. 27.'
   let daysRegexArray = [
     '',
