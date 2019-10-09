@@ -2,7 +2,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "moment": "^2.24.0",
-    "mongodb": "^3.2.7",
+    "mongodb": "^3.3.2",
     "puppeteer": "^1.20.0",
     "request": "^2.88.0"
   },
