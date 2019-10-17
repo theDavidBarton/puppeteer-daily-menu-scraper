@@ -119,6 +119,7 @@ async function scrapeMenu() {
   }
 
   // require scrapers after module.exports object is declared
+  const mozsar = require('./scrapers/mozsar')
   const i55 = require('./scrapers/i55')
   const pestiDiszno = require('./scrapers/pestiDiszno')
   const incognito = require('./scrapers/incognito')
@@ -136,6 +137,7 @@ async function scrapeMenu() {
   const karcsi = require('./scrapers/karcsi')
 
   // launch scrapers
+  await mozsar.scraper()
   await i55.scraper()
   await pestiDiszno.scraper()
   await incognito.scraper()
