@@ -15,16 +15,17 @@
  */
 
 const puppeteer = require('puppeteer')
+const moment = require('moment')
 const dateCatcher = require('./../lib/dateCatcher')
 const objectDecider = require('./../lib/objectDecider')
 const priceCatcher = require('./../lib/priceCatcher')
 const priceCompareToDb = require('./../lib/priceCompareToDb')
+const stringValueCleaner = require('./../lib/stringValueCleaner')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
 const today = require('./../scrapeDailyMenu').today
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
 const finalMongoJSON = require('./../scrapeDailyMenu').finalMongoJSON
-const RestaurantMenuOutput = require('./../scrapeDailyMenu')
-  .RestaurantMenuOutput
+const RestaurantMenuOutput = require('./../scrapeDailyMenu').RestaurantMenuOutput
 const RestaurantMenuDb = require('./../scrapeDailyMenu').RestaurantMenuDb
 
 async function scraper() {
@@ -42,102 +43,75 @@ async function scraper() {
   })
 
   /*
-   * @ mozsar
+   * @ MOZSAR
    * ------------------------------------------
    * contact info:
-   * Address: Budapest, Nagymező u. 14, 1065
-   * Phone: (1) 343 1984
+   * Address: Budapest, Nagymező u. 21, 1065
+   * Phone: +36 (70) 426 8199
    * -----------------------------------------
-   * description:
-   * mozsarArray[1-2]: contains selectors for tha days of the week
-   * mozsar[1-2]: is the text inside selector (actual menu) to be displayed in output
    */
 
-  // @ mozsar parameters
-  let paramColor = '#000000'
+  // @ MOZSAR parameters
+  let paramColor = '#bc4545'
   let paramTitleString = 'Mozsár Bisztro'
   let paramUrl = 'http://mozsarbisztro.hu/index.php?p=3'
   let paramIcon =
-    'https://images.deliveryhero.io/image/netpincer/caterer/sh-9a3e84d0-2e42-11e2-9d48-7a92eabdcf20/logo.png'
+    'https://www.programturizmus.hu/media/image/big/ajanlat/program/tudomanyos-programok/tanfolyam/76/19396-mozsar-kavezo-program.jpg'
   let paramValueString
   let paramPriceString
   let paramPriceCurrency
   let paramPriceCurrencyString
-  let paramAddressString = 'Budapest, Nagymező u. 14, 1065'
-  let mozsar1
-  let mozsar2
+  let paramAddressString = 'Budapest, Nagymező u. 21, 1065'
+  let mozsar
+  let mozsarDate
+  let mozsarSummary
   let found
+  let trend
   let obj = null
   let mongoObj = null
 
-  // @ mozsar selectors [1: first course, 2: main course]
-  let mozsarArray1 = [
-    '',
-    'p:nth-child(4)',
-    'p:nth-child(7)',
-    'p:nth-child(10)',
-    'p:nth-child(13)',
-    'p:nth-child(16)'
-  ]
-  let mozsarArray2 = [
-    '',
-    'p:nth-child(5)',
-    'p:nth-child(8)',
-    'p:nth-child(11)',
-    'p:nth-child(14)',
-    'p:nth-child(17)'
+  // @ MOZSAR selectors
+  const mozsarSelector = '#etlapresult'
+  const mozsarDateSelector = '.flipInY'
+  const mozsarPriceSelector = '.item'
+  const mozsarDaysRegexArray = [
+    null,
+    /hétfő([\s\S]*?)kedd/gi,
+    /kedd([\s\S]*?)szerda/gi,
+    /szerda([\s\S]*?)csütörtök/gi,
+    /csütörtök([\s\S]*?)péntek/gi,
+    /péntek([\s\S]*?)ital/gi
   ]
 
   try {
     await page.goto(paramUrl, { waitUntil: 'networkidle2' })
-    // @ mozsar Monday-Friday
-    found = await dateCatcher.dateCatcher(weeklyI55, true) // @ I55 catch date
-    if (found === true) {
-      paramValueString = await stringValueCleaner.stringValueCleaner(
-        weeklyI55Daily,
-        false
-      )
-      paramValueString = paramValueString
-        .replace(/\(\)/g, '')
-        .replace(/\n/, ' ') // to be moved to stringValueCleaner module later!
+    mozsar = await page.evaluate(el => el.textContent, (await page.$$(mozsarSelector))[0])
+    mozsarDate = await page.evaluate(el => el.textContent, (await page.$$(mozsarDateSelector))[0])
+    mozsarSummary = await page.evaluate(el => el.textContent, (await page.$$(mozsarPriceSelector))[0])
 
-      // fallback on facebook page
-    } else {
-      await page.goto(paramUrlFallback, {
-        waituntil: 'domcontentloaded',
-        timeout: 0
-      })
-      forlabel: for (let i = 0; i < 10; i++) {
-        weeklyI55 = await page.evaluate(
-          el => el.textContent,
-          (await page.$$(weeklyI55SelectorFallback))[i]
-        )
-        if (weeklyI55.match(/levesek([\s\S]*?)ebédelj/gi)) {
-          weeklyI55Daily = weeklyI55.match(/levesek([\s\S]*?)ebédelj/gi)
-          paramPriceString = await priceCatcher.priceCatcher(weeklyI55, 1) // @ I55 price catch
-          found = await dateCatcher.dateCatcher(weeklyI55, true) // @ I55 catch date
-          if (found === true) {
-            paramValueString = await stringValueCleaner.stringValueCleaner(
-              weeklyI55Daily,
-              false
-            )
-            paramValueString = paramValueString
-              .replace(/\(\)/g, '')
-              .replace(/\n/, ' ') // to be moved to stringValueCleaner module later!
-            break forlabel
-          } else {
-            paramValueString = 'menu is out of date!'
-          }
-        }
-      }
-    }
-    let trend = await priceCompareToDb.priceCompareToDb(paramTitleString, price)
-    console.log(
-      '*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length)
-    )
+    // @ MOZSAR price catch
+    let { price, priceCurrencyStr, priceCurrency } = await priceCatcher.priceCatcher(mozsarSummary)
+    trend = await priceCompareToDb.priceCompareToDb(paramTitleString, price)
+    paramPriceString = price
+    paramPriceCurrency = priceCurrency
+    paramPriceCurrencyString = priceCurrencyStr + trend
+
+    // @ MOZSAR date catch
+    mozsarDate = mozsarDate.replace(/Heti menü |- /gi, moment().year() + '.').replace(/\. /gi, '. - ')
+    console.log(mozsarDate)
+    found = await dateCatcher.dateCatcher(mozsarDate, true)
+    console.log(found) // _STILL CONTAINS BUG DUE TO ONLY TEXT MONTH NAMES ARE SUPPORTED IN INTERVALS! https://stackoverflow.com/questions/31274581/get-month-name-from-two-digit-month-number
+
+    // @ MOZSAR menu parse
+    paramValueString = mozsar.match(mozsarDaysRegexArray[today])
+    paramValueString = paramValueString.toString().replace(/ ital$/gi, '') // ugly, but cleaner value for Fridays from necessary regex
+    paramValueString = '• Daily menu: ' + (await stringValueCleaner.stringValueCleaner(paramValueString, false))
+
+    console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
     console.log(paramValueString)
     console.log(paramPriceString + paramPriceCurrencyString + '\n')
-    // @ mozsar object
+
+    // @ MOZSAR object
     obj = new RestaurantMenuOutput(
       paramColor,
       paramTitleString,
@@ -149,12 +123,7 @@ async function scraper() {
       paramPriceCurrencyString,
       paramAddressString
     )
-    mongoObj = new RestaurantMenuDb(
-      paramTitleString,
-      paramPriceString,
-      paramPriceCurrency,
-      paramValueString
-    )
+    mongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramPriceCurrency, paramValueString)
     if (objectDecider.objectDecider(paramValueString)) {
       finalJSON.attachments.push(obj)
       finalMongoJSON.push(mongoObj)

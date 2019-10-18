@@ -32,12 +32,7 @@ for (let i = 0; i < 7; i++) {
   dayNames.push(day)
 }
 
-console.log(
-  '*' +
-    dayNames[today].toUpperCase() +
-    '*\n' +
-    '='.repeat(dayNames[today].length)
-)
+console.log('*' + dayNames[today].toUpperCase() + '*\n' + '='.repeat(dayNames[today].length))
 
 // this will be the object we extend (its 'attachments') with each daily menu
 let finalJSON = {
@@ -88,12 +83,7 @@ let RestaurantMenuOutput = function(
 }
 
 // constructor for database object
-let RestaurantMenuDb = function(
-  titleString,
-  priceString,
-  priceCurrency,
-  valueString
-) {
+let RestaurantMenuDb = function(titleString, priceString, priceCurrency, valueString) {
   this.timestamp = todayDotSeparated
   this.restaurant = titleString
   this.price = priceString
@@ -167,7 +157,7 @@ async function scrapeMenu() {
   // _POST the final JSON to webhook
   request(
     {
-      url: process.env.WEBHOOK_URL_PROD,
+      url: process.env.WEBHOOK_URL_TEST,
       method: 'POST',
       json: false,
       body: finalJSON
