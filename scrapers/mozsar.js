@@ -98,14 +98,16 @@ async function scraper() {
 
     // @ MOZSAR date catch
     mozsarDate = mozsarDate.replace(/Heti menü |- /gi, moment().year() + '.').replace(/\. /gi, '. - ')
-    console.log(mozsarDate)
     found = await dateCatcher.dateCatcher(mozsarDate, true)
-    console.log(found) // _STILL CONTAINS BUG DUE TO ONLY TEXT MONTH NAMES ARE SUPPORTED IN INTERVALS! https://stackoverflow.com/questions/31274581/get-month-name-from-two-digit-month-number
 
     // @ MOZSAR menu parse
-    paramValueString = mozsar.match(mozsarDaysRegexArray[today])
-    paramValueString = paramValueString.toString().replace(/ ital$/gi, '') // ugly, but cleaner value for Fridays from necessary regex
-    paramValueString = '• Daily menu: ' + (await stringValueCleaner.stringValueCleaner(paramValueString, false))
+    if (found === true) {
+      paramValueString = mozsar.match(mozsarDaysRegexArray[today])
+      paramValueString = paramValueString.toString().replace(/ ital$/gi, '') // ugly, but cleaner value for Fridays from necessary regex
+      paramValueString = '• Daily menu: ' + (await stringValueCleaner.stringValueCleaner(paramValueString, false))
+    } else {
+      paramValueString = '• Daily menu: ♪"No Milk Today"♫'
+    }
 
     console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
     console.log(paramValueString)
