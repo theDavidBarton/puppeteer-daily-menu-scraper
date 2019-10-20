@@ -32,12 +32,7 @@ for (let i = 0; i < 7; i++) {
   dayNames.push(day)
 }
 
-console.log(
-  '*' +
-    dayNames[today].toUpperCase() +
-    '*\n' +
-    '='.repeat(dayNames[today].length)
-)
+console.log('*' + dayNames[today].toUpperCase() + '*\n' + '='.repeat(dayNames[today].length))
 
 // this will be the object we extend (its 'attachments') with each daily menu
 let finalJSON = {
@@ -88,12 +83,7 @@ let RestaurantMenuOutput = function(
 }
 
 // constructor for database object
-let RestaurantMenuDb = function(
-  titleString,
-  priceString,
-  priceCurrency,
-  valueString
-) {
+let RestaurantMenuDb = function(titleString, priceString, priceCurrency, valueString) {
   this.timestamp = todayDotSeparated
   this.restaurant = titleString
   this.price = priceString
@@ -119,6 +109,7 @@ async function scrapeMenu() {
   }
 
   // require scrapers after module.exports object is declared
+  const mozsar = require('./scrapers/mozsar')
   const i55 = require('./scrapers/i55')
   const pestiDiszno = require('./scrapers/pestiDiszno')
   const incognito = require('./scrapers/incognito')
@@ -136,6 +127,7 @@ async function scrapeMenu() {
   const karcsi = require('./scrapers/karcsi')
 
   // launch scrapers
+  await mozsar.scraper()
   await i55.scraper()
   await pestiDiszno.scraper()
   await incognito.scraper()
