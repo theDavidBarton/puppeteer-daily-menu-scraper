@@ -89,10 +89,7 @@ async function scraper() {
 
       // fallback on facebook page
     } else {
-      await page.goto(paramUrlFallback, {
-        waituntil: 'domcontentloaded',
-        timeout: 0
-      })
+      await page.goto(paramUrlFallback, { waituntil: 'domcontentloaded', timeout: 0 })
       forlabel: for (let i = 0; i < 10; i++) {
         weeklyI55 = await page.evaluate(el => el.textContent, (await page.$$(weeklyI55SelectorFallback))[i])
         if (weeklyI55.match(/levesek([\s\S]*?)ebédelj/gi)) {
