@@ -97,7 +97,7 @@ async function scraper() {
         weeklyI55 = await page.evaluate(el => el.textContent, (await page.$$(weeklyI55SelectorFallback))[i])
         if (weeklyI55.match(/levesek([\s\S]*?)ebédelj/gi)) {
           weeklyI55Daily = weeklyI55.match(/levesek([\s\S]*?)ebédelj/gi)
-          paramPriceString = await priceCatcher.priceCatcher(weeklyI55, 1) // @ I55 price catch
+          // @ I55 price catch
           let { price, priceCurrencyStr, priceCurrency } = await priceCatcher.priceCatcher(weeklyI55, 1)
           trend = await priceCompareToDb.priceCompareToDb(paramTitleString, price)
           paramPriceString = price
