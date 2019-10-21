@@ -63,6 +63,7 @@ async function scraper() {
   let weeklyI55
   let weeklyI55Daily
   let found
+  let trend
   let obj = null
   let mongoObj = null
 
@@ -76,7 +77,7 @@ async function scraper() {
     weeklyI55Daily = weeklyI55.match(/levesek([\s\S]*?)ebédelj/gi)
     // @ I55 price catch
     let { price, priceCurrencyStr, priceCurrency } = await priceCatcher.priceCatcher(weeklyI55, 1)
-    let trend = await priceCompareToDb.priceCompareToDb(paramTitleString, price)
+    trend = await priceCompareToDb.priceCompareToDb(paramTitleString, price)
     paramPriceString = price
     paramPriceCurrency = priceCurrency
     paramPriceCurrencyString = priceCurrencyStr + trend
@@ -93,7 +94,12 @@ async function scraper() {
         weeklyI55 = await page.evaluate(el => el.textContent, (await page.$$(weeklyI55SelectorFallback))[i])
         if (weeklyI55.match(/levesek([\s\S]*?)ebédelj/gi)) {
           weeklyI55Daily = weeklyI55.match(/levesek([\s\S]*?)ebédelj/gi)
-          paramPriceString = await priceCatcher.priceCatcher(weeklyI55, 1) // @ I55 price catch
+          // @ I55 price catch
+          let { price, priceCurrencyStr, priceCurrency } = await priceCatcher.priceCatcher(weeklyI55, 1)
+          trend = await priceCompareToDb.priceCompareToDb(paramTitleString, price)
+          paramPriceString = price
+          paramPriceCurrency = priceCurrency
+          paramPriceCurrencyString = priceCurrencyStr + trend
           found = await dateCatcher.dateCatcher(weeklyI55, true) // @ I55 catch date
           if (found === true) {
             paramValueString = await stringValueCleaner.stringValueCleaner(weeklyI55Daily, false)
@@ -121,12 +127,7 @@ async function scraper() {
       paramPriceCurrencyString,
       paramAddressString
     )
-    mongoObj = new RestaurantMenuDb(
-      paramTitleString,
-      paramPriceString,
-      paramPriceCurrency,
-      paramValueString
-    )
+    mongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramPriceCurrency, paramValueString)
     if (objectDecider.objectDecider(paramValueString)) {
       finalJSON.attachments.push(obj)
       finalMongoJSON.push(mongoObj)
