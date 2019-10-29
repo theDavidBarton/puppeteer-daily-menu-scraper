@@ -32,7 +32,7 @@ async function scraper() {
   let color = '#cc2c2c'
   let titleString = 'Incognito'
   let url = 'https://www.facebook.com/pg/cafeincognito/posts/'
-  let icon = 'https://www.copper-state.com/wp-content/uploads/2016/02/google_incognito_mode_400.jpg'
+  let icon = 'https://www.nicepng.com/png/detail/141-1415218_incognito-logo-incognito-mode-icon.png'
   let addressString = 'Budapest, Liszt tér'
   let daysRegexArray = [
     '',
