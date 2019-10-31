@@ -21,7 +21,8 @@ const priceCompareToDb = require('./../lib/priceCompareToDb')
 const today = require('./../scrapeDailyMenu').today
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
 const finalMongoJSON = require('./../scrapeDailyMenu').finalMongoJSON
-const RestaurantMenuOutput = require('./../scrapeDailyMenu').RestaurantMenuOutput
+const RestaurantMenuOutput = require('./../scrapeDailyMenu')
+  .RestaurantMenuOutput
 const RestaurantMenuDb = require('./../scrapeDailyMenu').RestaurantMenuDb
 
 async function scraper() {
@@ -39,7 +40,7 @@ async function scraper() {
   let paramTitleString = 'Karcsi Vendéglö'
   let paramUrl = 'http://karcsibacsivendeglo.com/letoltes/napi_menu.pdf'
   let paramIcon =
-    'https://scontent.fbud1-1.fna.fbcdn.net/v/t1.0-1/c28.22.275.275a/p320x320/579633_527729393935258_751578746_n.png?_nc_cat=111&_nc_ht=scontent.fbud1-1.fna&oh=73791f008083bd39a006894bc54655d3&oe=5D61492B'
+    'https://6.kerulet.ittlakunk.hu/files/ittlakunk/styles/large/public/upload/company/1256/karcsi_vendeglo_logo.png'
   let paramValueString
   let paramPriceString = '1100'
   let paramPriceCurrency = 'n/a'
@@ -88,11 +89,21 @@ async function scraper() {
       karcsiWeekly = parsedResult.match(weeklyOfferRegex)
       karcsiSoup = parsedResult.match(soupRegex)
     }
-    let trend = await priceCompareToDb.priceCompareToDb(paramTitleString, paramPriceString)
+    let trend = await priceCompareToDb.priceCompareToDb(
+      paramTitleString,
+      paramPriceString
+    )
     paramPriceCurrencyString = paramPriceCurrencyString + trend
     // @ KARCSI clean string
-    paramValueString = '• Weekly offer: ' + await stringValueCleaner.stringValueCleaner(karcsiWeekly, true) + '\n• Daily menu: ' + await stringValueCleaner.stringValueCleaner(karcsiSoup, true) + await stringValueCleaner.stringValueCleaner(karcsiDaily, true)
-    console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
+    paramValueString =
+      '• Weekly offer: ' +
+      (await stringValueCleaner.stringValueCleaner(karcsiWeekly, true)) +
+      '\n• Daily menu: ' +
+      (await stringValueCleaner.stringValueCleaner(karcsiSoup, true)) +
+      (await stringValueCleaner.stringValueCleaner(karcsiDaily, true))
+    console.log(
+      '*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length)
+    )
     console.log(paramValueString)
     console.log(paramPriceString + paramPriceCurrencyString + '\n')
     // @ KARCSI object

@@ -21,7 +21,8 @@ const stringValueCleaner = require('./../lib/stringValueCleaner')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
 const finalMongoJSON = require('./../scrapeDailyMenu').finalMongoJSON
-const RestaurantMenuOutput = require('./../scrapeDailyMenu').RestaurantMenuOutput
+const RestaurantMenuOutput = require('./../scrapeDailyMenu')
+  .RestaurantMenuOutput
 const RestaurantMenuDb = require('./../scrapeDailyMenu').RestaurantMenuDb
 
 async function scraper() {
@@ -52,7 +53,7 @@ async function scraper() {
   let paramTitleString = 'Róza Soup Restaurant'
   let paramUrl = 'https://www.facebook.com/pg/rozafinomitt/posts/'
   let paramIcon =
-    'https://scontent.fbud1-1.fna.fbcdn.net/v/t1.0-1/10394619_390942531075147_2725477335166513345_n.jpg?_nc_cat=108&_nc_ht=scontent.fbud1-1.fna&oh=e1e55fe2b089e8334deaef4895579833&oe=5D77E7B6'
+    'https://scontent.fbud5-1.fna.fbcdn.net/v/t1.0-1/10394619_390942531075147_2725477335166513345_n.jpg?_nc_cat=108&_nc_oc=AQmYePlHDUuQq8mobFYahU1UY5c-BqLoTnXZcMZ6PhYThgnyFqkGNqZWmsHOwzUEwZM&_nc_ht=scontent.fbud5-1.fna&oh=05bb8d72ba040dc6dbe894a50587fcc3&oe=5E3DA8B6'
   let paramAddressString = 'Budapest, Jókai u. 22, 1066'
   let paramValueString
   let paramPriceString
@@ -68,15 +69,26 @@ async function scraper() {
   try {
     await page.goto(paramUrl, { waitUntil: 'domcontentloaded' })
     // @ ROZA Daily
-    dailyRoza = await page.evaluate(el => el.textContent, (await page.$$(dailyRozaSelector))[0])
+    dailyRoza = await page.evaluate(
+      el => el.textContent,
+      (await page.$$(dailyRozaSelector))[0]
+    )
     // @ ROZA price catch
-    let { price, priceCurrencyStr, priceCurrency } = await priceCatcher.priceCatcher(dailyRoza)
+    let {
+      price,
+      priceCurrencyStr,
+      priceCurrency
+    } = await priceCatcher.priceCatcher(dailyRoza)
     paramPriceString = price
     paramPriceCurrency = priceCurrency
     paramPriceCurrencyString = priceCurrencyStr
 
-    paramValueString = '• Daily menu: ' + (await stringValueCleaner.stringValueCleaner(dailyRoza, true)) // @ ROZA clean string
-    console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
+    paramValueString =
+      '• Daily menu: ' +
+      (await stringValueCleaner.stringValueCleaner(dailyRoza, true)) // @ ROZA clean string
+    console.log(
+      '*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length)
+    )
     console.log(paramValueString)
     console.log(paramPriceString + paramPriceCurrencyString + '\n')
     // @ ROZA object
