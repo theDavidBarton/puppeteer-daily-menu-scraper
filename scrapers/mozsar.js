@@ -103,7 +103,7 @@ async function scraper() {
     // @ MOZSAR menu parse
     if (found === true) {
       paramValueString = mozsar.match(mozsarDaysRegexArray[today])
-      paramValueString = paramValueString.toString().replace(/ ital$/gi, '') // ugly, but cleaner value for Fridays from necessary regex
+      paramValueString = paramValueString.toString().replace(/ Ital(\r?\n)/g, '') // ugly, but cleaner value for Fridays from necessary regex
       paramValueString = '• Daily menu: ' + (await stringValueCleaner.stringValueCleaner(paramValueString, false))
     } else {
       paramValueString = '• Daily menu: ♪"No Milk Today"♫'
