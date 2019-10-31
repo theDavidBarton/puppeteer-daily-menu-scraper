@@ -18,6 +18,7 @@ const puppeteer = require('puppeteer')
 const moment = require('moment')
 const request = require('request')
 const mongoDbInsertMany = require('./lib/mongoDbInsertMany')
+const activeRequiredScrapers = require('./conf/requiredScrapers.json').scrapers.active
 
 // get Day of Week
 const now = moment()
@@ -108,41 +109,18 @@ async function scrapeMenu() {
     RestaurantMenuDb
   }
 
-  // require scrapers after module.exports object is declared
-  const mozsar = require('./scrapers/mozsar')
-  const i55 = require('./scrapers/i55')
-  const pestiDiszno = require('./scrapers/pestiDiszno')
-  const incognito = require('./scrapers/incognito')
-  const kata = require('./scrapers/kata')
-  const drop = require('./scrapers/drop')
-  const bodza = require('./scrapers/bodza')
-  const yamato = require('./scrapers/yamato')
-  const vian = require('./scrapers/vian')
-  const korhely = require('./scrapers/korhely')
-  const ketszerecsen = require('./scrapers/ketszerecsen')
-  const fruccola = require('./scrapers/fruccola')
-  const kamra = require('./scrapers/kamra')
-  const roza = require('./scrapers/roza')
-  const suppe = require('./scrapers/suppe')
-  const karcsi = require('./scrapers/karcsi')
-
-  // launch scrapers
-  await mozsar.scraper()
-  await i55.scraper()
-  await pestiDiszno.scraper()
-  await incognito.scraper()
-  await kata.scraper()
-  await drop.scraper()
-  await bodza.scraper()
-  await yamato.scraper()
-  await vian.scraper()
-  await korhely.scraper()
-  await ketszerecsen.scraper()
-  await fruccola.scraper()
-  await kamra.scraper()
-  await roza.scraper()
-  await suppe.scraper()
-  await karcsi.scraper()
+  // require scrapers after module.exports object is declared and launch the active ones, see: ./conf/requiredScrapers.json
+  async function scraperExecuter() {
+    for (const scraper of activeRequiredScrapers) {
+      actual = require(`./scrapers/${scraper}`)
+      try {
+        await actual.scraper()
+      } catch (e) {
+        console.error(e)
+      }
+    }
+  }
+  await scraperExecuter()
 
   // prepare output for submit by stringifying the object
   finalJSON = JSON.stringify(finalJSON)
