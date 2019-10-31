@@ -1,6 +1,7 @@
 {
   "scrapers": {
     "active": [
+      "mozsar",
       "i55",
       "pestiDiszno",
       "incognito",

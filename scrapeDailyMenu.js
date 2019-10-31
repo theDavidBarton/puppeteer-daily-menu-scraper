@@ -18,8 +18,7 @@ const puppeteer = require('puppeteer')
 const moment = require('moment')
 const request = require('request')
 const mongoDbInsertMany = require('./lib/mongoDbInsertMany')
-const activeRequiredScrapers = require('./conf/requiredScrapers.json').scrapers
-  .active
+const activeRequiredScrapers = require('./conf/requiredScrapers.json').scrapers.active
 
 // get Day of Week
 const now = moment()
@@ -34,12 +33,7 @@ for (let i = 0; i < 7; i++) {
   dayNames.push(day)
 }
 
-console.log(
-  '*' +
-    dayNames[today].toUpperCase() +
-    '*\n' +
-    '='.repeat(dayNames[today].length)
-)
+console.log('*' + dayNames[today].toUpperCase() + '*\n' + '='.repeat(dayNames[today].length))
 
 // this will be the object we extend (its 'attachments') with each daily menu
 let finalJSON = {
@@ -90,12 +84,7 @@ let RestaurantMenuOutput = function(
 }
 
 // constructor for database object
-let RestaurantMenuDb = function(
-  titleString,
-  priceString,
-  priceCurrency,
-  valueString
-) {
+let RestaurantMenuDb = function(titleString, priceString, priceCurrency, valueString) {
   this.timestamp = todayDotSeparated
   this.restaurant = titleString
   this.price = priceString
@@ -122,16 +111,14 @@ async function scrapeMenu() {
 
   // require scrapers after module.exports object is declared and launch the active ones
   async function scraperExecuter() {
-    const promises = activeRequiredScrapers.map(async scraper => {
-      const actual = require(`./scrapers/${scraper}`)
+    for (const scraper of activeRequiredScrapers) {
+      actual = require(`./scrapers/${scraper}`)
       try {
         await actual.scraper()
       } catch (e) {
         console.error(e)
       }
-    })
-    // maybe a better solution: https://flaviocopes.com/javascript-async-await-array-map/
-    await Promise.all(promises)
+    }
   }
   await scraperExecuter()
 
