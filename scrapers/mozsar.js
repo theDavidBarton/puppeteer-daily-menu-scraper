@@ -76,11 +76,11 @@ async function scraper() {
   const mozsarPriceSelector = '.item'
   const mozsarDaysRegexArray = [
     null,
-    /hétfő([\s\S]*?)kedd/gi,
-    /kedd([\s\S]*?)szerda/gi,
-    /szerda([\s\S]*?)csütörtök/gi,
-    /csütörtök([\s\S]*?)péntek/gi,
-    /péntek([\s\S]*?)ital/gi
+    /hétfő(.*\r?\n){2}/gi,
+    /kedd(.*\r?\n){2}/gi,
+    /szerda(.*\r?\n){2}/gi,
+    /csütörtök(.*\r?\n){2}/gi,
+    /péntek(.*\r?\n){2}/gi
   ]
 
   try {
