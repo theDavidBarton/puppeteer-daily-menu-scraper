@@ -15,12 +15,14 @@
  */
 
 const puppeteer = require('puppeteer')
+const moment = require('moment')
 const dateCatcher = require('./../lib/dateCatcher')
 const objectDecider = require('./../lib/objectDecider')
 const priceCatcher = require('./../lib/priceCatcher')
 const priceCompareToDb = require('./../lib/priceCompareToDb')
 const stringValueCleaner = require('./../lib/stringValueCleaner')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
+const today = require('./../scrapeDailyMenu').today
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
 const finalMongoJSON = require('./../scrapeDailyMenu').finalMongoJSON
 const RestaurantMenuOutput = require('./../scrapeDailyMenu').RestaurantMenuOutput
@@ -41,81 +43,77 @@ async function scraper() {
   })
 
   /*
-   * @ I55 American Restaurant
+   * @ MOZSAR
    * ------------------------------------------
    * contact info:
-   * Address: Budapest, Alkotmány u. 20, 1054
-   * Phone: (1) 400 9580
+   * Address: Budapest, Nagymező u. 21, 1065
+   * Phone: +36 (70) 426 8199
    * -----------------------------------------
    */
 
-  // @ I55 parameters
-  let paramColor = '#104283'
-  let paramTitleString = 'I55'
-  let paramUrl = 'http://i55.hu/ebedmenu/'
-  let paramUrlFallback = 'https://www.facebook.com/pg/i55americanrestaurant/posts/'
-  let paramIcon = 'http://i55.hu/wp-content/uploads/2018/05/i55-1.png'
+  // @ MOZSAR parameters
+  let paramColor = '#bc4545'
+  let paramTitleString = 'Mozsár Bisztro'
+  let paramUrl = 'http://mozsarbisztro.hu/index.php?p=3'
+  let paramIcon =
+    'https://www.programturizmus.hu/media/image/big/ajanlat/program/tudomanyos-programok/tanfolyam/76/19396-mozsar-kavezo-program.jpg'
   let paramValueString
   let paramPriceString
   let paramPriceCurrency
   let paramPriceCurrencyString
-  let paramAddressString = 'Budapest, Alkotmány u. 20, 1054'
-  let weeklyI55
-  let weeklyI55Daily
+  let paramAddressString = 'Budapest, Nagymező u. 21, 1065'
+  let mozsar
+  let mozsarDate
+  let mozsarSummary
   let found
   let trend
   let obj = null
   let mongoObj = null
 
-  // @ I55 selectors
-  const weeklyI55Selector = '.vc_column-inner'
-  const weeklyI55SelectorFallback = '.userContent'
+  // @ MOZSAR selectors
+  const mozsarSelector = '#etlapresult'
+  const mozsarDateSelector = '.flipInY'
+  const mozsarPriceSelector = '.item'
+  const mozsarDaysRegexArray = [
+    null,
+    /hétfő(.*\r?\n){2}/gi,
+    /kedd(.*\r?\n){2}/gi,
+    /szerda(.*\r?\n){2}/gi,
+    /csütörtök(.*\r?\n){2}/gi,
+    /péntek(.*\r?\n){2}/gi
+  ]
 
   try {
-    await page.goto(paramUrl, { waituntil: 'domcontentloaded', timeout: 0 })
-    weeklyI55 = await page.evaluate(el => el.textContent, (await page.$$(weeklyI55Selector))[1])
-    weeklyI55Daily = weeklyI55.match(/levesek([\s\S]*?)ebédelj/gi)
-    // @ I55 price catch
-    let { price, priceCurrencyStr, priceCurrency } = await priceCatcher.priceCatcher(weeklyI55, 1)
+    await page.goto(paramUrl, { waitUntil: 'networkidle2' })
+    mozsar = await page.evaluate(el => el.textContent, (await page.$$(mozsarSelector))[0])
+    mozsarDate = await page.evaluate(el => el.textContent, (await page.$$(mozsarDateSelector))[0])
+    mozsarSummary = await page.evaluate(el => el.textContent, (await page.$$(mozsarPriceSelector))[0])
+
+    // @ MOZSAR price catch
+    let { price, priceCurrencyStr, priceCurrency } = await priceCatcher.priceCatcher(mozsarSummary)
     trend = await priceCompareToDb.priceCompareToDb(paramTitleString, price)
     paramPriceString = price
     paramPriceCurrency = priceCurrency
     paramPriceCurrencyString = priceCurrencyStr + trend
 
-    found = await dateCatcher.dateCatcher(weeklyI55, true) // @ I55 catch date
-    if (found === true) {
-      paramValueString = await stringValueCleaner.stringValueCleaner(weeklyI55Daily, false)
-      paramValueString = paramValueString.replace(/\(\)/g, '').replace(/\n/, ' ') // to be moved to stringValueCleaner module later!
+    // @ MOZSAR date catch
+    mozsarDate = mozsarDate.replace(/Heti menü |- /gi, moment().year() + '.').replace(/\. /gi, '. - ')
+    found = await dateCatcher.dateCatcher(mozsarDate, true)
 
-      // fallback on facebook page
+    // @ MOZSAR menu parse
+    if (found === true) {
+      paramValueString = mozsar.match(mozsarDaysRegexArray[today])
+      paramValueString = paramValueString.toString().replace(/ ital$/gi, '') // ugly, but cleaner value for Fridays from necessary regex
+      paramValueString = '• Daily menu: ' + (await stringValueCleaner.stringValueCleaner(paramValueString, false))
     } else {
-      await page.goto(paramUrlFallback, { waituntil: 'domcontentloaded', timeout: 0 })
-      forlabel: for (let i = 0; i < 10; i++) {
-        weeklyI55 = await page.evaluate(el => el.textContent, (await page.$$(weeklyI55SelectorFallback))[i])
-        if (weeklyI55.match(/levesek([\s\S]*?)ebédelj/gi)) {
-          weeklyI55Daily = weeklyI55.match(/levesek([\s\S]*?)ebédelj/gi)
-          // @ I55 price catch
-          let { price, priceCurrencyStr, priceCurrency } = await priceCatcher.priceCatcher(weeklyI55, 1)
-          trend = await priceCompareToDb.priceCompareToDb(paramTitleString, price)
-          paramPriceString = price
-          paramPriceCurrency = priceCurrency
-          paramPriceCurrencyString = priceCurrencyStr + trend
-          found = await dateCatcher.dateCatcher(weeklyI55, true) // @ I55 catch date
-          if (found === true) {
-            paramValueString = await stringValueCleaner.stringValueCleaner(weeklyI55Daily, false)
-            paramValueString = paramValueString.replace(/\(\)/g, '').replace(/\n/, ' ') // to be moved to stringValueCleaner module later!
-            break forlabel
-          } else {
-            paramValueString = 'menu is out of date!'
-          }
-        }
-      }
+      paramValueString = '• Daily menu: ♪"No Milk Today"♫'
     }
+
     console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
     console.log(paramValueString)
     console.log(paramPriceString + paramPriceCurrencyString + '\n')
 
-    // @ I55 object
+    // @ MOZSAR object
     obj = new RestaurantMenuOutput(
       paramColor,
       paramTitleString,

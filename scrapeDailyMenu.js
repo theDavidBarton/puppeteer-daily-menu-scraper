@@ -109,7 +109,7 @@ async function scrapeMenu() {
     RestaurantMenuDb
   }
 
-  // require scrapers after module.exports object is declared and launch the active ones
+  // require scrapers after module.exports object is declared and launch the active ones, see: ./conf/requiredScrapers.json
   async function scraperExecuter() {
     for (const scraper of activeRequiredScrapers) {
       actual = require(`./scrapers/${scraper}`)

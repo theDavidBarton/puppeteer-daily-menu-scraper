@@ -25,8 +25,6 @@ The final output is stored in JSON and posted to slack via webhooks.
 
 ### Install packages
 
-![node](https://img.shields.io/badge/node-%3E%3D7.6.0-green.svg)
-![node-dev](https://img.shields.io/badge/node_(devDependencies)-%3E%3D10.15.3-green.svg)
 [![pptr](https://img.shields.io/github/package-json/dependency-version/theDavidBarton/puppeteer-daily-menu-scraper/puppeteer.svg)](/package.json)
 [![tested with jest](https://img.shields.io/static/v1.svg?label=tested%20with&message=jest&color=C21325)](https://github.com/facebook/jest)
 
