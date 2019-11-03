@@ -59,6 +59,12 @@ $ source app.env
 $ node scrapeDailyMenu.js
 ```
 
+or
+
+```bash
+$ yarn start
+```
+
 # Links
 
 [The home of Puppeteer](https://pptr.dev)
