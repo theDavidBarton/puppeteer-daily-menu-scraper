@@ -106,12 +106,7 @@ async function scraper() {
         paramPriceCurrencyString,
         paramAddressString
       )
-      mongoObj = new RestaurantMenuDb(
-        paramTitleString,
-        paramPriceString,
-        paramPriceCurrency,
-        paramValueString
-      )
+      mongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramPriceCurrency, paramValueString)
       if (objectDecider.objectDecider(paramValueString)) {
         finalJSON.attachments.push(obj)
         finalMongoJSON.push(mongoObj)
