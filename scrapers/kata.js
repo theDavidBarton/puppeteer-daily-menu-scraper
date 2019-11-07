@@ -40,7 +40,7 @@ async function scraper() {
     /\bHÉT((.*\r?\n){3})/gi,
     /\bKED((.*\r?\n){3})/gi,
     /\bSZERD((.*\r?\n){3})/gi,
-    /\bCSOT((.*\r?\n){3})|\bCSU((.*\r?\n){3})|\bCSÜ((.*\r?\n){3})/gi,
+    /\bCS(O|Ů|U|Ü)T((.*\r?\n){3})/gi,
     /\bPÉNT((.*\r?\n){3})/gi
   ]
   let facebookImageUrlSelector = '.scaledImageFitWidth'
