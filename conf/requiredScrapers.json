@@ -1,6 +1,7 @@
 {
   "scrapers": {
     "active": [
+      "bank3",
       "mozsar",
       "i55",
       "pestiDiszno",
