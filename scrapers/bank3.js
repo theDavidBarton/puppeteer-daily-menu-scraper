@@ -15,7 +15,7 @@
  */
 
 const puppeteer = require('puppeteer')
-const moment = require('moment')
+const ocrSpaceApiSimple = require('./../lib/ocrSpaceApiSimple')
 const dateCatcher = require('./../lib/dateCatcher')
 const objectDecider = require('./../lib/objectDecider')
 const priceCatcher = require('./../lib/priceCatcher')
@@ -60,39 +60,56 @@ async function scraper() {
   let paramPriceCurrency
   let paramPriceCurrencyString
   let paramAddressString = 'Budapest, Bank u. 3, 1054'
-  let bank3
   let bank3Date
-  let bank3Summary
   let found
   let trend
   let obj = null
   let mongoObj = null
 
   // @ BANK 3 selectors
-  const bank3Selector = '#etlapresult'
-  const bank3DateSelector = '.flipInY' // $$('.text-right')[0].textContent
+  const bank3Selector = '.lightbox > img'
+  const bank3DateSelector = '.text-right'
 
   try {
     await page.goto(paramUrl, { waitUntil: 'networkidle2' })
-    bank3 = await page.evaluate(el => el.textContent, (await page.$$(bank3Selector))[0])
+    bank3ImgUrl = await page.evaluate(el => el.src, (await page.$$(bank3Selector))[0])
     bank3Date = await page.evaluate(el => el.textContent, (await page.$$(bank3DateSelector))[0])
-    bank3Summary = await page.evaluate(el => el.textContent, (await page.$$(bank3PriceSelector))[0])
+
+    // @ BANK 3 OCR
+    const options = {
+      method: 'POST',
+      url: 'https://api.ocr.space/parse/image',
+      headers: {
+        apikey: process.env.OCR_API_KEY
+      },
+      formData: {
+        language: 'hun',
+        isOverlayRequired: 'true',
+        url: bank3ImgUrl,
+        scale: 'true',
+        isTable: 'true'
+      }
+    }
+    try {
+      parsedResult = await ocrSpaceApiSimple.ocrSpaceApiSimple(options)
+      parsedResult = parsedResult.ParsedText
+    } catch (e) {
+      console.error(e)
+    }
 
     // @ BANK 3 price catch
-    let { price, priceCurrencyStr, priceCurrency } = await priceCatcher.priceCatcher(bank3Summary)
+    let { price, priceCurrencyStr, priceCurrency } = await priceCatcher.priceCatcher(parsedResult)
     trend = await priceCompareToDb.priceCompareToDb(paramTitleString, price)
     paramPriceString = price
     paramPriceCurrency = priceCurrency
     paramPriceCurrencyString = priceCurrencyStr + trend
 
     // @ BANK 3 date catch
-    bank3Date = bank3Date.replace(/Heti menü |- /gi, moment().year() + '.').replace(/\. /gi, '. - ')
-    found = await dateCatcher.dateCatcher(bank3Date, true)
+    found = await dateCatcher.dateCatcher(bank3Date)
 
     // @ BANK 3 menu parse
     if (found === true) {
-      paramValueString = bank3.match(bank3DaysRegexArray[today])
-      paramValueString = paramValueString.toString().replace(/ Ital(\r?\n)/g, '') // ugly, but cleaner value for Fridays from necessary regex
+      paramValueString = parsedResult
       paramValueString = '• Daily menu: ' + (await stringValueCleaner.stringValueCleaner(paramValueString, false))
     } else {
       paramValueString = '• Daily menu: ♪"No Milk Today"♫'
