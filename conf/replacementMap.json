@@ -1,5 +1,6 @@
 {
   "rules": {
+    "alma": "al\\.ma",
     "á": "¿|ä|\\.í",
     "gombóc": "gomiióc",
     "comb": "co\\.mb",
@@ -8,6 +9,7 @@
     "e": "f\\.|f,",
     "é": "é\\.|ě",
     "es": "f,s",
+    "fahéj": "faiiéj",
     "főétel": "fóétel",
     "főzelék": "f.ze\\/ék|ii,'özei\\.é\\.k,|fózelék|ĺő•elŕk|.ő.el.k",
     "füstölt": "fustblt|fostólt|fústolt|fiistölt",
@@ -38,7 +40,7 @@
     "tokány": "tokáxv\\.",
     "töltve": "tóltve",
     "tortill": "torti\\/\\/",
-    "zöld": "zóld",
+    "zöld": "zóld|zöli\\)",
     "u": "t;|u\\."
   }
 }
