@@ -19,6 +19,7 @@ jobs:
         node-version: 10.x
     - name: Lint and Test
       run: |
+        yarn
         yarn lint .
         yarn test --silent
     - name: Upload coverage to Codecov  
