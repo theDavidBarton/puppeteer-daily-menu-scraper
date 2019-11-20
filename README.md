@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/theDavidBarton/puppeteer-daily-menu-scraper.svg?branch=master)](https://travis-ci.com/theDavidBarton/puppeteer-daily-menu-scraper)
+[![Actions Status](https://github.com/theDavidBarton/puppeteer-daily-menu-scraper/workflows/CI/badge.svg)](https://github.com/theDavidBarton/puppeteer-daily-menu-scraper/actions)
 [![codecov](https://img.shields.io/codecov/c/github/theDavidBarton/puppeteer-daily-menu-scraper/master.svg)](https://codecov.io/gh/theDavidBarton/puppeteer-daily-menu-scraper)
 [![Dependency Status](https://david-dm.org/theDavidBarton/puppeteer-daily-menu-scraper.svg)](https://david-dm.org/)
 [![crocodile](https://img.shields.io/badge/crocodiles_in_the_basement-%F0%9F%90%8A_yes-orange.svg)](/lib)
@@ -59,11 +59,9 @@ $ source app.env
 $ node scrapeDailyMenu.js
 ```
 
-or
+or `yarn start`
 
-```bash
-$ yarn start
-```
+*Note:* a cron job is set up by now to run it via GitHub Actions every day 10:30AM UTC! `'20 10 * * 1-5'`
 
 # Links
 
