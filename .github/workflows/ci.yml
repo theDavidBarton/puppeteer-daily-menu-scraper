@@ -1,0 +1,30 @@
+name: CI
+
+on: 
+  push:
+    branches:
+      - master
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Use Node.js 10.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 10.x
+    - name: Yarn Install
+      run: yarn
+    - name: Lint and Test
+      run: |
+        yarn lint .
+        yarn test --silent
+
+  codecov:
+    runs-on: ubuntu-latest
+    needs: [test]
+    steps:
+    - name: Upload coverage to Codecov  
+      uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
