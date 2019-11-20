@@ -16,7 +16,7 @@ jobs:
       with:
         node-version: 10.x
     - name: Install project
-      run: npm install
+      run: yarn
     - name: Run main script
       env:
         MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
