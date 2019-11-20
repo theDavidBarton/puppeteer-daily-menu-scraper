@@ -1,0 +1,27 @@
+name: scrape
+
+on: 
+  schedule:
+    - cron:  '30 10 * * 1-5'
+
+jobs:
+  scrape-and-publish:
+
+    runs-on: ubuntu-latest
+        
+    steps:
+    - uses: actions/checkout@master
+    - name: Use Node.js 10.x
+      uses: actions/setup-node@v1
+      with:
+        version: 10.x
+    - name: Install project
+      run: npm install
+    - name: Run main script
+      env:
+        MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
+        MONGO_USERNAME: ${{ secrets.MONGO_USERNAME }}
+        OCR_API_KEY: ${{ secrets.OCR_API_KEY }}
+        WEBHOOK_URL_PROD: ${{ secrets.WEBHOOK_URL_PROD }}
+        WEBHOOK_URL_TEST: ${{ secrets.WEBHOOK_URL_TEST }}
+      run: node scrapeDailyMenu.js
