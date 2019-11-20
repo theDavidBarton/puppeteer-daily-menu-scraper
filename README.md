@@ -13,7 +13,7 @@ Currently the project's main js contains one headless Chrome instance with multi
 
 So far the scrapers are diverse: **(1)** harvests facebook posts for images, then OCR their content; **(2)** OCR menus uploaded in jpg image and table format; **(3)** scrape regular restaurant websites and get content via DOM and **(4)** also scraping facebook post texts based on regex patterns.
 
-The final output is stored in JSON and posted to slack via webhooks.
+The final output is posted to slack via webhooks.
 
 ###### KEYWORDS: [puppeteer](https://github.com/search?q=puppeteer) | [OCR](https://github.com/search?q=ocr) | [web scraping](https://github.com/search?q=web+scraping) | [facebook scraping](https://github.com/search?q=facebook+scraping) | [webhooks](https://github.com/search?q=webhooks)
 
@@ -26,9 +26,8 @@ The final output is stored in JSON and posted to slack via webhooks.
 ### Install packages
 
 [![pptr](https://img.shields.io/github/package-json/dependency-version/theDavidBarton/puppeteer-daily-menu-scraper/puppeteer.svg)](/package.json)
-[![tested with jest](https://img.shields.io/static/v1.svg?label=tested%20with&message=jest&color=C21325)](https://github.com/facebook/jest)
 
-`yarn install` the project (see dependencies in [package.json](/package.json))
+`yarn install` the project.
 
 ### Environment variables
 
@@ -61,7 +60,7 @@ $ node scrapeDailyMenu.js
 
 or `yarn start`
 
-*Note:* a cron job is set up by now to run it via GitHub Actions every day 10:30AM UTC! `'20 10 * * 1-5'`
+*Note:* a [cron job](https://github.com/theDavidBarton/puppeteer-daily-menu-scraper/actions?query=workflow%3Ascrape) is set up via GitHub Actions to run the node script at every weekday 10:20AM UTC! `'20 10 * * 1-5'`
 
 # Links
 
