@@ -20,9 +20,11 @@ const puppeteer = require('puppeteer')
 const moment = require('moment')
 const request = require('request')
 const mongoDbInsertMany = require('./lib/mongoDbInsertMany')
+const bankHolidayChecker = require('./lib/bankHolidayChecker')
 const activeRequiredScrapers = require('./conf/requiredScrapers.json').scrapers.active
 
 // get Day of Week
+const bankHoliday = bankHolidayChecker.bankHolidayChecker()
 const now = moment()
 const today = Number(moment().format('d'))
 const todayFormatted = moment().format('LLLL')
@@ -34,6 +36,8 @@ for (let i = 0; i < 7; i++) {
   let day = moment(i, 'd').format('dddd')
   dayNames.push(day)
 }
+// check if today is a bank holiday and terminates process if it is true
+bankHoliday ? process.exit(0) : console.log('not bank holiday')
 
 console.log('*' + dayNames[today].toUpperCase() + '*\n' + '='.repeat(dayNames[today].length))
 
