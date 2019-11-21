@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+'use strict'
+
 const puppeteer = require('puppeteer')
 const moment = require('moment')
 const request = require('request')
