@@ -7,7 +7,6 @@
       "pestiDiszno",
       "incognito",
       "kata",
-      "drop",
       "bodza",
       "yamato",
       "vian",
@@ -19,6 +18,6 @@
       "suppe",
       "karcsi"
     ],
-    "inactive": ["nokedli"]
+    "inactive": ["nokedli", "drop"]
   }
 }
