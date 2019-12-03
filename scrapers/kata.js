@@ -36,7 +36,7 @@ async function scraper() {
     'https://lh3.googleusercontent.com/GrM72gaBN1l7BUgUuWI5T9w2zc1qxsKFNukg6Szp-lXXpfG0wmnxT2FA_o725nmAiZkxGmf_=w1080-h608-p-no-v0'
   let addressString = 'Budapest, 1065, Hajós u. 27.'
   let daysRegexArray = [
-    '',
+    null,
     /\bHÉT((.*\r?\n){3})/gi,
     /\bKED((.*\r?\n){3})/gi,
     /\bSZERD((.*\r?\n){3})/gi,

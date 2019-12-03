@@ -16,7 +16,6 @@
 
 const ocrFacebookImage = require('./ocrFacebookImage')
 
-
 async function scraper() {
   /*
    * @ INCOGNITO
@@ -35,7 +34,7 @@ async function scraper() {
   let icon = 'https://www.nicepng.com/png/detail/141-1415218_incognito-logo-incognito-mode-icon.png'
   let addressString = 'Budapest, Liszt tér'
   let daysRegexArray = [
-    '',
+    null,
     /\bHÉT((.*\r?\n){3})/gi,
     /\bKED((.*\r?\n){3})/gi,
     /\bSZERD((.*\r?\n){3})/gi,

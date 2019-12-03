@@ -18,13 +18,12 @@ const puppeteer = require('puppeteer')
 const objectDecider = require('./../lib/objectDecider')
 const priceCompareToDb = require('./../lib/priceCompareToDb')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
-const today = require('./../scrapeDailyMenu').today
-const dayNames = require('./../scrapeDailyMenu').dayNames
+const today = require('./../scrapeDailyMenu').date.today
+const dayNames = require('./../scrapeDailyMenu').date.dayNames
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
 const finalMongoJSON = require('./../scrapeDailyMenu').finalMongoJSON
-const RestaurantMenuOutput = require('./../scrapeDailyMenu')
-  .RestaurantMenuOutput
-const RestaurantMenuDb = require('./../scrapeDailyMenu').RestaurantMenuDb
+const RestaurantMenuOutput = require('./../src/restaurantMenuClasses').RestaurantMenuOutput
+const RestaurantMenuDb = require('./../src/restaurantMenuClasses').RestaurantMenuDb
 
 async function scraper() {
   const browser = await puppeteer.connect({ browserWSEndpoint })
@@ -76,42 +75,22 @@ async function scraper() {
      * @ SUPPÉ selector, source: https://stackoverflow.com/questions/48448586/how-to-use-xpath-in-chrome-headlesspuppeteer-evaluate
      * @ SUPPÉ Daily
      */
-    const dailySuppeIncludes = (await page.$x(
-      '//span[contains(text(), "Sziasztok")]'
-    ))[0]
+    const dailySuppeIncludes = (await page.$x('//span[contains(text(), "Sziasztok")]'))[0]
     dailySuppe = await page.evaluate(el => el.textContent, dailySuppeIncludes)
-    dailySuppe = dailySuppe.replace(
-      /Sziasztok, |, kellemes hétvégét!|, szép napot!|, várunk Titeket!/gi,
-      ''
-    )
+    dailySuppe = dailySuppe.replace(/Sziasztok, |, kellemes hétvégét!|, szép napot!|, várunk Titeket!/gi, '')
     // @ SUPPÉ Weekly (on Monday)
-    const weeklySuppeIncludes = (await page.$x(
-      '//p[contains(text(), "Sziasztok")]'
-    ))[0]
+    const weeklySuppeIncludes = (await page.$x('//p[contains(text(), "Sziasztok")]'))[0]
     weeklySuppe = await page.evaluate(el => el.textContent, weeklySuppeIncludes)
-    weeklySuppe = weeklySuppe.replace(
-      /(?=sziasztok)(.*)(?=levesek )|(?=mai)(.*)(?=\s*)/gi,
-      ''
-    )
+    weeklySuppe = weeklySuppe.replace(/(?=sziasztok)(.*)(?=levesek )|(?=mai)(.*)(?=\s*)/gi, '')
     // @ SUPPÉ Monday only (on Monday)
-    const mondaySuppeIncludes = (await page.$x(
-      '//p[contains(text(), "Sziasztok")]'
-    ))[0]
+    const mondaySuppeIncludes = (await page.$x('//p[contains(text(), "Sziasztok")]'))[0]
     mondaySuppe = await page.evaluate(el => el.textContent, mondaySuppeIncludes)
-    mondaySuppe = mondaySuppe.replace(
-      /(?=sziasztok)(.*)(?=levesek )|(, várunk Titeket!)/gi,
-      ''
-    )
+    mondaySuppe = mondaySuppe.replace(/(?=sziasztok)(.*)(?=levesek )|(, várunk Titeket!)/gi, '')
 
-    let trend = await priceCompareToDb.priceCompareToDb(
-      paramTitleString,
-      paramPriceString
-    )
+    let trend = await priceCompareToDb.priceCompareToDb(paramTitleString, paramPriceString)
     paramPriceCurrencyString = paramPriceCurrencyString + trend
 
-    console.log(
-      '*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length)
-    )
+    console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
     if (today === 1) {
       paramValueString = mondaySuppe
       console.log('• ' + dayNames[today] + ': ' + paramValueString)
@@ -132,12 +111,7 @@ async function scraper() {
       paramPriceCurrencyString,
       paramAddressString
     )
-    mongoObj = new RestaurantMenuDb(
-      paramTitleString,
-      paramPriceString,
-      paramPriceCurrency,
-      paramValueString
-    )
+    mongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramPriceCurrency, paramValueString)
     if (objectDecider.objectDecider(paramValueString)) {
       finalJSON.attachments.push(obj)
       finalMongoJSON.push(mongoObj)

@@ -15,8 +15,7 @@
  */
 
 const ocrFacebookImage = require('./ocrFacebookImage')
-const today = require('./../scrapeDailyMenu').today
-
+const today = require('./../scrapeDailyMenu').date.today
 
 async function scraper() {
   /*
@@ -37,7 +36,7 @@ async function scraper() {
   let icon = 'http://droprestaurant.com/public/wp-content/uploads/2015/07/logo-header.png'
   let addressString = 'Budapest, 1065, Hajós u. 27'
   let daysRegexArray = [
-    '',
+    null,
     /(Január|Február|Március|Április|Május|Június|Július|Augu|Szeptember|Október|November|December)((.*\r?\n){3})/gi,
     /\bKEDD((.*\r?\n){2})/gi,
     /\bSZERD((.*\r?\n){2})/gi,

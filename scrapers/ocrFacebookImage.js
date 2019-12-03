@@ -21,11 +21,11 @@ const priceCatcher = require('./../lib/priceCatcher')
 const priceCompareToDb = require('./../lib/priceCompareToDb')
 const stringValueCleaner = require('./../lib/stringValueCleaner')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
-const today = require('./../scrapeDailyMenu').today
+const today = require('./../scrapeDailyMenu').date.today
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
 const finalMongoJSON = require('./../scrapeDailyMenu').finalMongoJSON
-const RestaurantMenuOutput = require('./../scrapeDailyMenu').RestaurantMenuOutput
-const RestaurantMenuDb = require('./../scrapeDailyMenu').RestaurantMenuDb
+const RestaurantMenuOutput = require('./../src/restaurantMenuClasses').RestaurantMenuOutput
+const RestaurantMenuDb = require('./../src/restaurantMenuClasses').RestaurantMenuDb
 
 // @ {RESTAURANT}s with only facebook image menus
 async function ocrFacebookImage(

@@ -19,11 +19,11 @@ const objectDecider = require('./../lib/objectDecider')
 const priceCatcher = require('./../lib/priceCatcher')
 const priceCompareToDb = require('./../lib/priceCompareToDb')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
-const today = require('./../scrapeDailyMenu').today
+const today = require('./../scrapeDailyMenu').date.today
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
 const finalMongoJSON = require('./../scrapeDailyMenu').finalMongoJSON
-const RestaurantMenuOutput = require('./../scrapeDailyMenu').RestaurantMenuOutput
-const RestaurantMenuDb = require('./../scrapeDailyMenu').RestaurantMenuDb
+const RestaurantMenuOutput = require('./../src/restaurantMenuClasses').RestaurantMenuOutput
+const RestaurantMenuDb = require('./../src/restaurantMenuClasses').RestaurantMenuDb
 
 async function scraper() {
   const browser = await puppeteer.connect({ browserWSEndpoint })
@@ -69,7 +69,7 @@ async function scraper() {
 
   // @ KETSZERECSEN selectors [1: first course, 2: main course]
   let ketszerecsenArray1 = [
-    '',
+    null,
     'p:nth-child(4)',
     'p:nth-child(7)',
     'p:nth-child(10)',
@@ -77,7 +77,7 @@ async function scraper() {
     'p:nth-child(16)'
   ]
   let ketszerecsenArray2 = [
-    '',
+    null,
     'p:nth-child(5)',
     'p:nth-child(8)',
     'p:nth-child(11)',
@@ -121,12 +121,7 @@ async function scraper() {
         paramPriceCurrencyString,
         paramAddressString
       )
-      mongoObj = new RestaurantMenuDb(
-        paramTitleString,
-        paramPriceString,
-        paramPriceCurrency,
-        paramValueString
-      )
+      mongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramPriceCurrency, paramValueString)
       if (objectDecider.objectDecider(paramValueString)) {
         finalJSON.attachments.push(obj)
         finalMongoJSON.push(mongoObj)
