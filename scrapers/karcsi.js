@@ -21,8 +21,7 @@ const priceCompareToDb = require('./../lib/priceCompareToDb')
 const today = require('./../scrapeDailyMenu').today
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
 const finalMongoJSON = require('./../scrapeDailyMenu').finalMongoJSON
-const RestaurantMenuOutput = require('./../scrapeDailyMenu')
-  .RestaurantMenuOutput
+const RestaurantMenuOutput = require('./../src/restaurantMenuClasses').RestaurantMenuOutput
 const RestaurantMenuDb = require('./../scrapeDailyMenu').RestaurantMenuDb
 
 async function scraper() {
@@ -89,10 +88,7 @@ async function scraper() {
       karcsiWeekly = parsedResult.match(weeklyOfferRegex)
       karcsiSoup = parsedResult.match(soupRegex)
     }
-    let trend = await priceCompareToDb.priceCompareToDb(
-      paramTitleString,
-      paramPriceString
-    )
+    let trend = await priceCompareToDb.priceCompareToDb(paramTitleString, paramPriceString)
     paramPriceCurrencyString = paramPriceCurrencyString + trend
     // @ KARCSI clean string
     paramValueString =
@@ -101,9 +97,7 @@ async function scraper() {
       '\n• Daily menu: ' +
       (await stringValueCleaner.stringValueCleaner(karcsiSoup, true)) +
       (await stringValueCleaner.stringValueCleaner(karcsiDaily, true))
-    console.log(
-      '*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length)
-    )
+    console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
     console.log(paramValueString)
     console.log(paramPriceString + paramPriceCurrencyString + '\n')
     // @ KARCSI object
@@ -118,12 +112,7 @@ async function scraper() {
       paramPriceCurrencyString,
       paramAddressString
     )
-    mongoObj = new RestaurantMenuDb(
-      paramTitleString,
-      paramPriceString,
-      paramPriceCurrency,
-      paramValueString
-    )
+    mongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramPriceCurrency, paramValueString)
     if (objectDecider.objectDecider(paramValueString)) {
       finalJSON.attachments.push(obj)
       finalMongoJSON.push(mongoObj)

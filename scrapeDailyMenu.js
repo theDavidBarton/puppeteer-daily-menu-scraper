@@ -50,54 +50,6 @@ let finalJSON = {
 // this will be the object we store at database and we will extend with each menu
 let finalMongoJSON = []
 
-// constructor for menu object
-let RestaurantMenuOutput = function(
-  color,
-  titleString,
-  url,
-  icon,
-  valueString,
-  priceString,
-  priceCurrency,
-  priceCurrencyString,
-  addressString
-) {
-  this.fallback = 'Please open it on a device that supports formatted messages.'
-  this.pretext = '...'
-  this.color = color
-  this.author_name = titleString.toUpperCase()
-  this.author_link = url
-  this.author_icon = icon
-  this.fields = [
-    {
-      title: titleString + ' menu (' + dayNames[today] + '):',
-      value: valueString,
-      short: false
-    },
-    {
-      title: 'price (' + priceCurrency + ')',
-      value: priceString + priceCurrencyString,
-      short: true
-    },
-    {
-      title: 'address',
-      value: addressString,
-      short: true
-    }
-  ]
-  this.footer = 'scraped by DailyMenu'
-  this.ts = Math.floor(Date.now() / 1000)
-}
-
-// constructor for database object
-let RestaurantMenuDb = function(titleString, priceString, priceCurrency, valueString) {
-  this.timestamp = todayDotSeparated
-  this.restaurant = titleString
-  this.price = priceString
-  this.currency = priceCurrency
-  this.menuString = valueString
-}
-
 // scraper browser instance - function that wraps all the scrapers
 async function scrapeMenu() {
   const browser = await puppeteer.launch({ headless: true })
@@ -110,9 +62,7 @@ async function scrapeMenu() {
     dayNames,
     finalJSON,
     finalMongoJSON,
-    browserWSEndpoint,
-    RestaurantMenuOutput,
-    RestaurantMenuDb
+    browserWSEndpoint
   }
 
   // require scrapers after module.exports object is declared and launch the active ones, see: ./conf/requiredScrapers.json

@@ -24,7 +24,7 @@ const stringValueCleaner = require('./../lib/stringValueCleaner')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
 const finalMongoJSON = require('./../scrapeDailyMenu').finalMongoJSON
-const RestaurantMenuOutput = require('./../scrapeDailyMenu').RestaurantMenuOutput
+const RestaurantMenuOutput = require('./../src/restaurantMenuClasses').RestaurantMenuOutput
 const RestaurantMenuDb = require('./../scrapeDailyMenu').RestaurantMenuDb
 
 async function scraper() {

@@ -21,7 +21,7 @@ const priceCompareToDb = require('./../lib/priceCompareToDb')
 const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
 const finalMongoJSON = require('./../scrapeDailyMenu').finalMongoJSON
-const RestaurantMenuOutput = require('./../scrapeDailyMenu').RestaurantMenuOutput
+const RestaurantMenuOutput = require('./../src/restaurantMenuClasses').RestaurantMenuOutput
 const RestaurantMenuDb = require('./../scrapeDailyMenu').RestaurantMenuDb
 
 async function scraper() {
@@ -98,12 +98,7 @@ async function scraper() {
       paramPriceCurrencyString,
       paramAddressString
     )
-    mongoObj = new RestaurantMenuDb(
-      paramTitleString,
-      paramPriceString,
-      paramPriceCurrency,
-      paramValueString
-    )
+    mongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramPriceCurrency, paramValueString)
     if (objectDecider.objectDecider(paramValueString)) {
       finalJSON.attachments.push(obj)
       finalMongoJSON.push(mongoObj)
