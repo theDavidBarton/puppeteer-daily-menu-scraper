@@ -1,15 +1,15 @@
-const todayDotSeparated = require('./../scrapeDailyMenu').todayDotSeparated
+const date = require('./../scrapeDailyMenu').date
 
 // class for menu object
 class RestaurantMenuOutput {
-  function(color, title, url, icon, value, price, currency, priceCurrency, address) {
+  constructor(color, title, url, icon, value, price, currency, priceCurrency, address) {
     this.color = color
     this.author_name = title.toUpperCase()
     this.author_link = url
     this.author_icon = icon
     this.fields = [
       {
-        title: title + ' menu (' + dayNames[today] + '):',
+        title: title + ' menu (' + date.dayNames[date.today] + '):',
         value: value,
         short: false
       },
@@ -31,8 +31,8 @@ class RestaurantMenuOutput {
 
 // class for database object
 class RestaurantMenuDb {
-  function(titleString, priceString, priceCurrency, valueString) {
-    this.timestamp = todayDotSeparated
+  constructor(titleString, priceString, priceCurrency, valueString) {
+    this.timestamp = date.todayDotSeparated
     this.restaurant = titleString
     this.price = priceString
     this.currency = priceCurrency

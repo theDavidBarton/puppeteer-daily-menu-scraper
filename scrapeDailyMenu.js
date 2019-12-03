@@ -19,35 +19,28 @@
 const puppeteer = require('puppeteer')
 const moment = require('moment')
 const request = require('request')
-const mongoDbInsertMany = require('./lib/mongoDbInsertMany')
-const bankHolidayChecker = require('./lib/bankHolidayChecker')
+const mongoDbInsertMany = require('./lib/mongoDbInsertMany').mongoDbInsertMany
+const bankHolidayChecker = require('./lib/bankHolidayChecker').bankHolidayChecker
 const activeRequiredScrapers = require('./conf/requiredScrapers.json').scrapers.active
 
-// get Day of Week
-const bankHoliday = bankHolidayChecker.bankHolidayChecker()
-const now = moment()
-const today = Number(moment().format('d'))
-const todayFormatted = moment().format('LLLL')
-const todayDotSeparated = moment(now, 'YYYY-MM-DD')
-  .locale('hu')
-  .format('L') // e.g. 2019.05.17. (default format for Hungarian)
-const dayNames = []
-for (let i = 0; i < 7; i++) {
-  let day = moment(i, 'd').format('dddd')
-  dayNames.push(day)
+const date = {
+  bankHoliday: bankHolidayChecker(),
+  today: Number(moment().format('d')),
+  todayFormatted: moment().format('LLLL'),
+  todayDotSeparated: moment(moment(), 'YYYY-MM-DD')
+    .locale('hu')
+    .format('L'), // e.g. 2019.05.17. (default format for Hungarian)
+  dayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 }
-// check if today is a bank holiday and terminates process if it is true
-bankHoliday ? process.exit(0) : console.log('not bank holiday')
 
-console.log('*' + dayNames[today].toUpperCase() + '*\n' + '='.repeat(dayNames[today].length))
+date.bankHoliday ? process.exit(0) : console.log('not bank holiday')
+console.log('*' + date.dayNames[date.today].toUpperCase() + '*\n' + '='.repeat(date.dayNames[date.today].length))
 
-// this will be the object we extend (its 'attachments') with each daily menu
+// these will be the objects we extend (its 'attachments') with each daily menu and for MongoDB as well
 let finalJSON = {
-  text: '*' + dayNames[today].toUpperCase() + '* ' + todayFormatted + '\n',
+  text: '*' + date.dayNames[date.today].toUpperCase() + '* ' + date.todayFormatted + '\n',
   attachments: []
 }
-
-// this will be the object we store at database and we will extend with each menu
 let finalMongoJSON = []
 
 // scraper browser instance - function that wraps all the scrapers
@@ -57,9 +50,7 @@ async function scrapeMenu() {
 
   // used outside of main script in the scrapers
   module.exports = {
-    today,
-    todayDotSeparated,
-    dayNames,
+    date,
     finalJSON,
     finalMongoJSON,
     browserWSEndpoint
@@ -78,7 +69,6 @@ async function scrapeMenu() {
   }
   await scraperExecuter()
 
-  // prepare output for submit by stringifying the object
   finalJSON = JSON.stringify(finalJSON)
   console.log(finalJSON)
 
@@ -91,7 +81,7 @@ async function scrapeMenu() {
   // _POST the final JSON to webhook
   request(
     {
-      url: process.env.WEBHOOK_URL_PROD,
+      url: process.env.WEBHOOK_URL_TEST,
       method: 'POST',
       json: false,
       body: finalJSON
@@ -103,9 +93,9 @@ async function scrapeMenu() {
     }
   )
 
-  // store the data to mongoDB
+  // store the data to MongoDB
   try {
-    await mongoDbInsertMany.mongoDbInsertMany(finalMongoJSON)
+    await mongoDbInsertMany(finalMongoJSON)
   } catch (e) {
     console.error(e)
   }

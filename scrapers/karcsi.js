@@ -18,11 +18,11 @@ const objectDecider = require('./../lib/objectDecider')
 const ocrSpaceApiSimple = require('./../lib/ocrSpaceApiSimple')
 const stringValueCleaner = require('./../lib/stringValueCleaner')
 const priceCompareToDb = require('./../lib/priceCompareToDb')
-const today = require('./../scrapeDailyMenu').today
+const today = require('./../scrapeDailyMenu').date.today
 const finalJSON = require('./../scrapeDailyMenu').finalJSON
 const finalMongoJSON = require('./../scrapeDailyMenu').finalMongoJSON
 const RestaurantMenuOutput = require('./../src/restaurantMenuClasses').RestaurantMenuOutput
-const RestaurantMenuDb = require('./../scrapeDailyMenu').RestaurantMenuDb
+const RestaurantMenuDb = require('./../src/restaurantMenuClasses').RestaurantMenuDb
 
 async function scraper() {
   /*
@@ -51,7 +51,7 @@ async function scraper() {
   let weeklyOfferRegex = /\bHETI MEN.:((.*\r?\n){3})/gi
   let soupRegex = /\bMENÜ 1((.*\r?\n){2})/gi
   let karcsiDaysRegexArray = [
-    '',
+    null,
     /\bHÉT((.*\r?\n))/gi,
     /\bKED((.*\r?\n))/gi,
     /\bSZERD((.*\r?\n))/gi,
