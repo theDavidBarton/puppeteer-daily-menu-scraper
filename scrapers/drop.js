@@ -15,7 +15,7 @@
  */
 
 const ocrFacebookImage = require('./ocrFacebookImage')
-const today = require('./../scrapeDailyMenu').date.today
+const today = require('./../src.date').today
 
 async function scraper() {
   /*

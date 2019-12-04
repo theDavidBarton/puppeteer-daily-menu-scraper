@@ -16,15 +16,17 @@
 
 'use strict'
 
-function objectDecider(valueString) {
-  let decision = false
-  if (
-    valueString !== null &&
-    !valueString.includes('♪"No Milk Today"♫') &&
-    !valueString.includes('menu is outdated!')
-  ) {
-    decision = true
-  }
-  return decision
+const moment = require('moment')
+const bankHolidayChecker = require('./../lib/bankHolidayChecker').bankHolidayChecker
+
+const date = {
+  bankHoliday: bankHolidayChecker(),
+  today: Number(moment().format('d')),
+  todayFormatted: moment().format('LLLL'),
+  todayDotSeparated: moment(moment(), 'YYYY-MM-DD')
+    .locale('hu')
+    .format('L'), // e.g. 2019.05.17. (default format for Hungarian)
+  dayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 }
-module.exports.objectDecider = objectDecider
+
+module.exports.date = date
