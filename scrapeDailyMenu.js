@@ -20,7 +20,7 @@ const puppeteer = require('puppeteer')
 const request = require('request')
 const mongoDbInsertMany = require('./lib/mongoDbInsertMany').mongoDbInsertMany
 const activeRequiredScrapers = require('./conf/requiredScrapers.json').scrapers.active
-const date = require('./src/date')
+const date = require('./src/date').date
 
 date.bankHoliday ? process.exit(0) : console.log('not bank holiday')
 console.log('*' + date.dayNames[date.today].toUpperCase() + '*\n' + '='.repeat(date.dayNames[date.today].length))

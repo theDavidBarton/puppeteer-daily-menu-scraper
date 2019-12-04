@@ -16,7 +16,7 @@
 
 'use strict'
 
-const date = require('./../scrapeDailyMenu').date
+const date = require('./../src/date').date
 
 // class for menu object
 class RestaurantMenuOutput {
