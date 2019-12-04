@@ -18,9 +18,15 @@
 
 const puppeteer = require('puppeteer')
 const request = require('request')
-const mongoDbInsertMany = require('./lib/mongoDbInsertMany').mongoDbInsertMany
-const activeRequiredScrapers = require('./conf/requiredScrapers.json').scrapers.active
-const date = require('./src/date').date
+const mongoDbInsertMany = require('./../lib/mongoDbInsertMany').mongoDbInsertMany
+const activeRequiredScrapers = require('./../conf/requiredScrapers.json').scrapers.active
+const date = require('./date').date
+
+let webhookEnv = null
+
+process.argv[2] === '--debug'
+  ? (webhookEnv = process.env.WEBHOOK_URL_TEST)
+  : (webhookEnv = process.env.WEBHOOK_URL_PROD)
 
 date.bankHoliday ? process.exit(0) : console.log('not bank holiday')
 console.log('*' + date.dayNames[date.today].toUpperCase() + '*\n' + '='.repeat(date.dayNames[date.today].length))
@@ -43,7 +49,7 @@ async function scrapeMenu() {
   // require scrapers after module.exports object is declared and launch the active ones, see: ./conf/requiredScrapers.json
   async function scraperExecuter() {
     for (const scraper of activeRequiredScrapers) {
-      const actual = require(`./scrapers/${scraper}`)
+      const actual = require(`./../scrapers/${scraper}`)
       try {
         await actual.scraper()
       } catch (e) {
@@ -65,7 +71,7 @@ async function scrapeMenu() {
   // _POST the final JSON to webhook
   request(
     {
-      url: process.env.WEBHOOK_URL_PROD,
+      url: webhookEnv,
       method: 'POST',
       json: false,
       body: finalJSON

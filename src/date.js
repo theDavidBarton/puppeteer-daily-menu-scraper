@@ -29,4 +29,20 @@ const date = {
   dayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 }
 
+/*
+ * for debug purposes you can run the main script with a 2nd argument like:
+ * `yarn start --debug --date=2__2019.12.24.`
+ * where 2 means: Tuesday
+ * and 2019.12.14. overrides todayDotSeparated
+ */
+
+if (process.argv[3]) {
+  date.today = process.argv[3]
+    .split('__')[0]
+    .match(/[0-9]/)
+    .toString()
+  date.todayDotSeparated = process.argv[3].split('__')[1]
+  console.log('!!! RUNNING IN DEBUG MODE !!!', date)
+}
+
 module.exports.date = date

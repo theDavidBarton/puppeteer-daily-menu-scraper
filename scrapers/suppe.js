@@ -17,11 +17,11 @@
 const puppeteer = require('puppeteer')
 const objectDecider = require('./../lib/objectDecider')
 const priceCompareToDb = require('./../lib/priceCompareToDb')
-const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
+const browserWSEndpoint = require('./../src/dailyMenuScraper').browserWSEndpoint
 const today = require('./../src/date').date.today
 const dayNames = require('./../src/date').date.dayNames
-const finalJSON = require('./../scrapeDailyMenu').finalJSON
-const finalMongoJSON = require('./../scrapeDailyMenu').finalMongoJSON
+const finalJSON = require('./../src/dailyMenuScraper').finalJSON
+const finalMongoJSON = require('./../src/dailyMenuScraper').finalMongoJSON
 const RestaurantMenuOutput = require('./../src/restaurantMenuClasses').RestaurantMenuOutput
 const RestaurantMenuDb = require('./../src/restaurantMenuClasses').RestaurantMenuDb
 

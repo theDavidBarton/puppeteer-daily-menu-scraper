@@ -1,5 +1,6 @@
 {
   "license": "Apache-2.0",
+  "main": "./src/dailyMenuScraper.js",
   "dependencies": {
     "moment": "^2.24.0",
     "mongodb": "^3.3.4",
@@ -13,7 +14,8 @@
     "nock": "^10.0.6"
   },
   "scripts": {
-    "start": "node scrapeDailyMenu.js",
+    "start": "node ./src/dailyMenuScraper.js",
+    "debug": "node ./src/dailyMenuScraper.js --debug",
     "test": "jest --verbose --runInBand --detectOpenHandles",
     "lint": "eslint"
   },

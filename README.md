@@ -17,7 +17,6 @@ The final output is posted to slack via webhooks.
 
 ###### KEYWORDS: [puppeteer](https://github.com/search?q=puppeteer) | [OCR](https://github.com/search?q=ocr) | [web scraping](https://github.com/search?q=web+scraping) | [facebook scraping](https://github.com/search?q=facebook+scraping) | [webhooks](https://github.com/search?q=webhooks)
 
-
 ### What can you do here?
 
 - scrape daily menus and post the information with webhooks to slack;
@@ -55,12 +54,28 @@ $ source app.env
 ### Run scrapers
 
 ```bash
-$ node scrapeDailyMenu.js
+$ node ./src/dailyMenuScraper.js
 ```
 
 or `yarn start`
 
-*Note:* a [cron job](https://github.com/theDavidBarton/puppeteer-daily-menu-scraper/actions?query=workflow%3Ascrape) is set up via GitHub Actions to run the node script at every weekday 10:20AM UTC! `'20 10 * * 1-5'`
+_Note:_ a [cron job](https://github.com/theDavidBarton/puppeteer-daily-menu-scraper/actions?query=workflow%3Ascrape) is set up via GitHub Actions to run the node script at every weekday 10:20AM UTC! `'20 10 * * 1-5'`
+
+### Run scrapers in debug mode
+
+**I.)** `--debug` sends slack messages to WEBHOOK_URL_TEST so you are safe to do automated (or manual) e2e tests.
+
+```bash
+$ node ./src/dailyMenuScraper.js --debug
+```
+
+**II.)** `--debug --date=[0-6]__YYYY.MM.DD.` For debug purposes you are able to run script with a 2nd argument like below, where 2 means: day is Tuesday and 2019.12.14. overrides the value of date.todayDotSeparated. You need to separate the two values by a double underscore '\_\_' !
+
+```bash
+$ node ./src/dailyMenuScraper.js --debug --date=2__2019.12.24.
+```
+
+or shorthand works as for run scrapers on prod: `yarn start --debug --date=2__2019.12.24.`
 
 # Links
 
@@ -74,7 +89,7 @@ or `yarn start`
 
 [Apache License 2.0](/LICENSE.md)
 
-   Copyright 2019, David Barton (theDavidBarton)
+Copyright 2019, David Barton (theDavidBarton)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

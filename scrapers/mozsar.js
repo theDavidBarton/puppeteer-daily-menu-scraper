@@ -21,10 +21,10 @@ const objectDecider = require('./../lib/objectDecider')
 const priceCatcher = require('./../lib/priceCatcher')
 const priceCompareToDb = require('./../lib/priceCompareToDb')
 const stringValueCleaner = require('./../lib/stringValueCleaner')
-const browserWSEndpoint = require('./../scrapeDailyMenu').browserWSEndpoint
+const browserWSEndpoint = require('./../src/dailyMenuScraper').browserWSEndpoint
 const today = require('./../src/date').date.today
-const finalJSON = require('./../scrapeDailyMenu').finalJSON
-const finalMongoJSON = require('./../scrapeDailyMenu').finalMongoJSON
+const finalJSON = require('./../src/dailyMenuScraper').finalJSON
+const finalMongoJSON = require('./../src/dailyMenuScraper').finalMongoJSON
 const RestaurantMenuOutput = require('./../src/restaurantMenuClasses').RestaurantMenuOutput
 const RestaurantMenuDb = require('./../src/restaurantMenuClasses').RestaurantMenuDb
 
