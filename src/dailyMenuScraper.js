@@ -22,6 +22,12 @@ const mongoDbInsertMany = require('./../lib/mongoDbInsertMany').mongoDbInsertMan
 const activeRequiredScrapers = require('./../conf/requiredScrapers.json').scrapers.active
 const date = require('./date').date
 
+let webhookEnv = null
+
+process.argv[2] === '--debug'
+  ? (webhookEnv = process.env.WEBHOOK_URL_TEST)
+  : (webhookEnv = process.env.WEBHOOK_URL_PROD)
+
 date.bankHoliday ? process.exit(0) : console.log('not bank holiday')
 console.log('*' + date.dayNames[date.today].toUpperCase() + '*\n' + '='.repeat(date.dayNames[date.today].length))
 
@@ -65,7 +71,7 @@ async function scrapeMenu() {
   // _POST the final JSON to webhook
   request(
     {
-      url: process.env.WEBHOOK_URL_TEST,
+      url: webhookEnv,
       method: 'POST',
       json: false,
       body: finalJSON

@@ -15,6 +15,7 @@
   },
   "scripts": {
     "start": "node ./src/dailyMenuScraper.js",
+    "debug": "node ./src/dailyMenuScraper.js --debug",
     "test": "jest --verbose --runInBand --detectOpenHandles",
     "lint": "eslint"
   },
