@@ -18,9 +18,9 @@
 
 const puppeteer = require('puppeteer')
 const request = require('request')
-const mongoDbInsertMany = require('./lib/mongoDbInsertMany').mongoDbInsertMany
-const activeRequiredScrapers = require('./conf/requiredScrapers.json').scrapers.active
-const date = require('./src/date').date
+const mongoDbInsertMany = require('./../lib/mongoDbInsertMany').mongoDbInsertMany
+const activeRequiredScrapers = require('./../conf/requiredScrapers.json').scrapers.active
+const date = require('./date').date
 
 date.bankHoliday ? process.exit(0) : console.log('not bank holiday')
 console.log('*' + date.dayNames[date.today].toUpperCase() + '*\n' + '='.repeat(date.dayNames[date.today].length))
@@ -65,7 +65,7 @@ async function scrapeMenu() {
   // _POST the final JSON to webhook
   request(
     {
-      url: process.env.WEBHOOK_URL_PROD,
+      url: process.env.WEBHOOK_URL_TEST,
       method: 'POST',
       json: false,
       body: finalJSON

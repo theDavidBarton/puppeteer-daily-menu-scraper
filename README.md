@@ -17,7 +17,6 @@ The final output is posted to slack via webhooks.
 
 ###### KEYWORDS: [puppeteer](https://github.com/search?q=puppeteer) | [OCR](https://github.com/search?q=ocr) | [web scraping](https://github.com/search?q=web+scraping) | [facebook scraping](https://github.com/search?q=facebook+scraping) | [webhooks](https://github.com/search?q=webhooks)
 
-
 ### What can you do here?
 
 - scrape daily menus and post the information with webhooks to slack;
@@ -55,12 +54,12 @@ $ source app.env
 ### Run scrapers
 
 ```bash
-$ node scrapeDailyMenu.js
+$ node ./src/dailyMenuScraper.js
 ```
 
 or `yarn start`
 
-*Note:* a [cron job](https://github.com/theDavidBarton/puppeteer-daily-menu-scraper/actions?query=workflow%3Ascrape) is set up via GitHub Actions to run the node script at every weekday 10:20AM UTC! `'20 10 * * 1-5'`
+_Note:_ a [cron job](https://github.com/theDavidBarton/puppeteer-daily-menu-scraper/actions?query=workflow%3Ascrape) is set up via GitHub Actions to run the node script at every weekday 10:20AM UTC! `'20 10 * * 1-5'`
 
 # Links
 
@@ -74,7 +73,7 @@ or `yarn start`
 
 [Apache License 2.0](/LICENSE.md)
 
-   Copyright 2019, David Barton (theDavidBarton)
+Copyright 2019, David Barton (theDavidBarton)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
