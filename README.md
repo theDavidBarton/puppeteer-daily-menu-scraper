@@ -69,7 +69,7 @@ _Note:_ a [cron job](https://github.com/theDavidBarton/puppeteer-daily-menu-scra
 $ node ./src/dailyMenuScraper.js --debug
 ```
 
-**II.)** `--debug --date=[0-6]__YYYY.MM.DD.` For debug purposes you are able to run script with a 2nd argument like below, where 2 means: day is Tuesday and 2019.12.14. overrides the value of date.todayDotSeparated. You need to separate the two values by a double underscore '\_\_' !
+**II.)** `--debug --date=[0-6]__YYYY.MM.DD.` For debug purposes you are able to run script with a 2nd argument like below, where 2 means: day is Tuesday (0: Sunday, 1: Monday, 2: Tuesday, 3: Wednesday, 4: Thursday, 5: Friday, 6: Saturday) and 2019.12.14. overrides the value of date.todayDotSeparated. You need to separate the two values by a double underscore '\_\_' !
 
 ```bash
 $ node ./src/dailyMenuScraper.js --debug --date=2__2019.12.24.
