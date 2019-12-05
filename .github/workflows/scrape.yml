@@ -24,4 +24,4 @@ jobs:
         OCR_API_KEY: ${{ secrets.OCR_API_KEY }}
         WEBHOOK_URL_PROD: ${{ secrets.WEBHOOK_URL_PROD }}
         WEBHOOK_URL_TEST: ${{ secrets.WEBHOOK_URL_TEST }}
-      run: node scrapeDailyMenu.js
+      run: node ./src/dailyMenuScraper.js
