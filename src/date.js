@@ -32,7 +32,7 @@ const date = {
 /*
  * for debug purposes you can run the main script with a 2nd argument like:
  * `yarn start --debug --date=2__2019.12.24.`
- * where 2 means: Tuesday
+ * where 2 means: Tuesday (0: Sunday, 1: Monday, 2: Tuesday, 3: Wednesday, 4: Thursday, 5: Friday, 6: Saturday)
  * and 2019.12.14. overrides todayDotSeparated
  */
 
@@ -42,7 +42,7 @@ if (process.argv[3]) {
     .match(/[0-9]/)
     .toString()
   date.todayDotSeparated = process.argv[3].split('__')[1]
-  console.log('!!! RUNNING IN DEBUG MODE !!!', date)
+  console.log('!!! RUNNING IN DEBUG MODE !!! ', date.todayDotSeparated)
 }
 
 module.exports.date = date
