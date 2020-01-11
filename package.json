@@ -2,6 +2,8 @@
   "license": "Apache-2.0",
   "main": "./src/dailyMenuScraper.js",
   "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
     "moment": "^2.24.0",
     "mongodb": "^3.3.4",
     "puppeteer": "^2.0.0",
@@ -14,10 +16,14 @@
     "nock": "^10.0.6"
   },
   "scripts": {
-    "start": "node ./src/dailyMenuScraper.js",
-    "debug": "node ./src/dailyMenuScraper.js --debug",
+    "start": "node ./src/server.js",
+    "scrape": "node ./src/dailyMenuScraper.js",
+    "scrape-debug": "node ./src/dailyMenuScraper.js --debug",
     "test": "jest --verbose --runInBand --detectOpenHandles",
     "lint": "eslint"
+  },
+  "engines": {
+    "node": "10.x"
   },
   "jest": {
     "coverageDirectory": "./coverage/",
