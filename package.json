@@ -22,6 +22,9 @@
     "test": "jest --verbose --runInBand --detectOpenHandles",
     "lint": "eslint"
   },
+  "engines": {
+    "node": "10.x"
+  },
   "jest": {
     "coverageDirectory": "./coverage/",
     "collectCoverage": true
