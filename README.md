@@ -77,6 +77,71 @@ $ node ./src/dailyMenuScraper.js --debug --date=2__2019.12.24.
 
 or shorthand works as for run scrapers on prod: `yarn scrape --debug --date=2__2019.12.24.`
 
+## API
+
+```bash
+$ node ./src/server.js
+```
+
+or `yarn start`
+
+### Endpoints
+
+- GET `/api/1/daily-menu/` => latest menu
+- GET `/api/1/daily-menu/{YYYY-MM-DD}` => menu of the selected date
+
+example: http://localhost:5000/api/1/daily-menu/2020-01-09
+
+**succesful response:**
+
+code: `200`
+
+```json
+[
+   {
+      "_id":"gdfgd55jk76k76k78l8jgdfsyc22",
+      "timestamp":"2020.01.09.",
+      "restaurant":"Karcsi Vendéglö",
+      "price":"1100",
+      "currency":"n/a",
+      "menuString":"• Weekly offer: fokhagyma krémleves borzaska párolt rizzsel\n• Daily menu: korhely leves rozmaringos sertésragu leveszöldbab főzelék debrecenivel milánói sertésszelet"
+   },
+   {
+      "_id":"gdfgd55jk76k76k78l8jgdfsyc23",
+      "timestamp":"2020.01.09.",
+      "restaurant":"Bistro Suppé",
+      "price":"1190",
+      "currency":"HUF",
+      "menuString":"Orly bundában sült csirkemellfilé, jázminrizzsel a mai menünk\nLevesek - Lengyel kolbászos burgonyaleves - Gyömbéres csirkeleves - Sütőtök krémleves... Főzelékek - Sólet - Kelkáposzta "
+   },
+   {
+      "_id":"gdfgd55jk76k76k78l8jgdfsyc24",
+      "timestamp":"2020.01.09.",
+      "restaurant":"Kamra Ételbár",
+      "price":"1090",
+      "currency":"HUF",
+      "menuString":"• Daily menu: Zellerkrémleves, Bazsalikomos csirkés farfalle (1090.-Ft), Gombapaprikás tésztával (1100.-Ft), Rántott gomba tartárral körettel (1100.-Ft), Sajttal-sonkával töltött csibebatyu (1450.-Ft), Rántott csirkecomb petrezselymes burgonyával (1250.-Ft), Csőben sült fetás baconos csirkemell (1390.-Ft), Zúzapörkölt tarhonyával (1250.-Ft), Somlói galuska (650.-Ft), Feketeerdei sonkás gnocchi (1100.-Ft), Tejszines kapros piritott mogyorós csirkecsikok körettel (1250.-Ft), Gluténmentes főzelék: zöldborsó, tök, lencse (450.-Ft), Palermoi csirkemell paradicsomos rizzsel (1450.-Ft)"
+   },
+   {
+      "_id":"gdfgd55jk76k76k78l8jgdfsyc25",
+      "timestamp":"2020.01.09.",
+      "restaurant":"Fruccola (Arany Janos utca)",
+      "price":"2190",
+      "currency":"HUF",
+      "menuString":"• Daily menu: Fűszres mogyoróvajas zöldségleves, Szárított paradicsomos füstölt sajtos csirkemell rolád, mediterrán tepsis burgonya"
+   },
+   [...]
+]
+```
+
+**error response:**
+
+code: `404`
+
+```json
+{ "error": "no menu for the selected date!" }
+```
+
 # Links
 
 [The home of Puppeteer](https://pptr.dev)
