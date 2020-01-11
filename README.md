@@ -57,7 +57,7 @@ $ source app.env
 $ node ./src/dailyMenuScraper.js
 ```
 
-or `yarn start`
+or `yarn scrape`
 
 _Note:_ a [cron job](https://github.com/theDavidBarton/puppeteer-daily-menu-scraper/actions?query=workflow%3Ascrape) is set up via GitHub Actions to run the node script at every weekday 10:20AM UTC! `'20 10 * * 1-5'`
 
@@ -75,7 +75,7 @@ $ node ./src/dailyMenuScraper.js --debug
 $ node ./src/dailyMenuScraper.js --debug --date=2__2019.12.24.
 ```
 
-or shorthand works as for run scrapers on prod: `yarn start --debug --date=2__2019.12.24.`
+or shorthand works as for run scrapers on prod: `yarn scrape --debug --date=2__2019.12.24.`
 
 # Links
 

@@ -17,7 +17,7 @@
   "scripts": {
     "start": "node ./src/server.js",
     "scrape": "node ./src/dailyMenuScraper.js",
-    "scrapeDebug": "node ./src/dailyMenuScraper.js --debug",
+    "scrape-debug": "node ./src/dailyMenuScraper.js --debug",
     "test": "jest --verbose --runInBand --detectOpenHandles",
     "lint": "eslint"
   },
