@@ -115,7 +115,7 @@ async function scraper() {
             paramValueString = paramValueString.replace(/\(\)/g, '').replace(/\n/, ' ') // to be moved to stringValueCleaner module later!
             break forlabel
           } else {
-            paramValueString = 'menu is out of date!'
+            paramValueString = 'menu is outdated!'
           }
         }
       }
