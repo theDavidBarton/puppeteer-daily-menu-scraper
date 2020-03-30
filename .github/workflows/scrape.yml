@@ -2,7 +2,7 @@ name: scrape
 
 on: 
   schedule:
-    - cron:  '20 10 * * 1-5'
+    - cron:  '20 9 * * 1-5'
 
 jobs:
   scrape-and-publish:
