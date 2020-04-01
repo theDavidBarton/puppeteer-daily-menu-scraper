@@ -4,20 +4,23 @@
       "bank3",
       "mozsar",
       "i55",
-      "pestiDiszno",
-      "incognito",
       "kata",
       "bodza",
       "yamato",
       "vian",
       "korhely",
+      "kamra",
+      "suppe"
+    ],
+    "inactive": [
+      "nokedli",
+      "drop",
+      "pestiDiszno",
+      "incognito",
       "ketszerecsen",
       "fruccola",
-      "kamra",
       "roza",
-      "suppe",
       "karcsi"
-    ],
-    "inactive": ["nokedli", "drop"]
+    ]
   }
 }
