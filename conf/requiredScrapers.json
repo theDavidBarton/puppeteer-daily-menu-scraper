@@ -1,6 +1,6 @@
 {
-  "scrapers":{
-    "active":[
+  "scrapers": {
+    "active": [
       "bank3",
       "mozsar",
       "i55",
@@ -12,7 +12,7 @@
       "kamra",
       "suppe"
     ],
-    "inactive":[
+    "inactive": [
       "nokedli",
       "drop",
       "pestiDiszno",
