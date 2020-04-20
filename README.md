@@ -7,6 +7,8 @@
 
 # Puppeteer Daily Menu Scraper
 
+![scrape](https://github.com/theDavidBarton/puppeteer-daily-menu-scraper/workflows/scrape/badge.svg)
+
 A sandbox repository for **Puppeteer** (pptr), the NodeJs library made by GoogleChromeLabs to interact with webapps and browser components through headless Chrome.
 
 Currently the project's main js contains one headless Chrome instance with multiple async functions scraping daily and weekly menus (Monday to Friday) of restaurants from downtown Budapest (Hungary).
