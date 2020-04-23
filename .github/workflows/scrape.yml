@@ -1,27 +1,31 @@
 name: scrape
 
-on: 
+on:
   schedule:
-    - cron:  '20 9 * * 1-5'
+    - cron: '20 9 * * 1-5'
 
 jobs:
   scrape-and-publish:
-
     runs-on: ubuntu-latest
-        
+
     steps:
-    - uses: actions/checkout@master
-    - name: Use Node.js 12.x
-      uses: actions/setup-node@v1
-      with:
-        node-version: 12.x
-    - name: Install project
-      run: yarn
-    - name: Run main script
-      env:
-        MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
-        MONGO_USERNAME: ${{ secrets.MONGO_USERNAME }}
-        OCR_API_KEY: ${{ secrets.OCR_API_KEY }}
-        WEBHOOK_URL_PROD: ${{ secrets.WEBHOOK_URL_PROD }}
-        WEBHOOK_URL_TEST: ${{ secrets.WEBHOOK_URL_TEST }}
-      run: node ./src/dailyMenuScraper.js
+      # libgbm-dev is required by Puppeteer 3+
+      - name: install puppeteer libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgbm-dev
+      - uses: actions/checkout@master
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - name: Install project
+        run: yarn
+      - name: Run main script
+        env:
+          MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
+          MONGO_USERNAME: ${{ secrets.MONGO_USERNAME }}
+          OCR_API_KEY: ${{ secrets.OCR_API_KEY }}
+          WEBHOOK_URL_PROD: ${{ secrets.WEBHOOK_URL_PROD }}
+          WEBHOOK_URL_TEST: ${{ secrets.WEBHOOK_URL_TEST }}
+        run: node ./src/dailyMenuScraper.js
