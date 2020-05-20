@@ -50,8 +50,8 @@ async function scraper() {
     /\bCSOT((.*\r?\n){3})|\bCSU((.*\r?\n){3})|\bCSÜ((.*\r?\n){3})|\bCsiitörtök((.*\r?\n){3})|törtök((.*\r?\n){3})/gi,
     /\bPÉNT((.*\r?\n){3})/gi
   ]
-  let facebookImageUrlSelector = '.scaledImageFitWidth'
-  let menuHandleRegex = /Heti menü/gi
+  let facebookImageUrlSelector = '.scaledImageFitHeight'
+  let menuHandleRegex = /NAPI MENÜ/gi
   let startLine = 1
   let endLine = 2
 
