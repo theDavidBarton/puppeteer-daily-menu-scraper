@@ -51,7 +51,7 @@ async function scraper() {
     /\bPÉNT((.*\r?\n){3})/gi
   ]
   let facebookImageUrlSelector = '.scaledImageFitHeight'
-  let menuHandleRegex = /NAPI MENÜ/gi
+  let menuHandleRegex = /HETI MENÜ/gi
   let startLine = 1
   let endLine = 2
 
