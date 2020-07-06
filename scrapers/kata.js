@@ -46,16 +46,16 @@ async function scraper() {
   let addressString = 'Budapest, 1065, Hajós u. 27.'
   let daysRegexArray = [
     null,
-    /\bHÉT((.*\r?\n){3})/gi,
-    /\bKED((.*\r?\n){3})/gi,
-    /\bSZERD((.*\r?\n){3})/gi,
-    /\bCS(O|Ů|U|Ü)T((.*\r?\n){3})/gi,
+    /\bHÉT((.*\r?\n){4})/gi,
+    /\bKED((.*\r?\n){4})/gi,
+    /\bSZERD((.*\r?\n){4})/gi,
+    /\bCS(O|Ů|U|Ü)T((.*\r?\n){4})/gi,
     /\bPÉNT((.*\r?\n){3})/gi
   ]
   let facebookImageUrlSelector = '.scaledImageFitWidth'
   let menuHandleRegex = /espresso/gi
   let startLine = 1
-  let endLine = 2
+  let endLine = 3
 
   await ocrFacebookImage.ocrFacebookImage(
     color,

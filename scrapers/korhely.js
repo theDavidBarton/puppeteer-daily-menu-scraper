@@ -76,10 +76,10 @@ async function scraper() {
   let mongoObj = null
 
   // @ KORHELY selectors
-  const summarySelector = '.MenusNavigation_description'
-  const weeklySoupKorhelySelector = '#mainDiv > div > div:nth-child(2) > section > ul > li:nth-child(1)'
-  const weeklyMainKorhelySelector = '#mainDiv > div > div:nth-child(2) > section > ul > li:nth-child(2)'
-  const weeklyDessertKorhelySelector = '#mainDiv > div > div:nth-child(2) > section > ul > li:nth-child(3)'
+  const summarySelector = '.menusNavigation_description'
+  const weeklySoupKorhelySelector = '#subCategory1'
+  const weeklyMainKorhelySelector = '#subCategory2'
+  const weeklyDessertKorhelySelector = '#subCategory3'
 
   try {
     await page.goto(paramUrl, { waitUntil: 'networkidle2', timeout: 0 })
@@ -101,9 +101,9 @@ async function scraper() {
 
     found = await dateCatcher.dateCatcher(summary, true)
     if (found === true) {
-      weeklySoupKorhely = await page.evaluate(el => el.innerText, await page.$(weeklySoupKorhelySelector))
-      weeklyMainKorhely = await page.evaluate(el => el.innerText, await page.$(weeklyMainKorhelySelector))
-      weeklyDessertKorhely = await page.evaluate(el => el.innerText, await page.$(weeklyDessertKorhelySelector))
+      weeklySoupKorhely = await page.evaluate(el => el.innerText, (await page.$$(weeklySoupKorhelySelector))[1])
+      weeklyMainKorhely = await page.evaluate(el => el.innerText, (await page.$$(weeklyMainKorhelySelector))[1])
+      weeklyDessertKorhely = await page.evaluate(el => el.innerText, (await page.$$(weeklyDessertKorhelySelector))[1])
 
       paramValueString =
         '• Soups: ' +

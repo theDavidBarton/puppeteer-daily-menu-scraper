@@ -41,29 +41,21 @@ async function scraper() {
   // @ DROP parameters
   let color = '#d3cd78'
   let titleString = 'Drop Restaurant'
-  let url = 'https://www.facebook.com/pg/droprestaurant/posts/'
+  let url = 'https://www.facebook.com/pg/droprestaurant/posts/?ref=page_internal'
   let icon = 'http://droprestaurant.com/public/wp-content/uploads/2015/07/logo-header.png'
   let addressString = 'Budapest, 1065, Hajós u. 27'
   let daysRegexArray = [
     null,
-    /(Január|Február|Március|Április|Május|Június|Július|Augu|Szeptember|Október|November|December)((.*\r?\n){3})/gi,
-    /\bKEDD((.*\r?\n){2})/gi,
-    /\bSZERD((.*\r?\n){2})/gi,
-    /(\bCSÜT|\bCSIIT|\bCSUT)((.*\r?\n){2})/gi,
-    /\bPÉNT((.*\r?\n){2})/gi
+    /\bHÉT((.*\r?\n){4})/gi,
+    /\bKEDD((.*\r?\n){4})/gi,
+    /\bSZERD((.*\r?\n){4})/gi,
+    /(\bCSÜT|\bCSIIT|\bCSUT)((.*\r?\n){4})/gi,
+    /\bPÉNT((.*\r?\n){3})/gi
   ]
   let facebookImageUrlSelector = '.scaledImageFitWidth'
   let menuHandleRegex = /Szerda/gi
-  let startLine
-  let endLine
-  // drop still has shady menu image so Monday has different pattern (see daysRegexArray)
-  if (today === 1) {
-    startLine = 1
-    endLine = 3
-  } else {
-    startLine = 0
-    endLine = 2
-  }
+  let startLine = 0
+  let endLine = 7
 
   await ocrFacebookImage.ocrFacebookImage(
     color,
