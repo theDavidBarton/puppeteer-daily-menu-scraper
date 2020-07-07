@@ -38,16 +38,17 @@ async function scraper() {
    */
 
   // @ PESTI DISZNO parameters
-  let color = '#000000'
-  let titleString = 'Pesti Diszno'
-  let url = 'https://www.facebook.com/pg/PestiDiszno/posts/'
-  let icon = 'http://www.pestidiszno.hu/img/pdlogob2.png'
-  let addressString = 'Budapest, Nagymező u. 19, 1063'
-  let daysRegexArray = [null, /[^%]*/g, /[^%]*/g, /[^%]*/g, /[^%]*/g, /[^%]*/g]
-  let facebookImageUrlSelector = 'img[class^="scaledImageFit"]'
-  let menuHandleRegex = /fogás/gi
-  let startLine = 3
-  let endLine = 17
+  const color = '#000000'
+  const titleString = 'Pesti Diszno'
+  const url = 'https://www.facebook.com/pg/PestiDiszno/posts/'
+  const icon = 'http://www.pestidiszno.hu/img/pdlogob2.png'
+  const addressString = 'Budapest, Nagymező u. 19, 1063'
+  const daysRegexArray = [null, /[^%]*/g, /[^%]*/g, /[^%]*/g, /[^%]*/g, /[^%]*/g]
+  const facebookImageUrlSelector = 'img[class^="scaledImageFit"]'
+  const menuHandleRegex = /fogás/gi
+  const startLine = 3
+  const endLine = 17
+  const zoomIn = false
 
   await ocrFacebookImage.ocrFacebookImage(
     color,
@@ -59,7 +60,8 @@ async function scraper() {
     facebookImageUrlSelector,
     menuHandleRegex,
     startLine,
-    endLine
+    endLine,
+    zoomIn
   )
 }
 module.exports.scraper = scraper

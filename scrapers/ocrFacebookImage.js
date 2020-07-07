@@ -39,6 +39,7 @@ const RestaurantMenuDb = require('./../src/restaurantMenuClasses').RestaurantMen
 /*
  * @paramStartLine : selects custom range on the matching regex
  * @paramEndline : selects custom range on the matching regex
+ * @paramZoomIn : in case of extremely small letters this param enables reading full size images
  */
 
 // @ {RESTAURANT}s with only facebook image menus
@@ -52,7 +53,8 @@ async function ocrFacebookImage(
   paramFacebookImageUrlSelector,
   paramMenuHandleRegex,
   paramStartLine,
-  paramEndLine
+  paramEndLine,
+  paramZoomIn
 ) {
   const browser = await puppeteer.connect({ browserWSEndpoint })
   const page = await browser.newPage()
@@ -74,11 +76,15 @@ async function ocrFacebookImage(
     const facebookImageUrl = await page.$$(paramFacebookImageUrlSelector)
     for (let i = 0; i < 6; i++) {
       // limited to six runs to save OCR resources
+      let imageUrl
       await page.waitFor(3000)
-
-      await facebookImageUrl[1].click()
-      await page.waitForSelector('.spotlight')
-      let imageUrl = await page.evaluate(el => el.src, (await page.$$('.spotlight'))[0])
+      if (paramZoomIn) {
+        await facebookImageUrl[1].click()
+        await page.waitForSelector('.spotlight')
+        imageUrl = await page.evaluate(el => el.src, (await page.$$('.spotlight'))[0])
+      } else {
+        imageUrl = await page.evaluate(el => el.src, facebookImageUrl[i])
+      }
       imageUrlArray.push(imageUrl)
     }
   } catch (e) {

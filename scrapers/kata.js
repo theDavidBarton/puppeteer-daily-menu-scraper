@@ -38,13 +38,13 @@ async function scraper() {
    */
 
   // @ KATA parameters
-  let color = '#3C5A99'
-  let titleString = 'Kata (Chagall)'
-  let url = 'https://www.facebook.com/pg/katarestaurantbudapest/posts/'
-  let icon =
+  const color = '#3C5A99'
+  const titleString = 'Kata (Chagall)'
+  const url = 'https://www.facebook.com/pg/katarestaurantbudapest/posts/'
+  const icon =
     'https://lh3.googleusercontent.com/GrM72gaBN1l7BUgUuWI5T9w2zc1qxsKFNukg6Szp-lXXpfG0wmnxT2FA_o725nmAiZkxGmf_=w1080-h608-p-no-v0'
-  let addressString = 'Budapest, 1065, Hajós u. 27.'
-  let daysRegexArray = [
+  const addressString = 'Budapest, 1065, Hajós u. 27.'
+  const daysRegexArray = [
     null,
     /\bHÉT((.*\r?\n){4})/gi,
     /\bKED((.*\r?\n){4})/gi,
@@ -52,10 +52,11 @@ async function scraper() {
     /\bCS(O|Ů|U|Ü)T((.*\r?\n){4})/gi,
     /\bPÉNT((.*\r?\n){3})/gi
   ]
-  let facebookImageUrlSelector = '.scaledImageFitWidth'
-  let menuHandleRegex = /espresso/gi
-  let startLine = 1
-  let endLine = 3
+  const facebookImageUrlSelector = '.scaledImageFitWidth'
+  const menuHandleRegex = /espresso/gi
+  const startLine = 1
+  const endLine = 3
+  const zoomIn = true
 
   await ocrFacebookImage.ocrFacebookImage(
     color,
@@ -67,7 +68,8 @@ async function scraper() {
     facebookImageUrlSelector,
     menuHandleRegex,
     startLine,
-    endLine
+    endLine,
+    zoomIn
   )
 }
 module.exports.scraper = scraper

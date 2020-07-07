@@ -1,7 +1,6 @@
 {
   "scrapers": {
-    "active": ["drop", "kata", "incognito"],
-    "active__2": [
+    "active": [
       "bank3",
       "i55",
       "kata",

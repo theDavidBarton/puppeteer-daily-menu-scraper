@@ -24,7 +24,6 @@
  */
 
 const ocrFacebookImage = require('./ocrFacebookImage')
-const today = require('./../src/date').date.today
 
 async function scraper() {
   /*
@@ -39,12 +38,12 @@ async function scraper() {
    */
 
   // @ DROP parameters
-  let color = '#d3cd78'
-  let titleString = 'Drop Restaurant'
-  let url = 'https://www.facebook.com/pg/droprestaurant/posts/?ref=page_internal'
-  let icon = 'http://droprestaurant.com/public/wp-content/uploads/2015/07/logo-header.png'
-  let addressString = 'Budapest, 1065, Hajós u. 27'
-  let daysRegexArray = [
+  const color = '#d3cd78'
+  const titleString = 'Drop Restaurant'
+  const url = 'https://www.facebook.com/pg/droprestaurant/posts/?ref=page_internal'
+  const icon = 'http://droprestaurant.com/public/wp-content/uploads/2015/07/logo-header.png'
+  const addressString = 'Budapest, 1065, Hajós u. 27'
+  const daysRegexArray = [
     null,
     /\bHÉT((.*\r?\n){4})/gi,
     /\bKEDD((.*\r?\n){4})/gi,
@@ -52,10 +51,11 @@ async function scraper() {
     /(\bCSÜT|\bCSIIT|\bCSUT)((.*\r?\n){4})/gi,
     /\bPÉNT((.*\r?\n){3})/gi
   ]
-  let facebookImageUrlSelector = '.scaledImageFitWidth'
-  let menuHandleRegex = /Szerda/gi
-  let startLine = 0
-  let endLine = 7
+  const facebookImageUrlSelector = '.scaledImageFitWidth'
+  const menuHandleRegex = /Szerda/gi
+  const startLine = 0
+  const endLine = 7
+  const zoomIn = true
 
   await ocrFacebookImage.ocrFacebookImage(
     color,
@@ -67,7 +67,8 @@ async function scraper() {
     facebookImageUrlSelector,
     menuHandleRegex,
     startLine,
-    endLine
+    endLine,
+    zoomIn
   )
 }
 module.exports.scraper = scraper

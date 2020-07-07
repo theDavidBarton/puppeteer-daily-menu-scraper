@@ -37,12 +37,12 @@ async function scraper() {
    */
 
   // @ INCOGNITO parameters
-  let color = '#cc2c2c'
-  let titleString = 'Incognito'
-  let url = 'https://www.facebook.com/pg/cafeincognito/posts/'
-  let icon = 'https://www.nicepng.com/png/detail/141-1415218_incognito-logo-incognito-mode-icon.png'
-  let addressString = 'Budapest, Liszt tér'
-  let daysRegexArray = [
+  const color = '#cc2c2c'
+  const titleString = 'Incognito'
+  const url = 'https://www.facebook.com/pg/cafeincognito/posts/'
+  const icon = 'https://www.nicepng.com/png/detail/141-1415218_incognito-logo-incognito-mode-icon.png'
+  const addressString = 'Budapest, Liszt tér'
+  const daysRegexArray = [
     null,
     /\bHÉT((.*\r?\n){3})/gi,
     /\bKED((.*\r?\n){3})/gi,
@@ -50,10 +50,11 @@ async function scraper() {
     /\bCSOT((.*\r?\n){3})|\bCSU((.*\r?\n){3})|\bCSÜ((.*\r?\n){3})|\bCsiitörtök((.*\r?\n){3})|törtök((.*\r?\n){3})/gi,
     /\bPÉNT((.*\r?\n){3})/gi
   ]
-  let facebookImageUrlSelector = '.scaledImageFitHeight'
-  let menuHandleRegex = /HETI MENÜ/gi
-  let startLine = 1
-  let endLine = 2
+  const facebookImageUrlSelector = '.scaledImageFitHeight'
+  const menuHandleRegex = /HETI MENÜ/gi
+  const startLine = 1
+  const endLine = 2
+  const zoomIn = false
 
   await ocrFacebookImage.ocrFacebookImage(
     color,
@@ -65,7 +66,8 @@ async function scraper() {
     facebookImageUrlSelector,
     menuHandleRegex,
     startLine,
-    endLine
+    endLine,
+    zoomIn
   )
 }
 module.exports.scraper = scraper
