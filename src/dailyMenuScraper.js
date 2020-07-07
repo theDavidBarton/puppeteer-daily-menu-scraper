@@ -33,9 +33,7 @@ const date = require('./date').date
 
 let webhookEnv = null
 
-process.argv[2] === '--debug'
-  ? (webhookEnv = process.env.WEBHOOK_URL_TEST)
-  : (webhookEnv = process.env.WEBHOOK_URL_PROD)
+process.argv[2] === '--debug' ? (webhookEnv = process.env.WEBHOOK_URL_TEST) : (webhookEnv = process.env.WEBHOOK_URL_PROD)
 
 date.bankHoliday ? process.exit(0) : console.log('not bank holiday')
 console.log('*' + date.dayNames[date.today].toUpperCase() + '*\n' + '='.repeat(date.dayNames[date.today].length))
@@ -49,7 +47,7 @@ let finalMongoJSON = []
 
 // scraper browser instance - function that wraps all the scrapers
 async function scrapeMenu() {
-  const browser = await puppeteer.launch({ headless: true })
+  const browser = await puppeteer.launch({ headless: true, defaultViewport: null, args: ['--start-maximized'] })
   const browserWSEndpoint = await browser.wsEndpoint()
 
   // used outside of main script in the scrapers
@@ -73,7 +71,7 @@ async function scrapeMenu() {
 
   // the final countdown (before post the actual menu to webhooks)
   console.log('\nWARNING: the output will be posted to slack in 5 seconds!')
-  setTimeout(function() {
+  setTimeout(() => {
     console.log('POST')
   }, 5000)
 
@@ -85,7 +83,7 @@ async function scrapeMenu() {
       json: false,
       body: finalJSON
     },
-    function(error, response, body) {
+    function (error, response, body) {
       if (error) {
         console.error(error)
       }

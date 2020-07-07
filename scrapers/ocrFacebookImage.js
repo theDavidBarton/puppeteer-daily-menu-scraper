@@ -36,6 +36,12 @@ const finalMongoJSON = require('./../src/dailyMenuScraper').finalMongoJSON
 const RestaurantMenuOutput = require('./../src/restaurantMenuClasses').RestaurantMenuOutput
 const RestaurantMenuDb = require('./../src/restaurantMenuClasses').RestaurantMenuDb
 
+/*
+ * @paramStartLine : selects custom range on the matching regex
+ * @paramEndline : selects custom range on the matching regex
+ * @paramZoomIn : in case of extremely small letters this param enables reading full size images
+ */
+
 // @ {RESTAURANT}s with only facebook image menus
 async function ocrFacebookImage(
   paramColor,
@@ -47,20 +53,11 @@ async function ocrFacebookImage(
   paramFacebookImageUrlSelector,
   paramMenuHandleRegex,
   paramStartLine,
-  paramEndLine
+  paramEndLine,
+  paramZoomIn
 ) {
   const browser = await puppeteer.connect({ browserWSEndpoint })
   const page = await browser.newPage()
-
-  // abort all images, source: https://github.com/GoogleChrome/puppeteer/blob/master/examples/block-images.js
-  await page.setRequestInterception(true)
-  page.on('request', request => {
-    if (request.resourceType() === 'image') {
-      request.abort()
-    } else {
-      request.continue()
-    }
-  })
 
   let paramValueString
   let paramPriceString
@@ -74,11 +71,20 @@ async function ocrFacebookImage(
   let mongoObj = null
 
   try {
-    await page.goto(paramUrl, { waitUntil: 'domcontentloaded' })
+    await page.goto(paramUrl, { waitUntil: 'networkidle0' })
     // @ {RESTAURANT} the hunt for the menu image src
     const facebookImageUrl = await page.$$(paramFacebookImageUrlSelector)
-    for (let i = 0; i < facebookImageUrl.length; i++) {
-      let imageUrl = await page.evaluate(el => el.src, facebookImageUrl[i])
+    for (let i = 0; i < 6; i++) {
+      // limited to six runs to save OCR resources
+      let imageUrl
+      await page.waitFor(3000)
+      if (paramZoomIn) {
+        await facebookImageUrl[1].click()
+        await page.waitForSelector('.spotlight')
+        imageUrl = await page.evaluate(el => el.src, (await page.$$('.spotlight'))[0])
+      } else {
+        imageUrl = await page.evaluate(el => el.src, facebookImageUrl[i])
+      }
       imageUrlArray.push(imageUrl)
     }
   } catch (e) {

@@ -1,6 +1,20 @@
 {
   "scrapers": {
-    "active": ["bank3", "i55", "incognito", "ketszerecsen", "bodza", "yamato", "vian", "korhely", "kamra", "suppe"],
-    "inactive": ["nokedli", "mozsar", "kata", "drop", "pestiDiszno", "fruccola", "roza", "karcsi"]
+    "active": [
+      "bank3",
+      "i55",
+      "kata",
+      "drop",
+      "incognito",
+      "ketszerecsen",
+      "bodza",
+      "fruccola",
+      "korhely",
+      "vian",
+      "kamra",
+      "suppe",
+      "karcsi"
+    ],
+    "inactive": ["nokedli", "mozsar", "pestiDiszno", "roza", "yamato"]
   }
 }
