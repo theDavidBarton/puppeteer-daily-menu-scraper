@@ -50,8 +50,8 @@ async function scraper() {
   let paramIcon =
     'https://6.kerulet.ittlakunk.hu/files/ittlakunk/styles/large/public/upload/company/1256/karcsi_vendeglo_logo.png'
   let paramValueString
-  let paramPriceString = '1100'
-  let paramPriceCurrency = 'n/a'
+  let paramPriceString = '1250'
+  let paramPriceCurrency = 'HUF'
   let paramPriceCurrencyString = ' Ft'
   let paramAddressString = 'Budapest, Jókai u. 20, 1066'
 
