@@ -10,7 +10,7 @@
     "request": "^2.88.0"
   },
   "devDependencies": {
-    "codecov": "^3.6.5",
+    "codecov": "^3.7.1",
     "eslint": "^7.0.0",
     "jest": "^26.0.1",
     "nock": "^13.0.2"
