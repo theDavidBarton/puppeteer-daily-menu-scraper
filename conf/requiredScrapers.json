@@ -12,9 +12,8 @@
       "korhely",
       "vian",
       "kamra",
-      "suppe",
-      "karcsi"
+      "suppe"      
     ],
-    "inactive": ["nokedli", "mozsar", "pestiDiszno", "roza", "yamato"]
+    "inactive": ["nokedli", "mozsar", "pestiDiszno", "roza", "yamato", "karcsi"]
   }
 }
