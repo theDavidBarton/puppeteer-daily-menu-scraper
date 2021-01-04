@@ -25,7 +25,7 @@
 
 'use strict'
 
-const date = require('./../src/date').date
+const { date } = require('./../src/date')
 
 // class for menu object
 class RestaurantMenuOutput {
@@ -36,12 +36,12 @@ class RestaurantMenuOutput {
     this.author_icon = icon
     this.fields = [
       {
-        title: title + ' menu (' + date.dayNames[date.today] + '):',
+        title: `${title} menu (${date.dayNames[date.today]}):`,
         value: value,
         short: false
       },
       {
-        title: 'price (' + currency + ')',
+        title: `price (${currency})`,
         value: price + priceCurrency,
         short: true
       },

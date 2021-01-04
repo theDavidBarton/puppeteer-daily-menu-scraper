@@ -1,24 +1,25 @@
 {
   "license": "MIT",
-  "main": "./src/dailyMenuScraper.js",
+  "main": "./src/index.js",
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "moment": "^2.24.0",
-    "mongodb": "^3.3.4",
-    "puppeteer": "^5.0.0",
-    "request": "^2.88.0"
+    "moment": "^2.29.1",
+    "mongodb": "^3.6.2",
+    "puppeteer": "^5.3.1",
+    "request": "^2.88.0",
+    "node-fetch": "^2.6.1"
   },
   "devDependencies": {
-    "codecov": "^3.7.1",
-    "eslint": "^7.0.0",
-    "jest": "^26.0.1",
-    "nock": "^13.0.2"
+    "codecov": "^3.8.0",
+    "eslint": "^7.11.0",
+    "jest": "^26.5.3",
+    "nock": "^13.0.4"
   },
   "scripts": {
     "start": "node ./src/server.js",
-    "scrape": "node ./src/dailyMenuScraper.js",
-    "scrape-debug": "node ./src/dailyMenuScraper.js --debug",
+    "scrape": "node ./src/index.js",
+    "scrape-debug": "node ./src/index.js --debug",
     "test": "jest --verbose --runInBand --detectOpenHandles",
     "lint": "eslint"
   },

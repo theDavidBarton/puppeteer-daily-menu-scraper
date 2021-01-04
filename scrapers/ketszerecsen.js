@@ -27,10 +27,10 @@ const puppeteer = require('puppeteer')
 const objectDecider = require('./../lib/objectDecider')
 const priceCatcher = require('./../lib/priceCatcher')
 const priceCompareToDb = require('./../lib/priceCompareToDb')
-const browserWSEndpoint = require('./../src/dailyMenuScraper').browserWSEndpoint
+const browserWSEndpoint = require('./../src/index').browserWSEndpoint
 const today = require('./../src/date').date.today
-const finalJSON = require('./../src/dailyMenuScraper').finalJSON
-const finalMongoJSON = require('./../src/dailyMenuScraper').finalMongoJSON
+const finalJSON = require('./../src/index').finalJSON
+const finalMongoJSON = require('./../src/index').finalMongoJSON
 const RestaurantMenuOutput = require('./../src/restaurantMenuClasses').RestaurantMenuOutput
 const RestaurantMenuDb = require('./../src/restaurantMenuClasses').RestaurantMenuDb
 
@@ -64,8 +64,7 @@ async function scraper() {
   let paramColor = '#000000'
   let paramTitleString = 'Két Szerecsen Bisztro'
   let paramUrl = 'https://ketszerecsen.hu/#daily'
-  let paramIcon =
-    'https://images.deliveryhero.io/image/netpincer/caterer/sh-9a3e84d0-2e42-11e2-9d48-7a92eabdcf20/logo.png'
+  let paramIcon = 'https://images.deliveryhero.io/image/netpincer/caterer/sh-9a3e84d0-2e42-11e2-9d48-7a92eabdcf20/logo.png'
   let paramValueString
   let paramPriceString
   let paramPriceCurrency
@@ -77,22 +76,8 @@ async function scraper() {
   let mongoObj = null
 
   // @ KETSZERECSEN selectors [1: first course, 2: main course]
-  let ketszerecsenArray1 = [
-    null,
-    'p:nth-child(4)',
-    'p:nth-child(7)',
-    'p:nth-child(10)',
-    'p:nth-child(13)',
-    'p:nth-child(16)'
-  ]
-  let ketszerecsenArray2 = [
-    null,
-    'p:nth-child(5)',
-    'p:nth-child(8)',
-    'p:nth-child(11)',
-    'p:nth-child(14)',
-    'p:nth-child(17)'
-  ]
+  let ketszerecsenArray1 = [null, 'p:nth-child(4)', 'p:nth-child(7)', 'p:nth-child(10)', 'p:nth-child(13)', 'p:nth-child(16)']
+  let ketszerecsenArray2 = [null, 'p:nth-child(5)', 'p:nth-child(8)', 'p:nth-child(11)', 'p:nth-child(14)', 'p:nth-child(17)']
 
   try {
     await page.goto(paramUrl, { waitUntil: 'networkidle2' })

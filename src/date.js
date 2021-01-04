@@ -25,14 +25,19 @@
 
 'use strict'
 
-const moment = require('moment')
-const bankHolidayChecker = require('./../lib/bankHolidayChecker').bankHolidayChecker
+const { bankHolidayChecker } = require('./../lib/bankHolidayChecker')
+const newDate = new Date()
 
 const date = {
   bankHoliday: bankHolidayChecker(),
-  today: Number(moment().format('d')),
-  todayFormatted: moment().format('LLLL'),
-  todayDotSeparated: moment(moment(), 'YYYY-MM-DD').locale('hu').format('L'), // e.g. 2019.05.17. (default format for Hungarian)
+  today: newDate.getDay(),
+  todayFormatted: `${newDate.toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  })} ${newDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}`,
+  todayDotSeparated: newDate.toLocaleDateString('hu-HU').replace(/-|$/g, '.'), // e.g. 2019.05.17. (default format for Hungarian)
   dayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 }
 
@@ -46,7 +51,7 @@ const date = {
 if (process.argv[3]) {
   date.today = process.argv[3].split('__')[0].match(/[0-9]/).toString()
   date.todayDotSeparated = process.argv[3].split('__')[1]
-  console.log('!!! RUNNING IN DEBUG MODE !!! ', date.todayDotSeparated)
+  console.log('### RUNNING IN DEBUG MODE ### ', date.todayDotSeparated)
 }
 
 module.exports.date = date

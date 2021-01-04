@@ -1,10 +1,10 @@
 process.argv[3] = '1__2019.12.11.' // force cli argument like in case of --debug date=1__2019.12.11. to cover all conditions
 
-const RestaurantMenuOutput = require('./restaurantMenuClasses').RestaurantMenuOutput
-const RestaurantMenuDb = require('./restaurantMenuClasses').RestaurantMenuDb
+const { RestaurantMenuOutput } = require('./restaurantMenuClasses')
+const { RestaurantMenuDb } = require('./restaurantMenuClasses')
 
-describe('RestaurantMenuOutput class and RestaurantMenuDb class', function() {
-  test('RestaurantMenuOutput should exist and should create new object', function() {
+describe('RestaurantMenuOutput class and RestaurantMenuDb class', () => {
+  test('RestaurantMenuOutput should exist and should create new object', () => {
     expect(RestaurantMenuOutput).toBeTruthy()
     const testObj = new RestaurantMenuOutput(
       'red',
@@ -34,7 +34,7 @@ describe('RestaurantMenuOutput class and RestaurantMenuDb class', function() {
     expect(testObj.footer).toBe('scraped by DailyMenu')
     expect(testObj.ts).toBeTruthy()
   })
-  test('RestaurantMenuDb should exist and should create new object', function() {
+  test('RestaurantMenuDb should exist and should create new object', () => {
     expect(RestaurantMenuDb).toBeTruthy()
     const testDbObj = new RestaurantMenuDb('Example Restaurant', '1500', 'HUF', 'Soup Meat Drink')
     expect(testDbObj.timestamp).toBeTruthy()

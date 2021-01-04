@@ -29,10 +29,10 @@ const ocrSpaceApiSimple = require('./../lib/ocrSpaceApiSimple')
 const priceCatcher = require('./../lib/priceCatcher')
 const priceCompareToDb = require('./../lib/priceCompareToDb')
 const stringValueCleaner = require('./../lib/stringValueCleaner')
-const browserWSEndpoint = require('./../src/dailyMenuScraper').browserWSEndpoint
+const browserWSEndpoint = require('./../src/index').browserWSEndpoint
 const today = require('./../src/date').date.today
-const finalJSON = require('./../src/dailyMenuScraper').finalJSON
-const finalMongoJSON = require('./../src/dailyMenuScraper').finalMongoJSON
+const finalJSON = require('./../src/index').finalJSON
+const finalMongoJSON = require('./../src/index').finalMongoJSON
 const RestaurantMenuOutput = require('./../src/restaurantMenuClasses').RestaurantMenuOutput
 const RestaurantMenuDb = require('./../src/restaurantMenuClasses').RestaurantMenuDb
 

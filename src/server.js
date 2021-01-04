@@ -27,9 +27,9 @@
 
 const express = require('express')
 const cors = require('cors')
-const mongoDbSearch = require('./../lib/mongoDbSearch').mongoDbSearch
+const { mongoDbSearch } = require('./../lib/mongoDbSearch')
 
-function endpointCreation() {
+!(() => {
   try {
     const app = express()
     app.use(cors())
@@ -38,9 +38,7 @@ function endpointCreation() {
     app.get('/api/1/daily-menu/', async (req, res) => {
       try {
         const results = await mongoDbSearch()
-        results[0]
-          ? res.json(results)
-          : res.status(500).json({ error: 'something must be wrong on our side, come back later!' })
+        results[0] ? res.json(results) : res.status(500).json({ error: 'something must be wrong on our side, come back later!' })
         console.log('/api/1/daily-menu/ endpoint has been called!')
       } catch (e) {
         console.error(e)
@@ -49,9 +47,7 @@ function endpointCreation() {
 
     app.get('/api/1/daily-menu/:date', async (req, res) => {
       try {
-        let date
-        req.params.date.match(/[1-2][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]/) ? (date = req.params.date) : (date = null)
-
+        const date = req.params.date.match(/[1-2][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]/) ? req.params.date : null
         const results = await mongoDbSearch(date)
         results[0] ? res.json(results) : res.status(404).json({ error: 'no menu for the selected date!' })
         console.log(`/api/1/daily-menu/${date} endpoint has been called!`)
@@ -59,12 +55,10 @@ function endpointCreation() {
         console.error(e)
       }
     })
-
     app.listen(port)
 
     console.log(`API is listening on ${port}\nendpoint is available at: /api/1/daily-menu/`)
   } catch (e) {
     console.error(e)
   }
-}
-endpointCreation()
+})()
