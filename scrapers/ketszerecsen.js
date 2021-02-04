@@ -27,6 +27,7 @@ const puppeteer = require('puppeteer')
 const objectDecider = require('./../lib/objectDecider')
 const priceCatcher = require('./../lib/priceCatcher')
 const priceCompareToDb = require('./../lib/priceCompareToDb')
+const stringValueCleaner = require('./../lib/stringValueCleaner')
 const browserWSEndpoint = require('./../src/dailyMenuScraper').browserWSEndpoint
 const today = require('./../src/date').date.today
 const finalJSON = require('./../src/dailyMenuScraper').finalJSON
@@ -64,77 +65,62 @@ async function scraper() {
   let paramColor = '#000000'
   let paramTitleString = 'Két Szerecsen Bisztro'
   let paramUrl = 'https://ketszerecsen.hu/#daily'
-  let paramIcon =
-    'https://images.deliveryhero.io/image/netpincer/caterer/sh-9a3e84d0-2e42-11e2-9d48-7a92eabdcf20/logo.png'
+  let paramIcon = 'https://images.deliveryhero.io/image/netpincer/caterer/sh-9a3e84d0-2e42-11e2-9d48-7a92eabdcf20/logo.png'
   let paramValueString
   let paramPriceString
   let paramPriceCurrency
   let paramPriceCurrencyString
   let paramAddressString = 'Budapest, Nagymező u. 14, 1065'
-  let ketszerecsen1
-  let ketszerecsen2
+  let ketszerecsen
   let obj = null
   let mongoObj = null
 
-  // @ KETSZERECSEN selectors [1: first course, 2: main course]
-  let ketszerecsenArray1 = [
+  // @ KETSZERECSEN RegEx expressions
+  const ketszerecsenArray = [
     null,
-    'p:nth-child(4)',
-    'p:nth-child(7)',
-    'p:nth-child(10)',
-    'p:nth-child(13)',
-    'p:nth-child(16)'
-  ]
-  let ketszerecsenArray2 = [
-    null,
-    'p:nth-child(5)',
-    'p:nth-child(8)',
-    'p:nth-child(11)',
-    'p:nth-child(14)',
-    'p:nth-child(17)'
+    /hétfő((.*)\r?\n+){4}/gim,
+    /kedd((.*)\r?\n+){4}/gim,
+    /szerda((.*)\r?\n+){4}/gim,
+    /csütörtök((.*)\r?\n+){4}/gim,
+    /péntek((.*)\r?\n+){4}/gim
   ]
 
   try {
     await page.goto(paramUrl, { waitUntil: 'networkidle2' })
+    const body = await page.evaluate(el => el.innerText, (await page.$$('body'))[0])
     // @ KETSZERECSEN Monday-Friday
-    for (let i = today; i < today + 1; i++) {
-      if ((await page.$(ketszerecsenArray1[i])) !== null) {
-        ketszerecsen1 = await page.evaluate(el => el.innerHTML, await page.$(ketszerecsenArray1[i]))
-        ketszerecsen2 = await page.evaluate(el => el.innerHTML, await page.$(ketszerecsenArray2[i]))
-      } else {
-        ketszerecsen1 = '♪"No Milk Today"♫'
-        ketszerecsen2 = ''
-      }
+    body.match(ketszerecsenArray[today])
+      ? (ketszerecsen = body.match(ketszerecsenArray[today])[0])
+      : (ketszerecsen = '♪"No Milk Today"♫')
 
-      const body = await page.evaluate(el => el.textContent, (await page.$$('body'))[0])
-      // @ KETSZERECSEN price catch
-      let { price, priceCurrencyStr, priceCurrency } = await priceCatcher.priceCatcher(body)
-      let trend = await priceCompareToDb.priceCompareToDb(paramTitleString, price)
-      paramPriceString = price
-      paramPriceCurrency = priceCurrency
-      paramPriceCurrencyString = priceCurrencyStr + trend
+    // @ KETSZERECSEN price catch
+    console.log('\n')
+    const { price, priceCurrencyStr, priceCurrency } = priceCatcher.priceCatcher(body)
+    const trend = await priceCompareToDb.priceCompareToDb(paramTitleString, price)
+    paramPriceString = price
+    paramPriceCurrency = priceCurrency
+    paramPriceCurrencyString = priceCurrencyStr + trend
 
-      paramValueString = '• Daily menu: ' + ketszerecsen1 + ', ' + ketszerecsen2
-      console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
-      console.log(paramValueString)
-      console.log(paramPriceString + paramPriceCurrencyString + '\n')
-      // @ KETSZERECSEN object
-      obj = new RestaurantMenuOutput(
-        paramColor,
-        paramTitleString,
-        paramUrl,
-        paramIcon,
-        paramValueString,
-        paramPriceString,
-        paramPriceCurrency,
-        paramPriceCurrencyString,
-        paramAddressString
-      )
-      mongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramPriceCurrency, paramValueString)
-      if (objectDecider.objectDecider(paramValueString)) {
-        finalJSON.attachments.push(obj)
-        finalMongoJSON.push(mongoObj)
-      }
+    paramValueString = '• Daily menu: ' + (await stringValueCleaner.stringValueCleaner(ketszerecsen, true))
+    console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
+    console.log(paramValueString)
+    console.log(paramPriceString + paramPriceCurrencyString + '\n')
+    // @ KETSZERECSEN object
+    obj = new RestaurantMenuOutput(
+      paramColor,
+      paramTitleString,
+      paramUrl,
+      paramIcon,
+      paramValueString,
+      paramPriceString,
+      paramPriceCurrency,
+      paramPriceCurrencyString,
+      paramAddressString
+    )
+    mongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramPriceCurrency, paramValueString)
+    if (objectDecider.objectDecider(paramValueString)) {
+      finalJSON.attachments.push(obj)
+      finalMongoJSON.push(mongoObj)
     }
   } catch (e) {
     console.error(e)
