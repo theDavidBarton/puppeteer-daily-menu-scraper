@@ -9,11 +9,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # libgbm-dev is required by Puppeteer 3+
-      - name: install puppeteer libraries
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libgbm1
       - uses: actions/checkout@master
       - name: Use Node.js 12.x
         uses: actions/setup-node@v1
