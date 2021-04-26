@@ -107,7 +107,7 @@ async function scraper() {
     }
 
     // @ BANK 3 price catch
-    let { price, priceCurrencyStr, priceCurrency } = await priceCatcher.priceCatcher(parsedResult)
+    let { price, priceCurrencyStr, priceCurrency } = await priceCatcher.priceCatcher(parsedResult, 1)
     trend = await priceCompareToDb.priceCompareToDb(paramTitleString, price)
     paramPriceString = price
     paramPriceCurrency = priceCurrency
