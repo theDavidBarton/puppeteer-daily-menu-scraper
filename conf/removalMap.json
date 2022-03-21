@@ -1,3 +1,3 @@
 {
-  "remove": "h(e|é)tf(o|ö|ő)(.|\\r?\\n|$)|kedd(.|\\r?\\n|$)|szerda(.|\\r?\\n|$)|cs.t(.*)(o|ö)k(.|\\r?\\n|$)|csiit.rt.k(.|\\r?\\n|$)|p(e|é)ntek(.|\\r?\\n|$)|\\bheti menü|(\\bmenü(.*)menüii)|[0-9]+ ft|,+|:|a napi |🌞|🥗|🍲|🥪|🥧|❤️|\\(\\)|ebédelj|LEVESEK|FŐÉTELEK|DESSZERTEK|finomságaink|salátáink|továbbiak|róza"
+  "remove": "h(e|é)tf(o|ö|ő|å)(.|\\r?\\n|$)|kedd(.|\\r?\\n|$)|szerda(.|\\r?\\n|$)|cs.t(.*)(o|ö)k(.|\\r?\\n|$)|csiit.rt.k(.|\\r?\\n|$)|p(e|é)ntek(.|\\r?\\n|$)|\\bheti menü|(\\bmenü(.*)menüii)|[0-9]+ ft|,+|:|a napi |🌞|🥗|🍲|🥪|🥧|❤️|\\(\\)|ebédelj|LEVESEK|FŐÉTELEK|DESSZERTEK|finomságaink|salátáink|továbbiak|róza"
 }

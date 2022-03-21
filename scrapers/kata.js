@@ -46,17 +46,13 @@ async function scraper() {
   const addressString = 'Budapest, 1065, Hajós u. 27.'
   const daysRegexArray = [
     null,
-    /\bHÉT((.*\r?\n){4})/gi,
-    /\bKED((.*\r?\n){4})/gi,
-    /\bSZERD((.*\r?\n){4})/gi,
-    /\bCS(O|Ů|U|Ü)T((.*\r?\n){4})/gi,
-    /\bPÉNT((.*\r?\n){3})/gi
+    /(\WHÉTF.*\WKEDD\W)|(\WHÉTF.{60})/gi,
+    /(\WKEDD.*\WSZERDA\W)|(\WKEDD.{60})/gi,
+    /(\WSZERDA.*\WCSÜTÖRTÖK\W)|(\WSZERDA.{60})/gi,
+    /(\WCSÜTÖRTÖK.*\WPÉNTEK\W)|(\WCSÜTÖRTÖK.{60})/gi,
+    /(\WPÉNTEK.*\WA.SZÁMLA)|(\WPÉNTEK.{60})/gi
   ]
-  const facebookImageUrlSelector = 'div > a > div > div > div > div > img'
   const menuHandleRegex = /heti/gi
-  const startLine = 1
-  const endLine = 3
-  const zoomIn = true
 
   await ocrFacebookImage.ocrFacebookImage(
     color,
@@ -65,11 +61,7 @@ async function scraper() {
     icon,
     addressString,
     daysRegexArray,
-    facebookImageUrlSelector,
-    menuHandleRegex,
-    startLine,
-    endLine,
-    zoomIn
+    menuHandleRegex
   )
 }
 module.exports.scraper = scraper
