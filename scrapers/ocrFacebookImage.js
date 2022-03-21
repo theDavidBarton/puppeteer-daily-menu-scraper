@@ -103,7 +103,8 @@ async function ocrFacebookImage(
         isOverlayRequired: 'true',
         url: imageUrlArray[i],
         scale: 'true',
-        isTable: 'true'
+        isTable: 'true',
+        OCREngine: 1
       }
     }
     try {
