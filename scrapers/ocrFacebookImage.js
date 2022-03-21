@@ -25,7 +25,6 @@
 
 const puppeteer = require('puppeteer')
 const objectDecider = require('./../lib/objectDecider')
-const ocrSpaceApiSimple = require('./../lib/ocrSpaceApiSimple')
 const priceCatcher = require('./../lib/priceCatcher')
 const priceCompareToDb = require('./../lib/priceCompareToDb')
 const stringValueCleaner = require('./../lib/stringValueCleaner')
@@ -50,11 +49,7 @@ async function ocrFacebookImage(
   paramIcon,
   paramAddressString,
   paramDaysRegexArray,
-  paramFacebookImageUrlSelector,
-  paramMenuHandleRegex,
-  paramStartLine,
-  paramEndLine,
-  paramZoomIn
+  paramMenuHandleRegex
 ) {
   const browser = await puppeteer.connect({ browserWSEndpoint })
   const page = await browser.newPage()
@@ -64,8 +59,7 @@ async function ocrFacebookImage(
   let paramPriceCurrency
   let paramPriceCurrencyString
   let restaurantDaysRegex = paramDaysRegexArray
-  let imageUrlArray = []
-  let restaurantDailyArray = []
+  let imageAltArray = []
   let parsedResult
   let obj = null
   let mongoObj = null
@@ -73,45 +67,19 @@ async function ocrFacebookImage(
   try {
     await page.goto(paramUrl, { waitUntil: 'networkidle0' })
     // @ {RESTAURANT} the hunt for the menu image src
-    const facebookImageUrl = await page.$$(paramFacebookImageUrlSelector)
-    for (let i = 0; i < 6; i++) {
-      // limited to six runs to save OCR resources
-      let imageUrl
-      await page.waitFor(3000)
-      if (paramZoomIn) {
-        await facebookImageUrl[1].click()
-        await page.waitForSelector('.spotlight')
-        imageUrl = await page.evaluate(el => el.src, (await page.$$('.spotlight'))[0])
-      } else {
-        imageUrl = await page.evaluate(el => el.src, facebookImageUrl[i])
-      }
-      imageUrlArray.push(imageUrl)
-    }
+    await page.waitForTimeout(3000)
+    imageAltArray = await page.$$eval('img', elems => elems.map(el => el.alt))
+    imageAltArray = imageAltArray.filter(el => el.match(/May be an image of text that says/gi))
   } catch (e) {
     console.error(e)
   }
-  // @ {RESTAURANT} OCR https://ocr.space/ocrapi#PostParameters
-  forlabelRestaurant: for (let i = 0; i < imageUrlArray.length; i++) {
-    const options = {
-      method: 'POST',
-      url: 'https://api.ocr.space/parse/image',
-      headers: {
-        apikey: process.env.OCR_API_KEY
-      },
-      formData: {
-        language: 'hun',
-        isOverlayRequired: 'true',
-        url: imageUrlArray[i],
-        scale: 'true',
-        isTable: 'true',
-        OCREngine: 1
-      }
-    }
+
+  // @ {RESTAURANT} OCR (using fb's own OCR in alt tags)
+  forlabelRestaurant: for (let i = 0; i < imageAltArray.length; i++) {
     try {
-      parsedResult = await ocrSpaceApiSimple.ocrSpaceApiSimple(options)
-      parsedResult = parsedResult.ParsedText
+      parsedResult = imageAltArray[i]
       // @ {RESTAURANT} Monday-Friday
-      if (await parsedResult.match(paramMenuHandleRegex)) {
+      if (parsedResult.match(paramMenuHandleRegex)) {
         // @ {RESTAURANT} price catch
         let { price, priceCurrencyStr, priceCurrency } = priceCatcher.priceCatcher(parsedResult)
         let trend = await priceCompareToDb.priceCompareToDb(paramTitleString, price)
@@ -124,12 +92,8 @@ async function ocrFacebookImage(
           console.log(paramTitleString + ' parsed result is: ' + restaurantDaily + ' at ' + i + 'th matching image')
           continue forlabelRestaurant
         }
-        restaurantDaily = restaurantDaily.toString().split(/\r?\n/)
-        for (let j = paramStartLine; j < paramEndLine + 1; j++) {
-          restaurantDailyArray.push(restaurantDaily[j])
-        }
 
-        paramValueString = restaurantDailyArray.join(', ')
+        [paramValueString] = parsedResult.match(restaurantDaysRegex[today])
         // @ {RESTAURANT} clean string
         paramValueString = '• Daily menu: ' + (await stringValueCleaner.stringValueCleaner(paramValueString, true))
         console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
