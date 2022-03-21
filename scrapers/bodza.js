@@ -81,7 +81,7 @@ async function scraper() {
       bodzaDaily = await page.evaluate(el => el.textContent, (await page.$$(paramSelector))[i])
       if (bodzaDaily.match(todayDotSeparated)) {
         // @ BODZA price catch
-        let { price, priceCurrencyStr, priceCurrency } = await priceCatcher.priceCatcher(bodzaDaily)
+        let { price, priceCurrencyStr, priceCurrency } = priceCatcher.priceCatcher(bodzaDaily)
         let trend = await priceCompareToDb.priceCompareToDb(paramTitleString, price)
         paramPriceString = price
         paramPriceCurrency = priceCurrency
