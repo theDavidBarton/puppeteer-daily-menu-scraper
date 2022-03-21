@@ -85,7 +85,8 @@ async function scraper() {
       isOverlayRequired: 'true',
       url: pdfUrl,
       scale: 'true',
-      isTable: 'true'
+      isTable: 'true',
+      OCREngine: 1
     }
   }
   try {

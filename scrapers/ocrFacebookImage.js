@@ -73,6 +73,7 @@ async function ocrFacebookImage(
   } catch (e) {
     console.error(e)
   }
+
   // @ {RESTAURANT} OCR (using fb's own OCR in alt tags)
   forlabelRestaurant: for (let i = 0; i < imageAltArray.length; i++) {
     try {
