@@ -52,8 +52,8 @@ async function scraper() {
     /\bCS(O|Ů|U|Ü)T((.*\r?\n){4})/gi,
     /\bPÉNT((.*\r?\n){3})/gi
   ]
-  const facebookImageUrlSelector = '.scaledImageFitWidth'
-  const menuHandleRegex = /espresso/gi
+  const facebookImageUrlSelector = 'div > a > div > div > div > div > img'
+  const menuHandleRegex = /heti/gi
   const startLine = 1
   const endLine = 3
   const zoomIn = true

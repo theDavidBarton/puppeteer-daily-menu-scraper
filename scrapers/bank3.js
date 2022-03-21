@@ -96,7 +96,8 @@ async function scraper() {
         isOverlayRequired: 'true',
         url: bank3ImgUrl,
         scale: 'true',
-        isTable: 'true'
+        isTable: 'true',
+        OCREngine: 1
       }
     }
     try {
@@ -107,7 +108,7 @@ async function scraper() {
     }
 
     // @ BANK 3 price catch
-    let { price, priceCurrencyStr, priceCurrency } = await priceCatcher.priceCatcher(parsedResult, 1)
+    let { price, priceCurrencyStr, priceCurrency } = priceCatcher.priceCatcher(parsedResult, 1)
     trend = await priceCompareToDb.priceCompareToDb(paramTitleString, price)
     paramPriceString = price
     paramPriceCurrency = priceCurrency

@@ -77,15 +77,15 @@ async function scraper() {
   let mongoObj = null
 
   // @ I55 selectors
-  const weeklyI55Selector = '.vc_column-inner'
+  const weeklyI55Selector = '#szoszok'
   const weeklyI55SelectorFallback = '.userContent'
 
   try {
     await page.goto(paramUrl, { waituntil: 'domcontentloaded', timeout: 0 })
-    weeklyI55 = await page.evaluate(el => el.textContent, (await page.$$(weeklyI55Selector))[1])
+    weeklyI55 = await page.evaluate(el => el.textContent, (await page.$$(weeklyI55Selector))[0])
     weeklyI55Daily = weeklyI55.match(/levesek([\s\S]*?)ebédelj/gi)
     // @ I55 price catch
-    let { price, priceCurrencyStr, priceCurrency } = await priceCatcher.priceCatcher(weeklyI55, 1)
+    let { price, priceCurrencyStr, priceCurrency } = priceCatcher.priceCatcher(weeklyI55)
     trend = await priceCompareToDb.priceCompareToDb(paramTitleString, price)
     paramPriceString = price
     paramPriceCurrency = priceCurrency

@@ -112,7 +112,7 @@ async function ocrFacebookImage(
       // @ {RESTAURANT} Monday-Friday
       if (await parsedResult.match(paramMenuHandleRegex)) {
         // @ {RESTAURANT} price catch
-        let { price, priceCurrencyStr, priceCurrency } = await priceCatcher.priceCatcher(parsedResult)
+        let { price, priceCurrencyStr, priceCurrency } = priceCatcher.priceCatcher(parsedResult)
         let trend = await priceCompareToDb.priceCompareToDb(paramTitleString, price)
         paramPriceString = price
         paramPriceCurrency = priceCurrency
