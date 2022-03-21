@@ -70,32 +70,16 @@ async function scraper() {
   let paramPriceCurrency
   let paramPriceCurrencyString
   let paramAddressString = 'Budapest, Liszt Ferenc tér 9, 1061'
-  let vian1
-  let vian2
+  let vian
   let obj = null
   let mongoObj = null
 
   // @ VIAN selectors [1: first course, 2: main course]
-  let vianArray1 = [
-    null,
-    '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(1) > div:nth-child(1) > div.heartyQ2riU',
-    '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(2) > div:nth-child(1) > div.heartyQ2riU',
-    '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(3) > div:nth-child(1) > div.heartyQ2riU',
-    '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(4) > div:nth-child(1) > div.heartyQ2riU',
-    '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(5) > div:nth-child(1) > div.heartyQ2riU'
-  ]
-  let vianArray2 = [
-    null,
-    '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(1) > div.hearty2QDOd > div > div > div.heartyQogjj > span',
-    '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(2) > div.hearty2QDOd > div > div > div.heartyQogjj > span',
-    '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(3) > div.hearty2QDOd > div > div > div.heartyQogjj > span',
-    '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(4) > div.hearty2QDOd > div > div > div.heartyQogjj > span',
-    '#mainDiv > div > div > div > div > div:nth-child(1) > div.hearty1fuYs > div:nth-child(5) > div.hearty2QDOd > div > div > div.heartyQogjj > span'
-  ]
+  let vianSelector = 'div.heartyQ2riU'
 
   try {
     await page.goto(paramUrl, { waitUntil: 'domcontentloaded', timeout: 0 })
-    let linkSelectorVian = '#TPASection_jkic76naiframe'
+    let linkSelectorVian = '#TPASection_jkic76na > iframe'
     const linkVian = await page.evaluate(el => el.src, (await page.$$(linkSelectorVian))[0])
     await page.goto(linkVian, { waitUntil: 'domcontentloaded', timeout: 0 })
   } catch (e) {
@@ -103,44 +87,40 @@ async function scraper() {
   }
   // @ VIAN Monday-Friday
   try {
-    for (let i = today; i < today + 1; i++) {
-      if ((await page.$(vianArray1[i])) !== null) {
-        vian1 = await page.evaluate(el => el.innerText, await page.$(vianArray1[i]))
-        vian2 = await page.evaluate(el => el.innerText, await page.$(vianArray2[i]))
-      } else {
-        vian1 = '♪"No Milk Today"♫'
-        vian2 = ''
-      }
-      const body = await page.evaluate(el => el.textContent, (await page.$$('#mainDiv'))[0])
-      // @ VIAN price catch
-      let { price, priceCurrencyStr, priceCurrency } = await priceCatcher.priceCatcher(body)
-      let trend = await priceCompareToDb.priceCompareToDb(paramTitleString, price)
+    if ((await page.$(vianArray1[i])) !== null) {
+      vian = await page.evaluate(el => el.innerText, (await page.$(vianSelector))[today - 1])
+    } else {
+      vian = '♪"No Milk Today"♫'
+    }
+    const body = await page.evaluate(el => el.textContent, (await page.$$('#mainDiv'))[0])
+    // @ VIAN price catch
+    let { price, priceCurrencyStr, priceCurrency } = priceCatcher.priceCatcher(body)
+    let trend = await priceCompareToDb.priceCompareToDb(paramTitleString, price)
 
-      paramPriceString = price
-      paramPriceCurrency = priceCurrency
-      paramPriceCurrencyString = priceCurrencyStr + trend
+    paramPriceString = price
+    paramPriceCurrency = priceCurrency
+    paramPriceCurrencyString = priceCurrencyStr + trend
 
-      paramValueString = '• Daily menu: ' + vian1 + ', ' + vian2
-      console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
-      console.log(paramValueString)
-      console.log(paramPriceString + paramPriceCurrencyString + '\n')
-      // @ VIAN object
-      obj = new RestaurantMenuOutput(
-        paramColor,
-        paramTitleString,
-        paramUrl,
-        paramIcon,
-        paramValueString,
-        paramPriceString,
-        paramPriceCurrency,
-        paramPriceCurrencyString,
-        paramAddressString
-      )
-      mongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramPriceCurrency, paramValueString)
-      if (objectDecider.objectDecider(paramValueString)) {
-        finalJSON.attachments.push(obj)
-        finalMongoJSON.push(mongoObj)
-      }
+    paramValueString = '• Daily menu: ' + vian
+    console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
+    console.log(paramValueString)
+    console.log(paramPriceString + paramPriceCurrencyString + '\n')
+    // @ VIAN object
+    obj = new RestaurantMenuOutput(
+      paramColor,
+      paramTitleString,
+      paramUrl,
+      paramIcon,
+      paramValueString,
+      paramPriceString,
+      paramPriceCurrency,
+      paramPriceCurrencyString,
+      paramAddressString
+    )
+    mongoObj = new RestaurantMenuDb(paramTitleString, paramPriceString, paramPriceCurrency, paramValueString)
+    if (objectDecider.objectDecider(paramValueString)) {
+      finalJSON.attachments.push(obj)
+      finalMongoJSON.push(mongoObj)
     }
   } catch (e) {
     console.error(e)
