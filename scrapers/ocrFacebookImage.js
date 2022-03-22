@@ -34,6 +34,7 @@ const finalJSON = require('./../src/dailyMenuScraper').finalJSON
 const finalMongoJSON = require('./../src/dailyMenuScraper').finalMongoJSON
 const RestaurantMenuOutput = require('./../src/restaurantMenuClasses').RestaurantMenuOutput
 const RestaurantMenuDb = require('./../src/restaurantMenuClasses').RestaurantMenuDb
+const fs = require('fs')
 
 /*
  * @paramStartLine : selects custom range on the matching regex
