@@ -1,6 +1,5 @@
 [![Actions Status](https://github.com/theDavidBarton/puppeteer-daily-menu-scraper/workflows/CI/badge.svg)](https://github.com/theDavidBarton/puppeteer-daily-menu-scraper/actions)
 [![codecov](https://img.shields.io/codecov/c/github/theDavidBarton/puppeteer-daily-menu-scraper/master.svg)](https://codecov.io/gh/theDavidBarton/puppeteer-daily-menu-scraper)
-[![Dependency Status](https://david-dm.org/theDavidBarton/puppeteer-daily-menu-scraper.svg)](https://david-dm.org/theDavidBarton/puppeteer-daily-menu-scraper)
 [![crocodile](https://img.shields.io/badge/crocodiles_in_the_basement-%F0%9F%90%8A_yes-orange.svg)](/lib)
 [![license](https://img.shields.io/github/license/theDavidBarton/puppeteer-daily-menu-scraper.svg)](/LICENSE.md)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FtheDavidBarton%2Fpuppeteer-daily-menu-scraper.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FtheDavidBarton%2Fpuppeteer-daily-menu-scraper?ref=badge_shield)
@@ -25,8 +24,6 @@ The final output is posted to slack via webhooks.
 - scrape images from facebook posts and retrieve their content with OCR.
 
 ### Install packages
-
-[![pptr](https://img.shields.io/github/package-json/dependency-version/theDavidBarton/puppeteer-daily-menu-scraper/puppeteer.svg)](/package.json)
 
 `yarn install` the project.
 
@@ -56,10 +53,10 @@ $ source app.env
 ### Run scrapers
 
 ```bash
-$ node ./src/dailyMenuScraper.js
+yarn scrape
 ```
 
-or `yarn scrape`
+or `npm run scrape`
 
 _Note:_ a [cron job](https://github.com/theDavidBarton/puppeteer-daily-menu-scraper/actions?query=workflow%3Ascrape) is set up via GitHub Actions to run the node script at every weekday 10:20AM UTC! `'20 10 * * 1-5'`
 
@@ -68,21 +65,19 @@ _Note:_ a [cron job](https://github.com/theDavidBarton/puppeteer-daily-menu-scra
 **I.)** `--debug` sends slack messages to WEBHOOK_URL_TEST so you are safe to do automated (or manual) e2e tests.
 
 ```bash
-$ node ./src/dailyMenuScraper.js --debug
+yarn scrape --debug
 ```
 
 **II.)** `--debug --date=[0-6]__YYYY.MM.DD.` For debug purposes you are able to run script with a 2nd argument like below, where 2 means: day is Tuesday (0: Sunday, 1: Monday, 2: Tuesday, 3: Wednesday, 4: Thursday, 5: Friday, 6: Saturday) and 2019.12.14. overrides the value of date.todayDotSeparated. You need to separate the two values by a double underscore '\_\_' !
 
 ```bash
-$ node ./src/dailyMenuScraper.js --debug --date=2__2019.12.24.
+yarn scrape --debug --date=2__2019.12.24.
 ```
-
-or shorthand works as for run scrapers on prod: `yarn scrape --debug --date=2__2019.12.24.`
 
 ## API
 
 ```bash
-$ node ./src/server.js
+node ./src/server.js
 ```
 
 or `yarn start`
@@ -149,8 +144,6 @@ code: `404`
 [The home of Puppeteer](https://pptr.dev)
 
 [GitHub Puppeteer](https://github.com/GoogleChrome/puppeteer)
-
-[Slightly better examples than mine](https://github.com/GoogleChromeLabs/puppeteer-examples)
 
 # License
 
