@@ -72,8 +72,11 @@ async function ocrFacebookImage(
     await page.waitForTimeout(3000)
     console.log('####page forced wait passed')
     imageAltArray = await page.$$eval('img', elems => elems.map(el => el.alt))
+    console.log(imageAltArray)
     imageAltArray = imageAltArray.filter(el => el.match(/May be an image of text that says/gi))
     console.log(imageAltArray)
+    const html = await page.content()
+    console.log(html)
     console.log('###what happens here?')
   } catch (e) {
     console.error(e)
