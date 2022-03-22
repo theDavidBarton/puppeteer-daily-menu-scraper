@@ -65,9 +65,12 @@ async function ocrFacebookImage(
   let mongoObj = null
 
   try {
+    console.log('facebook starts')
     await page.goto(paramUrl, { waitUntil: 'networkidle0' })
+    console.log('####page opened')
     // @ {RESTAURANT} the hunt for the menu image src
     await page.waitForTimeout(3000)
+    console.log('####page forced wait passed')
     imageAltArray = await page.$$eval('img', elems => elems.map(el => el.alt))
     imageAltArray = imageAltArray.filter(el => el.match(/May be an image of text that says/gi))
   } catch (e) {
@@ -76,6 +79,7 @@ async function ocrFacebookImage(
 
   // @ {RESTAURANT} OCR (using fb's own OCR in alt tags)
   forlabelRestaurant: for (let i = 0; i < imageAltArray.length; i++) {
+    console.log(imageAltArray)
     try {
       parsedResult = imageAltArray[i]
       // @ {RESTAURANT} Monday-Friday
