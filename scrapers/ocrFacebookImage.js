@@ -75,8 +75,9 @@ async function ocrFacebookImage(
     console.log(imageAltArray)
     imageAltArray = imageAltArray.filter(el => el.match(/May be an image of text that says/gi))
     console.log(imageAltArray)
-    const html = await page.content()
-    console.log(html)
+    await page.screenshot({ path: __dirname + '/screen.png' })
+    const screenBase64 = fs.readFileSync(__dirname + '/screen.png', 'base64')
+    console.log(screenBase64)
     console.log('###what happens here?')
   } catch (e) {
     console.error(e)
