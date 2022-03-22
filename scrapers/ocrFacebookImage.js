@@ -66,10 +66,10 @@ async function ocrFacebookImage(
 
   try {
     console.log('facebook starts')
-    await page.goto(paramUrl, { waitUntil: 'domcontentloaded' })
+    await page.goto(paramUrl, { waitUntil: 'networkidle0' })
     console.log('####page opened')
     // @ {RESTAURANT} the hunt for the menu image src
-    await page.waitForTimeout(3000)
+    await page.waitForTimeout(12000)
     console.log('####page forced wait passed')
     imageAltArray = await page.$$eval('img', elems => elems.map(el => el.alt))
     console.log(imageAltArray)
