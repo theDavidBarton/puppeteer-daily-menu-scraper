@@ -67,6 +67,7 @@ async function ocrFacebookImage(
 
   try {
     console.log('facebook starts')
+    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36')
     await page.goto(paramUrl, { waitUntil: 'networkidle0' })
     console.log('####page opened')
     // @ {RESTAURANT} the hunt for the menu image src
