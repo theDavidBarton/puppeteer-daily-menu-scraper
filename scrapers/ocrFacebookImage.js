@@ -79,8 +79,11 @@ async function ocrFacebookImage(
       await page.click('button[name="login"]')
       await page.waitForTimeout(2000)
       await page.goto(paramUrl, { waitUntil: 'networkidle0' })
-      const scrollIn = await page.$$('title')
-      await scrollIn[1].click()
+      const cookieXPath = '//span[contains(text(), "Allow essential and optional cookies")]|//span[contains(text(), "és nem kötelező cookie-k engedélyezése")]'
+      await page.waitForXPath(cookieXPath)
+      const [cookieButton] = await page.$x(cookieXPath)
+      if (cookieButton !== null) await cookieButton.click()
+      await page.evaluate(() => window.scrollBy(0, window.innerHeight * 4))
     }
     imageAltArray = await page.$$eval('img', elems => elems.map(el => el.alt))
     console.log(imageAltArray)
