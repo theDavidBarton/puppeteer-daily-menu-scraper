@@ -79,6 +79,8 @@ async function ocrFacebookImage(
       await page.click('button[name="login"]')
       await page.waitForTimeout(2000)
       await page.goto(paramUrl, { waitUntil: 'networkidle0' })
+      const scrollIn = await page.$$('title')
+      await scrollIn[1].click()
     }
     imageAltArray = await page.$$eval('img', elems => elems.map(el => el.alt))
     console.log(imageAltArray)
