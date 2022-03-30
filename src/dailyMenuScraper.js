@@ -47,7 +47,7 @@ let finalMongoJSON = []
 
 // scraper browser instance - function that wraps all the scrapers
 async function scrapeMenu() {
-  const browser = await puppeteer.launch({ headless: true, defaultViewport: null, args: ['--start-maximized'] })
+  const browser = await puppeteer.launch({ headless: false, defaultViewport: null, args: ['--start-maximized'] })
   const browserWSEndpoint = await browser.wsEndpoint()
 
   // used outside of main script in the scrapers

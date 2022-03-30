@@ -67,20 +67,26 @@ async function ocrFacebookImage(
 
   try {
     console.log('facebook starts')
-    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36')
+    await page.setUserAgent(
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36'
+    )
     await page.goto(paramUrl, { waitUntil: 'networkidle0' })
-    console.log('####page opened')
     // @ {RESTAURANT} the hunt for the menu image src
-    await page.waitForTimeout(12000)
-    console.log('####page forced wait passed')
+    if ((await page.$$('input[name="email"]'))[0]) {
+      await page.type('input[name="email"]', process.env.FB_USERNAME)
+      await page.type('input[name="password"]', process.env.FB_PASSWORD)
+      await waitForTimeout(500)
+      await page.click('button[name="login"]')
+      await page.waitForNavigation()
+      await page.goto(paramUrl, { waitUntil: 'networkidle0' })
+    }
     imageAltArray = await page.$$eval('img', elems => elems.map(el => el.alt))
     console.log(imageAltArray)
     imageAltArray = imageAltArray.filter(el => el.match(/May be an image of text that says/gi))
     console.log(imageAltArray)
     await page.screenshot({ path: __dirname + '/screen.png' })
     const screenBase64 = fs.readFileSync(__dirname + '/screen.png', 'base64')
-    console.log(screenBase64)
-    console.log('###what happens here?')
+    console.log('data:image/png;base64, ' + screenBase64)
   } catch (e) {
     console.error(e)
   }
@@ -101,11 +107,13 @@ async function ocrFacebookImage(
 
         let restaurantDaily = parsedResult.match(restaurantDaysRegex[today])
         if (restaurantDaily === null) {
-          console.log(paramTitleString + ' parsed result is: ' + restaurantDaily + ' at ' + i + 'th matching image')
+          console.log(
+            paramTitleString + ' parsed result is: ' + restaurantDaily + ' at ' + i + 'th matching image'
+          )
           continue forlabelRestaurant
         }
 
-        [paramValueString] = parsedResult.match(restaurantDaysRegex[today])
+        ;[paramValueString] = parsedResult.match(restaurantDaysRegex[today])
         // @ {RESTAURANT} clean string
         paramValueString = '• Daily menu: ' + (await stringValueCleaner.stringValueCleaner(paramValueString, true))
         console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
