@@ -1,28 +1,28 @@
 name: CI
 
-on: 
+on:
   push:
     branches:
       - master
   pull_request:
-    branches: 
-      - master    
-    
+    branches:
+      - master
+
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-    - name: Use Node.js 12.x
-      uses: actions/setup-node@v1
-      with:
-        node-version: 12.x
-    - name: Lint and Test
-      run: |
-        yarn
-        yarn lint .
-        yarn test --silent
-    - name: Upload coverage to Codecov  
-      uses: codecov/codecov-action@v1
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}    
+      - uses: actions/checkout@master
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16.x
+      - name: Lint and Test
+        run: |
+          yarn
+          yarn lint .
+          yarn test --silent
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}

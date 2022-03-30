@@ -70,14 +70,14 @@ async function ocrFacebookImage(
     await page.setUserAgent(
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36'
     )
-    await page.goto(paramUrl, { waitUntil: 'networkidle0' })
+    await page.goto('https://www.facebook.com/login', { waitUntil: 'networkidle0' })
     // @ {RESTAURANT} the hunt for the menu image src
     if ((await page.$$('input[name="email"]'))[0] !== null) {
       await page.type('input[name="email"]', process.env.FB_USERNAME)
       await page.type('input[name="pass"]', process.env.FB_PASSWORD)
       await page.waitForTimeout(500)
       await page.click('button[name="login"]')
-      await page.waitForNavigation()
+      await page.waitForTimeout(2000)
       await page.goto(paramUrl, { waitUntil: 'networkidle0' })
     }
     imageAltArray = await page.$$eval('img', elems => elems.map(el => el.alt))
