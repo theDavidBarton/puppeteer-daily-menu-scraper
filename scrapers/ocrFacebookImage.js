@@ -74,7 +74,7 @@ async function ocrFacebookImage(
     // @ {RESTAURANT} the hunt for the menu image src
     if ((await page.$$('input[name="email"]'))[0] !== null) {
       await page.type('input[name="email"]', process.env.FB_USERNAME)
-      await page.type('input[name="password"]', process.env.FB_PASSWORD)
+      await page.type('input[name="pass"]', process.env.FB_PASSWORD)
       await waitForTimeout(500)
       await page.click('button[name="login"]')
       await page.waitForNavigation()
