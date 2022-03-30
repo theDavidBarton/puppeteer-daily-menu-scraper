@@ -82,7 +82,8 @@ async function ocrFacebookImage(
     }
     imageAltArray = await page.$$eval('img', elems => elems.map(el => el.alt))
     console.log(imageAltArray)
-    imageAltArray = imageAltArray.filter(el => el.match(/May be an image of text that says/gi))
+    imageAltArray = imageAltArray.filter(el => el
+      .match(/May be an image of text that says|Lehet, hogy egy kép erről/gi))
     console.log(imageAltArray)
     await page.screenshot({ path: __dirname + '/screen.png' })
     const screenBase64 = fs.readFileSync(__dirname + '/screen.png', 'base64')

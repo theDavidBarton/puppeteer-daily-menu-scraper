@@ -25,6 +25,8 @@ jobs:
           OCR_API_KEY: ${{ secrets.OCR_API_KEY }}
           WEBHOOK_URL_PROD: ${{ secrets.WEBHOOK_URL_PROD }}
           WEBHOOK_URL_TEST: ${{ secrets.WEBHOOK_URL_TEST }}
+          FB_USERNAME: ${{ secrets.FB_USERNAME }}
+          FB_PASSWORD: ${{ secrets.FB_PASSWORD }}
         run: node ./src/dailyMenuScraper.js
 
   scrape-on-debug:
@@ -46,4 +48,6 @@ jobs:
           OCR_API_KEY: ${{ secrets.OCR_API_KEY }}
           WEBHOOK_URL_PROD: ${{ secrets.WEBHOOK_URL_PROD }}
           WEBHOOK_URL_TEST: ${{ secrets.WEBHOOK_URL_TEST }}
+          FB_USERNAME: ${{ secrets.FB_USERNAME }}
+          FB_PASSWORD: ${{ secrets.FB_PASSWORD }}
         run: node ./src/dailyMenuScraper.js --debug
