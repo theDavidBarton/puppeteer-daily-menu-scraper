@@ -84,7 +84,7 @@ async function ocrFacebookImage(
         const cookieButton = await page.$x(cookieXPath)
         if (cookieButton.length > 0) await cookieButton[0].click()
       } catch (e) {}
-      await page.evaluate(() => window.scrollBy(0, window.innerHeight * 4))
+      await page.evaluate(() => window.scrollBy(0, window.innerHeight * 8))
     }
     imageAltArray = await page.$$eval('img', elems => elems.map(el => el.alt))
     console.log(imageAltArray)
