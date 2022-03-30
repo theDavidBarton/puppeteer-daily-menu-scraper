@@ -66,7 +66,6 @@ async function ocrFacebookImage(
   let mongoObj = null
 
   try {
-    console.log('facebook starts')
     await page.setUserAgent(
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36'
     )
@@ -81,8 +80,10 @@ async function ocrFacebookImage(
       await page.goto(paramUrl, { waitUntil: 'networkidle0' })
       const cookieXPath = '//span[contains(text(), "Allow essential and optional cookies")]|//span[contains(text(), "és nem kötelező cookie-k engedélyezése")]'
       await page.waitForTimeout(2000)
-      const [cookieButton] = await page.$x(cookieXPath)
-      if (cookieButton !== null) await cookieButton.click()
+      try {
+        const cookieButton = await page.$x(cookieXPath)
+        if (cookieButton.length > 0) await cookieButton[0].click()
+      } catch (e) {}
       await page.evaluate(() => window.scrollBy(0, window.innerHeight * 4))
     }
     imageAltArray = await page.$$eval('img', elems => elems.map(el => el.alt))
