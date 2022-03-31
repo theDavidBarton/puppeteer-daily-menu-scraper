@@ -78,19 +78,33 @@ async function ocrFacebookImage(
       await page.click('button[name="login"]')
       await page.waitForTimeout(2000)
       await page.goto(paramUrl, { waitUntil: 'networkidle0' })
-      const cookieXPath = '//span[contains(text(), "Allow essential and optional cookies")]|//span[contains(text(), "és nem kötelező cookie-k engedélyezése")]'
+      // close cookie policy
+      const cookieXPath =
+        '//span[contains(text(), "Allow essential and optional cookies")]|//span[contains(text(), "és nem kötelező cookie-k engedélyezése")]'
       await page.waitForTimeout(2000)
       try {
         const cookieButton = await page.$x(cookieXPath)
         if (cookieButton.length > 0) await cookieButton[0].click()
       } catch (e) {}
-      await page.evaluate(() => window.scrollBy(0, window.innerHeight * 8))
     }
+    // scroll down a bit for more relevant images
+    await page.evaluate(() => window.scrollBy(0, window.innerHeight * 4))
     imageAltArray = await page.$$eval('img', elems => elems.map(el => el.alt))
     console.log(imageAltArray)
-    imageAltArray = imageAltArray.filter(el => el
-      .match(/May be an image of text that says|Lehet, hogy egy kép erről/gi))
+    imageAltArray = imageAltArray.filter(el =>
+      el.match(/May be an image of text that says|Lehet, hogy egy kép erről/gi)
+    )
     console.log(imageAltArray)
+    if (imageAltArray.length < 1) {
+      // if the images are irrelevant then scroll down a bit more
+      await page.evaluate(() => window.scrollBy(0, window.innerHeight * 2))
+      imageAltArray = await page.$$eval('img', elems => elems.map(el => el.alt))
+      console.log(imageAltArray)
+      imageAltArray = imageAltArray.filter(el =>
+        el.match(/May be an image of text that says|Lehet, hogy egy kép erről/gi)
+      )
+      console.log(imageAltArray)
+    }
     await page.screenshot({ path: __dirname + '/screen.png' })
     const screenBase64 = fs.readFileSync(__dirname + '/screen.png', 'base64')
     console.log('data:image/png;base64, ' + screenBase64)
