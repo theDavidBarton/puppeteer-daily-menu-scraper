@@ -29,7 +29,7 @@ The final output is posted to slack via webhooks.
 
 ### Environment variables
 
-I.) touch an `app.env` file (gitignored) in the root folder. Create your own OCR Space API key; request user for the daily_menu mongoDB (or create your own and replace uri in the code to fit); and finally store the webhooks urls for slack per environment.
+I.) touch an `app.env` file (gitignored) in the root folder. Create your own OCR Space API key; request user for the daily_menu mongoDB (or create your own and replace uri in the code to fit); store the webhooks urls for slack per environment; and finally you will need facebook credentials for the facebook menu scraping.
 
 ```bash
 # create your API key here: https://ocr.space/ocrapi#free
@@ -42,6 +42,10 @@ export MONGO_PASSWORD="**************"
 # slack webhooks
 export WEBHOOK_URL_TEST=https://hooks.slack.com/services/*********/*********/************************
 export WEBHOOK_URL_PROD=https://hooks.slack.com/services/*********/*********/************************
+
+# facebook credentials
+export FB_USERNAME="**************"
+export FB_PASSWORD="**************"
 ```
 
 II.) source the created file to local environment variables (depending on your platform you'll need to find a method which lasts more than the current session!):
