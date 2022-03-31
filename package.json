@@ -23,7 +23,7 @@
     "lint": "eslint"
   },
   "engines": {
-    "node": "12.x"
+    "node": "16.x"
   },
   "jest": {
     "coverageDirectory": "./coverage/",

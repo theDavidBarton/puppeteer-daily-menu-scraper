@@ -34,6 +34,7 @@ const finalJSON = require('./../src/dailyMenuScraper').finalJSON
 const finalMongoJSON = require('./../src/dailyMenuScraper').finalMongoJSON
 const RestaurantMenuOutput = require('./../src/restaurantMenuClasses').RestaurantMenuOutput
 const RestaurantMenuDb = require('./../src/restaurantMenuClasses').RestaurantMenuDb
+// const fs = require('fs')
 
 /*
  * @paramStartLine : selects custom range on the matching regex
@@ -65,17 +66,54 @@ async function ocrFacebookImage(
   let mongoObj = null
 
   try {
-    await page.goto(paramUrl, { waitUntil: 'networkidle0' })
+    await page.setUserAgent(
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36'
+    )
+    await page.goto('https://www.facebook.com/login', { waitUntil: 'networkidle0' })
     // @ {RESTAURANT} the hunt for the menu image src
-    await page.waitForTimeout(3000)
+    if ((await page.$$('input[name="email"]'))[0] !== null) {
+      await page.type('input[name="email"]', process.env.FB_USERNAME)
+      await page.type('input[name="pass"]', process.env.FB_PASSWORD)
+      await page.waitForTimeout(500)
+      await page.click('button[name="login"]')
+      await page.waitForTimeout(2000)
+      await page.goto(paramUrl, { waitUntil: 'networkidle0' })
+      // close cookie policy
+      const cookieXPath =
+        '//span[contains(text(), "Allow essential and optional cookies")]|//span[contains(text(), "és nem kötelező cookie-k engedélyezése")]'
+      await page.waitForTimeout(2000)
+      try {
+        const cookieButton = await page.$x(cookieXPath)
+        if (cookieButton.length > 0) await cookieButton[0].click()
+      } catch (e) {}
+    }
+    // scroll down a bit for more relevant images
+    await page.evaluate(() => window.scrollBy(0, window.innerHeight * 4))
     imageAltArray = await page.$$eval('img', elems => elems.map(el => el.alt))
-    imageAltArray = imageAltArray.filter(el => el.match(/May be an image of text that says/gi))
+    imageAltArray = imageAltArray.filter(el =>
+      el.match(/May be an image of text that says|Lehet, hogy egy kép erről/gi)
+    )
+    if (imageAltArray.length < 1) {
+      // if the images are irrelevant then scroll down a bit more
+      await page.evaluate(() => window.scrollBy(0, window.innerHeight * 2))
+      imageAltArray = await page.$$eval('img', elems => elems.map(el => el.alt))
+      imageAltArray = imageAltArray.filter(el =>
+        el.match(/May be an image of text that says|Lehet, hogy egy kép erről/gi)
+      )
+    }
+    /*
+     *kept for debug purposes; Note: fs module will be required
+     *await page.screenshot({ path: __dirname + '/screen.png' })
+     *const screenBase64 = fs.readFileSync(__dirname + '/screen.png', 'base64')
+     *console.log('data:image/png;base64, ' + screenBase64)
+     */
   } catch (e) {
     console.error(e)
   }
 
   // @ {RESTAURANT} OCR (using fb's own OCR in alt tags)
   forlabelRestaurant: for (let i = 0; i < imageAltArray.length; i++) {
+    console.log(imageAltArray)
     try {
       parsedResult = imageAltArray[i]
       // @ {RESTAURANT} Monday-Friday
@@ -89,11 +127,13 @@ async function ocrFacebookImage(
 
         let restaurantDaily = parsedResult.match(restaurantDaysRegex[today])
         if (restaurantDaily === null) {
-          console.log(paramTitleString + ' parsed result is: ' + restaurantDaily + ' at ' + i + 'th matching image')
+          console.log(
+            paramTitleString + ' parsed result is: ' + restaurantDaily + ' at ' + i + 'th matching image'
+          )
           continue forlabelRestaurant
         }
 
-        [paramValueString] = parsedResult.match(restaurantDaysRegex[today])
+        ;[paramValueString] = parsedResult.match(restaurantDaysRegex[today])
         // @ {RESTAURANT} clean string
         paramValueString = '• Daily menu: ' + (await stringValueCleaner.stringValueCleaner(paramValueString, true))
         console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))

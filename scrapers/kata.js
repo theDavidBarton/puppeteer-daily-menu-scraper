@@ -40,7 +40,7 @@ async function scraper() {
   // @ KATA parameters
   const color = '#3C5A99'
   const titleString = 'Kata (Chagall)'
-  const url = 'https://www.facebook.com/pg/katarestaurantbudapest/posts/'
+  const url = 'https://m.facebook.com/katarestaurantbudapest/posts/?ref=page_internal&locale=hu_HU&_rdr'
   const icon =
     'https://lh3.googleusercontent.com/GrM72gaBN1l7BUgUuWI5T9w2zc1qxsKFNukg6Szp-lXXpfG0wmnxT2FA_o725nmAiZkxGmf_=w1080-h608-p-no-v0'
   const addressString = 'Budapest, 1065, Hajós u. 27.'

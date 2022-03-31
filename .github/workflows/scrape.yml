@@ -12,10 +12,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@master
-      - name: Use Node.js 12.x
+      - name: Use Node.js 16.x
         uses: actions/setup-node@v1
         with:
-          node-version: 12.x
+          node-version: 16.x
       - name: Install project
         run: yarn
       - name: Run main script
@@ -25,6 +25,8 @@ jobs:
           OCR_API_KEY: ${{ secrets.OCR_API_KEY }}
           WEBHOOK_URL_PROD: ${{ secrets.WEBHOOK_URL_PROD }}
           WEBHOOK_URL_TEST: ${{ secrets.WEBHOOK_URL_TEST }}
+          FB_USERNAME: ${{ secrets.FB_USERNAME }}
+          FB_PASSWORD: ${{ secrets.FB_PASSWORD }}
         run: node ./src/dailyMenuScraper.js
 
   scrape-on-debug:
@@ -33,10 +35,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@master
-      - name: Use Node.js 12.x
+      - name: Use Node.js 16.x
         uses: actions/setup-node@v1
         with:
-          node-version: 12.x
+          node-version: 16.x
       - name: Install project
         run: yarn
       - name: Run main script
@@ -46,4 +48,6 @@ jobs:
           OCR_API_KEY: ${{ secrets.OCR_API_KEY }}
           WEBHOOK_URL_PROD: ${{ secrets.WEBHOOK_URL_PROD }}
           WEBHOOK_URL_TEST: ${{ secrets.WEBHOOK_URL_TEST }}
+          FB_USERNAME: ${{ secrets.FB_USERNAME }}
+          FB_PASSWORD: ${{ secrets.FB_PASSWORD }}
         run: node ./src/dailyMenuScraper.js --debug
