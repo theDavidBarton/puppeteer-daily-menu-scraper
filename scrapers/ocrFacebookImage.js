@@ -34,7 +34,7 @@ const finalJSON = require('./../src/dailyMenuScraper').finalJSON
 const finalMongoJSON = require('./../src/dailyMenuScraper').finalMongoJSON
 const RestaurantMenuOutput = require('./../src/restaurantMenuClasses').RestaurantMenuOutput
 const RestaurantMenuDb = require('./../src/restaurantMenuClasses').RestaurantMenuDb
-const fs = require('fs')
+// const fs = require('fs')
 
 /*
  * @paramStartLine : selects custom range on the matching regex
@@ -90,24 +90,23 @@ async function ocrFacebookImage(
     // scroll down a bit for more relevant images
     await page.evaluate(() => window.scrollBy(0, window.innerHeight * 4))
     imageAltArray = await page.$$eval('img', elems => elems.map(el => el.alt))
-    console.log(imageAltArray)
     imageAltArray = imageAltArray.filter(el =>
       el.match(/May be an image of text that says|Lehet, hogy egy kép erről/gi)
     )
-    console.log(imageAltArray)
     if (imageAltArray.length < 1) {
       // if the images are irrelevant then scroll down a bit more
       await page.evaluate(() => window.scrollBy(0, window.innerHeight * 2))
       imageAltArray = await page.$$eval('img', elems => elems.map(el => el.alt))
-      console.log(imageAltArray)
       imageAltArray = imageAltArray.filter(el =>
         el.match(/May be an image of text that says|Lehet, hogy egy kép erről/gi)
       )
-      console.log(imageAltArray)
     }
-    await page.screenshot({ path: __dirname + '/screen.png' })
-    const screenBase64 = fs.readFileSync(__dirname + '/screen.png', 'base64')
-    console.log('data:image/png;base64, ' + screenBase64)
+    /*
+     *kept for debug purposes; Note: fs module will be required
+     *await page.screenshot({ path: __dirname + '/screen.png' })
+     *const screenBase64 = fs.readFileSync(__dirname + '/screen.png', 'base64')
+     *console.log('data:image/png;base64, ' + screenBase64)
+     */
   } catch (e) {
     console.error(e)
   }
