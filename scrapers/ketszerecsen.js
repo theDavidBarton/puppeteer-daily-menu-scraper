@@ -102,6 +102,7 @@ async function scraper() {
     paramPriceCurrencyString = priceCurrencyStr + trend
 
     paramValueString = '• Daily menu: ' + (await stringValueCleaner.stringValueCleaner(ketszerecsen, true))
+    paramValueString += '\n_Rövidítések: GM — gluténmentes, LM — laktózmentes_'
     console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
     console.log(paramValueString)
     console.log(paramPriceString + paramPriceCurrencyString + '\n')
