@@ -24,12 +24,13 @@
  */
 
 const puppeteer = require('puppeteer')
-const dateCatcher = require('./../lib/dateCatcher')
 const objectDecider = require('./../lib/objectDecider')
 const priceCatcher = require('./../lib/priceCatcher')
 const priceCompareToDb = require('./../lib/priceCompareToDb')
+const dateCatcher = require('./../lib/dateCatcher')
 const stringValueCleaner = require('./../lib/stringValueCleaner')
 const browserWSEndpoint = require('./../src/dailyMenuScraper').browserWSEndpoint
+const today = require('./../src/date').date.today
 const finalJSON = require('./../src/dailyMenuScraper').finalJSON
 const finalMongoJSON = require('./../src/dailyMenuScraper').finalMongoJSON
 const RestaurantMenuOutput = require('./../src/restaurantMenuClasses').RestaurantMenuOutput
@@ -50,82 +51,70 @@ async function scraper() {
   })
 
   /*
-   * @ I55 American Restaurant
+   * @ MENZA
    * ------------------------------------------
    * contact info:
-   * Address: Budapest, Alkotmány u. 20, 1054
-   * Phone: (1) 400 9580
+   * Address: 1061 Budapest, Liszt Ferenc tér 2.
+   * Phone: +36 30 145 4242
    * -----------------------------------------
    */
 
-  // @ I55 parameters
-  let paramColor = '#104283'
-  let paramTitleString = 'I55'
-  let paramUrl = 'http://i55.hu/ebedmenu/'
-  let paramUrlFallback = 'https://www.facebook.com/pg/i55americanrestaurant/posts/'
-  let paramIcon = 'https://scontent.fbud5-1.fna.fbcdn.net/v/t39.30808-1/324270544_737231364791960_1074046147067895687_n.png?stp=dst-png_p200x200&_nc_cat=108&ccb=1-7&_nc_sid=c6021c&_nc_ohc=GvK2WApiMiwAX_HB-xW&_nc_ht=scontent.fbud5-1.fna&oh=00_AfA8-klI26XAAxlTQ_ghlQr73vKi3wjT9SHFltuJIXEE2g&oe=63F7744A'
+  // @ KAMRA parameters
+  let paramColor = '#be8e8e'
+  let paramTitleString = 'Menza'
+  let paramUrl = 'https://menzaetterem.hu/etlap/'
+  let paramIcon = 'https://menzaetterem.hu/site/themes/menza/typerocket/wordpress/assets/images/favicon-32x32.png'
   let paramValueString
   let paramPriceString
   let paramPriceCurrency
   let paramPriceCurrencyString
-  let paramAddressString = 'Budapest, Alkotmány u. 20, 1054'
-  let weeklyI55
-  let weeklyI55Daily
-  let found
-  let trend
+  let paramAddressString = '1061 Budapest, Liszt Ferenc tér 2.'
+  let dailyMenza = []
   let obj = null
   let mongoObj = null
 
-  // @ I55 selectors
-  const weeklyI55Selector = '#szoszok'
-  const weeklyI55SelectorFallback = '.userContent'
+  // @ MENZA RegEx expressions
+  const menzaArray = [
+    null,
+    /hétfő((.*)\r?\n+){7}/gim,
+    /kedd((.*)\r?\n+){7}/gim,
+    /szerda((.*)\r?\n+){7}/gim,
+    /csütörtök((.*)\r?\n+){7}/gim,
+    /péntek((.*)\r?\n+){7}/gim
+  ]
 
   try {
-    await page.goto(paramUrl, { waituntil: 'domcontentloaded', timeout: 0 })
-    weeklyI55 = await page.evaluate(el => el.textContent, (await page.$$(weeklyI55Selector))[0])
-    weeklyI55Daily = weeklyI55.match(/levesek([\s\S]*?)ebédelj/gi)
-    // @ I55 price catch
-    let { price, priceCurrencyStr, priceCurrency } = priceCatcher.priceCatcher(weeklyI55)
-    trend = await priceCompareToDb.priceCompareToDb(paramTitleString, price)
+    await page.goto(paramUrl, { waitUntil: 'networkidle2' })
+    const body = await page.evaluate(el => el.innerText, (await page.$$('body'))[0])
+    // @ MENZA Monday-Friday
+    body.match(menzaArray[today]) ? (dailyMenza = body.match(menzaArray[today])[0]) : (dailyMenza = '♪"No Milk Today"♫')
+
+    // @ MENZA price catch
+    console.log('\n')
+    const { price, priceCurrencyStr, priceCurrency } = priceCatcher.priceCatcher(body)
+    const trend = await priceCompareToDb.priceCompareToDb(paramTitleString, price)
     paramPriceString = price
     paramPriceCurrency = priceCurrency
     paramPriceCurrencyString = priceCurrencyStr + trend
 
-    found = await dateCatcher.dateCatcher(weeklyI55, true) // @ I55 catch date
-    if (found === true) {
-      paramValueString = await stringValueCleaner.stringValueCleaner(weeklyI55Daily, false)
-      paramValueString = paramValueString.replace(/\(\)/g, '').replace(/\n/, ' ') // to be moved to stringValueCleaner module later!
-      paramValueString += '\n_Rövidítések: Gm — gluténmentes, Lm — laktózmentes_'
+    // @ MENZA date catch
+    const found = await dateCatcher.dateCatcher(body, true)
 
-      // fallback on facebook page
+    // @ MENZA build output
+    if (found === true) {
+      paramValueString = dailyMenza
+      paramValueString =
+        '• Daily menu: ' +
+        (await stringValueCleaner.stringValueCleaner(paramValueString, false)) +
+        '\n_Főbb étel allergének: A — glutén, B — rákfélék, C — tojás, D — hal, E — földimogyoró, F — szója, G — tej, H — diófélék, I — zeller, J — mustár, K — szezámmag, L — kén-dioxid, M — csillagfürt, N — puhatestűek, V — vegán_'
     } else {
-      await page.goto(paramUrlFallback, { waituntil: 'domcontentloaded', timeout: 0 })
-      forlabel: for (let i = 0; i < 10; i++) {
-        weeklyI55 = await page.evaluate(el => el.textContent, (await page.$$(weeklyI55SelectorFallback))[i])
-        if (weeklyI55.match(/levesek([\s\S]*?)ebédelj/gi)) {
-          weeklyI55Daily = weeklyI55.match(/levesek([\s\S]*?)ebédelj/gi)
-          // @ I55 price catch
-          let { price, priceCurrencyStr, priceCurrency } = await priceCatcher.priceCatcher(weeklyI55, 1)
-          trend = await priceCompareToDb.priceCompareToDb(paramTitleString, price)
-          paramPriceString = price
-          paramPriceCurrency = priceCurrency
-          paramPriceCurrencyString = priceCurrencyStr + trend
-          found = await dateCatcher.dateCatcher(weeklyI55, true) // @ I55 catch date
-          if (found === true) {
-            paramValueString = await stringValueCleaner.stringValueCleaner(weeklyI55Daily, false)
-            paramValueString = paramValueString.replace(/\(\)/g, '').replace(/\n/, ' ') // to be moved to stringValueCleaner module later!
-            break forlabel
-          } else {
-            paramValueString = 'menu is outdated!'
-          }
-        }
-      }
+      paramValueString = '• Daily menu: ♪"No Milk Today"♫'
     }
+
     console.log('*' + paramTitleString + '* \n' + '-'.repeat(paramTitleString.length))
     console.log(paramValueString)
     console.log(paramPriceString + paramPriceCurrencyString + '\n')
-
-    // @ I55 object
+    // @ MENZA object
     obj = new RestaurantMenuOutput(
       paramColor,
       paramTitleString,
